@@ -1,0 +1,31 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Introduction to toxEval}
+-->
+
+```{r setup, include=FALSE}
+library(xtable)
+options(continue=" ")
+options(width=60)
+library(knitr)
+
+```
+
+# Introduction to toxEval
+By Laura A. De Cicco, Steven Corsi
+
+This package **toxEval** is an early test version of the package that will encompass the various approaches to evaluate ToxCast data in relation to measured aquatic concentrations.
+
+## Molecular weights
+ToxCast reports values in $\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package **webchem** supports this functionality. 
+
+
+```{r}
+
+library("webchem")
+
+inchk <- cts_convert(query = '3380-34-5', from = 'CAS', to = 'inchikey')
+info <- cts_compinfo(inchikey = inchk)
+info$molweight
+
+```

@@ -19,6 +19,7 @@ Depends:
 Imports:
     dplyr
 Suggests:
+    webchem,
     xtable,
     knitr,
     testthat
