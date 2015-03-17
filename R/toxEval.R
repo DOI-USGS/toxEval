@@ -1,0 +1,45 @@
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.")
+}
+
+
+#' Evaluation of ToxCast data with measured concentrations
+#'
+#' \tabular{ll}{
+#' Package: \tab toxEval\cr
+#' Type: \tab Package\cr
+#' License: \tab Unlimited for this package, dependencies have more restrictive licensing.\cr
+#' Copyright: \tab This software is in the public domain because it contains materials
+#' that originally came from the United States Geological Survey, an agency of
+#' the United States Department of Interior. For more information, see the
+#' official USGS copyright policy at
+#' http://www.usgs.gov/visual-id/credit_usgs.html#copyright\cr
+#' LazyLoad: \tab yes\cr
+#' }
+#'
+#'  Initial code for studying ToxCast data in relation to measured concentrations.
+#'
+#' @name toxEval-package
+#' @docType package
+#' @author Steven Corsi \email{srcorsi@@usgs.gov}, Laura De Cicco \email{ldecicco@@usgs.gov}
+#' @keywords ToxCast
+NULL
+
+#' Constants included with toxEval
+#' 
+#'\itemize{
+#'  \item{AC50gain}{AC50 gain endpoints}
+#'  \item{AC50loss}{AC50 loss endpoints}
+#'  \item{AC10}{AC10 endpoints}
+#'}
+#'
+#'@aliases AC50gain AC50loss AC10
+#'@name Constants
+#'@docType data
+#'@export AC50gain AC50loss AC10
+#'@keywords datasets
+#'@examples
+#'AC50GainColumns <- names(AC50gain)
+#'AC50LossColumns <- names(AC50loss)
+#'AC10Columns <- names(AC10)
+NULL
