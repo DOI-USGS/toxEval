@@ -14,3 +14,11 @@ info <- cts_compinfo(inchikey = inchk)
 info$molweight
 
 
+## ---------------------------------------------------------
+library(toxEval)
+filePath <- system.file("extdata", package="toxEval")
+passiveData <- load(file.path(filePath, "passiveData.RData"))
+
+head(passiveData)
+
+

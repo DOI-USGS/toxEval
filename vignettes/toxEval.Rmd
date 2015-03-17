@@ -8,7 +8,7 @@ library(xtable)
 options(continue=" ")
 options(width=60)
 library(knitr)
-
+library(toxEval)
 ```
 
 # Introduction to toxEval
@@ -29,3 +29,34 @@ info <- cts_compinfo(inchikey = inchk)
 info$molweight
 
 ```
+
+## Workflow
+Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. 
+
+### Passive Data:
+Passive data was returned from the laboratory in a 'long' format. A sample of the data is shown below:
+
+```{r echo=TRUE, eval=TRUE}
+
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "passiveData.RData")
+load(file=filePath)
+
+head(passiveData[,1:5])
+
+```
+
+
+### Water Sample Data:
+The data returned from water sample tests was returned in a 'wide' format:
+
+```{r echo=TRUE, eval=TRUE}
+
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "waterSamples.RData")
+load(file=filePath)
+
+head(waterSamples[,1:10])
+
+```
+

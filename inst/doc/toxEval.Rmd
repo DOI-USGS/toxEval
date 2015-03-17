@@ -29,3 +29,18 @@ info <- cts_compinfo(inchikey = inchk)
 info$molweight
 
 ```
+
+## Workflow
+Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. 
+
+
+```{r}
+library(toxEval)
+filePath <- system.file("extdata", package="toxEval")
+passiveData <- load(file.path(filePath, "passiveData.RData"))
+
+head(passiveData)
+
+```
+
+

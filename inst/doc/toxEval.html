@@ -226,6 +226,25 @@ info$molweight
 <pre><code>## [1] 289.5418
 </code></pre>
 
+<h2>Workflow</h2>
+
+<p>Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. </p>
+
+<pre><code class="r">library(toxEval)
+</code></pre>
+
+<pre><code>## Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
+</code></pre>
+
+<pre><code class="r">filePath &lt;- system.file(&quot;extdata&quot;, package=&quot;toxEval&quot;)
+passiveData &lt;- load(file.path(filePath, &quot;passiveData.RData&quot;))
+
+head(passiveData)
+</code></pre>
+
+<pre><code>## [1] &quot;passiveData&quot;
+</code></pre>
+
 </body>
 
 </html>
