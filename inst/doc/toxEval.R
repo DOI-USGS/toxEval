@@ -91,12 +91,16 @@ maxMinSummary <- left_join(maxMinSummary,dataSummary,
                            by=c("casn"="CAS", "Units"="Units"))
 
 
-## ----echo=FALSE-----------------------------------------------------------------------------------
-kable(head(maxMinSummary[,c(1:5,7:8,10:11)]), digits=3)
+## -------------------------------------------------------------------------------------------------
+sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)
 
 
 ## -------------------------------------------------------------------------------------------------
-sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)
+sum(maxMinSummary$Max > maxMinSummary$minEndPoint)
+
+
+## ----echo=FALSE-----------------------------------------------------------------------------------
+kable(head(maxMinSummary[maxMinSummary$Max > maxMinSummary$minEndPoint,c(1:5,7:8,10:11)]), digits=3)
 
 
 ## ----message=FALSE--------------------------------------------------------------------------------
@@ -109,6 +113,14 @@ oneSite <- rename(oneSite, value = site04101500)
 head(oneSite)
 
 
+## -------------------------------------------------------------------------------------------------
+casnRow <- setNames(1:nrow(oneSite),oneSite$CAS)
+
+ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
+  
+maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
+  
+
 ## ----echo=TRUE, eval=TRUE-------------------------------------------------------------------------
 
 packagePath <- system.file("extdata", package="toxEval")
@@ -116,5 +128,46 @@ filePath <- file.path(packagePath, "waterSamples.RData")
 load(file=filePath)
 
 head(waterSamples[,1:10])
+
+
+## ----message=FALSE--------------------------------------------------------------------------------
+library(dataRetrieval)
+
+waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
+waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+
+pCodeInfo <- readNWISpCode(waterSamplePCodes)
+
+unique(pCodeInfo$parameter_units)
+
+
+## -------------------------------------------------------------------------------------------------
+
+AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
+                   by= c("casn" = "CAS")) %>%
+  filter(!is.na(Units)) %>%
+  rename(desiredUnits = Units) %>%
+  mutate(conversion = mlWt) %>%
+  select(casn, chnm, desiredUnits, mlWt, conversion)
+
+
+## -------------------------------------------------------------------------------------------------
+AC50Converted <- left_join(AC50, AC50gain)
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+
+endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
+endPointData <- 10^endPointData
+endPointData <- endPointData * AC50Converted$conversion
+endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- rename(endPoint, Units=desiredUnits)
+
+
+## ----warning=FALSE--------------------------------------------------------------------------------
+maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
+minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
+
+maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")], 
+                       maxEndPoint=maxEndPoints, 
+                       minEndPoint=minEndPoints)
 
 

@@ -82,8 +82,9 @@ First, let's merge the desired units to the data frame:
 $$
 \require{cancel}
 \begin{aligned}
-MW = \frac{g}{mol} \\
-M = \frac{mol}{L} \\
+Reported Data = \log \mu M \\
+\mu M = 10^{\log \mu M} \\
+MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
 \cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{10^9 ng}{\cancel{g}}\right] = MW * 10^3 \frac{ng}{L} 
 \end{aligned}
 $$
@@ -149,13 +150,6 @@ maxMinSummary <- left_join(maxMinSummary,dataSummary,
 
 ```
 
-A sample of the maxMinSummary data frame is shown here: 
-
-```{r echo=FALSE}
-kable(head(maxMinSummary[,c(1:5,7:8,10:11)]), digits=3)
-
-```
-
 If any of the MLD are higher than the maxEndPoint, we wouldn't be able to make any conclusions about the toxicity of the water:
 
 ```{r}
@@ -163,6 +157,18 @@ sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)
 
 ```
 
+It will also be interesting to know if any of the maximum measured values are greater than the minimum endpoint values:
+```{r}
+sum(maxMinSummary$Max > maxMinSummary$minEndPoint)
+
+```
+
+Most likely, those will be the most interested cases:
+
+```{r echo=FALSE}
+kable(head(maxMinSummary[maxMinSummary$Max > maxMinSummary$minEndPoint,c(1:5,7:8,10:11)]), digits=3)
+
+```
 
 ### Data Analysis
 Let's start our analysis with one site (the first of the site columns: site04101500):
@@ -178,7 +184,18 @@ head(oneSite)
 
 ```
 
+We can now look at the ratio of the measured data to the endpoints:
 
+```{r}
+casnRow <- setNames(1:nrow(oneSite),oneSite$CAS)
+
+ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
+  
+maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
+  
+```
+
+So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at the first site is `r maxRatio`.
 
 ### Water Sample Data:
 The data returned from water sample tests was returned in a 'wide' format:
@@ -192,4 +209,68 @@ load(file=filePath)
 head(waterSamples[,1:10])
 
 ```
+
+The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the **dataRetrieval** package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes:
+
+```{r message=FALSE}
+library(dataRetrieval)
+
+waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
+waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+
+pCodeInfo <- readNWISpCode(waterSamplePCodes)
+
+unique(pCodeInfo$parameter_units)
+
+```
+
+In this dataset, all the data is reported in `r unique(pCodeInfo$parameter_units)`. Our conversion therefore is:
+
+$$
+\require{cancel}
+\begin{aligned}
+Reported Data = \log \mu M \\
+\mu M = 10^{\log \mu M} \\
+MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
+\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{10^6 \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
+\end{aligned}
+$$
+
+```{r}
+
+AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
+                   by= c("casn" = "CAS")) %>%
+  filter(!is.na(Units)) %>%
+  rename(desiredUnits = Units) %>%
+  mutate(conversion = mlWt) %>%
+  select(casn, chnm, desiredUnits, mlWt, conversion)
+
+```
+
+Next we can create a data frame with the AC50 converted endpoints:
+```{r}
+AC50Converted <- left_join(AC50, AC50gain)
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+
+endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
+endPointData <- 10^endPointData
+endPointData <- endPointData * AC50Converted$conversion
+endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- rename(endPoint, Units=desiredUnits)
+
+```
+
+First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually be very important):
+
+```{r warning=FALSE}
+maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
+minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
+
+maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")], 
+                       maxEndPoint=maxEndPoints, 
+                       minEndPoint=minEndPoints)
+
+```
+
+The next task is to determine if the detectionLimit is going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.
 
