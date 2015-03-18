@@ -217,7 +217,7 @@ hr {
 
 <h2>Molecular weights</h2>
 
-<p>ToxCast reports values in \log$\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package <strong>webchem</strong> supports this functionality. </p>
+<p>ToxCast reports values in \(\log\)$\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package <strong>webchem</strong> supports this functionality. </p>
 
 <pre><code class="r">library(&quot;webchem&quot;)
 
@@ -262,7 +262,7 @@ unique(passiveData$Units)
 
 <p>For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. The data may be &#39;left-censored&#39;. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a &ldquo;&lt;&rdquo;.</p>
 
-<p>For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the &ldquo;Units&rdquo; column in the passiveData data frame (we could also do the analysis converting the measured data to \log$\mu$M&hellip; it shouldn&#39;t really matter as long as you are consistent).</p>
+<p>For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the &ldquo;Units&rdquo; column in the passiveData data frame (we could also do the analysis converting the measured data to \(\log\)$\mu$M&hellip; it shouldn&#39;t really matter as long as you are consistent).</p>
 
 <pre><code class="r">library(toxEval)
 
@@ -281,7 +281,7 @@ head(AC50gain[,1:5])
 ## 6 C10025748 41909 10025-74-8 Dysprosium(III) chloride                      NA
 </code></pre>
 
-<p>The units in the AC50gain, AC50loss, and AC10 data sets are in $\log\mu$M. The first step is to convert to the desired unit (pg/L, ng/L)</p>
+<p>The units in the AC50gain, AC50loss, and AC10 data sets are in \(\log\)$\mu$M. The first step is to convert to the desired unit (pg/L, ng/L)</p>
 
 <p>First, let&#39;s merge the desired units to the data frame:</p>
 
