@@ -6,9 +6,8 @@
 ```{r setup, include=FALSE}
 library(xtable)
 options(continue=" ")
-options(width=60)
+options(width=100)
 library(knitr)
-library(toxEval)
 ```
 
 # Introduction to toxEval
@@ -42,7 +41,75 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "passiveData.RData")
 load(file=filePath)
 
-head(passiveData[,1:5])
+head(passiveData[,1:8])
+
+# Unique units:
+unique(passiveData$Units)
+
+```
+
+For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. The data may be 'left-censored'. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a "<".
+
+The first task is to determine if the method quantitation limit (MQL) or minimum level of detectability (MLD) are going to tell us anything in relation to the ToxCast endpoints. We have to choose whether or not to move forward with this investigation in units reported by the measured data, or units of ToxCast endpoints. For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the "Units" column in the passiveData data frame.
+
+
+```{r message=FALSE}
+library(toxEval)
+
+# AC50 data provided in the toxEval package:
+AC50gain <- AC50gain
+
+head(AC50gain[,1:5])
+
+```
+
+The units in the AC50gain, AC50loss, and AC10 data sets are in log base 10 $\mu$M. The first step is to convert to the desired unit (`r unique(passiveData$Units)`)
+
+First, let's merge the desired units to the data frame:
+
+$$
+\begin{aligned}
+mlWt = \frac{g}{mol} \\
+M = \frac{mol}{L} \\
+\frac{\mu M}{} \frac{M}{10^6 \mu M} \frac{1}{M}  \frac{mol}{L}  \frac{1}{mlWt}  \frac{g}{mol} \frac{10^9 ng}{g} = \frac{10^3}{mlWt} \frac{ng}{L}
+\end{aligned}
+$$
+
+```{r message=FALSE}
+library(dplyr)
+
+unitConversion <- setNames(c(1E-12, 1E-9), c("pg/L", "ng/L") )
+
+AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
+                   by= c("casn" = "CAS")) %>%
+  select(casn, chnm, Units, mlWt) %>%
+  filter(!is.na(Units)) 
+
+```
+
+
+
+
+Let's start our analysis with one site (the first of the site columns: site04101500):
+
+```{r, message=FALSE}
+commonColumns <- c("Chemical", "Units", 
+                  "MLD", "MQL", "CAS", "mlWt")
+oneSite <- passiveData[,c(commonColumns, "site04101500")]
+
+
+oneSite <- rename(oneSite, value = site04101500)
+head(oneSite)
+
+```
+
+
+Because of the "<", the measured data is currently a vector of characters. The simpliest way to convert that data to numbers is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. We can discuss more vigorious methods for dealing with censored values in future sections.
+
+```{r}
+oneSite$value <- as.numeric(oneSite$value)
+
+head(oneSite$value)
 
 ```
 

@@ -25,7 +25,7 @@
 #' @keywords ToxCast
 NULL
 
-#' Constants included with toxEval
+#' Constants included with toxEval. Units are micro-Molarity (uM).
 #' 
 #'\itemize{
 #'  \item{AC50gain}{AC50 gain endpoints}
