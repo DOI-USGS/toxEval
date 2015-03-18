@@ -16,7 +16,7 @@ By Laura A. De Cicco, Steven Corsi
 This package **toxEval** is an early test version of the package that will encompass the various approaches to evaluate ToxCast data in relation to measured aquatic concentrations.
 
 ## Molecular weights
-ToxCast reports values in $\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package **webchem** supports this functionality. 
+ToxCast reports values in \log$\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package **webchem** supports this functionality. 
 
 
 ```{r}
@@ -50,7 +50,7 @@ unique(passiveData$Units)
 
 For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. The data may be 'left-censored'. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a "<".
 
-We have to choose whether or not to move forward with this investigation in units reported by the measured data, or units of ToxCast endpoints. For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the "Units" column in the passiveData data frame.
+For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the "Units" column in the passiveData data frame (we could also do the analysis converting the measured data to \log$\mu$M... it shouldn't really matter as long as you are consistent).
 
 
 ```{r message=FALSE}
