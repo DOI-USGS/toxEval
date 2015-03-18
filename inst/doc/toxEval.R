@@ -25,6 +25,14 @@ head(passiveData[,1:8])
 unique(passiveData$Units)
 
 
+## ----warning=FALSE--------------------------------------------------------------------------------
+siteColumns <- grep("site",names(passiveData))
+passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
+
+# #Let's remove rows that now have all NA's:
+# passiveData <- passiveData[rowSums(is.na(passiveData[,siteColumns]))!=length(siteColumns) ,]
+
+
 ## ----message=FALSE--------------------------------------------------------------------------------
 library(toxEval)
 
@@ -43,7 +51,7 @@ AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
                    by= c("casn" = "CAS")) %>%
   filter(!is.na(Units)) %>%
   rename(desiredUnits = Units) %>%
-  mutate(conversion = unitConversion[desiredUnits] / mlWt) %>%
+  mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
   select(casn, chnm, desiredUnits, mlWt, conversion)
 
 
@@ -62,25 +70,36 @@ endPoint <- cbind(AC50, data.frame(endPointData))
 endPoint <- rename(endPoint, Units=desiredUnits)
 
 
-## -------------------------------------------------------------------------------------------------
+## ----warning=FALSE--------------------------------------------------------------------------------
 maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
 minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
+
 maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")], 
                        maxEndPoint=maxEndPoints, 
                        minEndPoint=minEndPoints)
 
 
-## -------------------------------------------------------------------------------------------------
-maxMinSummary <- left_join(maxMinSummary, 
-                           passiveData[,c("CAS","MLD","MQL","Units")], 
+## ----warning=FALSE--------------------------------------------------------------------------------
+
+maxMeasure <- apply(passiveData[,siteColumns], 1, max, na.rm=TRUE) 
+minMeasure <- apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)
+dataSummary <- passiveData[,-siteColumns]
+dataSummary$Max <- maxMeasure
+dataSummary$Min <- minMeasure
+
+maxMinSummary <- left_join(maxMinSummary,dataSummary, 
                            by=c("casn"="CAS", "Units"="Units"))
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------
-kable(maxMinSummary, digits=1)
+kable(head(maxMinSummary[,c(1:5,7:8,10:11)]), digits=3)
 
 
-## ----, message=FALSE------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------------------
+sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)
+
+
+## ----message=FALSE--------------------------------------------------------------------------------
 commonColumns <- c("Chemical", "Units", 
                   "MLD", "MQL", "CAS", "mlWt")
 oneSite <- passiveData[,c(commonColumns, "site04101500")]
@@ -88,12 +107,6 @@ oneSite <- passiveData[,c(commonColumns, "site04101500")]
 
 oneSite <- rename(oneSite, value = site04101500)
 head(oneSite)
-
-
-## -------------------------------------------------------------------------------------------------
-oneSite$value <- as.numeric(oneSite$value)
-
-head(oneSite$value)
 
 
 ## ----echo=TRUE, eval=TRUE-------------------------------------------------------------------------

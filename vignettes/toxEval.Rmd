@@ -50,7 +50,19 @@ unique(passiveData$Units)
 
 For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. The data may be 'left-censored'. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a "<".
 
-For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the "Units" column in the passiveData data frame (we could also do the analysis converting the measured data to $\log$$\mu$M... it shouldn't really matter as long as you are consistent).
+Because of the "<", the measured data is currently a vector of characters. The simpliest way to convert that data to numbers is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. We can discuss more vigorious methods for dealing with censored values in future sections. To convert all the columns with the word 'site' in their column name, use the following commands:
+
+```{r warning=FALSE}
+siteColumns <- grep("site",names(passiveData))
+passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
+
+# #Let's remove rows that now have all NA's:
+# passiveData <- passiveData[rowSums(is.na(passiveData[,siteColumns]))!=length(siteColumns) ,]
+
+```
+
+
+For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the "Units" column of the passiveData data frame (we could also do the analysis converting the measured data to $\log$$\mu$M... it shouldn't matter as long as you are consistent).
 
 
 ```{r message=FALSE}
@@ -70,10 +82,9 @@ First, let's merge the desired units to the data frame:
 $$
 \require{cancel}
 \begin{aligned}
-mlWt = \frac{g}{mol} \\
+MW = \frac{g}{mol} \\
 M = \frac{mol}{L} \\
-\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[\frac{1}{mlWt}  \frac{\cancel{g}}{\cancel{mol}}\right] \left[\frac{10^9 ng}{\cancel{g}}\right] = \frac{10^3}{mlWt} \frac{ng}{L} \\
-\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right]  \left[\frac{1}{mlWt}  \frac{\cancel{g}}{\cancel{mol}}\right] \left[\frac{10^{12} pg}{\cancel{g}}\right] =  \frac{10^6}{mlWt} \frac{pg}{L} 
+\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{10^9 ng}{\cancel{g}}\right] = MW * 10^3 \frac{ng}{L} 
 \end{aligned}
 $$
 
@@ -86,7 +97,7 @@ AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
                    by= c("casn" = "CAS")) %>%
   filter(!is.na(Units)) %>%
   rename(desiredUnits = Units) %>%
-  mutate(conversion = unitConversion[desiredUnits] / mlWt) %>%
+  mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
   select(casn, chnm, desiredUnits, mlWt, conversion)
 
 ```
@@ -111,22 +122,29 @@ endPoint <- rename(endPoint, Units=desiredUnits)
 
 ```
 
-First, let's look at the extreme reported endpoint (not including NA's...that will actually be very important):
+First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually be very important):
 
-```{r}
+```{r warning=FALSE}
 maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
 minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
+
 maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")], 
                        maxEndPoint=maxEndPoints, 
                        minEndPoint=minEndPoints)
 
 ```
 
-The next task is to determine if the method quantitation limit (MQL) or minimum level of detectability (MLD) are going to tell us anything in relation to the ToxCast endpoints. 
+The next task is to determine if the method quantitation limit (MQL) or minimum level of detectability (MLD) are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.
 
-```{r}
-maxMinSummary <- left_join(maxMinSummary, 
-                           passiveData[,c("CAS","MLD","MQL","Units")], 
+```{r warning=FALSE}
+
+maxMeasure <- apply(passiveData[,siteColumns], 1, max, na.rm=TRUE) 
+minMeasure <- apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)
+dataSummary <- passiveData[,-siteColumns]
+dataSummary$Max <- maxMeasure
+dataSummary$Min <- minMeasure
+
+maxMinSummary <- left_join(maxMinSummary,dataSummary, 
                            by=c("casn"="CAS", "Units"="Units"))
 
 ```
@@ -134,14 +152,22 @@ maxMinSummary <- left_join(maxMinSummary,
 A sample of the maxMinSummary data frame is shown here: 
 
 ```{r echo=FALSE}
-kable(maxMinSummary, digits=1)
+kable(head(maxMinSummary[,c(1:5,7:8,10:11)]), digits=3)
+
+```
+
+If any of the MLD are higher than the maxEndPoint, we wouldn't be able to make any conclusions about the toxicity of the water:
+
+```{r}
+sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)
 
 ```
 
 
+### Data Analysis
 Let's start our analysis with one site (the first of the site columns: site04101500):
 
-```{r, message=FALSE}
+```{r message=FALSE}
 commonColumns <- c("Chemical", "Units", 
                   "MLD", "MQL", "CAS", "mlWt")
 oneSite <- passiveData[,c(commonColumns, "site04101500")]
@@ -152,15 +178,6 @@ head(oneSite)
 
 ```
 
-
-Because of the "<", the measured data is currently a vector of characters. The simpliest way to convert that data to numbers is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. We can discuss more vigorious methods for dealing with censored values in future sections.
-
-```{r}
-oneSite$value <- as.numeric(oneSite$value)
-
-head(oneSite$value)
-
-```
 
 
 ### Water Sample Data:
