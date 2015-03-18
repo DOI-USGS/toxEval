@@ -72,8 +72,8 @@ $$
 \begin{aligned}
 mlWt = \frac{g}{mol} \\
 M = \frac{mol}{L} \\
-\frac{\cancel{\mu M}}{} \frac{\cancel{M}}{10^6 \cancel{\mu M}} \frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}  \frac{1}{mlWt}  \frac{\cancel{g}}{\cancel{mol}} \frac{10^9 ng}{\cancel{g}} = \frac{10^3}{mlWt} \frac{ng}{L} \\
-\frac{\cancel{\mu M}}{} \frac{\cancel{M}}{10^6 \cancel{\mu M}} \frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}  \frac{1}{mlWt}  \frac{\cancel{g}}{\cancel{mol}} \frac{10^{12} pg}{\cancel{g}} =  \frac{10^6}{mlWt} \frac{pg}{L} 
+\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[\frac{1}{mlWt}  \frac{\cancel{g}}{\cancel{mol}}\right] \left[\frac{10^9 ng}{\cancel{g}}\right] = \frac{10^3}{mlWt} \frac{ng}{L} \\
+\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right]  \left[\frac{1}{mlWt}  \frac{\cancel{g}}{\cancel{mol}}\right] \left[\frac{10^{12} pg}{\cancel{g}}\right] =  \frac{10^6}{mlWt} \frac{pg}{L} 
 \end{aligned}
 $$
 
