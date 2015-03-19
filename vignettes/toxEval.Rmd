@@ -56,9 +56,6 @@ Because of the "<", the measured data is currently a vector of characters. The s
 siteColumns <- grep("site",names(passiveData))
 passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
 
-# #Let's remove rows that now have all NA's:
-# passiveData <- passiveData[rowSums(is.na(passiveData[,siteColumns]))!=length(siteColumns) ,]
-
 ```
 
 
@@ -210,9 +207,9 @@ head(waterSamples[,1:10])
 
 ```
 
-The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the **dataRetrieval** package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes:
+The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the **dataRetrieval** package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes, then use **webchem** to get the molecular weights.
 
-```{r message=FALSE}
+```{r message=FALSE, eval=FALSE}
 library(dataRetrieval)
 
 waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
@@ -221,6 +218,25 @@ waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
 pCodeInfo <- readNWISpCode(waterSamplePCodes)
 
 unique(pCodeInfo$parameter_units)
+
+library(webchem)
+pCodeInfo$mlWt <- rep(NA, nrow(pCodeInfo))
+pCodeInfo$mlWt[pCodeInfo$casrn != ""] <- sapply(pCodeInfo$casrn[pCodeInfo$casrn != ""], function(x) cir_query(x, "mw", first = TRUE))
+pCodeInfo$mlWt <- as.numeric(pCodeInfo$mlWt)
+
+```
+
+```{r message=FALSE, echo=FALSE}
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "pCodeInfo.RData")
+load(file=filePath)
+
+pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
+
+waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
+waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+
+
 
 ```
 
@@ -238,10 +254,10 @@ $$
 
 ```{r}
 
-AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
-                   by= c("casn" = "CAS")) %>%
-  filter(!is.na(Units)) %>%
-  rename(desiredUnits = Units) %>%
+AC50 <- left_join(AC50gain, pCodeInfo[,c("casrn", "parameter_units", "mlWt")],
+                   by= c("casn"="casrn")) %>%
+  filter(!is.na(parameter_units)) %>%
+  rename(desiredUnits = parameter_units) %>%
   mutate(conversion = mlWt) %>%
   select(casn, chnm, desiredUnits, mlWt, conversion)
 
