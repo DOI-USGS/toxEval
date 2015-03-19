@@ -55,6 +55,9 @@ Because of the "<", the measured data is currently a vector of characters. The s
 siteColumns <- grep("site",names(passiveData))
 passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
 
+#For this analysis, we'll consider NA's to be 0 (other options exist):
+passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
+
 ```
 
 
@@ -119,7 +122,7 @@ endPoint <- rename(endPoint, Units=desiredUnits)
 
 ```
 
-First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually be very important):
+First, let's look at the extreme reported endpoint (not including `r NA`'s):
 
 ```{r warning=FALSE}
 maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
@@ -128,6 +131,8 @@ minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
 maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")], 
                        maxEndPoint=maxEndPoints, 
                        minEndPoint=minEndPoints)
+
+kable(head(maxMinSummary))
 
 ```
 
@@ -197,7 +202,8 @@ siteColumnsIndex <- grep("site", names(passiveData))
 maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
                              ratio=rep(NA, length(siteColumnsIndex)),
                              chemical = rep("", length(siteColumnsIndex)),
-                             endpoint =  rep("", length(siteColumnsIndex))
+                             endpoint =  rep("", length(siteColumnsIndex)),
+                             stringsAsFactors=FALSE)
 
 for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   oneSite <- passiveData[,c(commonColumns, i)]
@@ -206,25 +212,17 @@ for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
   
   maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-  
-#   maxIndexChemical <- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-#   
-#   maxIndexEndpoint <- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
-  
   maxRatioBySite[maxRatioBySite$site == i,"ratio"] <- maxRatio
-#   maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- passiveData$Chemical[maxIndexChemical]
-#   maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- names(endPoint)[maxIndexEndpoint]
-
+  
+  if(is.finite(maxRatio)){
+    maxIndexChemical <- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
+    maxIndexEndpoint <- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
+    maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- passiveData$Chemical[maxIndexChemical]
+    maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- names(endPoint)[maxIndexEndpoint]
+  }
 }
 
-#So max ratio is:
-max(maxRatioBySite$ratio)
-
-# #At site:
-# maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
-# 
-# #The chemical that gave the max ratio:
-
+kable(maxRatioBySite)
 
 ```
 
