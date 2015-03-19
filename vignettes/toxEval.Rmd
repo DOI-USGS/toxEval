@@ -191,7 +191,7 @@ So for the passive dataset, the maximum ratio of the measured data to the endpoi
 
 Extending this to all sites:
 
-```{r}
+```{r echo=TRUE, eval=FALSE}
 
 siteColumnsIndex <- grep("site", names(passiveData))
 maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
@@ -199,31 +199,37 @@ maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
                              chemical = rep("", length(siteColumnsIndex)),
                              endpoint =  rep("", length(siteColumnsIndex))
 
-for(i in names(passiveData)[siteColumnsIndex]){
+for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   oneSite <- passiveData[,c(commonColumns, i)]
   names(oneSite)[names(oneSite) == i] <- 'value'
-  casnRow <- setNames(1:nrow(oneSite),oneSite$CAS)
+  casnRow <- setNames(1:nrow(oneSite),oneSite$CAS) # casnRow gets index of CAS in oneSite
   ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
-  maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
   
+  maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
+  
+#   maxIndexChemical <- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
+#   
+#   maxIndexEndpoint <- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
   
   maxRatioBySite[maxRatioBySite$site == i,"ratio"] <- maxRatio
-  maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- maxRatio
-  maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- maxRatio
+#   maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- passiveData$Chemical[maxIndexChemical]
+#   maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- names(endPoint)[maxIndexEndpoint]
+
 }
 
 #So max ratio is:
 max(maxRatioBySite$ratio)
 
-#At site:
-maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
-
-#The chemical that gave the max ratio:
+# #At site:
+# maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
+# 
+# #The chemical that gave the max ratio:
 
 
 ```
 
-So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is `r max(maxRatioBySite$ratio)`. This is site: `r maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]`.
+So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is 
+
 
 ### Water Sample Data:
 The data returned from water sample tests was returned in a 'wide' format:

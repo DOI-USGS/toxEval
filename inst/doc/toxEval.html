@@ -221,12 +221,16 @@ hr {
 
 <pre><code class="r">library(&quot;webchem&quot;)
 
-inchk &lt;- cts_convert(query = &#39;3380-34-5&#39;, from = &#39;CAS&#39;, to = &#39;inchikey&#39;)
-info &lt;- cts_compinfo(inchikey = inchk)
-info$molweight
+molweight &lt;- cir_query(&#39;3380-34-5&#39;, &quot;mw&quot;)
 </code></pre>
 
-<pre><code>## [1] 289.5418
+<pre><code>## http://cactus.nci.nih.gov/chemical/structure/3380-34-5/mw/xml
+</code></pre>
+
+<pre><code class="r">molweight
+</code></pre>
+
+<pre><code>## [1] &quot;289.5451&quot;
 </code></pre>
 
 <h2>Workflow</h2>
@@ -266,9 +270,6 @@ unique(passiveData$Units)
 
 <pre><code class="r">siteColumns &lt;- grep(&quot;site&quot;,names(passiveData))
 passiveData[,siteColumns] &lt;- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
-
-# #Let&#39;s remove rows that now have all NA&#39;s:
-# passiveData &lt;- passiveData[rowSums(is.na(passiveData[,siteColumns]))!=length(siteColumns) ,]
 </code></pre>
 
 <p>For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the &ldquo;Units&rdquo; column of the passiveData data frame (we could also do the analysis converting the measured data to \(\log\)$\mu$M&hellip; it shouldn&#39;t matter as long as you are consistent).</p>
@@ -499,8 +500,6 @@ maxMinSummary &lt;- left_join(maxMinSummary,dataSummary,
 <pre><code class="r">commonColumns &lt;- c(&quot;Chemical&quot;, &quot;Units&quot;, 
                   &quot;MLD&quot;, &quot;MQL&quot;, &quot;CAS&quot;, &quot;mlWt&quot;)
 oneSite &lt;- passiveData[,c(commonColumns, &quot;site04101500&quot;)]
-
-
 oneSite &lt;- rename(oneSite, value = site04101500)
 head(oneSite)
 </code></pre>
@@ -517,13 +516,48 @@ head(oneSite)
 <p>We can now look at the ratio of the measured data to the endpoints:</p>
 
 <pre><code class="r">casnRow &lt;- setNames(1:nrow(oneSite),oneSite$CAS)
-
 ratioPassive &lt;- oneSite[casnRow[endPoint$casn],&quot;value&quot;] / endPointData
-
 maxRatio &lt;- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
 </code></pre>
 
 <p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at the first site is 0.0024879.</p>
+
+<p>Extending this to all sites:</p>
+
+<pre><code class="r">siteColumnsIndex &lt;- grep(&quot;site&quot;, names(passiveData))
+maxRatioBySite &lt;- data.frame(site=names(passiveData)[siteColumnsIndex],
+                             ratio=rep(NA, length(siteColumnsIndex)),
+                             chemical = rep(&quot;&quot;, length(siteColumnsIndex)),
+                             endpoint =  rep(&quot;&quot;, length(siteColumnsIndex))
+
+for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
+  oneSite &lt;- passiveData[,c(commonColumns, i)]
+  names(oneSite)[names(oneSite) == i] &lt;- &#39;value&#39;
+  casnRow &lt;- setNames(1:nrow(oneSite),oneSite$CAS) # casnRow gets index of CAS in oneSite
+  ratioPassive &lt;- oneSite[casnRow[endPoint$casn],&quot;value&quot;] / endPointData
+
+  maxRatio &lt;- suppressWarnings(max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
+
+#   maxIndexChemical &lt;- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
+#   
+#   maxIndexEndpoint &lt;- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
+
+  maxRatioBySite[maxRatioBySite$site == i,&quot;ratio&quot;] &lt;- maxRatio
+#   maxRatioBySite[maxRatioBySite$site == i,&quot;chemical&quot;] &lt;- passiveData$Chemical[maxIndexChemical]
+#   maxRatioBySite[maxRatioBySite$site == i,&quot;endpoint&quot;] &lt;- names(endPoint)[maxIndexEndpoint]
+
+}
+
+#So max ratio is:
+max(maxRatioBySite$ratio)
+
+# #At site:
+# maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
+# 
+# #The chemical that gave the max ratio:
+</code></pre>
+
+<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is </p>
 
 <h3>Water Sample Data:</h3>
 
@@ -552,7 +586,7 @@ head(waterSamples[,1:10])
 ## 6                           GCM99            S                  0.2              IRL
 </code></pre>
 
-<p>The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the <strong>dataRetrieval</strong> package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes:</p>
+<p>The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the <strong>dataRetrieval</strong> package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes, then use <strong>webchem</strong> to get the molecular weights.</p>
 
 <pre><code class="r">library(dataRetrieval)
 
@@ -562,9 +596,12 @@ waterSamplePCodes &lt;- sapply(strsplit(waterSamplePCodes, &quot;_&quot;), funct
 pCodeInfo &lt;- readNWISpCode(waterSamplePCodes)
 
 unique(pCodeInfo$parameter_units)
-</code></pre>
 
-<pre><code>## [1] &quot;ug/l&quot;
+library(webchem)
+pCodeInfo$mlWt &lt;- rep(NA, nrow(pCodeInfo))
+pCodeInfo$mlWt[pCodeInfo$casrn != &quot;&quot;] &lt;- sapply(pCodeInfo$casrn[pCodeInfo$casrn != &quot;&quot;],
+                function(x) cir_query(x, &quot;mw&quot;, first = TRUE))
+pCodeInfo$mlWt &lt;- as.numeric(pCodeInfo$mlWt)
 </code></pre>
 
 <p>In this dataset, all the data is reported in ug/l. Our conversion therefore is:</p>
@@ -575,14 +612,14 @@ unique(pCodeInfo$parameter_units)
 Reported Data = \log \mu M \
 \mu M = 10^{\log \mu M} \
 MW = \frac{g}{mol} , M = \frac{mol}{L}  \
-\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{10^6 \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
+\cancel{\mu M} \left[\frac{\cancel{M}}{\cancel{10^6} \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{\cancel{10^6} \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
 \end{aligned}
 \]</p>
 
-<pre><code class="r">AC50 &lt;- left_join(AC50gain, passiveData[,c(&quot;CAS&quot;, &quot;Units&quot;, &quot;mlWt&quot;)],
-                   by= c(&quot;casn&quot; = &quot;CAS&quot;)) %&gt;%
-  filter(!is.na(Units)) %&gt;%
-  rename(desiredUnits = Units) %&gt;%
+<pre><code class="r">AC50 &lt;- left_join(AC50gain, pCodeInfo[,c(&quot;casrn&quot;, &quot;parameter_units&quot;, &quot;mlWt&quot;)],
+                   by= c(&quot;casn&quot;=&quot;casrn&quot;)) %&gt;%
+  filter(!is.na(parameter_units)) %&gt;%
+  rename(desiredUnits = parameter_units) %&gt;%
   mutate(conversion = mlWt) %&gt;%
   select(casn, chnm, desiredUnits, mlWt, conversion)
 </code></pre>
@@ -615,6 +652,23 @@ maxMinSummary &lt;- cbind(endPoint[,c(&quot;chnm&quot;, &quot;casn&quot;, &quot;
 </code></pre>
 
 <p>The next task is to determine if the detectionLimit is going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.</p>
+
+<pre><code class="r">pCodeSummary &lt;- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
+
+detectionLimits &lt;- waterSamples[,grep(&quot;detectionLimit&quot;, names(waterSamples))]
+detectionLimits &lt;- na.omit(detectionLimits)
+
+# Check if any changes over time:
+all(apply(detectionLimits, 2, function(x) length(unique(x))==1))
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<pre><code class="r">#It does!
+</code></pre>
+
+<p>For now, we&#39;ll focus on the minimum detection level:</p>
 
 </body>
 
