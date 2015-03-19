@@ -23,9 +23,8 @@ ToxCast reports values in $\log$$\mu$M. Data from water samples collected are ty
 
 library("webchem")
 
-inchk <- cts_convert(query = '3380-34-5', from = 'CAS', to = 'inchikey')
-info <- cts_compinfo(inchikey = inchk)
-info$molweight
+molweight <- cir_query('3380-34-5', "mw")
+molweight
 
 ```
 
@@ -174,8 +173,6 @@ Let's start our analysis with one site (the first of the site columns: site04101
 commonColumns <- c("Chemical", "Units", 
                   "MLD", "MQL", "CAS", "mlWt")
 oneSite <- passiveData[,c(commonColumns, "site04101500")]
-
-
 oneSite <- rename(oneSite, value = site04101500)
 head(oneSite)
 
@@ -185,14 +182,48 @@ We can now look at the ratio of the measured data to the endpoints:
 
 ```{r}
 casnRow <- setNames(1:nrow(oneSite),oneSite$CAS)
-
 ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
-  
 maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
   
 ```
 
 So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at the first site is `r maxRatio`.
+
+Extending this to all sites:
+
+```{r}
+
+siteColumnsIndex <- grep("site", names(passiveData))
+maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
+                             ratio=rep(NA, length(siteColumnsIndex)),
+                             chemical = rep("", length(siteColumnsIndex)),
+                             endpoint =  rep("", length(siteColumnsIndex))
+
+for(i in names(passiveData)[siteColumnsIndex]){
+  oneSite <- passiveData[,c(commonColumns, i)]
+  names(oneSite)[names(oneSite) == i] <- 'value'
+  casnRow <- setNames(1:nrow(oneSite),oneSite$CAS)
+  ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
+  maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
+  
+  
+  maxRatioBySite[maxRatioBySite$site == i,"ratio"] <- maxRatio
+  maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- maxRatio
+  maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- maxRatio
+}
+
+#So max ratio is:
+max(maxRatioBySite$ratio)
+
+#At site:
+maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
+
+#The chemical that gave the max ratio:
+
+
+```
+
+So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is `r max(maxRatioBySite$ratio)`. This is site: `r maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]`.
 
 ### Water Sample Data:
 The data returned from water sample tests was returned in a 'wide' format:
@@ -221,7 +252,8 @@ unique(pCodeInfo$parameter_units)
 
 library(webchem)
 pCodeInfo$mlWt <- rep(NA, nrow(pCodeInfo))
-pCodeInfo$mlWt[pCodeInfo$casrn != ""] <- sapply(pCodeInfo$casrn[pCodeInfo$casrn != ""], function(x) cir_query(x, "mw", first = TRUE))
+pCodeInfo$mlWt[pCodeInfo$casrn != ""] <- sapply(pCodeInfo$casrn[pCodeInfo$casrn != ""],
+                function(x) cir_query(x, "mw", first = TRUE))
 pCodeInfo$mlWt <- as.numeric(pCodeInfo$mlWt)
 
 ```
@@ -248,7 +280,7 @@ $$
 Reported Data = \log \mu M \\
 \mu M = 10^{\log \mu M} \\
 MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
-\cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{10^6 \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
+\cancel{\mu M} \left[\frac{\cancel{M}}{\cancel{10^6} \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{\cancel{10^6} \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
 \end{aligned}
 $$
 
@@ -289,4 +321,20 @@ maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")],
 ```
 
 The next task is to determine if the detectionLimit is going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.
+
+```{r }
+pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
+
+detectionLimits <- waterSamples[,grep("detectionLimit", names(waterSamples))]
+detectionLimits <- na.omit(detectionLimits)
+
+# Check if any changes over time:
+all(apply(detectionLimits, 2, function(x) length(unique(x))==1))
+
+#It does!
+
+```
+
+For now, we'll focus on the minimum detection level:
+
 
