@@ -6,7 +6,7 @@
 \alias{AC50gain}
 \alias{AC50loss}
 \alias{Constants}
-\title{Constants included with toxEval. Units are micro-Molarity (uM).}
+\title{Constants included with toxEval. Units are log micro-Molarity (log uM).}
 \description{
 \itemize{
  \item{AC50gain}{AC50 gain endpoints}

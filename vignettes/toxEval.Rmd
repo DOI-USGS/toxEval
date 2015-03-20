@@ -40,26 +40,14 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "passiveData.RData")
 load(file=filePath)
 
-head(passiveData[,1:8])
+head(passiveData[,1:7])
 
 # Unique units:
 unique(passiveData$Units)
 
 ```
 
-For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. The data may be 'left-censored'. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a "<".
-
-Because of the "<", the measured data is currently a vector of characters. The simpliest way to convert that data to numbers is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. We can discuss more vigorious methods for dealing with censored values in future sections. To convert all the columns with the word 'site' in their column name, use the following commands:
-
-```{r warning=FALSE}
-siteColumns <- grep("site",names(passiveData))
-passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
-
-#For this analysis, we'll consider NA's to be 0 (other options exist):
-passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
-
-```
-
+For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. 
 
 For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the "Units" column of the passiveData data frame (we could also do the analysis converting the measured data to $\log$$\mu$M... it shouldn't matter as long as you are consistent).
 
@@ -105,7 +93,7 @@ AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
 A sample of the AC50 data frame is shown here:
 
 ```{r echo=FALSE}
-kable(head(AC50))
+kable(head(AC50), digits=2, row.names = FALSE)
 
 ```
 
@@ -132,14 +120,14 @@ maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")],
                        maxEndPoint=maxEndPoints, 
                        minEndPoint=minEndPoints)
 
-kable(head(maxMinSummary))
+kable(head(maxMinSummary), digits=2, row.names = FALSE)
 
 ```
 
 The next task is to determine if the method quantitation limit (MQL) or minimum level of detectability (MLD) are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.
 
 ```{r warning=FALSE}
-
+siteColumns <- grep("site",names(passiveData))
 maxMeasure <- apply(passiveData[,siteColumns], 1, max, na.rm=TRUE) 
 minMeasure <- apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)
 dataSummary <- passiveData[,-siteColumns]
@@ -167,11 +155,25 @@ sum(maxMinSummary$Max > maxMinSummary$minEndPoint)
 Most likely, those will be the most interested cases:
 
 ```{r echo=FALSE}
-kable(head(maxMinSummary[maxMinSummary$Max > maxMinSummary$minEndPoint,c(1:5,7:8,10:11)]), digits=3)
+kable(head(maxMinSummary[maxMinSummary$Max > maxMinSummary$minEndPoint,c(1:5,7:8,10:11)]), digits=2, row.names = FALSE)
 
 ```
 
 ### Data Analysis
+The data may be 'left-censored'. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a "<".
+
+Because of the "<", the measured data is currently a vector of characters. The simpliest way to convert that data to numbers is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. We can discuss more vigorious methods for dealing with censored values in future sections. To convert all the columns with the word 'site' in their column name, use the following commands:
+
+```{r warning=FALSE}
+siteColumns <- grep("site",names(passiveData))
+passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
+
+#For this analysis, we'll consider NA's to be 0 (other options exist):
+passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
+
+```
+
+
 Let's start our analysis with one site (the first of the site columns: site04101500):
 
 ```{r message=FALSE}
@@ -196,14 +198,16 @@ So for the passive dataset, the maximum ratio of the measured data to the endpoi
 
 Extending this to all sites:
 
-```{r echo=TRUE, eval=FALSE}
+```{r echo=TRUE, eval=TRUE, warning=FALSE}
 
 siteColumnsIndex <- grep("site", names(passiveData))
 maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
-                             ratio=rep(NA, length(siteColumnsIndex)),
+                             ratio_perc=rep(NA, length(siteColumnsIndex)),
                              chemical = rep("", length(siteColumnsIndex)),
                              endpoint =  rep("", length(siteColumnsIndex)),
                              stringsAsFactors=FALSE)
+
+
 
 for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   oneSite <- passiveData[,c(commonColumns, i)]
@@ -211,18 +215,21 @@ for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   casnRow <- setNames(1:nrow(oneSite),oneSite$CAS) # casnRow gets index of CAS in oneSite
   ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
   
-  maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-  maxRatioBySite[maxRatioBySite$site == i,"ratio"] <- maxRatio
+  maxRatio <- max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) )*100
+  maxRatioBySite[maxRatioBySite$site == i,"ratio_perc"] <- maxRatio
   
   if(is.finite(maxRatio)){
-    maxIndexChemical <- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
+    maxIndexChemical <- which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) )
     maxIndexEndpoint <- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
     maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- passiveData$Chemical[maxIndexChemical]
     maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- names(endPoint)[maxIndexEndpoint]
   }
 }
 
-kable(maxRatioBySite)
+maxRatioBySite <- maxRatioBySite[order(maxRatioBySite$ratio_perc, decreasing = TRUE),]
+names(maxRatioBySite) <- c("site", "Ratio [%]", "Chemical", "End Point")
+
+kable(maxRatioBySite, digits=2, row.names = FALSE)
 
 ```
 

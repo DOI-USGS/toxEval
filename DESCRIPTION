@@ -26,3 +26,5 @@ Suggests:
     dataRetrieval
 VignetteBuilder: knitr
 BuildVignettes: true
+LazyLoad: yes
+LazyData: yes
