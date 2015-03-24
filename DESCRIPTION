@@ -20,9 +20,11 @@ Imports:
     dplyr
 Suggests:
     webchem,
-    xtable,
+    rmarkdown,
     knitr,
     testthat,
     dataRetrieval
 VignetteBuilder: knitr
 BuildVignettes: true
+LazyLoad: yes
+LazyData: yes

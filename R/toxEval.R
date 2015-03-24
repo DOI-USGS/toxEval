@@ -25,7 +25,7 @@
 #' @keywords ToxCast
 NULL
 
-#' Constants included with toxEval. Units are micro-Molarity (uM).
+#' Constants included with toxEval. Units are log micro-Molarity (log uM).
 #' 
 #'\itemize{
 #'  \item{AC50gain}{AC50 gain endpoints}
@@ -42,4 +42,16 @@ NULL
 #'AC50GainColumns <- names(AC50gain)
 #'AC50LossColumns <- names(AC50loss)
 #'AC10Columns <- names(AC10)
+NULL
+
+#' Assay Selection data from ToxCast
+#' 
+#' Downloaded on March 20, 2015 from ToxCast dashboard
+#'
+#'@name assayEndpoints
+#'@docType data
+#'@keywords datasets
+#'@examples
+#'assayEndpoints <- assayEndpoints
+#'head(assayEndpoints)
 NULL

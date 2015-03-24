@@ -1,8 +1,10 @@
 ## ----setup, include=FALSE-------------------------------------------------------------------------
-library(xtable)
 options(continue=" ")
 options(width=100)
 library(knitr)
+library(rmarkdown)
+
+
 
 ## -------------------------------------------------------------------------------------------------
 
@@ -18,15 +20,10 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "passiveData.RData")
 load(file=filePath)
 
-head(passiveData[,1:8])
+head(passiveData[,1:7])
 
 # Unique units:
 unique(passiveData$Units)
-
-
-## ----warning=FALSE--------------------------------------------------------------------------------
-siteColumns <- grep("site",names(passiveData))
-passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
 
 
 ## ----message=FALSE--------------------------------------------------------------------------------
@@ -52,7 +49,7 @@ AC50 <- left_join(AC50gain, passiveData[,c("CAS", "Units", "mlWt")],
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------
-kable(head(AC50))
+kable(head(AC50), digits=2, row.names = FALSE)
 
 
 ## -------------------------------------------------------------------------------------------------
@@ -76,27 +73,47 @@ maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")],
 
 
 ## ----warning=FALSE--------------------------------------------------------------------------------
-
-maxMeasure <- apply(passiveData[,siteColumns], 1, max, na.rm=TRUE) 
-minMeasure <- apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)
-dataSummary <- passiveData[,-siteColumns]
-dataSummary$Max <- maxMeasure
-dataSummary$Min <- minMeasure
-
-maxMinSummary <- left_join(maxMinSummary,dataSummary, 
+siteColumns <- grep("site",names(passiveData))
+maxMinSummary <- left_join(maxMinSummary,passiveData[,-siteColumns], 
                            by=c("casn"="CAS", "Units"="Units"))
 
 
 ## -------------------------------------------------------------------------------------------------
-sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)
-
-
-## -------------------------------------------------------------------------------------------------
-sum(maxMinSummary$Max > maxMinSummary$minEndPoint)
+sum(maxMinSummary$MLD > maxMinSummary$minEndPoint)
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------
-kable(head(maxMinSummary[maxMinSummary$Max > maxMinSummary$minEndPoint,c(1:5,7:8,10:11)]), digits=3)
+dfToPrint <- mutate(maxMinSummary, MLD_EAR = MLD/minEndPoint) %>%
+  filter(MLD_EAR > 0.01) %>%
+  select(chnm, minEndPoint, MLD, MLD_EAR) %>%
+  arrange(desc(MLD_EAR)) %>%
+  rename("Maximum Ratio"=MLD_EAR)
+  
+kable(dfToPrint, digits=2)
+
+## ----warning=FALSE--------------------------------------------------------------------------------
+siteColumns <- grep("site",names(passiveData))
+passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
+
+#For this analysis, we'll consider NA's to be 0 (other options exist):
+passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
+
+
+## ----echo=FALSE-----------------------------------------------------------------------------------
+dataSummary <- select(passiveData, CAS, Units) %>%
+  mutate(maxMeasure = apply(passiveData[,siteColumns], 1, max, na.rm=TRUE)) %>%
+  mutate(minMeasure = apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)) 
+
+maxMinSummaryNew <- left_join(maxMinSummary, dataSummary, 
+                              by=c("casn" = "CAS", "Units"="Units")) %>%
+  mutate(EAR = maxMeasure/minEndPoint) %>%
+  filter(EAR > 0.01) %>%
+  arrange(desc(EAR)) %>%
+  select(Chemical, minEndPoint, maxMeasure, EAR) 
+  
+
+kable(maxMinSummaryNew, digits=2)
+
 
 
 ## ----message=FALSE--------------------------------------------------------------------------------
@@ -113,41 +130,39 @@ ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
 maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
   
 
-## ----echo=TRUE, eval=FALSE------------------------------------------------------------------------
-#  
-#  siteColumnsIndex <- grep("site", names(passiveData))
-#  maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
-#                               ratio=rep(NA, length(siteColumnsIndex)),
-#                               chemical = rep("", length(siteColumnsIndex)),
-#                               endpoint =  rep("", length(siteColumnsIndex))
-#  
-#  for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
-#    oneSite <- passiveData[,c(commonColumns, i)]
-#    names(oneSite)[names(oneSite) == i] <- 'value'
-#    casnRow <- setNames(1:nrow(oneSite),oneSite$CAS) # casnRow gets index of CAS in oneSite
-#    ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
-#  
-#    maxRatio <- suppressWarnings(max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-#  
-#  #   maxIndexChemical <- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-#  #
-#  #   maxIndexEndpoint <- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
-#  
-#    maxRatioBySite[maxRatioBySite$site == i,"ratio"] <- maxRatio
-#  #   maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- passiveData$Chemical[maxIndexChemical]
-#  #   maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- names(endPoint)[maxIndexEndpoint]
-#  
-#  }
-#  
-#  #So max ratio is:
-#  max(maxRatioBySite$ratio)
-#  
-#  # #At site:
-#  # maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
-#  #
-#  # #The chemical that gave the max ratio:
-#  
-#  
+## ----echo=TRUE, eval=TRUE, warning=FALSE----------------------------------------------------------
+
+siteColumnsIndex <- grep("site", names(passiveData))
+maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
+                             ratio_perc=rep(NA, length(siteColumnsIndex)),
+                             chemical = rep("", length(siteColumnsIndex)),
+                             endpoint =  rep("", length(siteColumnsIndex)),
+                             stringsAsFactors=FALSE)
+
+for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
+  oneSite <- passiveData[,c(commonColumns, i)]
+  names(oneSite)[names(oneSite) == i] <- 'value'
+  casnRow <- setNames(1:nrow(oneSite),oneSite$CAS) # casnRow gets index of CAS in oneSite
+  ratioPassive <- oneSite[casnRow[endPoint$casn],"value"] / endPointData
+  
+  maxRatio <- max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) )*100
+  maxRatioBySite[maxRatioBySite$site == i,"ratio_perc"] <- maxRatio
+  
+  if(is.finite(maxRatio)){
+    maxIndexChemical <- which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) )
+    maxIndexEndpoint <- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
+    maxRatioBySite[maxRatioBySite$site == i,"chemical"] <- passiveData$Chemical[maxIndexChemical]
+    maxRatioBySite[maxRatioBySite$site == i,"endpoint"] <- names(endPoint)[maxIndexEndpoint]
+  }
+}
+
+maxRatioBySite <- arrange(maxRatioBySite, desc(ratio_perc)) %>%
+  filter(ratio_perc > 1E-4) %>%
+  rename("Ratio [%]"=ratio_perc, 
+         "Chemical"=chemical, 
+         "End Point" = endpoint) 
+kable(maxRatioBySite, digits=2, row.names = FALSE)
+
 
 ## ----echo=TRUE, eval=TRUE-------------------------------------------------------------------------
 
@@ -224,9 +239,50 @@ pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
 detectionLimits <- waterSamples[,grep("detectionLimit", names(waterSamples))]
 detectionLimits <- na.omit(detectionLimits)
 
-# Check if any changes over time:
+# Check if any change over time:
 all(apply(detectionLimits, 2, function(x) length(unique(x))==1))
 
-#It does!
+#They do!
+
+
+## ----warning=FALSE--------------------------------------------------------------------------------
+detLevels  <- data.frame(dl_pcode=names(detectionLimits),
+                         minDetLevel=apply(detectionLimits, 2, min),
+                         row.names=NULL, stringsAsFactors=FALSE) %>%
+  mutate(pCode=sapply(strsplit(dl_pcode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, pCode, minDetLevel) %>%
+  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
+  mutate(EAR=minDetLevel/minEndPoint) %>%
+  arrange(desc(EAR)) %>%
+  filter(EAR > 1)
+
+kable(detLevels, digits = 3)
+
+
+## -------------------------------------------------------------------------------------------------
+qualColumns <- grep("qualifier", names(waterSamples))
+valColumns <- grep("valueToUse", names(waterSamples))
+
+waterData <- waterSamples[,valColumns]
+waterData[waterSamples[,qualColumns] == "<"] <- NA
+
+
+
+## ----echo=FALSE, warning=FALSE--------------------------------------------------------------------
+
+dataSummary  <- data.frame(pcode=names(waterData),
+                         maxValue=apply(waterData, 2, max, na.rm=TRUE),
+                         row.names=NULL, stringsAsFactors=FALSE)  %>%
+  mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, pCode, maxValue) %>%
+  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
+  mutate(EAR=maxValue/minEndPoint) %>%
+  arrange(desc(EAR)) %>%
+  filter(EAR > 1)
+  
+
+kable(dataSummary, digits=3)
 
 
