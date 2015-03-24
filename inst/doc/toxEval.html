@@ -1,575 +1,727 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Steven R. Corsi, Laura A. De Cicco" />
+
 
 <title>Introduction to toxEval</title>
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
   }
-};
-</script>
-
-<!-- Styles for R syntax highlighter -->
-<style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: #990073
-   }
-
-   pre .number {
-     color: #099;
-   }
-
-   pre .comment {
-     color: #998;
-     font-style: italic
-   }
-
-   pre .keyword {
-     color: #900;
-     font-weight: bold
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: #d14;
-   }
-</style>
-
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
-</script>
-
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
-}
-
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 {
-   font-size:2.2em;
-}
-
-h2 {
-   font-size:1.8em;
-}
-
-h3 {
-   font-size:1.4em;
-}
-
-h4 {
-   font-size:1.0em;
-}
-
-h5 {
-   font-size:0.9em;
-}
-
-h6 {
-   font-size:0.8em;
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre, img {
-  max-width: 100%;
-}
-pre {
-  overflow-x: auto;
-}
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
-}
-
-code[class] {
-  background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
-}
 </style>
 
 
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
 <body>
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Introduction to toxEval}
--->
 
-<h1>Introduction to toxEval</h1>
 
-<p>By Laura A. De Cicco, Steven Corsi</p>
 
+<div id="header">
+<h1 class="title">Introduction to toxEval</h1>
+<h4 class="author"><em>Steven R. Corsi, Laura A. De Cicco</em></h4>
+<h4 class="date"><em>24 March, 2015</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#molecular-weights">Molecular weights</a></li>
+<li><a href="#passive-data">Passive Data</a><ul>
+<li><a href="#data-analysis">Data Analysis</a></li>
+</ul></li>
+<li><a href="#water-sample-data">Water Sample Data</a><ul>
+<li><a href="#data-analysis-1">Data Analysis</a></li>
+<li><a href="#relavent-censored-values">Relavent Censored Values</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>This package <strong>toxEval</strong> is an early test version of the package that will encompass the various approaches to evaluate ToxCast data in relation to measured aquatic concentrations.</p>
-
+<div id="molecular-weights" class="section level2">
 <h2>Molecular weights</h2>
+<p>ToxCast reports values in <span class="math">\(\log\)</span><span class="math">\(\mu\)</span>M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package <strong>webchem</strong> supports this functionality.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;webchem&quot;</span>)
 
-<p>ToxCast reports values in \(\log\)$\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package <strong>webchem</strong> supports this functionality. </p>
+molweight &lt;-<span class="st"> </span><span class="kw">cir_query</span>(<span class="st">'3380-34-5'</span>, <span class="st">&quot;mw&quot;</span>)</code></pre>
+<pre><code>## http://cactus.nci.nih.gov/chemical/structure/3380-34-5/mw/xml</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">molweight</code></pre>
+<pre><code>## [1] &quot;289.5451&quot;</code></pre>
+<p>Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes.</p>
+</div>
+<div id="passive-data" class="section level2">
+<h2>Passive Data</h2>
+<p>Passive data was returned from the laboratory in a ‘long’ format. A sample of the data is shown below:</p>
+<pre class="sourceCode r"><code class="sourceCode r">packagePath &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;toxEval&quot;</span>)
+filePath &lt;-<span class="st"> </span><span class="kw">file.path</span>(packagePath, <span class="st">&quot;passiveData.RData&quot;</span>)
+<span class="kw">load</span>(<span class="dt">file=</span>filePath)
 
-<pre><code class="r">library(&quot;webchem&quot;)
+<span class="kw">head</span>(passiveData[,<span class="dv">1</span>:<span class="dv">7</span>])</code></pre>
+<pre><code>##                    Chemical Units MLD  MQL site04101500 site04102500 site04108660
+## 1               Trifluralin  pg/L 190  490         &lt;190         &lt;190         &lt;190
+## 2   Hexachlorobenzene (HCB)  pg/L  32   88          130           49           33
+## 3  Pentachloroanisole (PCA)  pg/L  69  210          150          160           93
+## 4                Tefluthrin  pg/L 130  380         &lt;130         &lt;130         &lt;130
+## 5 alpha-Benzenehexachloride  pg/L 190  570         &lt;190         &lt;190         &lt;190
+## 6                   Lindane  pg/L 850 2400         &lt;850         &lt;850         &lt;850</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Unique units:</span>
+<span class="kw">unique</span>(passiveData$Units)</code></pre>
+<pre><code>## [1] &quot;pg/L&quot; &quot;ng/L&quot;</code></pre>
+<p>For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical.</p>
+<p>Some of the data is ‘left-censored’. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a “&lt;”. The first thing to check is that the method quantitation limit (MQL) or minimum level of detectability (MLD) are low enough to be ignored. That is, MQL and MLD are below the minumum endpoint levels. If so, we can simply remove any values that have the “&lt;” indicator. To begin the study of the endpoints and how they relate to our data, we need to load up the <strong>toxEval</strong> package, and choose an endpoint dataset. We will use the AC50gain dataset in this report.</p>
+<p>For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the “Units” column of the passiveData data frame (we could also do the analysis converting the measured data to <span class="math">\(\log\)</span><span class="math">\(\mu\)</span>M… it shouldn’t matter as long as you are consistent).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
 
-molweight &lt;- cir_query(&#39;3380-34-5&#39;, &quot;mw&quot;)
-</code></pre>
+<span class="co"># AC50 data provided in the toxEval package:</span>
+AC50gain &lt;-<span class="st"> </span>AC50gain
 
-<pre><code>## http://cactus.nci.nih.gov/chemical/structure/3380-34-5/mw/xml
-</code></pre>
-
-<pre><code class="r">molweight
-</code></pre>
-
-<pre><code>## [1] &quot;289.5451&quot;
-</code></pre>
-
-<h2>Workflow</h2>
-
-<p>Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. </p>
-
-<h3>Passive Data:</h3>
-
-<p>Passive data was returned from the laboratory in a &#39;long&#39; format. A sample of the data is shown below:</p>
-
-<pre><code class="r">packagePath &lt;- system.file(&quot;extdata&quot;, package=&quot;toxEval&quot;)
-filePath &lt;- file.path(packagePath, &quot;passiveData.RData&quot;)
-load(file=filePath)
-
-head(passiveData[,1:8])
-</code></pre>
-
-<pre><code>##                    Chemical Units MLD  MQL site04101500 site04102500 site04108660 site04119400
-## 1               Trifluralin  pg/L 190  490         &lt;190         &lt;190         &lt;190         &lt;190
-## 2   Hexachlorobenzene (HCB)  pg/L  32   88          130           49           33          &lt;32
-## 3  Pentachloroanisole (PCA)  pg/L  69  210          150          160           93           86
-## 4                Tefluthrin  pg/L 130  380         &lt;130         &lt;130         &lt;130         &lt;130
-## 5 alpha-Benzenehexachloride  pg/L 190  570         &lt;190         &lt;190         &lt;190         &lt;190
-## 6                   Lindane  pg/L 850 2400         &lt;850         &lt;850         &lt;850         &lt;850
-</code></pre>
-
-<pre><code class="r"># Unique units:
-unique(passiveData$Units)
-</code></pre>
-
-<pre><code>## [1] &quot;pg/L&quot; &quot;ng/L&quot;
-</code></pre>
-
-<p>For this data, the CAS column was used to retrieve the molecular weight (mlWt). Each column is a unique site where the data was collected. Each row is a unique measured chemical. The data may be &#39;left-censored&#39;. This means that the measured data was lower than the detection limit of the measurement technique. Values that are found to be lower than the detection limit are indicated by a &ldquo;&lt;&rdquo;.</p>
-
-<p>Because of the &ldquo;&lt;&rdquo;, the measured data is currently a vector of characters. The simpliest way to convert that data to numbers is to use the <code>as.numeric</code> function. This will convert the left-censored data to <code>NA</code>, generating a warning. We can discuss more vigorious methods for dealing with censored values in future sections. To convert all the columns with the word &#39;site&#39; in their column name, use the following commands:</p>
-
-<pre><code class="r">siteColumns &lt;- grep(&quot;site&quot;,names(passiveData))
-passiveData[,siteColumns] &lt;- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
-</code></pre>
-
-<p>For this workflow, we will use the units reported by the measured data, meaning we need to convert the ToxCast end points to the units in the &ldquo;Units&rdquo; column of the passiveData data frame (we could also do the analysis converting the measured data to \(\log\)$\mu$M&hellip; it shouldn&#39;t matter as long as you are consistent).</p>
-
-<pre><code class="r">library(toxEval)
-
-# AC50 data provided in the toxEval package:
-AC50gain &lt;- AC50gain
-
-head(AC50gain[,1:5])
-</code></pre>
-
+<span class="kw">head</span>(AC50gain[,<span class="dv">1</span>:<span class="dv">5</span>])</code></pre>
 <pre><code>##        code  chid       casn                     chnm ACEA_T47D_80hr_Negative
 ## 1   C100005 20281   100-00-5  1-Chloro-4-nitrobenzene                      NA
 ## 2   C100016 20961   100-01-6           4-Nitroaniline                1.120699
 ## 3   C100027 21834   100-02-7            4-Nitrophenol                      NA
 ## 4 C10016203 30698 10016-20-3       alpha-Cyclodextrin                      NA
 ## 5   C100210 26080   100-21-0        Terephthalic acid                      NA
-## 6 C10025748 41909 10025-74-8 Dysprosium(III) chloride                      NA
-</code></pre>
-
-<p>The units in the AC50gain, AC50loss, and AC10 data sets are in \(\log\)$\mu$M. The first step is to convert to the desired unit (pg/L, ng/L)</p>
-
-<p>First, let&#39;s merge the desired units to the data frame:</p>
-
-<p>\[
+## 6 C10025748 41909 10025-74-8 Dysprosium(III) chloride                      NA</code></pre>
+<p>The units in the AC50gain, AC50loss, and AC10 data sets are <span class="math">\(\log\)</span><span class="math">\(\mu\)</span>M. The first step is to convert to the desired unit (pg/L, ng/L) based on the passiveData data frame.</p>
+<p><span class="math">\[
 \require{cancel}
 \begin{aligned}
-Reported Data = \log \mu M \
-\mu M = 10^{\log \mu M} \
-MW = \frac{g}{mol} , M = \frac{mol}{L}  \
+Reported Data = \log \mu M \\
+\mu M = 10^{\log \mu M} \\
+MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
 \cancel{\mu M} \left[\frac{\cancel{M}}{10^6 \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{10^9 ng}{\cancel{g}}\right] = MW * 10^3 \frac{ng}{L} 
 \end{aligned}
-\]</p>
+\]</span></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 
-<pre><code class="r">library(dplyr)
+unitConversion &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="kw">c</span>(<span class="dv">10</span>^<span class="dv">6</span>, <span class="dv">10</span>^<span class="dv">3</span>), <span class="kw">c</span>(<span class="st">&quot;pg/L&quot;</span>, <span class="st">&quot;ng/L&quot;</span>) )
 
-unitConversion &lt;- setNames(c(10^6, 10^3), c(&quot;pg/L&quot;, &quot;ng/L&quot;) )
-
-AC50 &lt;- left_join(AC50gain, passiveData[,c(&quot;CAS&quot;, &quot;Units&quot;, &quot;mlWt&quot;)],
-                   by= c(&quot;casn&quot; = &quot;CAS&quot;)) %&gt;%
-  filter(!is.na(Units)) %&gt;%
-  rename(desiredUnits = Units) %&gt;%
-  mutate(conversion = unitConversion[desiredUnits] * mlWt) %&gt;%
-  select(casn, chnm, desiredUnits, mlWt, conversion)
-</code></pre>
-
+AC50 &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50gain, passiveData[,<span class="kw">c</span>(<span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>, <span class="st">&quot;mlWt&quot;</span>)],
+                   <span class="dt">by=</span> <span class="kw">c</span>(<span class="st">&quot;casn&quot;</span> =<span class="st"> &quot;CAS&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(Units)) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">desiredUnits =</span> Units) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">conversion =</span> unitConversion[desiredUnits] *<span class="st"> </span>mlWt) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(casn, chnm, desiredUnits, mlWt, conversion)</code></pre>
 <p>A sample of the AC50 data frame is shown here:</p>
-
-<table><thead>
-<tr>
+<table>
+<thead>
+<tr class="header">
 <th align="left">casn</th>
 <th align="left">chnm</th>
 <th align="left">desiredUnits</th>
 <th align="right">mlWt</th>
 <th align="right">conversion</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td align="left">101-20-2</td>
 <td align="left">Triclocarban</td>
 <td align="left">ng/L</td>
-<td align="right">315.5859</td>
+<td align="right">315.59</td>
 <td align="right">315585.9</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left">1024-57-3</td>
 <td align="left">Heptachlor epoxide</td>
 <td align="left">pg/L</td>
-<td align="right">389.3199</td>
+<td align="right">389.32</td>
 <td align="right">389319900.0</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left">1031-07-8</td>
 <td align="left">Endosulfan sulfate</td>
 <td align="left">pg/L</td>
-<td align="right">422.9220</td>
+<td align="right">422.92</td>
 <td align="right">422922000.0</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left">103-90-2</td>
 <td align="left">Acetaminophen</td>
 <td align="left">ng/L</td>
-<td align="right">151.1646</td>
+<td align="right">151.16</td>
 <td align="right">151164.6</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left">106-46-7</td>
 <td align="left">1,4-Dichlorobenzene</td>
 <td align="left">pg/L</td>
-<td align="right">147.0036</td>
+<td align="right">147.00</td>
 <td align="right">147003600.0</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left">108-95-2</td>
 <td align="left">Phenol</td>
 <td align="left">pg/L</td>
-<td align="right">94.1128</td>
+<td align="right">94.11</td>
 <td align="right">94112800.0</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
 <p>Next we can create a data frame with the AC50 converted endpoints:</p>
+<pre class="sourceCode r"><code class="sourceCode r">AC50Converted &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50, AC50gain)</code></pre>
+<pre><code>## Joining by: c(&quot;casn&quot;, &quot;chnm&quot;)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">infoColumns &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;desiredUnits&quot;</span>,<span class="st">&quot;mlWt&quot;</span>, <span class="st">&quot;conversion&quot;</span>, <span class="st">&quot;code&quot;</span>,<span class="st">&quot;chid&quot;</span>)
 
-<pre><code class="r">AC50Converted &lt;- left_join(AC50, AC50gain)
-</code></pre>
+endPointData &lt;-<span class="st"> </span>AC50Converted[,!(<span class="kw">names</span>(AC50Converted) %in%<span class="st"> </span>infoColumns)]
+endPointData &lt;-<span class="st"> </span><span class="dv">10</span>^endPointData
+endPointData &lt;-<span class="st"> </span>endPointData *<span class="st"> </span>AC50Converted$conversion
+endPoint &lt;-<span class="st"> </span><span class="kw">cbind</span>(AC50, <span class="kw">data.frame</span>(endPointData))
+endPoint &lt;-<span class="st"> </span><span class="kw">rename</span>(endPoint, <span class="dt">Units=</span>desiredUnits)</code></pre>
+<p>Now, let’s look at the extreme reported endpoint (not including NA’s):</p>
+<pre class="sourceCode r"><code class="sourceCode r">maxEndPoints &lt;-<span class="st"> </span><span class="kw">apply</span>(endPointData, <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) 
+minEndPoints &lt;-<span class="st"> </span><span class="kw">apply</span>(endPointData, <span class="dv">1</span>, min, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)
 
-<pre><code>## Joining by: c(&quot;casn&quot;, &quot;chnm&quot;)
-</code></pre>
-
-<pre><code class="r">infoColumns &lt;- c(&quot;casn&quot;, &quot;chnm&quot;, &quot;desiredUnits&quot;,&quot;mlWt&quot;, &quot;conversion&quot;, &quot;code&quot;,&quot;chid&quot;)
-
-endPointData &lt;- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData &lt;- 10^endPointData
-endPointData &lt;- endPointData * AC50Converted$conversion
-endPoint &lt;- cbind(AC50, data.frame(endPointData))
-endPoint &lt;- rename(endPoint, Units=desiredUnits)
-</code></pre>
-
-<p>First, let&#39;s look at the extreme reported endpoint (not including NA&#39;s&hellip;that will actually be very important):</p>
-
-<pre><code class="r">maxEndPoints &lt;- apply(endPointData, 1, max, na.rm=TRUE) 
-minEndPoints &lt;- apply(endPointData, 1, min, na.rm=TRUE)
-
-maxMinSummary &lt;- cbind(endPoint[,c(&quot;chnm&quot;, &quot;casn&quot;, &quot;Units&quot;)], 
-                       maxEndPoint=maxEndPoints, 
-                       minEndPoint=minEndPoints)
-</code></pre>
-
-<p>The next task is to determine if the method quantitation limit (MQL) or minimum level of detectability (MLD) are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.</p>
-
-<pre><code class="r">maxMeasure &lt;- apply(passiveData[,siteColumns], 1, max, na.rm=TRUE) 
-minMeasure &lt;- apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)
-dataSummary &lt;- passiveData[,-siteColumns]
-dataSummary$Max &lt;- maxMeasure
-dataSummary$Min &lt;- minMeasure
-
-maxMinSummary &lt;- left_join(maxMinSummary,dataSummary, 
-                           by=c(&quot;casn&quot;=&quot;CAS&quot;, &quot;Units&quot;=&quot;Units&quot;))
-</code></pre>
-
-<p>If any of the MLD are higher than the maxEndPoint, we wouldn&#39;t be able to make any conclusions about the toxicity of the water:</p>
-
-<pre><code class="r">sum(maxMinSummary$MLD &gt; maxMinSummary$maxEndPoint)
-</code></pre>
-
-<pre><code>## [1] 0
-</code></pre>
-
-<p>It will also be interesting to know if any of the maximum measured values are greater than the minimum endpoint values:</p>
-
-<pre><code class="r">sum(maxMinSummary$Max &gt; maxMinSummary$minEndPoint)
-</code></pre>
-
-<pre><code>## [1] 4
-</code></pre>
-
-<p>Most likely, those will be the most interested cases:</p>
-
-<table><thead>
-<tr>
-<th align="left"></th>
+maxMinSummary &lt;-<span class="st"> </span><span class="kw">cbind</span>(endPoint[,<span class="kw">c</span>(<span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;Units&quot;</span>)], 
+                       <span class="dt">maxEndPoint=</span>maxEndPoints, 
+                       <span class="dt">minEndPoint=</span>minEndPoints)</code></pre>
+<p>Next, let’s determine if the MQL or MLD are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.</p>
+<pre class="sourceCode r"><code class="sourceCode r">siteColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;site&quot;</span>,<span class="kw">names</span>(passiveData))
+maxMinSummary &lt;-<span class="st"> </span><span class="kw">left_join</span>(maxMinSummary,passiveData[,-siteColumns], 
+                           <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>=<span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>=<span class="st">&quot;Units&quot;</span>))</code></pre>
+<p>If any of the MLD are higher than the maxEndPoint, we wouldn’t be able to make any conclusions about the toxicity of the water:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(maxMinSummary$MLD &gt;<span class="st"> </span>maxMinSummary$minEndPoint)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>So, 0 measurements have detection limitations that are greater than the minimum endpoint concentration. We might be interested to know how close the detection limit values come to the minimum endpoints.</p>
+<p>The following chemicals have MLD’s within 0.01 of the miniumum endpoint value:</p>
+<table>
+<thead>
+<tr class="header">
 <th align="left">chnm</th>
-<th align="left">casn</th>
-<th align="left">Units</th>
-<th align="right">maxEndPoint</th>
 <th align="right">minEndPoint</th>
 <th align="right">MLD</th>
-<th align="right">MQL</th>
-<th align="right">Max</th>
-<th align="right">Min</th>
+<th align="right">Maximum Ratio</th>
 </tr>
-</thead><tbody>
-<tr>
-<td align="left">7</td>
-<td align="left">Erythromycin</td>
-<td align="left">114-07-8</td>
-<td align="left">ng/L</td>
-<td align="right">75092316</td>
-<td align="right">6.959</td>
-<td align="right">0.128</td>
-<td align="right">0.638</td>
-<td align="right">11.735</td>
-<td align="right">1.192</td>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="right">11723.73</td>
+<td align="right">2100.00</td>
+<td align="right">0.18</td>
 </tr>
-<tr>
-<td align="left">52</td>
-<td align="left">Cotinine</td>
-<td align="left">486-56-6</td>
-<td align="left">ng/L</td>
-<td align="right">25061887</td>
-<td align="right">11.444</td>
-<td align="right">0.468</td>
-<td align="right">2.338</td>
-<td align="right">19.840</td>
-<td align="right">4.924</td>
-</tr>
-<tr>
-<td align="left">54</td>
-<td align="left">Aspirin</td>
-<td align="left">50-78-2</td>
-<td align="left">ng/L</td>
-<td align="right">29504608</td>
-<td align="right">13.548</td>
-<td align="right">0.424</td>
-<td align="right">2.122</td>
-<td align="right">14.991</td>
-<td align="right">2.504</td>
-</tr>
-<tr>
-<td align="left">83</td>
+<tr class="even">
 <td align="left">Fluorene</td>
-<td align="left">86-73-7</td>
-<td align="left">pg/L</td>
-<td align="right">27171274907</td>
-<td align="right">1680.889</td>
-<td align="right">100.000</td>
-<td align="right">400.000</td>
-<td align="right">15000.000</td>
-<td align="right">120.000</td>
+<td align="right">1680.89</td>
+<td align="right">100.00</td>
+<td align="right">0.06</td>
 </tr>
-</tbody></table>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="right">11.44</td>
+<td align="right">0.47</td>
+<td align="right">0.04</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">13.55</td>
+<td align="right">0.42</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="odd">
+<td align="left">Heptachlor epoxide</td>
+<td align="right">14653.94</td>
+<td align="right">390.00</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td align="left">Erythromycin</td>
+<td align="right">6.96</td>
+<td align="right">0.13</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="right">80634.30</td>
+<td align="right">920.00</td>
+<td align="right">0.01</td>
+</tr>
+</tbody>
+</table>
+<p>Since it appears that we can ignore the censored values, the easist way to convert data to numbers then is to use the <code>as.numeric</code> function. This will convert the left-censored data to <code>NA</code>, generating a warning. To convert all the columns with the word ‘site’ in their column name to numeric, use the following commands:</p>
+<pre class="sourceCode r"><code class="sourceCode r">siteColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;site&quot;</span>,<span class="kw">names</span>(passiveData))
+passiveData[,siteColumns] &lt;-<span class="st"> </span><span class="kw">sapply</span>(passiveData[,siteColumns], function(x) <span class="kw">as.numeric</span>(x))
 
+<span class="co">#For this analysis, we'll consider NA's to be 0 (other options exist):</span>
+passiveData[,siteColumns][<span class="kw">is.na</span>(passiveData[,siteColumns])] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre>
+<p>Now let’s check if the maximum measured values are greater than the minimum endpoint values:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">minEndPoint</th>
+<th align="right">maxMeasure</th>
+<th align="right">EAR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">1680.89</td>
+<td align="right">15000.00</td>
+<td align="right">8.92</td>
+</tr>
+<tr class="even">
+<td align="left">Cotinine</td>
+<td align="right">11.44</td>
+<td align="right">19.84</td>
+<td align="right">1.73</td>
+</tr>
+<tr class="odd">
+<td align="left">Erythromycin</td>
+<td align="right">6.96</td>
+<td align="right">11.73</td>
+<td align="right">1.69</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">13.55</td>
+<td align="right">14.99</td>
+<td align="right">1.11</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="right">174.77</td>
+<td align="right">89.05</td>
+<td align="right">0.51</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="right">11723.73</td>
+<td align="right">5500.00</td>
+<td align="right">0.47</td>
+</tr>
+<tr class="odd">
+<td align="left">Gemfibrozil</td>
+<td align="right">15.88</td>
+<td align="right">4.68</td>
+<td align="right">0.29</td>
+</tr>
+<tr class="even">
+<td align="left">Hydrochlorothiazide (HCTZ)</td>
+<td align="right">185.21</td>
+<td align="right">23.05</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzo[b]fluoranthene</td>
+<td align="right">1009259.20</td>
+<td align="right">69000.00</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="even">
+<td align="left">Dichlorvos</td>
+<td align="right">2194.20</td>
+<td align="right">150.00</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="odd">
+<td align="left">Heptachlor Epoxide</td>
+<td align="right">14653.94</td>
+<td align="right">820.00</td>
+<td align="right">0.06</td>
+</tr>
+<tr class="even">
+<td align="left">Acetaminophen</td>
+<td align="right">1083.10</td>
+<td align="right">53.98</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">Pyrene</td>
+<td align="right">10926346.82</td>
+<td align="right">360000.00</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="even">
+<td align="left">Benz[a]anthracene</td>
+<td align="right">2286992.89</td>
+<td align="right">65000.00</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="odd">
+<td align="left">Fluoranthene</td>
+<td align="right">9752941.08</td>
+<td align="right">240000.00</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="even">
+<td align="left">Pentachloroanisole (PCA)</td>
+<td align="right">252346.71</td>
+<td align="right">5200.00</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">Phenanthrene</td>
+<td align="right">4970654.40</td>
+<td align="right">86000.00</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="even">
+<td align="left">Biphenyl</td>
+<td align="right">37036.01</td>
+<td align="right">640.00</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="odd">
+<td align="left">Dibenzo[a,h]anthracene</td>
+<td align="right">252855.00</td>
+<td align="right">3700.00</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td align="left">1-methylnaphthalene</td>
+<td align="right">1516348.51</td>
+<td align="right">19000.00</td>
+<td align="right">0.01</td>
+</tr>
+</tbody>
+</table>
+<div id="data-analysis" class="section level3">
 <h3>Data Analysis</h3>
-
-<p>Let&#39;s start our analysis with one site (the first of the site columns: site04101500):</p>
-
-<pre><code class="r">commonColumns &lt;- c(&quot;Chemical&quot;, &quot;Units&quot;, 
-                  &quot;MLD&quot;, &quot;MQL&quot;, &quot;CAS&quot;, &quot;mlWt&quot;)
-oneSite &lt;- passiveData[,c(commonColumns, &quot;site04101500&quot;)]
-oneSite &lt;- rename(oneSite, value = site04101500)
-head(oneSite)
-</code></pre>
-
+<p>Let’s start our analysis with one site (the first of the site columns: site04101500):</p>
+<pre class="sourceCode r"><code class="sourceCode r">commonColumns &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Chemical&quot;</span>, <span class="st">&quot;Units&quot;</span>, 
+                  <span class="st">&quot;MLD&quot;</span>, <span class="st">&quot;MQL&quot;</span>, <span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;mlWt&quot;</span>)
+oneSite &lt;-<span class="st"> </span>passiveData[,<span class="kw">c</span>(commonColumns, <span class="st">&quot;site04101500&quot;</span>)]
+oneSite &lt;-<span class="st"> </span><span class="kw">rename</span>(oneSite, <span class="dt">value =</span> site04101500)
+<span class="kw">head</span>(oneSite)</code></pre>
 <pre><code>##                    Chemical Units MLD  MQL        CAS     mlWt value
-## 1               Trifluralin  pg/L 190  490  1582-09-8 335.2823    NA
+## 1               Trifluralin  pg/L 190  490  1582-09-8 335.2823     0
 ## 2   Hexachlorobenzene (HCB)  pg/L  32   88   118-74-1 284.7840   130
 ## 3  Pentachloroanisole (PCA)  pg/L  69  210  1825-21-4 280.3651   150
-## 4                Tefluthrin  pg/L 130  380 79538-32-2 418.7382    NA
-## 5 alpha-Benzenehexachloride  pg/L 190  570   319-85-6       NA    NA
-## 6                   Lindane  pg/L 850 2400    59-89-9       NA    NA
-</code></pre>
-
+## 4                Tefluthrin  pg/L 130  380 79538-32-2 418.7382     0
+## 5 alpha-Benzenehexachloride  pg/L 190  570   319-85-6       NA     0
+## 6                   Lindane  pg/L 850 2400    59-89-9       NA     0</code></pre>
 <p>We can now look at the ratio of the measured data to the endpoints:</p>
-
-<pre><code class="r">casnRow &lt;- setNames(1:nrow(oneSite),oneSite$CAS)
-ratioPassive &lt;- oneSite[casnRow[endPoint$casn],&quot;value&quot;] / endPointData
-maxRatio &lt;- suppressWarnings(max(apply(ratioPassive[,siteColumns], 1, max, na.rm=TRUE) ))
-</code></pre>
-
+<pre class="sourceCode r"><code class="sourceCode r">casnRow &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(oneSite),oneSite$CAS)
+ratioPassive &lt;-<span class="st"> </span>oneSite[casnRow[endPoint$casn],<span class="st">&quot;value&quot;</span>] /<span class="st"> </span>endPointData
+maxRatio &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(<span class="kw">max</span>(<span class="kw">apply</span>(ratioPassive[,siteColumns], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) ))</code></pre>
 <p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at the first site is 0.0024879.</p>
-
 <p>Extending this to all sites:</p>
+<pre class="sourceCode r"><code class="sourceCode r">siteColumnsIndex &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;site&quot;</span>, <span class="kw">names</span>(passiveData))
+maxRatioBySite &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">site=</span><span class="kw">names</span>(passiveData)[siteColumnsIndex],
+                             <span class="dt">ratio_perc=</span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">length</span>(siteColumnsIndex)),
+                             <span class="dt">chemical =</span> <span class="kw">rep</span>(<span class="st">&quot;&quot;</span>, <span class="kw">length</span>(siteColumnsIndex)),
+                             <span class="dt">endpoint =</span>  <span class="kw">rep</span>(<span class="st">&quot;&quot;</span>, <span class="kw">length</span>(siteColumnsIndex)),
+                             <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
 
-<pre><code class="r">siteColumnsIndex &lt;- grep(&quot;site&quot;, names(passiveData))
-maxRatioBySite &lt;- data.frame(site=names(passiveData)[siteColumnsIndex],
-                             ratio=rep(NA, length(siteColumnsIndex)),
-                             chemical = rep(&quot;&quot;, length(siteColumnsIndex)),
-                             endpoint =  rep(&quot;&quot;, length(siteColumnsIndex))
-
-for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
-  oneSite &lt;- passiveData[,c(commonColumns, i)]
-  names(oneSite)[names(oneSite) == i] &lt;- &#39;value&#39;
-  casnRow &lt;- setNames(1:nrow(oneSite),oneSite$CAS) # casnRow gets index of CAS in oneSite
-  ratioPassive &lt;- oneSite[casnRow[endPoint$casn],&quot;value&quot;] / endPointData
-
-  maxRatio &lt;- suppressWarnings(max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-
-#   maxIndexChemical &lt;- suppressWarnings(which.max(apply(ratioPassive[,siteColumnsIndex], 1, max, na.rm=TRUE) ))
-#   
-#   maxIndexEndpoint &lt;- apply(ratioPassive[,siteColumnsIndex], 1, which.max)[[maxIndexChemical]]
-
-  maxRatioBySite[maxRatioBySite$site == i,&quot;ratio&quot;] &lt;- maxRatio
-#   maxRatioBySite[maxRatioBySite$site == i,&quot;chemical&quot;] &lt;- passiveData$Chemical[maxIndexChemical]
-#   maxRatioBySite[maxRatioBySite$site == i,&quot;endpoint&quot;] &lt;- names(endPoint)[maxIndexEndpoint]
-
+for(i in <span class="kw">names</span>(passiveData)[siteColumnsIndex]){ <span class="co"># i = site columns</span>
+  oneSite &lt;-<span class="st"> </span>passiveData[,<span class="kw">c</span>(commonColumns, i)]
+  <span class="kw">names</span>(oneSite)[<span class="kw">names</span>(oneSite) ==<span class="st"> </span>i] &lt;-<span class="st"> 'value'</span>
+  casnRow &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(oneSite),oneSite$CAS) <span class="co"># casnRow gets index of CAS in oneSite</span>
+  ratioPassive &lt;-<span class="st"> </span>oneSite[casnRow[endPoint$casn],<span class="st">&quot;value&quot;</span>] /<span class="st"> </span>endPointData
+  
+  maxRatio &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">apply</span>(ratioPassive[,siteColumnsIndex], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) )*<span class="dv">100</span>
+  maxRatioBySite[maxRatioBySite$site ==<span class="st"> </span>i,<span class="st">&quot;ratio_perc&quot;</span>] &lt;-<span class="st"> </span>maxRatio
+  
+  if(<span class="kw">is.finite</span>(maxRatio)){
+    maxIndexChemical &lt;-<span class="st"> </span><span class="kw">which.max</span>(<span class="kw">apply</span>(ratioPassive[,siteColumnsIndex], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) )
+    maxIndexEndpoint &lt;-<span class="st"> </span><span class="kw">apply</span>(ratioPassive[,siteColumnsIndex], <span class="dv">1</span>, which.max)[[maxIndexChemical]]
+    maxRatioBySite[maxRatioBySite$site ==<span class="st"> </span>i,<span class="st">&quot;chemical&quot;</span>] &lt;-<span class="st"> </span>passiveData$Chemical[maxIndexChemical]
+    maxRatioBySite[maxRatioBySite$site ==<span class="st"> </span>i,<span class="st">&quot;endpoint&quot;</span>] &lt;-<span class="st"> </span><span class="kw">names</span>(endPoint)[maxIndexEndpoint]
+  }
 }
 
-#So max ratio is:
-max(maxRatioBySite$ratio)
+maxRatioBySite &lt;-<span class="st"> </span><span class="kw">arrange</span>(maxRatioBySite, <span class="kw">desc</span>(ratio_perc)) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(ratio_perc &gt;<span class="st"> </span><span class="fl">1E-4</span>) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;Ratio [%]&quot;</span>=ratio_perc, 
+         <span class="st">&quot;Chemical&quot;</span>=chemical, 
+         <span class="st">&quot;End Point&quot;</span> =<span class="st"> </span>endpoint) 
+<span class="kw">kable</span>(maxRatioBySite, <span class="dt">digits=</span><span class="dv">2</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="right">Ratio [%]</th>
+<th align="left">Chemical</th>
+<th align="left">End Point</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">site04092750</td>
+<td align="right">6.84</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04201500</td>
+<td align="right">4.98</td>
+<td align="left">Tefluthrin</td>
+<td align="left">APR_HepG2_CellCycleArrest_72h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04166500</td>
+<td align="right">1.98</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04086000</td>
+<td align="right">1.25</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site040851385</td>
+<td align="right">1.07</td>
+<td align="left">Camphor</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04085427</td>
+<td align="right">0.88</td>
+<td align="left">Tefluthrin</td>
+<td align="left">APR_HepG2_CellCycleArrest_72h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04165500</td>
+<td align="right">0.68</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04174500</td>
+<td align="right">0.62</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04095090</td>
+<td align="right">0.51</td>
+<td align="left">Camphor</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04199000</td>
+<td align="right">0.46</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04040000</td>
+<td align="right">0.45</td>
+<td align="left">Camphor</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04208000</td>
+<td align="right">0.37</td>
+<td align="left">beta-Benzenehexachloride</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04132052</td>
+<td align="right">0.34</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04200500</td>
+<td align="right">0.34</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04195500</td>
+<td align="right">0.33</td>
+<td align="left">beta-Benzenehexachloride</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04212100</td>
+<td align="right">0.29</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04102500</td>
+<td align="right">0.28</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04101500</td>
+<td align="right">0.25</td>
+<td align="left">beta-Benzenehexachloride</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04128500</td>
+<td align="right">0.14</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04249000</td>
+<td align="right">0.08</td>
+<td align="left">Phenol</td>
+<td align="left">APR_HepG2_NuclearSize_1h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04119400</td>
+<td align="right">0.08</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04067500</td>
+<td align="right">0.07</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04029990</td>
+<td align="right">0.06</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04024000</td>
+<td align="right">0.06</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04108660</td>
+<td align="right">0.06</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="even">
+<td align="left">site04135020</td>
+<td align="right">0.06</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04157000</td>
+<td align="right">0.05</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04249000.1</td>
+<td align="right">0.05</td>
+<td align="left">beta-Benzenehexachloride</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04231600</td>
+<td align="right">0.04</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04176500</td>
+<td align="right">0.04</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04121970</td>
+<td align="right">0.04</td>
+<td align="left">beta-Benzenehexachloride</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04260500</td>
+<td align="right">0.03</td>
+<td align="left">cis-Permethrin</td>
+<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04213500</td>
+<td align="right">0.03</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04045500</td>
+<td align="right">0.03</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04199500</td>
+<td align="right">0.03</td>
+<td align="left">Triethyl phosphate (TEP)</td>
+<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04193500</td>
+<td align="right">0.03</td>
+<td align="left">Mirex</td>
+<td align="left">APR_HepG2_OxidativeStress_72h_dn</td>
+</tr>
+<tr class="odd">
+<td align="left">site04269000</td>
+<td align="right">0.01</td>
+<td align="left">Menthol</td>
+<td align="left">APR_HepG2_MitoMass_1h_up</td>
+</tr>
+<tr class="even">
+<td align="left">site04056500</td>
+<td align="right">0.00</td>
+<td align="left">Fluorene</td>
+<td align="left">APR_HepG2_OxidativeStress_72h_up</td>
+</tr>
+<tr class="odd">
+<td align="left">site04122200</td>
+<td align="right">0.00</td>
+<td align="left">Chlorpyrifos</td>
+<td align="left">APR_HepG2_OxidativeStress_24h_up</td>
+</tr>
+</tbody>
+</table>
+<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is 6.8366976, at site site04092750, from cis-Permethrin, based on endpoint APR_HepG2_MicrotubuleCSK_24h_dn.</p>
+</div>
+</div>
+<div id="water-sample-data" class="section level2">
+<h2>Water Sample Data</h2>
+<p>The data returned from water sample tests was returned in a ‘wide’ format:</p>
+<pre class="sourceCode r"><code class="sourceCode r">packagePath &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;toxEval&quot;</span>)
+filePath &lt;-<span class="st"> </span><span class="kw">file.path</span>(packagePath, <span class="st">&quot;waterSamples.RData&quot;</span>)
+<span class="kw">load</span>(<span class="dt">file=</span>filePath)
 
-# #At site:
-# maxRatioBySite$site[maxRatioBySite$ratio == max(maxRatioBySite$ratio)]
-# 
-# #The chemical that gave the max ratio:
-</code></pre>
-
-<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is </p>
-
-<h3>Water Sample Data:</h3>
-
-<p>The data returned from water sample tests was returned in a &#39;wide&#39; format:</p>
-
-<pre><code class="r">packagePath &lt;- system.file(&quot;extdata&quot;, package=&quot;toxEval&quot;)
-filePath &lt;- file.path(packagePath, &quot;waterSamples.RData&quot;)
-load(file=filePath)
-
-head(waterSamples[,1:10])
-</code></pre>
-
+<span class="kw">head</span>(waterSamples[,<span class="dv">1</span>:<span class="dv">10</span>])</code></pre>
 <pre><code>##   ActivityStartDateGiven          site ActivityEndDateGiven qualifier_04254 valueToUse_04254
 ## 1    2010-09-13 11:15:00 USGS-04101500                 &lt;NA&gt;            &lt;NA&gt;               NA
 ## 2    2010-09-13 12:30:00 USGS-04032000                 &lt;NA&gt;            &lt;NA&gt;               NA
@@ -583,93 +735,329 @@ head(waterSamples[,1:10])
 ## 3              &lt;NA&gt;          &lt;NA&gt;         &lt;NA&gt;                   NA             &lt;NA&gt;
 ## 4              &lt;NA&gt;          &lt;NA&gt;         &lt;NA&gt;                   NA             &lt;NA&gt;
 ## 5              &lt;NA&gt;          &lt;NA&gt;         &lt;NA&gt;                   NA             &lt;NA&gt;
-## 6                           GCM99            S                  0.2              IRL
-</code></pre>
-
+## 6                           GCM99            S                  0.2              IRL</code></pre>
 <p>The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the <strong>dataRetrieval</strong> package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes, then use <strong>webchem</strong> to get the molecular weights.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dataRetrieval)
 
-<pre><code class="r">library(dataRetrieval)
+waterSamplePCodes &lt;-<span class="st"> </span><span class="kw">names</span>(waterSamples)[<span class="kw">grep</span>(<span class="st">&quot;valueToUse&quot;</span>, <span class="kw">names</span>(waterSamples))]
+waterSamplePCodes &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(waterSamplePCodes, <span class="st">&quot;_&quot;</span>), function(x) x[<span class="dv">2</span>])
 
-waterSamplePCodes &lt;- names(waterSamples)[grep(&quot;valueToUse&quot;, names(waterSamples))]
-waterSamplePCodes &lt;- sapply(strsplit(waterSamplePCodes, &quot;_&quot;), function(x) x[2])
+pCodeInfo &lt;-<span class="st"> </span><span class="kw">readNWISpCode</span>(waterSamplePCodes)
 
-pCodeInfo &lt;- readNWISpCode(waterSamplePCodes)
+<span class="kw">unique</span>(pCodeInfo$parameter_units)
 
-unique(pCodeInfo$parameter_units)
-
-library(webchem)
-pCodeInfo$mlWt &lt;- rep(NA, nrow(pCodeInfo))
-pCodeInfo$mlWt[pCodeInfo$casrn != &quot;&quot;] &lt;- sapply(pCodeInfo$casrn[pCodeInfo$casrn != &quot;&quot;],
-                function(x) cir_query(x, &quot;mw&quot;, first = TRUE))
-pCodeInfo$mlWt &lt;- as.numeric(pCodeInfo$mlWt)
-</code></pre>
-
+<span class="kw">library</span>(webchem)
+pCodeInfo$mlWt &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">nrow</span>(pCodeInfo))
+pCodeInfo$mlWt[pCodeInfo$casrn !=<span class="st"> &quot;&quot;</span>] &lt;-<span class="st"> </span><span class="kw">sapply</span>(pCodeInfo$casrn[pCodeInfo$casrn !=<span class="st"> &quot;&quot;</span>],
+                function(x) <span class="kw">cir_query</span>(x, <span class="st">&quot;mw&quot;</span>, <span class="dt">first =</span> <span class="ot">TRUE</span>))
+pCodeInfo$mlWt &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(pCodeInfo$mlWt)</code></pre>
 <p>In this dataset, all the data is reported in ug/l. Our conversion therefore is:</p>
-
-<p>\[
+<p><span class="math">\[
 \require{cancel}
 \begin{aligned}
-Reported Data = \log \mu M \
-\mu M = 10^{\log \mu M} \
-MW = \frac{g}{mol} , M = \frac{mol}{L}  \
+Reported Data = \log \mu M \\
+\mu M = 10^{\log \mu M} \\
+MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
 \cancel{\mu M} \left[\frac{\cancel{M}}{\cancel{10^6} \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{\cancel{10^6} \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
 \end{aligned}
-\]</p>
-
-<pre><code class="r">AC50 &lt;- left_join(AC50gain, pCodeInfo[,c(&quot;casrn&quot;, &quot;parameter_units&quot;, &quot;mlWt&quot;)],
-                   by= c(&quot;casn&quot;=&quot;casrn&quot;)) %&gt;%
-  filter(!is.na(parameter_units)) %&gt;%
-  rename(desiredUnits = parameter_units) %&gt;%
-  mutate(conversion = mlWt) %&gt;%
-  select(casn, chnm, desiredUnits, mlWt, conversion)
-</code></pre>
-
+\]</span></p>
+<pre class="sourceCode r"><code class="sourceCode r">AC50 &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50gain, pCodeInfo[,<span class="kw">c</span>(<span class="st">&quot;casrn&quot;</span>, <span class="st">&quot;parameter_units&quot;</span>, <span class="st">&quot;mlWt&quot;</span>)],
+                   <span class="dt">by=</span> <span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>=<span class="st">&quot;casrn&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(parameter_units)) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">desiredUnits =</span> parameter_units) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">conversion =</span> mlWt) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(casn, chnm, desiredUnits, mlWt, conversion)</code></pre>
 <p>Next we can create a data frame with the AC50 converted endpoints:</p>
+<pre class="sourceCode r"><code class="sourceCode r">AC50Converted &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50, AC50gain)</code></pre>
+<pre><code>## Joining by: c(&quot;casn&quot;, &quot;chnm&quot;)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">infoColumns &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;desiredUnits&quot;</span>,<span class="st">&quot;mlWt&quot;</span>, <span class="st">&quot;conversion&quot;</span>, <span class="st">&quot;code&quot;</span>,<span class="st">&quot;chid&quot;</span>)
 
-<pre><code class="r">AC50Converted &lt;- left_join(AC50, AC50gain)
-</code></pre>
+endPointData &lt;-<span class="st"> </span>AC50Converted[,!(<span class="kw">names</span>(AC50Converted) %in%<span class="st"> </span>infoColumns)]
+endPointData &lt;-<span class="st"> </span><span class="dv">10</span>^endPointData
+endPointData &lt;-<span class="st"> </span>endPointData *<span class="st"> </span>AC50Converted$conversion
+endPoint &lt;-<span class="st"> </span><span class="kw">cbind</span>(AC50, <span class="kw">data.frame</span>(endPointData))
+endPoint &lt;-<span class="st"> </span><span class="kw">rename</span>(endPoint, <span class="dt">Units=</span>desiredUnits)</code></pre>
+<p>First, let’s look at the extreme reported endpoint (not including NA’s…that will actually may be important):</p>
+<pre class="sourceCode r"><code class="sourceCode r">maxEndPoints &lt;-<span class="st"> </span><span class="kw">apply</span>(endPointData, <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) 
+minEndPoints &lt;-<span class="st"> </span><span class="kw">apply</span>(endPointData, <span class="dv">1</span>, min, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)
 
-<pre><code>## Joining by: c(&quot;casn&quot;, &quot;chnm&quot;)
-</code></pre>
-
-<pre><code class="r">infoColumns &lt;- c(&quot;casn&quot;, &quot;chnm&quot;, &quot;desiredUnits&quot;,&quot;mlWt&quot;, &quot;conversion&quot;, &quot;code&quot;,&quot;chid&quot;)
-
-endPointData &lt;- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData &lt;- 10^endPointData
-endPointData &lt;- endPointData * AC50Converted$conversion
-endPoint &lt;- cbind(AC50, data.frame(endPointData))
-endPoint &lt;- rename(endPoint, Units=desiredUnits)
-</code></pre>
-
-<p>First, let&#39;s look at the extreme reported endpoint (not including NA&#39;s&hellip;that will actually be very important):</p>
-
-<pre><code class="r">maxEndPoints &lt;- apply(endPointData, 1, max, na.rm=TRUE) 
-minEndPoints &lt;- apply(endPointData, 1, min, na.rm=TRUE)
-
-maxMinSummary &lt;- cbind(endPoint[,c(&quot;chnm&quot;, &quot;casn&quot;, &quot;Units&quot;)], 
-                       maxEndPoint=maxEndPoints, 
-                       minEndPoint=minEndPoints)
-</code></pre>
-
+maxMinSummary &lt;-<span class="st"> </span><span class="kw">cbind</span>(endPoint[,<span class="kw">c</span>(<span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;Units&quot;</span>)], 
+                       <span class="dt">maxEndPoint=</span>maxEndPoints, 
+                       <span class="dt">minEndPoint=</span>minEndPoints)</code></pre>
 <p>The next task is to determine if the detectionLimit is going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pCodeSummary &lt;-<span class="st"> </span><span class="kw">select</span>(pCodeInfo, srsname, casrn, parameter_units, mlWt)
 
-<pre><code class="r">pCodeSummary &lt;- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
+detectionLimits &lt;-<span class="st"> </span>waterSamples[,<span class="kw">grep</span>(<span class="st">&quot;detectionLimit&quot;</span>, <span class="kw">names</span>(waterSamples))]
+detectionLimits &lt;-<span class="st"> </span><span class="kw">na.omit</span>(detectionLimits)
 
-detectionLimits &lt;- waterSamples[,grep(&quot;detectionLimit&quot;, names(waterSamples))]
-detectionLimits &lt;- na.omit(detectionLimits)
+<span class="co"># Check if any change over time:</span>
+<span class="kw">all</span>(<span class="kw">apply</span>(detectionLimits, <span class="dv">2</span>, function(x) <span class="kw">length</span>(<span class="kw">unique</span>(x))==<span class="dv">1</span>))</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#They do!</span></code></pre>
+<p>For now, we’ll focus on the minimum detection level:</p>
+<pre class="sourceCode r"><code class="sourceCode r">detLevels  &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">dl_pcode=</span><span class="kw">names</span>(detectionLimits),
+                         <span class="dt">minDetLevel=</span><span class="kw">apply</span>(detectionLimits, <span class="dv">2</span>, min),
+                         <span class="dt">row.names=</span><span class="ot">NULL</span>, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pCode=</span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(dl_pcode, <span class="st">&quot;_&quot;</span>), function(x) x[<span class="dv">2</span>])) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(pCodeInfo[<span class="kw">c</span>(<span class="st">&quot;parameter_cd&quot;</span>,<span class="st">&quot;casrn&quot;</span>)], <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;pCode&quot;</span>=<span class="st">&quot;parameter_cd&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(casrn, pCode, minDetLevel) %&gt;%
+<span class="st">  </span><span class="kw">right_join</span>(maxMinSummary, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casrn&quot;</span>=<span class="st">&quot;casn&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR=</span>minDetLevel/minEndPoint) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(EAR)) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(EAR &gt;<span class="st"> </span><span class="dv">1</span>)
 
-# Check if any changes over time:
-all(apply(detectionLimits, 2, function(x) length(unique(x))==1))
-</code></pre>
+<span class="kw">kable</span>(detLevels, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">casrn</th>
+<th align="left">pCode</th>
+<th align="right">minDetLevel</th>
+<th align="left">chnm</th>
+<th align="left">Units</th>
+<th align="right">maxEndPoint</th>
+<th align="right">minEndPoint</th>
+<th align="right">EAR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">62-73-7</td>
+<td align="left">30218</td>
+<td align="right">0.08</td>
+<td align="left">Dichlorvos</td>
+<td align="left">ug/l</td>
+<td align="right">52195.50</td>
+<td align="right">0.002</td>
+<td align="right">36.460</td>
+</tr>
+<tr class="even">
+<td align="left">51218-45-2</td>
+<td align="left">82612</td>
+<td align="right">0.04</td>
+<td align="left">Metolachlor</td>
+<td align="left">ug/l</td>
+<td align="right">33343.61</td>
+<td align="right">0.003</td>
+<td align="right">13.882</td>
+</tr>
+<tr class="odd">
+<td align="left">486-56-6</td>
+<td align="left">61945</td>
+<td align="right">0.08</td>
+<td align="left">Cotinine</td>
+<td align="left">ug/l</td>
+<td align="right">25061.89</td>
+<td align="right">0.011</td>
+<td align="right">6.991</td>
+</tr>
+<tr class="even">
+<td align="left">91-20-3</td>
+<td align="left">34696</td>
+<td align="right">0.02</td>
+<td align="left">Naphthalene</td>
+<td align="left">ug/l</td>
+<td align="right">36478.73</td>
+<td align="right">0.012</td>
+<td align="right">1.706</td>
+</tr>
+<tr class="odd">
+<td align="left">89-78-1</td>
+<td align="left">62827</td>
+<td align="right">0.20</td>
+<td align="left">dl-Menthol</td>
+<td align="left">ug/l</td>
+<td align="right">11496.23</td>
+<td align="right">0.145</td>
+<td align="right">1.380</td>
+</tr>
+</tbody>
+</table>
+<p>This table shows us the chemicals that Dichlorvos, Metolachlor, Cotinine, Naphthalene, dl-Menthol may lead to issues since the detection levels are higher than some of the end point values.</p>
+<p>In this case therefore, we cannot simply ignore all of the left-censored values. However, for the time being, we will use only non-censored values in our analysis. Let’s begin by trimming down the waterSamples data frame to only the relavent information. Here, we are setting all left-censored values to NA, we could instead use the detection limit.</p>
+<pre class="sourceCode r"><code class="sourceCode r">qualColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;qualifier&quot;</span>, <span class="kw">names</span>(waterSamples))
+valColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;valueToUse&quot;</span>, <span class="kw">names</span>(waterSamples))
 
-<pre><code>## [1] FALSE
-</code></pre>
+waterData &lt;-<span class="st"> </span>waterSamples[,valColumns]
+waterData[waterSamples[,qualColumns] ==<span class="st"> &quot;&lt;&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></code></pre>
+<p>Now let’s check how many maximum measured values are greater than the minimum endpoint values:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">casrn</th>
+<th align="left">pCode</th>
+<th align="right">maxValue</th>
+<th align="left">chnm</th>
+<th align="left">Units</th>
+<th align="right">maxEndPoint</th>
+<th align="right">minEndPoint</th>
+<th align="right">EAR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">51218-45-2</td>
+<td align="left">82612</td>
+<td align="right">6.00</td>
+<td align="left">Metolachlor</td>
+<td align="left">ug/l</td>
+<td align="right">33343.61</td>
+<td align="right">0.003</td>
+<td align="right">2082.327</td>
+</tr>
+<tr class="even">
+<td align="left">62-73-7</td>
+<td align="left">30218</td>
+<td align="right">0.29</td>
+<td align="left">Dichlorvos</td>
+<td align="left">ug/l</td>
+<td align="right">52195.50</td>
+<td align="right">0.002</td>
+<td align="right">132.167</td>
+</tr>
+<tr class="odd">
+<td align="left">1912-24-9</td>
+<td align="left">39630</td>
+<td align="right">40.20</td>
+<td align="left">Atrazine</td>
+<td align="left">ug/l</td>
+<td align="right">22305.55</td>
+<td align="right">0.541</td>
+<td align="right">74.350</td>
+</tr>
+<tr class="even">
+<td align="left">134-62-3</td>
+<td align="left">61947</td>
+<td align="right">2.66</td>
+<td align="left">DEET</td>
+<td align="left">ug/l</td>
+<td align="right">20867.84</td>
+<td align="right">0.116</td>
+<td align="right">22.974</td>
+</tr>
+<tr class="odd">
+<td align="left">91-20-3</td>
+<td align="left">34696</td>
+<td align="right">0.14</td>
+<td align="left">Naphthalene</td>
+<td align="left">ug/l</td>
+<td align="right">36478.73</td>
+<td align="right">0.012</td>
+<td align="right">11.942</td>
+</tr>
+<tr class="even">
+<td align="left">486-56-6</td>
+<td align="left">61945</td>
+<td align="right">0.13</td>
+<td align="left">Cotinine</td>
+<td align="left">ug/l</td>
+<td align="right">25061.89</td>
+<td align="right">0.011</td>
+<td align="right">11.360</td>
+</tr>
+<tr class="odd">
+<td align="left">78-59-1</td>
+<td align="left">34408</td>
+<td align="right">0.88</td>
+<td align="left">Isophorone</td>
+<td align="left">ug/l</td>
+<td align="right">28831.62</td>
+<td align="right">0.125</td>
+<td align="right">7.050</td>
+</tr>
+<tr class="even">
+<td align="left">58-08-2</td>
+<td align="left">81436</td>
+<td align="right">0.63</td>
+<td align="left">Caffeine</td>
+<td align="left">ug/l</td>
+<td align="right">63327.73</td>
+<td align="right">0.175</td>
+<td align="right">3.605</td>
+</tr>
+<tr class="odd">
+<td align="left">87-86-5</td>
+<td align="left">39032</td>
+<td align="right">7.30</td>
+<td align="left">Pentachlorophenol</td>
+<td align="left">ug/l</td>
+<td align="right">154921.05</td>
+<td align="right">2.284</td>
+<td align="right">3.196</td>
+</tr>
+<tr class="even">
+<td align="left">89-78-1</td>
+<td align="left">62827</td>
+<td align="right">0.30</td>
+<td align="left">dl-Menthol</td>
+<td align="left">ug/l</td>
+<td align="right">11496.23</td>
+<td align="right">0.145</td>
+<td align="right">2.070</td>
+</tr>
+<tr class="odd">
+<td align="left">119-61-9</td>
+<td align="left">62814</td>
+<td align="right">0.28</td>
+<td align="left">Benzophenone</td>
+<td align="left">ug/l</td>
+<td align="right">20771.15</td>
+<td align="right">0.138</td>
+<td align="right">2.033</td>
+</tr>
+<tr class="even">
+<td align="left">106-46-7</td>
+<td align="left">34571</td>
+<td align="right">0.13</td>
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">ug/l</td>
+<td align="right">13253.85</td>
+<td align="right">0.081</td>
+<td align="right">1.612</td>
+</tr>
+<tr class="odd">
+<td align="left">63-25-2</td>
+<td align="left">39750</td>
+<td align="right">0.46</td>
+<td align="left">Carbaryl</td>
+<td align="left">ug/l</td>
+<td align="right">43814.73</td>
+<td align="right">0.307</td>
+<td align="right">1.501</td>
+</tr>
+<tr class="even">
+<td align="left">84-66-2</td>
+<td align="left">34336</td>
+<td align="right">0.90</td>
+<td align="left">Diethyl phthalate</td>
+<td align="left">ug/l</td>
+<td align="right">25348.82</td>
+<td align="right">0.896</td>
+<td align="right">1.004</td>
+</tr>
+</tbody>
+</table>
+<div id="data-analysis-1" class="section level3">
+<h3>Data Analysis</h3>
+</div>
+<div id="relavent-censored-values" class="section level3">
+<h3>Relavent Censored Values</h3>
+<p>Remember that Dichlorvos, Metolachlor, Cotinine, Naphthalene, dl-Menthol have detection limits higher than at least one reported end point.</p>
+</div>
+</div>
+</div>
 
-<pre><code class="r">#It does!
-</code></pre>
 
-<p>For now, we&#39;ll focus on the minimum detection level:</p>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>

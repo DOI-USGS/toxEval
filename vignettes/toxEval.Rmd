@@ -17,6 +17,8 @@ options(continue=" ")
 options(width=100)
 library(knitr)
 library(rmarkdown)
+
+
 ```
 
 # Introduction
@@ -36,10 +38,10 @@ molweight
 
 ```
 
-## Workflow
+
 Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. 
 
-### Passive Data:
+## Passive Data
 Passive data was returned from the laboratory in a 'long' format. A sample of the data is shown below:
 
 ```{r echo=TRUE, eval=TRUE}
@@ -191,32 +193,6 @@ kable(maxMinSummaryNew, digits=2)
 
 ```
 
-
-
-
-
-
-
-
-```{r warning=FALSE}
-# sum(as.numeric(maxMinSummary$Max) > maxMinSummary$minEndPoint, na.rm = TRUE)
-
-```
-
-Most likely, those will be the most interested case is when at least one of the measured values is higher than the minimum endpoint value:
-
-
-```{r echo=FALSE, warning=FALSE}
-
-# maxMinSummaryNumber <- maxMinSummary
-# maxMinSummaryNumber$Max <- as.numeric(maxMinSummary$Max)
-# maxMinSummaryNumber <- maxMinSummaryNumber[!is.na(maxMinSummaryNumber$Max),]
-# 
-# kable(maxMinSummaryNumber[maxMinSummaryNumber$Max > maxMinSummaryNumber$minEndPoint,c(1:5,7:8,10:11)], 
-#       digits=2, row.names = FALSE)
-
-```
-
 ### Data Analysis
 
 
@@ -253,8 +229,6 @@ maxRatioBySite <- data.frame(site=names(passiveData)[siteColumnsIndex],
                              endpoint =  rep("", length(siteColumnsIndex)),
                              stringsAsFactors=FALSE)
 
-
-
 for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   oneSite <- passiveData[,c(commonColumns, i)]
   names(oneSite)[names(oneSite) == i] <- 'value'
@@ -272,17 +246,19 @@ for(i in names(passiveData)[siteColumnsIndex]){ # i = site columns
   }
 }
 
-maxRatioBySite <- maxRatioBySite[order(maxRatioBySite$ratio_perc, decreasing = TRUE),]
-names(maxRatioBySite) <- c("site", "Ratio [%]", "Chemical", "End Point")
-
+maxRatioBySite <- arrange(maxRatioBySite, desc(ratio_perc)) %>%
+  filter(ratio_perc > 1E-4) %>%
+  rename("Ratio [%]"=ratio_perc, 
+         "Chemical"=chemical, 
+         "End Point" = endpoint) 
 kable(maxRatioBySite, digits=2, row.names = FALSE)
 
 ```
 
-So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is `r maxRatioBySite[1,2]`, at site `r maxRatioBySite[1,1]`, from `r maxRatioBySite[1,3]`, based on endpoint `r maxRatioBySite[1,4]`
+So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is `r maxRatioBySite[1,2]`, at site `r maxRatioBySite[1,1]`, from `r maxRatioBySite[1,3]`, based on endpoint `r maxRatioBySite[1,4]`.
 
 
-### Water Sample Data:
+## Water Sample Data
 The data returned from water sample tests was returned in a 'wide' format:
 
 ```{r echo=TRUE, eval=TRUE}
@@ -365,7 +341,7 @@ endPoint <- rename(endPoint, Units=desiredUnits)
 
 ```
 
-First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually be very important):
+First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually may be important):
 
 ```{r warning=FALSE}
 maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
@@ -385,13 +361,67 @@ pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
 detectionLimits <- waterSamples[,grep("detectionLimit", names(waterSamples))]
 detectionLimits <- na.omit(detectionLimits)
 
-# Check if any changes over time:
+# Check if any change over time:
 all(apply(detectionLimits, 2, function(x) length(unique(x))==1))
 
-#It does!
+#They do!
 
 ```
 
 For now, we'll focus on the minimum detection level:
+```{r warning=FALSE}
+detLevels  <- data.frame(dl_pcode=names(detectionLimits),
+                         minDetLevel=apply(detectionLimits, 2, min),
+                         row.names=NULL, stringsAsFactors=FALSE) %>%
+  mutate(pCode=sapply(strsplit(dl_pcode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, pCode, minDetLevel) %>%
+  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
+  mutate(EAR=minDetLevel/minEndPoint) %>%
+  arrange(desc(EAR)) %>%
+  filter(EAR > 1)
 
+kable(detLevels, digits = 3)
+
+```
+
+This table shows us the chemicals that `r detLevels$chnm` may lead to issues since the detection levels are higher than some of the end point values.
+
+In this case therefore, we cannot simply ignore all of the left-censored values. However, for the time being, we will use only non-censored values in our analysis. Let's begin by trimming down the waterSamples data frame to only the relavent information. Here, we are setting all left-censored values to NA, we could instead use the detection limit.
+
+```{r}
+qualColumns <- grep("qualifier", names(waterSamples))
+valColumns <- grep("valueToUse", names(waterSamples))
+
+waterData <- waterSamples[,valColumns]
+waterData[waterSamples[,qualColumns] == "<"] <- NA
+
+
+```
+
+Now let's check how many maximum measured values are greater than the minimum endpoint values:
+
+```{r echo=FALSE, warning=FALSE}
+
+dataSummary  <- data.frame(pcode=names(waterData),
+                         maxValue=apply(waterData, 2, max, na.rm=TRUE),
+                         row.names=NULL, stringsAsFactors=FALSE)  %>%
+  mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, pCode, maxValue) %>%
+  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
+  mutate(EAR=maxValue/minEndPoint) %>%
+  arrange(desc(EAR)) %>%
+  filter(EAR > 1)
+  
+
+kable(dataSummary, digits=3)
+
+```
+
+
+### Data Analysis
+
+### Relavent Censored Values
+Remember that `r detLevels$chnm` have detection limits higher than at least one reported end point.
 
