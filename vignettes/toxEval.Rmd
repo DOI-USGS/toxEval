@@ -1,17 +1,25 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Introduction to toxEval}
--->
+---
+title: "Introduction to toxEval"
+author: "Steven R. Corsi, Laura A. De Cicco"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to toxEval}
+  \usepackage[utf8]{inputenc}
+---
+
 
 ```{r setup, include=FALSE}
-library(xtable)
 options(continue=" ")
 options(width=100)
 library(knitr)
+library(rmarkdown)
 ```
 
-# Introduction to toxEval
-By Laura A. De Cicco, Steven Corsi
+# Introduction
 
 This package **toxEval** is an early test version of the package that will encompass the various approaches to evaluate ToxCast data in relation to measured aquatic concentrations.
 

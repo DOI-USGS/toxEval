@@ -20,7 +20,7 @@ Imports:
     dplyr
 Suggests:
     webchem,
-    xtable,
+    rmarkdown,
     knitr,
     testthat,
     dataRetrieval
