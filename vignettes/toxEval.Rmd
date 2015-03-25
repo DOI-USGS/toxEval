@@ -460,6 +460,12 @@ kable(oneSiteLong, digits=3)
 
 ```
 
+We can extend our analsis to all sites and all times. Probably the easiest way to accomplish this is to maintain the waterSamples data structure, but replace the measured values with ratios.
+
+```{r}
+
+
+```
 
 
 ### Relavent Censored Values
