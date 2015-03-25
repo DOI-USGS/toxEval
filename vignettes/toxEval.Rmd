@@ -261,8 +261,18 @@ So for the passive dataset, the maximum ratio of the measured data to the endpoi
 ## Water Sample Data
 The data returned from water sample tests was returned in a 'wide' format:
 
-```{r echo=TRUE, eval=TRUE}
+```{r echo=FALSE}
 
+#Clear out local enviornment:
+rm(AC50, AC50Converted, dataSummary, dfToPrint,endPoint,
+   endPointData, maxMinSummary, maxMinSummaryNew, maxRatioBySite,
+   oneSite, passiveData, ratioPassive, casnRow, commonColumns, filePath,
+   i, infoColumns, maxEndPoints, maxIndexChemical, maxIndexEndpoint,
+   maxRatio, minEndPoints, packagePath, siteColumns, siteColumnsIndex, unitConversion)
+
+```
+
+```{r echo=TRUE, eval=TRUE}
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "waterSamples.RData")
 load(file=filePath)
@@ -396,6 +406,10 @@ valColumns <- grep("valueToUse", names(waterSamples))
 waterData <- waterSamples[,valColumns]
 waterData[waterSamples[,qualColumns] == "<"] <- NA
 
+#Let's get rid of rows with all NA's:
+naRows <- rowSums(is.na(waterData))!= ncol(waterData)
+waterData <- waterData[naRows,]
+waterSamples <- waterSamples[naRows,]
 
 ```
 
@@ -421,6 +435,32 @@ kable(dataSummary, digits=3)
 
 
 ### Data Analysis
+Let's start our analysis with one site on one day (the first reported the site: USGS-04101500, on 2010-09-13):
+
+```{r message=FALSE}
+
+oneSite <- cbind(waterSamples[,1:2],waterData) %>%
+  filter(site=="USGS-04101500") 
+
+valColumns <- grep("valueToUse",names(oneSite))
+
+oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
+                         value=as.numeric(oneSite[1,valColumns]),
+                         row.names=NULL, stringsAsFactors=FALSE) %>%
+  mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, pCode, value) %>%
+  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
+  filter(!is.na(value)) %>%
+  mutate(EAR=100*value/minEndPoint) %>%
+  arrange(desc(EAR)) %>%
+  rename("Ratio [%]"=EAR)
+  
+kable(oneSiteLong, digits=3)
+
+```
+
+
 
 ### Relavent Censored Values
 Remember that `r detLevels$chnm` have detection limits higher than at least one reported end point.

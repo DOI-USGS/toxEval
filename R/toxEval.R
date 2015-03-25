@@ -55,3 +55,15 @@ NULL
 #'assayEndpoints <- assayEndpoints
 #'head(assayEndpoints)
 NULL
+
+#' Endpoint information from ToxCast
+#' 
+#' Downloaded on March 20, 2015 from ToxCast dashboard
+#'
+#'@name endPointInfo
+#'@docType data
+#'@keywords datasets
+#'@examples
+#'endPointInfo <- endPointInfo
+#'head(endPointInfo[,1:5])
+NULL
