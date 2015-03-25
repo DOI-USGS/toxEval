@@ -63,6 +63,7 @@ NULL
 #'@name endPointInfo
 #'@docType data
 #'@keywords datasets
+#'@export endPointInfo 
 #'@examples
 #'endPointInfo <- endPointInfo
 #'head(endPointInfo[,1:5])
