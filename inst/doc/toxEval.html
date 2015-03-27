@@ -53,7 +53,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="header">
 <h1 class="title">Introduction to toxEval</h1>
 <h4 class="author"><em>Steven R. Corsi, Laura A. De Cicco</em></h4>
-<h4 class="date"><em>24 March, 2015</em></h4>
+<h4 class="date"><em>27 March, 2015</em></h4>
 </div>
 
 <div id="TOC">
@@ -91,6 +91,13 @@ molweight &lt;-<span class="st"> </span><span class="kw">cir_query</span>(<span 
 <pre class="sourceCode r"><code class="sourceCode r">packagePath &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;toxEval&quot;</span>)
 filePath &lt;-<span class="st"> </span><span class="kw">file.path</span>(packagePath, <span class="st">&quot;passiveData.RData&quot;</span>)
 <span class="kw">load</span>(<span class="dt">file=</span>filePath)
+<span class="co">#Site Info:</span>
+filePath &lt;-<span class="st"> </span><span class="kw">file.path</span>(packagePath, <span class="st">&quot;stationINFO.RData&quot;</span>)
+<span class="kw">load</span>(<span class="dt">file=</span>filePath)
+
+<span class="co"># Some chemicals have 2 rows (different units)...</span>
+<span class="co"># To simplify for now, we'll ignore the duplicate chemicals:</span>
+passiveData &lt;-<span class="st"> </span>passiveData[!<span class="kw">duplicated</span>(passiveData$CAS),]
 
 <span class="kw">head</span>(passiveData[,<span class="dv">1</span>:<span class="dv">7</span>])</code></pre>
 <pre><code>##                    Chemical Units MLD  MQL site04101500 site04102500 site04108660
@@ -110,7 +117,6 @@ filePath &lt;-<span class="st"> </span><span class="kw">file.path</span>(package
 
 <span class="co"># AC50 data provided in the toxEval package:</span>
 AC50gain &lt;-<span class="st"> </span>AC50gain
-
 <span class="kw">head</span>(AC50gain[,<span class="dv">1</span>:<span class="dv">5</span>])</code></pre>
 <pre><code>##        code  chid       casn                     chnm ACEA_T47D_80hr_Negative
 ## 1   C100005 20281   100-00-5  1-Chloro-4-nitrobenzene                      NA
@@ -133,18 +139,18 @@ MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
 
 unitConversion &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="kw">c</span>(<span class="dv">10</span>^<span class="dv">6</span>, <span class="dv">10</span>^<span class="dv">3</span>), <span class="kw">c</span>(<span class="st">&quot;pg/L&quot;</span>, <span class="st">&quot;ng/L&quot;</span>) )
 
-AC50 &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50gain, passiveData[,<span class="kw">c</span>(<span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>, <span class="st">&quot;mlWt&quot;</span>)],
+AC50 &lt;-<span class="st"> </span><span class="kw">right_join</span>(AC50gain[,<span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>), <span class="dt">drop=</span><span class="ot">FALSE</span>], 
+                   passiveData[,<span class="kw">c</span>(<span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>, <span class="st">&quot;mlWt&quot;</span>)],
                    <span class="dt">by=</span> <span class="kw">c</span>(<span class="st">&quot;casn&quot;</span> =<span class="st"> &quot;CAS&quot;</span>)) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(Units)) %&gt;%
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">desiredUnits =</span> Units) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(mlWt)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">conversion =</span> unitConversion[desiredUnits] *<span class="st"> </span>mlWt) %&gt;%
-<span class="st">  </span><span class="kw">select</span>(casn, chnm, desiredUnits, mlWt, conversion)</code></pre>
+<span class="st">  </span><span class="kw">select</span>(casn, desiredUnits, mlWt, conversion)</code></pre>
 <p>A sample of the AC50 data frame is shown here:</p>
 <table>
 <thead>
 <tr class="header">
 <th align="left">casn</th>
-<th align="left">chnm</th>
 <th align="left">desiredUnits</th>
 <th align="right">mlWt</th>
 <th align="right">conversion</th>
@@ -152,82 +158,81 @@ AC50 &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50gain, p
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">101-20-2</td>
-<td align="left">Triclocarban</td>
-<td align="left">ng/L</td>
-<td align="right">315.59</td>
-<td align="right">315585.9</td>
+<td align="left">1582-09-8</td>
+<td align="left">pg/L</td>
+<td align="right">335.28</td>
+<td align="right">335282300</td>
 </tr>
 <tr class="even">
-<td align="left">1024-57-3</td>
-<td align="left">Heptachlor epoxide</td>
+<td align="left">118-74-1</td>
 <td align="left">pg/L</td>
-<td align="right">389.32</td>
-<td align="right">389319900.0</td>
+<td align="right">284.78</td>
+<td align="right">284784000</td>
 </tr>
 <tr class="odd">
-<td align="left">1031-07-8</td>
-<td align="left">Endosulfan sulfate</td>
+<td align="left">1825-21-4</td>
 <td align="left">pg/L</td>
-<td align="right">422.92</td>
-<td align="right">422922000.0</td>
+<td align="right">280.37</td>
+<td align="right">280365100</td>
 </tr>
 <tr class="even">
-<td align="left">103-90-2</td>
-<td align="left">Acetaminophen</td>
-<td align="left">ng/L</td>
-<td align="right">151.16</td>
-<td align="right">151164.6</td>
+<td align="left">79538-32-2</td>
+<td align="left">pg/L</td>
+<td align="right">418.74</td>
+<td align="right">418738200</td>
 </tr>
 <tr class="odd">
-<td align="left">106-46-7</td>
-<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">319-85-7</td>
 <td align="left">pg/L</td>
-<td align="right">147.00</td>
-<td align="right">147003600.0</td>
+<td align="right">290.83</td>
+<td align="right">290831400</td>
 </tr>
 <tr class="even">
-<td align="left">108-95-2</td>
-<td align="left">Phenol</td>
+<td align="left">76-44-8</td>
 <td align="left">pg/L</td>
-<td align="right">94.11</td>
-<td align="right">94112800.0</td>
+<td align="right">373.32</td>
+<td align="right">373320500</td>
 </tr>
 </tbody>
 </table>
 <p>Next we can create a data frame with the AC50 converted endpoints:</p>
 <pre class="sourceCode r"><code class="sourceCode r">AC50Converted &lt;-<span class="st"> </span><span class="kw">left_join</span>(AC50, AC50gain)</code></pre>
-<pre><code>## Joining by: c(&quot;casn&quot;, &quot;chnm&quot;)</code></pre>
+<pre><code>## Joining by: &quot;casn&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">infoColumns &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>, <span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;desiredUnits&quot;</span>,<span class="st">&quot;mlWt&quot;</span>, <span class="st">&quot;conversion&quot;</span>, <span class="st">&quot;code&quot;</span>,<span class="st">&quot;chid&quot;</span>)
 
 endPointData &lt;-<span class="st"> </span>AC50Converted[,!(<span class="kw">names</span>(AC50Converted) %in%<span class="st"> </span>infoColumns)]
 endPointData &lt;-<span class="st"> </span><span class="dv">10</span>^endPointData
 endPointData &lt;-<span class="st"> </span>endPointData *<span class="st"> </span>AC50Converted$conversion
-endPoint &lt;-<span class="st"> </span><span class="kw">cbind</span>(AC50, <span class="kw">data.frame</span>(endPointData))
-endPoint &lt;-<span class="st"> </span><span class="kw">rename</span>(endPoint, <span class="dt">Units=</span>desiredUnits)</code></pre>
+endPoint &lt;-<span class="st"> </span><span class="kw">cbind</span>(AC50, <span class="kw">data.frame</span>(endPointData)) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">Units=</span>desiredUnits) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">rowSums</span>(<span class="kw">is.na</span>(endPointData)) !=<span class="st"> </span><span class="kw">ncol</span>(endPointData))
+
+endPointData &lt;-<span class="st"> </span>endPointData[<span class="kw">rowSums</span>(<span class="kw">is.na</span>(endPointData)) !=<span class="st"> </span>
+<span class="st">                               </span><span class="kw">ncol</span>(endPointData),]</code></pre>
 <p>Now, let’s look at the extreme reported endpoint (not including NA’s):</p>
 <pre class="sourceCode r"><code class="sourceCode r">maxEndPoints &lt;-<span class="st"> </span><span class="kw">apply</span>(endPointData, <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) 
 minEndPoints &lt;-<span class="st"> </span><span class="kw">apply</span>(endPointData, <span class="dv">1</span>, min, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)
 
-maxMinSummary &lt;-<span class="st"> </span><span class="kw">cbind</span>(endPoint[,<span class="kw">c</span>(<span class="st">&quot;chnm&quot;</span>, <span class="st">&quot;casn&quot;</span>, <span class="st">&quot;Units&quot;</span>)], 
+maxMinSummary &lt;-<span class="st"> </span><span class="kw">cbind</span>(endPoint[,<span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>, <span class="st">&quot;Units&quot;</span>)], 
                        <span class="dt">maxEndPoint=</span>maxEndPoints, 
-                       <span class="dt">minEndPoint=</span>minEndPoints)</code></pre>
+                       <span class="dt">minEndPoint=</span>minEndPoints) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(casn))</code></pre>
 <p>Next, let’s determine if the MQL or MLD are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.</p>
 <pre class="sourceCode r"><code class="sourceCode r">siteColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;site&quot;</span>,<span class="kw">names</span>(passiveData))
 maxMinSummary &lt;-<span class="st"> </span><span class="kw">left_join</span>(maxMinSummary,passiveData[,-siteColumns], 
-                           <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>=<span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>=<span class="st">&quot;Units&quot;</span>))</code></pre>
+                           <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span>=<span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>=<span class="st">&quot;Units&quot;</span>)) </code></pre>
 <p>If any of the MLD are higher than the maxEndPoint, we wouldn’t be able to make any conclusions about the toxicity of the water:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(maxMinSummary$MLD &gt;<span class="st"> </span>maxMinSummary$minEndPoint)</code></pre>
 <pre><code>## [1] 0</code></pre>
 <p>So, 0 measurements have detection limitations that are greater than the minimum endpoint concentration. We might be interested to know how close the detection limit values come to the minimum endpoints.</p>
-<p>The following chemicals have MLD’s within 0.01 of the miniumum endpoint value:</p>
+<p>The following chemicals have MLD’s within 1% of the miniumum endpoint value:</p>
 <table>
 <thead>
 <tr class="header">
-<th align="left">chnm</th>
+<th align="left">Chemical</th>
 <th align="right">minEndPoint</th>
 <th align="right">MLD</th>
-<th align="right">Maximum Ratio</th>
+<th align="right">Max EAR [%]</th>
 </tr>
 </thead>
 <tbody>
@@ -235,43 +240,37 @@ maxMinSummary &lt;-<span class="st"> </span><span class="kw">left_join</span>(ma
 <td align="left">Naphthalene</td>
 <td align="right">11723.73</td>
 <td align="right">2100.00</td>
-<td align="right">0.18</td>
+<td align="right">17.91</td>
 </tr>
 <tr class="even">
 <td align="left">Fluorene</td>
 <td align="right">1680.89</td>
 <td align="right">100.00</td>
-<td align="right">0.06</td>
+<td align="right">5.95</td>
 </tr>
 <tr class="odd">
-<td align="left">Cotinine</td>
-<td align="right">11.44</td>
-<td align="right">0.47</td>
-<td align="right">0.04</td>
-</tr>
-<tr class="even">
 <td align="left">Aspirin</td>
 <td align="right">13.55</td>
 <td align="right">0.42</td>
-<td align="right">0.03</td>
-</tr>
-<tr class="odd">
-<td align="left">Heptachlor epoxide</td>
-<td align="right">14653.94</td>
-<td align="right">390.00</td>
-<td align="right">0.03</td>
+<td align="right">3.13</td>
 </tr>
 <tr class="even">
+<td align="left">Heptachlor Epoxide</td>
+<td align="right">14653.94</td>
+<td align="right">390.00</td>
+<td align="right">2.66</td>
+</tr>
+<tr class="odd">
 <td align="left">Erythromycin</td>
 <td align="right">6.96</td>
 <td align="right">0.13</td>
-<td align="right">0.02</td>
+<td align="right">1.83</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">1,4-Dichlorobenzene</td>
 <td align="right">80634.30</td>
 <td align="right">920.00</td>
-<td align="right">0.01</td>
+<td align="right">1.14</td>
 </tr>
 </tbody>
 </table>
@@ -282,13 +281,33 @@ passiveData[,siteColumns] &lt;-<span class="st"> </span><span class="kw">sapply<
 <span class="co">#For this analysis, we'll consider NA's to be 0 (other options exist):</span>
 passiveData[,siteColumns][<span class="kw">is.na</span>(passiveData[,siteColumns])] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre>
 <p>Now let’s check if the maximum measured values are greater than the minimum endpoint values:</p>
+<pre class="sourceCode r"><code class="sourceCode r">siteKey &lt;-<span class="st"> </span><span class="kw">setNames</span>(stationINFO$shortName, stationINFO$STAID)
+
+dataSummary &lt;-<span class="st"> </span><span class="kw">select</span>(passiveData, CAS, Units) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">maxMeasure =</span> <span class="kw">apply</span>(passiveData[,siteColumns], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">minMeasure =</span> <span class="kw">apply</span>(passiveData[,siteColumns], <span class="dv">1</span>, min, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">maxIndex =</span> <span class="kw">apply</span>(passiveData[,siteColumns], <span class="dv">1</span>, which.max)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">site =</span> <span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,<span class="kw">names</span>(passiveData[,siteColumns])[maxIndex])) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">shortname =</span> siteKey[site])
+
+maxMinSummaryNew &lt;-<span class="st"> </span><span class="kw">left_join</span>(maxMinSummary, dataSummary, 
+                              <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casn&quot;</span> =<span class="st"> &quot;CAS&quot;</span>, <span class="st">&quot;Units&quot;</span>=<span class="st">&quot;Units&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR =</span> maxMeasure*<span class="dv">100</span>/minEndPoint) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(EAR &gt;<span class="st"> </span><span class="dv">10</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(EAR)) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(Chemical, minEndPoint, maxMeasure, EAR, shortname) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;EAR [%]&quot;</span>=EAR, <span class="st">&quot;Station&quot;</span>=shortname)
+  
+
+<span class="kw">kable</span>(maxMinSummaryNew, <span class="dt">digits=</span><span class="dv">2</span>)</code></pre>
 <table>
 <thead>
 <tr class="header">
 <th align="left">Chemical</th>
 <th align="right">minEndPoint</th>
 <th align="right">maxMeasure</th>
-<th align="right">EAR</th>
+<th align="right">EAR [%]</th>
+<th align="left">Station</th>
 </tr>
 </thead>
 <tbody>
@@ -296,127 +315,58 @@ passiveData[,siteColumns][<span class="kw">is.na</span>(passiveData[,siteColumns
 <td align="left">Fluorene</td>
 <td align="right">1680.89</td>
 <td align="right">15000.00</td>
-<td align="right">8.92</td>
+<td align="right">892.39</td>
+<td align="left">IndianaHC</td>
 </tr>
 <tr class="even">
-<td align="left">Cotinine</td>
-<td align="right">11.44</td>
-<td align="right">19.84</td>
-<td align="right">1.73</td>
-</tr>
-<tr class="odd">
 <td align="left">Erythromycin</td>
 <td align="right">6.96</td>
 <td align="right">11.73</td>
-<td align="right">1.69</td>
+<td align="right">168.62</td>
+<td align="left">Cuyahoga</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Aspirin</td>
 <td align="right">13.55</td>
 <td align="right">14.99</td>
-<td align="right">1.11</td>
-</tr>
-<tr class="odd">
-<td align="left">Caffeine</td>
-<td align="right">174.77</td>
-<td align="right">89.05</td>
-<td align="right">0.51</td>
+<td align="right">110.65</td>
+<td align="left">Rouge</td>
 </tr>
 <tr class="even">
 <td align="left">Naphthalene</td>
 <td align="right">11723.73</td>
 <td align="right">5500.00</td>
-<td align="right">0.47</td>
+<td align="right">46.91</td>
+<td align="left">Fox</td>
 </tr>
 <tr class="odd">
 <td align="left">Gemfibrozil</td>
 <td align="right">15.88</td>
 <td align="right">4.68</td>
-<td align="right">0.29</td>
+<td align="right">29.47</td>
+<td align="left">Saginaw</td>
 </tr>
 <tr class="even">
 <td align="left">Hydrochlorothiazide (HCTZ)</td>
 <td align="right">185.21</td>
 <td align="right">23.05</td>
-<td align="right">0.12</td>
-</tr>
-<tr class="odd">
-<td align="left">Benzo[b]fluoranthene</td>
-<td align="right">1009259.20</td>
-<td align="right">69000.00</td>
-<td align="right">0.07</td>
-</tr>
-<tr class="even">
-<td align="left">Dichlorvos</td>
-<td align="right">2194.20</td>
-<td align="right">150.00</td>
-<td align="right">0.07</td>
-</tr>
-<tr class="odd">
-<td align="left">Heptachlor Epoxide</td>
-<td align="right">14653.94</td>
-<td align="right">820.00</td>
-<td align="right">0.06</td>
-</tr>
-<tr class="even">
-<td align="left">Acetaminophen</td>
-<td align="right">1083.10</td>
-<td align="right">53.98</td>
-<td align="right">0.05</td>
-</tr>
-<tr class="odd">
-<td align="left">Pyrene</td>
-<td align="right">10926346.82</td>
-<td align="right">360000.00</td>
-<td align="right">0.03</td>
-</tr>
-<tr class="even">
-<td align="left">Benz[a]anthracene</td>
-<td align="right">2286992.89</td>
-<td align="right">65000.00</td>
-<td align="right">0.03</td>
-</tr>
-<tr class="odd">
-<td align="left">Fluoranthene</td>
-<td align="right">9752941.08</td>
-<td align="right">240000.00</td>
-<td align="right">0.02</td>
-</tr>
-<tr class="even">
-<td align="left">Pentachloroanisole (PCA)</td>
-<td align="right">252346.71</td>
-<td align="right">5200.00</td>
-<td align="right">0.02</td>
-</tr>
-<tr class="odd">
-<td align="left">Phenanthrene</td>
-<td align="right">4970654.40</td>
-<td align="right">86000.00</td>
-<td align="right">0.02</td>
-</tr>
-<tr class="even">
-<td align="left">Biphenyl</td>
-<td align="right">37036.01</td>
-<td align="right">640.00</td>
-<td align="right">0.02</td>
-</tr>
-<tr class="odd">
-<td align="left">Dibenzo[a,h]anthracene</td>
-<td align="right">252855.00</td>
-<td align="right">3700.00</td>
-<td align="right">0.01</td>
-</tr>
-<tr class="even">
-<td align="left">1-methylnaphthalene</td>
-<td align="right">1516348.51</td>
-<td align="right">19000.00</td>
-<td align="right">0.01</td>
+<td align="right">12.44</td>
+<td align="left">Clinton</td>
 </tr>
 </tbody>
 </table>
+<p>For now, let’s focus on the minumum endpoint for each chemical. Later, we can decide to choose some other method for determining endpoints.</p>
+<pre class="sourceCode r"><code class="sourceCode r">endPointSummary &lt;-<span class="st"> </span><span class="kw">select</span>(endPoint, casn, Units) %&gt;%<span class="st">  </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">minEndPoint =</span> <span class="kw">apply</span>(endPointData, <span class="dv">1</span>, min, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) %&gt;%
+<span class="st">  </span><span class="co">#Other filters would be done here (for example, only ATG, or find the closest)</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">endPoint =</span> <span class="kw">colnames</span>(endPointData)[<span class="kw">apply</span>(endPointData, <span class="dv">1</span>, which.min)]) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(casn %in%<span class="st"> </span>passiveData$CAS &amp;
+<span class="st">           </span>Units %in%<span class="st"> </span>passiveData$Units) %&gt;%
+<span class="st">  </span><span class="kw">slice</span>(<span class="kw">match</span>(passiveData$CAS, casn)[!<span class="kw">is.na</span>(<span class="kw">match</span>(passiveData$CAS, casn))]) 
+<span class="co"># kable(head(endPointSummary), digits=2)</span></code></pre>
 <div id="data-analysis" class="section level3">
 <h3>Data Analysis</h3>
-<p>Let’s start our analysis with one site (the first of the site columns: site04101500):</p>
+<p>Let’s start our analysis with one site (the first of the site columns: StJoseph):</p>
 <pre class="sourceCode r"><code class="sourceCode r">commonColumns &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Chemical&quot;</span>, <span class="st">&quot;Units&quot;</span>, 
                   <span class="st">&quot;MLD&quot;</span>, <span class="st">&quot;MQL&quot;</span>, <span class="st">&quot;CAS&quot;</span>, <span class="st">&quot;mlWt&quot;</span>)
 oneSite &lt;-<span class="st"> </span>passiveData[,<span class="kw">c</span>(commonColumns, <span class="st">&quot;site04101500&quot;</span>)]
@@ -430,288 +380,104 @@ oneSite &lt;-<span class="st"> </span><span class="kw">rename</span>(oneSite, <s
 ## 5 alpha-Benzenehexachloride  pg/L 190  570   319-85-6       NA     0
 ## 6                   Lindane  pg/L 850 2400    59-89-9       NA     0</code></pre>
 <p>We can now look at the ratio of the measured data to the endpoints:</p>
-<pre class="sourceCode r"><code class="sourceCode r">casnRow &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(oneSite),oneSite$CAS)
-ratioPassive &lt;-<span class="st"> </span>oneSite[casnRow[endPoint$casn],<span class="st">&quot;value&quot;</span>] /<span class="st"> </span>endPointData
-maxRatio &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(<span class="kw">max</span>(<span class="kw">apply</span>(ratioPassive[,siteColumns], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) ))</code></pre>
-<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at the first site is 0.0024879.</p>
+<pre class="sourceCode r"><code class="sourceCode r">passiveRatio &lt;-<span class="st"> </span><span class="kw">right_join</span>(oneSite, endPointSummary, 
+                           <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;CAS&quot;</span>=<span class="st">&quot;casn&quot;</span>, <span class="st">&quot;Units&quot;</span>=<span class="st">&quot;Units&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR =</span> value*<span class="dv">100</span>/minEndPoint)</code></pre>
+<p>So for the passive dataset, at StJoseph, the maximum ratio of the measured data to the endpoints for all chemicals at the first site is 114.3763644 %.</p>
 <p>Extending this to all sites:</p>
-<pre class="sourceCode r"><code class="sourceCode r">siteColumnsIndex &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;site&quot;</span>, <span class="kw">names</span>(passiveData))
-maxRatioBySite &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">site=</span><span class="kw">names</span>(passiveData)[siteColumnsIndex],
-                             <span class="dt">ratio_perc=</span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="kw">length</span>(siteColumnsIndex)),
-                             <span class="dt">chemical =</span> <span class="kw">rep</span>(<span class="st">&quot;&quot;</span>, <span class="kw">length</span>(siteColumnsIndex)),
-                             <span class="dt">endpoint =</span>  <span class="kw">rep</span>(<span class="st">&quot;&quot;</span>, <span class="kw">length</span>(siteColumnsIndex)),
-                             <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
+<pre class="sourceCode r"><code class="sourceCode r">siteColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;site&quot;</span>,<span class="kw">names</span>(passiveData))
+passiveRatio &lt;-<span class="st"> </span><span class="kw">right_join</span>(passiveData, endPointSummary, 
+                           <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;CAS&quot;</span>=<span class="st">&quot;casn&quot;</span>, <span class="st">&quot;Units&quot;</span>=<span class="st">&quot;Units&quot;</span>))
+passiveRatio[,siteColumns] &lt;-<span class="st"> </span>passiveRatio[,siteColumns]*<span class="dv">100</span>/passiveRatio$minEndPoint
 
-for(i in <span class="kw">names</span>(passiveData)[siteColumnsIndex]){ <span class="co"># i = site columns</span>
-  oneSite &lt;-<span class="st"> </span>passiveData[,<span class="kw">c</span>(commonColumns, i)]
-  <span class="kw">names</span>(oneSite)[<span class="kw">names</span>(oneSite) ==<span class="st"> </span>i] &lt;-<span class="st"> 'value'</span>
-  casnRow &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span>:<span class="kw">nrow</span>(oneSite),oneSite$CAS) <span class="co"># casnRow gets index of CAS in oneSite</span>
-  ratioPassive &lt;-<span class="st"> </span>oneSite[casnRow[endPoint$casn],<span class="st">&quot;value&quot;</span>] /<span class="st"> </span>endPointData
-  
-  maxRatio &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">apply</span>(ratioPassive[,siteColumnsIndex], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) )*<span class="dv">100</span>
-  maxRatioBySite[maxRatioBySite$site ==<span class="st"> </span>i,<span class="st">&quot;ratio_perc&quot;</span>] &lt;-<span class="st"> </span>maxRatio
-  
-  if(<span class="kw">is.finite</span>(maxRatio)){
-    maxIndexChemical &lt;-<span class="st"> </span><span class="kw">which.max</span>(<span class="kw">apply</span>(ratioPassive[,siteColumnsIndex], <span class="dv">1</span>, max, <span class="dt">na.rm=</span><span class="ot">TRUE</span>) )
-    maxIndexEndpoint &lt;-<span class="st"> </span><span class="kw">apply</span>(ratioPassive[,siteColumnsIndex], <span class="dv">1</span>, which.max)[[maxIndexChemical]]
-    maxRatioBySite[maxRatioBySite$site ==<span class="st"> </span>i,<span class="st">&quot;chemical&quot;</span>] &lt;-<span class="st"> </span>passiveData$Chemical[maxIndexChemical]
-    maxRatioBySite[maxRatioBySite$site ==<span class="st"> </span>i,<span class="st">&quot;endpoint&quot;</span>] &lt;-<span class="st"> </span><span class="kw">names</span>(endPoint)[maxIndexEndpoint]
-  }
-}
+maxKey &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="kw">apply</span>(passiveRatio[,siteColumns], <span class="dv">2</span>, max),
+                   <span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>, <span class="kw">names</span>(passiveRatio[,siteColumns])))
+chemKey &lt;-<span class="st"> </span><span class="kw">setNames</span>(passiveRatio$Chemical[<span class="kw">apply</span>(passiveRatio[,siteColumns], <span class="dv">2</span>, which.max)],
+                   <span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>, <span class="kw">names</span>(passiveRatio[,siteColumns])))
 
-maxRatioBySite &lt;-<span class="st"> </span><span class="kw">arrange</span>(maxRatioBySite, <span class="kw">desc</span>(ratio_perc)) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(ratio_perc &gt;<span class="st"> </span><span class="fl">1E-4</span>) %&gt;%
-<span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;Ratio [%]&quot;</span>=ratio_perc, 
-         <span class="st">&quot;Chemical&quot;</span>=chemical, 
-         <span class="st">&quot;End Point&quot;</span> =<span class="st"> </span>endpoint) 
+maxRatioBySite &lt;-<span class="st">  </span><span class="kw">data.frame</span>(<span class="dt">site=</span><span class="kw">names</span>(passiveData)[siteColumns],
+                             <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">shortName =</span> siteKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">maxRatio =</span> maxKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Chemical =</span> chemKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(maxRatio &gt;<span class="st"> </span><span class="dv">50</span>) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(maxRatio)) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(shortName, maxRatio, Chemical) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">Station=</span>shortName, <span class="st">&quot;Max Ratio [%]&quot;</span>=maxRatio)
+ 
 <span class="kw">kable</span>(maxRatioBySite, <span class="dt">digits=</span><span class="dv">2</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">site</th>
-<th align="right">Ratio [%]</th>
+<th align="left">Station</th>
+<th align="right">Max Ratio [%]</th>
 <th align="left">Chemical</th>
-<th align="left">End Point</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">site04092750</td>
-<td align="right">6.84</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04201500</td>
-<td align="right">4.98</td>
-<td align="left">Tefluthrin</td>
-<td align="left">APR_HepG2_CellCycleArrest_72h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04166500</td>
-<td align="right">1.98</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04086000</td>
-<td align="right">1.25</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site040851385</td>
-<td align="right">1.07</td>
-<td align="left">Camphor</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04085427</td>
-<td align="right">0.88</td>
-<td align="left">Tefluthrin</td>
-<td align="left">APR_HepG2_CellCycleArrest_72h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04165500</td>
-<td align="right">0.68</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04174500</td>
-<td align="right">0.62</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04095090</td>
-<td align="right">0.51</td>
-<td align="left">Camphor</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04199000</td>
-<td align="right">0.46</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04040000</td>
-<td align="right">0.45</td>
-<td align="left">Camphor</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04208000</td>
-<td align="right">0.37</td>
-<td align="left">beta-Benzenehexachloride</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04132052</td>
-<td align="right">0.34</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04200500</td>
-<td align="right">0.34</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04195500</td>
-<td align="right">0.33</td>
-<td align="left">beta-Benzenehexachloride</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04212100</td>
-<td align="right">0.29</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04102500</td>
-<td align="right">0.28</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04101500</td>
-<td align="right">0.25</td>
-<td align="left">beta-Benzenehexachloride</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04128500</td>
-<td align="right">0.14</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04249000</td>
-<td align="right">0.08</td>
-<td align="left">Phenol</td>
-<td align="left">APR_HepG2_NuclearSize_1h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04119400</td>
-<td align="right">0.08</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04067500</td>
-<td align="right">0.07</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04029990</td>
-<td align="right">0.06</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04024000</td>
-<td align="right">0.06</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04108660</td>
-<td align="right">0.06</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="even">
-<td align="left">site04135020</td>
-<td align="right">0.06</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04157000</td>
-<td align="right">0.05</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04249000.1</td>
-<td align="right">0.05</td>
-<td align="left">beta-Benzenehexachloride</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04231600</td>
-<td align="right">0.04</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04176500</td>
-<td align="right">0.04</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04121970</td>
-<td align="right">0.04</td>
-<td align="left">beta-Benzenehexachloride</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_72h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04260500</td>
-<td align="right">0.03</td>
-<td align="left">cis-Permethrin</td>
-<td align="left">APR_HepG2_MicrotubuleCSK_24h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04213500</td>
-<td align="right">0.03</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04045500</td>
-<td align="right">0.03</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="odd">
-<td align="left">site04199500</td>
-<td align="right">0.03</td>
-<td align="left">Triethyl phosphate (TEP)</td>
-<td align="left">APR_HepG2_CellCycleArrest_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04193500</td>
-<td align="right">0.03</td>
-<td align="left">Mirex</td>
-<td align="left">APR_HepG2_OxidativeStress_72h_dn</td>
-</tr>
-<tr class="odd">
-<td align="left">site04269000</td>
-<td align="right">0.01</td>
-<td align="left">Menthol</td>
-<td align="left">APR_HepG2_MitoMass_1h_up</td>
-</tr>
-<tr class="even">
-<td align="left">site04056500</td>
-<td align="right">0.00</td>
+<td align="left">IndianaHC</td>
+<td align="right">892.39</td>
 <td align="left">Fluorene</td>
-<td align="left">APR_HepG2_OxidativeStress_72h_up</td>
+</tr>
+<tr class="even">
+<td align="left">Sheboygan</td>
+<td align="right">452.14</td>
+<td align="left">Fluorene</td>
 </tr>
 <tr class="odd">
-<td align="left">site04122200</td>
-<td align="right">0.00</td>
-<td align="left">Chlorpyrifos</td>
-<td align="left">APR_HepG2_OxidativeStress_24h_up</td>
+<td align="left">Rouge</td>
+<td align="right">190.38</td>
+<td align="left">Fluorene</td>
+</tr>
+<tr class="even">
+<td align="left">Cuyahoga</td>
+<td align="right">168.62</td>
+<td align="left">Erythromycin</td>
+</tr>
+<tr class="odd">
+<td align="left">Rocky</td>
+<td align="right">157.52</td>
+<td align="left">Erythromycin</td>
+</tr>
+<tr class="even">
+<td align="left">Portage</td>
+<td align="right">152.26</td>
+<td align="left">Erythromycin</td>
+</tr>
+<tr class="odd">
+<td align="left">StJoseph</td>
+<td align="right">114.38</td>
+<td align="left">Erythromycin</td>
+</tr>
+<tr class="even">
+<td align="left">GrandOH</td>
+<td align="right">101.14</td>
+<td align="left">Fluorene</td>
+</tr>
+<tr class="odd">
+<td align="left">HuronOH</td>
+<td align="right">89.24</td>
+<td align="left">Fluorene</td>
+</tr>
+<tr class="even">
+<td align="left">Fox</td>
+<td align="right">77.34</td>
+<td align="left">Fluorene</td>
+</tr>
+<tr class="odd">
+<td align="left">Clinton</td>
+<td align="right">65.44</td>
+<td align="left">Fluorene</td>
+</tr>
+<tr class="even">
+<td align="left">BlackOH</td>
+<td align="right">57.71</td>
+<td align="left">Fluorene</td>
 </tr>
 </tbody>
 </table>
-<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is 6.8366976, at site site04092750, from cis-Permethrin, based on endpoint APR_HepG2_MicrotubuleCSK_24h_dn.</p>
+<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is 892.3850368, at site IndianaHC, from Fluorene, based on endpoint .</p>
 </div>
 </div>
 <div id="water-sample-data" class="section level2">
@@ -804,7 +570,7 @@ detectionLimits &lt;-<span class="st"> </span><span class="kw">na.omit</span>(de
 <span class="st">  </span><span class="kw">right_join</span>(maxMinSummary, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casrn&quot;</span>=<span class="st">&quot;casn&quot;</span>)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR=</span>minDetLevel/minEndPoint) %&gt;%
 <span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(EAR &gt;<span class="st"> </span><span class="dv">1</span>)
+<span class="st">  </span><span class="kw">filter</span>(EAR &gt;<span class="st"> </span><span class="fl">0.1</span>)
 
 <span class="kw">kable</span>(detLevels, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
 <table>
@@ -871,9 +637,169 @@ detectionLimits &lt;-<span class="st"> </span><span class="kw">na.omit</span>(de
 <td align="right">0.145</td>
 <td align="right">1.380</td>
 </tr>
+<tr class="even">
+<td align="left">106-46-7</td>
+<td align="left">34571</td>
+<td align="right">0.06</td>
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">ug/l</td>
+<td align="right">13253.85</td>
+<td align="right">0.081</td>
+<td align="right">0.744</td>
+</tr>
+<tr class="odd">
+<td align="left">119-36-8</td>
+<td align="left">62828</td>
+<td align="right">0.08</td>
+<td align="left">Methyl salicylate</td>
+<td align="left">ug/l</td>
+<td align="right">21882.32</td>
+<td align="right">0.137</td>
+<td align="right">0.584</td>
+</tr>
+<tr class="even">
+<td align="left">119-61-9</td>
+<td align="left">62814</td>
+<td align="right">0.08</td>
+<td align="left">Benzophenone</td>
+<td align="left">ug/l</td>
+<td align="right">20771.15</td>
+<td align="right">0.138</td>
+<td align="right">0.581</td>
+</tr>
+<tr class="odd">
+<td align="left">140-66-9</td>
+<td align="left">62810</td>
+<td align="right">0.40</td>
+<td align="left">4-(1,1,3,3-Tetramethylbutyl)phenol</td>
+<td align="left">ug/l</td>
+<td align="right">58721.75</td>
+<td align="right">0.834</td>
+<td align="right">0.479</td>
+</tr>
+<tr class="even">
+<td align="left">58-08-2</td>
+<td align="left">81436</td>
+<td align="right">0.08</td>
+<td align="left">Caffeine</td>
+<td align="left">ug/l</td>
+<td align="right">63327.73</td>
+<td align="right">0.175</td>
+<td align="right">0.458</td>
+</tr>
+<tr class="odd">
+<td align="left">115-86-6</td>
+<td align="left">62834</td>
+<td align="right">0.08</td>
+<td align="left">Triphenyl phosphate</td>
+<td align="left">ug/l</td>
+<td align="right">82545.03</td>
+<td align="right">0.199</td>
+<td align="right">0.402</td>
+</tr>
+<tr class="even">
+<td align="left">87-86-5</td>
+<td align="left">39032</td>
+<td align="right">0.80</td>
+<td align="left">Pentachlorophenol</td>
+<td align="left">ug/l</td>
+<td align="right">154921.05</td>
+<td align="right">2.284</td>
+<td align="right">0.350</td>
+</tr>
+<tr class="odd">
+<td align="left">134-62-3</td>
+<td align="left">61947</td>
+<td align="right">0.04</td>
+<td align="left">DEET</td>
+<td align="left">ug/l</td>
+<td align="right">20867.84</td>
+<td align="right">0.116</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="even">
+<td align="left">78-59-1</td>
+<td align="left">34408</td>
+<td align="right">0.04</td>
+<td align="left">Isophorone</td>
+<td align="left">ug/l</td>
+<td align="right">28831.62</td>
+<td align="right">0.125</td>
+<td align="right">0.320</td>
+</tr>
+<tr class="odd">
+<td align="left">1912-24-9</td>
+<td align="left">39630</td>
+<td align="right">0.16</td>
+<td align="left">Atrazine</td>
+<td align="left">ug/l</td>
+<td align="right">22305.55</td>
+<td align="right">0.541</td>
+<td align="right">0.296</td>
+</tr>
+<tr class="even">
+<td align="left">84-66-2</td>
+<td align="left">34336</td>
+<td align="right">0.20</td>
+<td align="left">Diethyl phthalate</td>
+<td align="left">ug/l</td>
+<td align="right">25348.82</td>
+<td align="right">0.896</td>
+<td align="right">0.223</td>
+</tr>
+<tr class="odd">
+<td align="left">63-25-2</td>
+<td align="left">39750</td>
+<td align="right">0.06</td>
+<td align="left">Carbaryl</td>
+<td align="left">ug/l</td>
+<td align="right">43814.73</td>
+<td align="right">0.307</td>
+<td align="right">0.196</td>
+</tr>
+<tr class="even">
+<td align="left">314-40-9</td>
+<td align="left">30234</td>
+<td align="right">0.16</td>
+<td align="left">Bromacil</td>
+<td align="left">ug/l</td>
+<td align="right">29342.47</td>
+<td align="right">1.044</td>
+<td align="right">0.153</td>
+</tr>
+<tr class="odd">
+<td align="left">121-00-6</td>
+<td align="left">61702</td>
+<td align="right">0.16</td>
+<td align="left">2-tert-Butyl-4-methoxyphenol</td>
+<td align="left">ug/l</td>
+<td align="right">29495.54</td>
+<td align="right">1.410</td>
+<td align="right">0.113</td>
+</tr>
+<tr class="even">
+<td align="left">1610-18-0</td>
+<td align="left">39056</td>
+<td align="right">0.16</td>
+<td align="left">Prometon</td>
+<td align="left">ug/l</td>
+<td align="right">64119.51</td>
+<td align="right">1.481</td>
+<td align="right">0.108</td>
+</tr>
+<tr class="odd">
+<td align="left">333-41-5</td>
+<td align="left">39570</td>
+<td align="right">0.20</td>
+<td align="left">Diazinon</td>
+<td align="left">ug/l</td>
+<td align="right">77981.78</td>
+<td align="right">1.866</td>
+<td align="right">0.107</td>
+</tr>
 </tbody>
 </table>
-<p>This table shows us the chemicals that Dichlorvos, Metolachlor, Cotinine, Naphthalene, dl-Menthol may lead to issues since the detection levels are higher than some of the end point values.</p>
+<p>This table shows us the chemicals that Dichlorvos, Metolachlor, Cotinine, Naphthalene, dl-Menthol, 1,4-Dichlorobenzene, Methyl salicylate, Benzophenone, 4-(1,1,3,3-Tetramethylbutyl)phenol, Caffeine, Triphenyl phosphate, Pentachlorophenol, DEET, Isophorone, Atrazine, Diethyl phthalate, Carbaryl, Bromacil, 2-tert-Butyl-4-methoxyphenol, Prometon, Diazinon may lead to issues since the detection levels are higher than some of the end point values.</p>
 <p>In this case therefore, we cannot simply ignore all of the left-censored values. However, for the time being, we will use only non-censored values in our analysis. Let’s begin by trimming down the waterSamples data frame to only the relavent information. Here, we are setting all left-censored values to NA, we could instead use the detection limit.</p>
 <pre class="sourceCode r"><code class="sourceCode r">qualColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;qualifier&quot;</span>, <span class="kw">names</span>(waterSamples))
 valColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;valueToUse&quot;</span>, <span class="kw">names</span>(waterSamples))
@@ -1039,10 +965,166 @@ waterData[waterSamples[,qualColumns] ==<span class="st"> &quot;&lt;&quot;</span>
 </table>
 <div id="data-analysis-1" class="section level3">
 <h3>Data Analysis</h3>
+<p>Let’s start our analysis with one site on one day (the first reported the site: USGS-04101500, on 2010-09-13):</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Let's get rid of rows with all NA's:</span>
+naRows &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">is.na</span>(waterData))!=<span class="st"> </span><span class="kw">ncol</span>(waterData)
+waterData &lt;-<span class="st"> </span>waterData[naRows,]
+waterSamples &lt;-<span class="st"> </span>waterSamples[naRows,]
+
+oneSite &lt;-<span class="st"> </span><span class="kw">cbind</span>(waterSamples[,<span class="dv">1</span>:<span class="dv">2</span>],waterData) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(site==<span class="st">&quot;USGS-04101500&quot;</span>) 
+
+valColumns &lt;-<span class="st"> </span><span class="kw">grep</span>(<span class="st">&quot;valueToUse&quot;</span>,<span class="kw">names</span>(oneSite))
+
+oneSiteLong &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">pcode=</span><span class="kw">names</span>(oneSite[,valColumns]),
+                         <span class="dt">value=</span><span class="kw">as.numeric</span>(oneSite[<span class="dv">1</span>,valColumns]),
+                         <span class="dt">row.names=</span><span class="ot">NULL</span>, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pCode=</span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(pcode, <span class="st">&quot;_&quot;</span>), function(x) x[<span class="dv">2</span>])) %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(pCodeInfo[<span class="kw">c</span>(<span class="st">&quot;parameter_cd&quot;</span>,<span class="st">&quot;casrn&quot;</span>)], <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;pCode&quot;</span>=<span class="st">&quot;parameter_cd&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(casrn, pCode, value) %&gt;%
+<span class="st">  </span><span class="kw">right_join</span>(maxMinSummary, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;casrn&quot;</span>=<span class="st">&quot;casn&quot;</span>)) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(value)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR=</span><span class="dv">100</span>*value/minEndPoint) %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(EAR)) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;Ratio [%]&quot;</span>=EAR)
+  
+<span class="kw">kable</span>(oneSiteLong, <span class="dt">digits=</span><span class="dv">3</span>)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">casrn</th>
+<th align="left">pCode</th>
+<th align="right">value</th>
+<th align="left">chnm</th>
+<th align="left">Units</th>
+<th align="right">maxEndPoint</th>
+<th align="right">minEndPoint</th>
+<th align="right">Ratio [%]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">51218-45-2</td>
+<td align="left">82612</td>
+<td align="right">0.03</td>
+<td align="left">Metolachlor</td>
+<td align="left">ug/l</td>
+<td align="right">33343.61</td>
+<td align="right">0.003</td>
+<td align="right">1041.164</td>
+</tr>
+<tr class="even">
+<td align="left">58-08-2</td>
+<td align="left">81436</td>
+<td align="right">0.04</td>
+<td align="left">Caffeine</td>
+<td align="left">ug/l</td>
+<td align="right">63327.73</td>
+<td align="right">0.175</td>
+<td align="right">22.887</td>
+</tr>
+<tr class="odd">
+<td align="left">1912-24-9</td>
+<td align="left">39630</td>
+<td align="right">0.11</td>
+<td align="left">Atrazine</td>
+<td align="left">ug/l</td>
+<td align="right">22305.55</td>
+<td align="right">0.541</td>
+<td align="right">20.344</td>
+</tr>
+<tr class="even">
+<td align="left">134-62-3</td>
+<td align="left">61947</td>
+<td align="right">0.02</td>
+<td align="left">DEET</td>
+<td align="left">ug/l</td>
+<td align="right">20867.84</td>
+<td align="right">0.116</td>
+<td align="right">17.274</td>
+</tr>
+<tr class="odd">
+<td align="left">206-44-0</td>
+<td align="left">34376</td>
+<td align="right">0.05</td>
+<td align="left">Fluoranthene</td>
+<td align="left">ug/l</td>
+<td align="right">40593.08</td>
+<td align="right">9.753</td>
+<td align="right">0.513</td>
+</tr>
+<tr class="even">
+<td align="left">85-01-8</td>
+<td align="left">34461</td>
+<td align="right">0.02</td>
+<td align="left">Phenanthrene</td>
+<td align="left">ug/l</td>
+<td align="right">29196.37</td>
+<td align="right">4.971</td>
+<td align="right">0.402</td>
+</tr>
+<tr class="odd">
+<td align="left">129-00-0</td>
+<td align="left">34469</td>
+<td align="right">0.04</td>
+<td align="left">Pyrene</td>
+<td align="left">ug/l</td>
+<td align="right">127917.29</td>
+<td align="right">10.926</td>
+<td align="right">0.366</td>
+</tr>
+<tr class="even">
+<td align="left">80-05-7</td>
+<td align="left">62816</td>
+<td align="right">0.03</td>
+<td align="left">Bisphenol A</td>
+<td align="left">ug/l</td>
+<td align="right">64972.40</td>
+<td align="right">11.401</td>
+<td align="right">0.263</td>
+</tr>
+<tr class="odd">
+<td align="left">120-12-7</td>
+<td align="left">34220</td>
+<td align="right">0.01</td>
+<td align="left">Anthracene</td>
+<td align="left">ug/l</td>
+<td align="right">29770.58</td>
+<td align="right">10.128</td>
+<td align="right">0.099</td>
+</tr>
+</tbody>
+</table>
+<p>We can extend our analsis to all sites and all times. Probably the easiest way to accomplish this is to maintain the waterSamples data structure, but replace the measured values with measured values over minimum endpoint values.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># First, we need to know what CAS is associated with which column:</span>
+pCodeLookup &lt;-<span class="st"> </span><span class="kw">setNames</span>(pCodeInfo$casrn, pCodeInfo$parameter_cd)
+
+columnCAS &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span class="kw">names</span>(waterData), 
+                      pCodeLookup[<span class="kw">sapply</span>(<span class="kw">strsplit</span>(<span class="kw">names</span>(waterData), <span class="st">&quot;_&quot;</span>), 
+                                         function(x) x[<span class="dv">2</span>])])
+                      
+<span class="co"># Next, let's remove the columns that don't have toxCast data:</span>
+columnsInToxCast &lt;-<span class="st"> </span>columnCAS[AC50gain$casn][!<span class="kw">is.na</span>(columnCAS[AC50gain$casn])]
+waterRatio &lt;-<span class="st"> </span>waterData[,columnsInToxCast]
+waterRatio &lt;-<span class="st"> </span>waterRatio[,]
+
+<span class="co">#Get rid of rows with all NA's:</span>
+naRows &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">is.na</span>(waterRatio))!=<span class="st"> </span><span class="kw">ncol</span>(waterRatio)
+waterRatio &lt;-<span class="st"> </span>waterRatio[naRows,]
+waterSamplesRatio &lt;-<span class="st"> </span>waterSamples[naRows,]
+
+<span class="co"># Finally, divide the minimum endpoint with the value:</span>
+for(i in <span class="dv">1</span>:<span class="kw">ncol</span>(waterRatio)){
+  CAS &lt;-<span class="st"> </span><span class="kw">names</span>(columnsInToxCast)[i]
+  waterRatio[,i] &lt;-<span class="st"> </span>waterRatio[,i] /<span class="st"> </span>maxMinSummary$minEndPoint[maxMinSummary$casn ==<span class="st"> </span>CAS]
+}
+
+waterRatio &lt;-<span class="st"> </span><span class="kw">cbind</span>(waterSamplesRatio[,<span class="dv">1</span>:<span class="dv">2</span>], waterRatio)</code></pre>
+<p>So, what does this mean? Let’s pull out one sample, and find out which endpoints are the critical endpoints for each chemical.</p>
 </div>
 <div id="relavent-censored-values" class="section level3">
 <h3>Relavent Censored Values</h3>
-<p>Remember that Dichlorvos, Metolachlor, Cotinine, Naphthalene, dl-Menthol have detection limits higher than at least one reported end point.</p>
+<p>Remember that Dichlorvos, Metolachlor, Cotinine, Naphthalene, dl-Menthol, 1,4-Dichlorobenzene, Methyl salicylate, Benzophenone, 4-(1,1,3,3-Tetramethylbutyl)phenol, Caffeine, Triphenyl phosphate, Pentachlorophenol, DEET, Isophorone, Atrazine, Diethyl phthalate, Carbaryl, Bromacil, 2-tert-Butyl-4-methoxyphenol, Prometon, Diazinon have detection limits higher than at least one reported end point.</p>
 </div>
 </div>
 </div>

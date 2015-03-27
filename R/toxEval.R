@@ -44,14 +44,15 @@ NULL
 #'AC10Columns <- names(AC10)
 NULL
 
-#' Assay Selection data from ToxCast
+#' Endpoint information from ToxCast
 #' 
 #' Downloaded on March 20, 2015 from ToxCast dashboard
 #'
-#'@name assayEndpoints
+#'@name endPointInfo
 #'@docType data
 #'@keywords datasets
+#'@export endPointInfo 
 #'@examples
-#'assayEndpoints <- assayEndpoints
-#'head(assayEndpoints)
+#'endPointInfo <- endPointInfo
+#'head(endPointInfo[,1:5])
 NULL
