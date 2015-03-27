@@ -171,17 +171,51 @@ maxKey <- setNames(apply(passiveRatio[,siteColumns], 2, max),
 chemKey <- setNames(passiveRatio$Chemical[apply(passiveRatio[,siteColumns], 2, which.max)],
                    gsub("site","", names(passiveRatio[,siteColumns])))
 
+endKey <- setNames(passiveRatio$endPoint[apply(passiveRatio[,siteColumns], 2, which.max)],
+                   gsub("site","", names(passiveRatio[,siteColumns])))
+
+
 maxRatioBySite <-  data.frame(site=names(passiveData)[siteColumns],
                              stringsAsFactors=FALSE) %>%
   mutate(shortName = siteKey[gsub("site","",site)]) %>%
   mutate(maxRatio = maxKey[gsub("site","",site)]) %>%
   mutate(Chemical = chemKey[gsub("site","",site)]) %>%
+  mutate(Endpoint = endKey[gsub("site","",site)]) %>%
   filter(maxRatio > 50) %>%
   arrange(desc(maxRatio)) %>%
-  select(shortName, maxRatio, Chemical) %>%
-  rename(Station=shortName, "Max Ratio [%]"=maxRatio)
+  select(shortName, maxRatio, Chemical, Endpoint) %>%
+  rename(Station=shortName, "Max Ratio [%]"=maxRatio, "End Point"=Endpoint)
  
 kable(maxRatioBySite, digits=2, row.names = FALSE)
+
+
+## ----warning=FALSE, echo=FALSE, results='asis'----------------------------------------------------
+infoColumns <- c("Chemical", "CAS")
+endpointNames <- names(endPoint)
+endpointNames <- endpointNames[!(endpointNames %in% c("casn","Units","mlWt","conversion"))]
+
+for(i in siteColumns){
+  oneSite <- passiveData[,infoColumns]
+  oneSite$value <- passiveData[,i]
+
+  oneSiteRatios <- left_join(oneSite,endPoint, by=c("CAS"="casn")) 
+  
+  oneSiteRatios[,endpointNames] <- oneSiteRatios$value*100/oneSiteRatios[,endpointNames]
+  
+  summary <- select(oneSiteRatios, Chemical) %>%
+    mutate(min=apply(oneSiteRatios[,endpointNames],1,min,na.rm=TRUE)) %>%
+    mutate(max=apply(oneSiteRatios[,endpointNames],1,max,na.rm=TRUE)) %>%
+    mutate(count= apply(oneSiteRatios[,endpointNames],1,function(x) length(which(!is.na(x)))) ) %>%
+    filter(count != 0) %>%
+    filter(max > 25) %>%
+    arrange(desc(max)) %>%
+    rename("Min EAR [%]"=min, "Max EAR [%]"=max, "Number of End Points"=count)
+  if(nrow(summary) != 0){
+    print(kable(summary, digits=2, caption = siteKey[gsub("site","",names(passiveData)[i])]))
+  }
+  
+  
+}
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------

@@ -395,15 +395,20 @@ maxKey &lt;-<span class="st"> </span><span class="kw">setNames</span>(<span clas
 chemKey &lt;-<span class="st"> </span><span class="kw">setNames</span>(passiveRatio$Chemical[<span class="kw">apply</span>(passiveRatio[,siteColumns], <span class="dv">2</span>, which.max)],
                    <span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>, <span class="kw">names</span>(passiveRatio[,siteColumns])))
 
+endKey &lt;-<span class="st"> </span><span class="kw">setNames</span>(passiveRatio$endPoint[<span class="kw">apply</span>(passiveRatio[,siteColumns], <span class="dv">2</span>, which.max)],
+                   <span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>, <span class="kw">names</span>(passiveRatio[,siteColumns])))
+
+
 maxRatioBySite &lt;-<span class="st">  </span><span class="kw">data.frame</span>(<span class="dt">site=</span><span class="kw">names</span>(passiveData)[siteColumns],
                              <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">shortName =</span> siteKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">maxRatio =</span> maxKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Chemical =</span> chemKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Endpoint =</span> endKey[<span class="kw">gsub</span>(<span class="st">&quot;site&quot;</span>,<span class="st">&quot;&quot;</span>,site)]) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(maxRatio &gt;<span class="st"> </span><span class="dv">50</span>) %&gt;%
 <span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(maxRatio)) %&gt;%
-<span class="st">  </span><span class="kw">select</span>(shortName, maxRatio, Chemical) %&gt;%
-<span class="st">  </span><span class="kw">rename</span>(<span class="dt">Station=</span>shortName, <span class="st">&quot;Max Ratio [%]&quot;</span>=maxRatio)
+<span class="st">  </span><span class="kw">select</span>(shortName, maxRatio, Chemical, Endpoint) %&gt;%
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">Station=</span>shortName, <span class="st">&quot;Max Ratio [%]&quot;</span>=maxRatio, <span class="st">&quot;End Point&quot;</span>=Endpoint)
  
 <span class="kw">kable</span>(maxRatioBySite, <span class="dt">digits=</span><span class="dv">2</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</code></pre>
 <table>
@@ -412,6 +417,7 @@ maxRatioBySite &lt;-<span class="st">  </span><span class="kw">data.frame</span>
 <th align="left">Station</th>
 <th align="right">Max Ratio [%]</th>
 <th align="left">Chemical</th>
+<th align="left">End Point</th>
 </tr>
 </thead>
 <tbody>
@@ -419,65 +425,650 @@ maxRatioBySite &lt;-<span class="st">  </span><span class="kw">data.frame</span>
 <td align="left">IndianaHC</td>
 <td align="right">892.39</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="even">
 <td align="left">Sheboygan</td>
 <td align="right">452.14</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="odd">
 <td align="left">Rouge</td>
 <td align="right">190.38</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="even">
 <td align="left">Cuyahoga</td>
 <td align="right">168.62</td>
 <td align="left">Erythromycin</td>
+<td align="left">Tox21_AhR</td>
 </tr>
 <tr class="odd">
 <td align="left">Rocky</td>
 <td align="right">157.52</td>
 <td align="left">Erythromycin</td>
+<td align="left">Tox21_AhR</td>
 </tr>
 <tr class="even">
 <td align="left">Portage</td>
 <td align="right">152.26</td>
 <td align="left">Erythromycin</td>
+<td align="left">Tox21_AhR</td>
 </tr>
 <tr class="odd">
 <td align="left">StJoseph</td>
 <td align="right">114.38</td>
 <td align="left">Erythromycin</td>
+<td align="left">Tox21_AhR</td>
 </tr>
 <tr class="even">
 <td align="left">GrandOH</td>
 <td align="right">101.14</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="odd">
 <td align="left">HuronOH</td>
 <td align="right">89.24</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="even">
 <td align="left">Fox</td>
 <td align="right">77.34</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="odd">
 <td align="left">Clinton</td>
 <td align="right">65.44</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 <tr class="even">
 <td align="left">BlackOH</td>
 <td align="right">57.71</td>
 <td align="left">Fluorene</td>
+<td align="left">Tox21_NFkB_BLA_agonist_ratio</td>
 </tr>
 </tbody>
 </table>
-<p>So for the passive dataset, the maximum ratio of the measured data to the endpoints for all chemicals at all sites is 892.3850368, at site IndianaHC, from Fluorene, based on endpoint .</p>
+<p>So for the passive dataset, the maximum ratio (in %) of the measured data to the endpoints for all chemicals at all sites is 892.3850368, at site IndianaHC, from Fluorene, based on endpoint Tox21_NFkB_BLA_agonist_ratio.</p>
+<p>Before moving on to the water sample data, let’s create a set of summary table.</p>
+<table>
+<caption>StJoseph</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Erythromycin</td>
+<td align="right">0</td>
+<td align="right">114.38</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">26.69</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>PawPaw</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">42.53</td>
+<td align="right">49</td>
+</tr>
+<tr class="even">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">35.70</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Kalamazoo2</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">26.77</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">26.49</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>GrandMI</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">32.70</td>
+<td align="right">49</td>
+</tr>
+<tr class="even">
+<td align="left">Gemfibrozil</td>
+<td align="right">0</td>
+<td align="right">27.05</td>
+<td align="right">20</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Manistee</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">27.36</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Indian</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">47.59</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Rifle</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">25.05</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Saginaw</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">41.53</td>
+<td align="right">49</td>
+</tr>
+<tr class="even">
+<td align="left">Gemfibrozil</td>
+<td align="right">0</td>
+<td align="right">29.47</td>
+<td align="right">20</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Clinton</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">65.44</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">57.23</td>
+<td align="right">49</td>
+</tr>
+<tr class="odd">
+<td align="left">Erythromycin</td>
+<td align="right">0</td>
+<td align="right">25.56</td>
+<td align="right">25</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Rouge</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">190.38</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">110.65</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Raisin</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">45.32</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>HuronMI</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">35.1</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>BlackMI</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">28.3</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Ontonagon</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">31.53</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Aspirin</td>
+<td align="right">0</td>
+<td align="right">26.19</td>
+<td align="right">49</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Manistique</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">27.96</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>IndianaHC</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">892.39</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="right">0</td>
+<td align="right">33.27</td>
+<td align="right">46</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Burns</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">25.58</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>StLouis</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">39.86</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Sheboygan</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">452.14</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Fox</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">77.34</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="right">0</td>
+<td align="right">46.91</td>
+<td align="right">46</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Rocky</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Erythromycin</td>
+<td align="right">0</td>
+<td align="right">157.52</td>
+<td align="right">25</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Portage</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Erythromycin</td>
+<td align="right">0</td>
+<td align="right">152.26</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">34.51</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>GrandOH</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">101.14</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Cuyahoga</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Erythromycin</td>
+<td align="right">0</td>
+<td align="right">168.62</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">33.91</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>HuronOH</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">89.24</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>BlackOH</caption>
+<thead>
+<tr class="header">
+<th align="left">Chemical</th>
+<th align="right">Min EAR [%]</th>
+<th align="right">Max EAR [%]</th>
+<th align="right">Number of End Points</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fluorene</td>
+<td align="right">0</td>
+<td align="right">57.71</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="water-sample-data" class="section level2">
