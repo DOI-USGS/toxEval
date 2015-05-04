@@ -401,36 +401,52 @@ for(i in unique(waterSamples$site)){
   
   cat("\n\n###", shortName, "\n")
   
+  summaryBySite <- data.frame()
+  
   for(j in 1:nrow(oneSite)){
   
     oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
                              value=as.numeric(oneSite[j,valColumns]), #1 is first date
                              row.names=NULL, stringsAsFactors=FALSE) %>%
       mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
-      left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
-      select(casrn, pCode, value) %>%
+      left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+      select(casrn, pCode, class, value) %>%
       right_join(endPoint, by=c("casrn"="casn")) %>%
       filter(!is.na(value))  %>%
       rename(measuredValue=value)
     
-    oneSiteLonger <- melt(oneSiteLong, id.vars = names(oneSiteLong)[1:7]) %>%
+    oneSiteLonger <- melt(oneSiteLong, id.vars = names(oneSiteLong)[1:8]) %>%
       mutate(variable=as.character(variable)) %>%
       rename(endPointValue=value, endPoint=variable) %>%
       filter(!is.na(endPointValue)) %>%
       mutate(EAR=measuredValue/endPointValue) %>%
       filter(EAR > 0.1) %>%
-      arrange(desc(EAR)) %>%
       left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-      select(chnm, EAR, endPoint, contains("intended")) %>%
-      arrange(chnm)
+      select(chnm, EAR, class, endPoint, contains("intended")) %>%
+      arrange(chnm, desc(EAR))
     
     names(oneSiteLonger) <- gsub("intended_target_", "", names(oneSiteLonger))
 
-    if(nrow(oneSiteLonger) > 0){
-          print(kable(oneSiteLonger, digits=3, caption = paste(shortName,oneSite$ActivityStartDateGiven[j])))
+    if(j == 1){
+      summaryBySite <- oneSiteLonger
+    } else {
+      summaryBySite <- rbind(summaryBySite, oneSiteLonger)
     }
+#     if(nrow(oneSiteLonger) > 0){
+#           print(kable(oneSiteLonger, digits=3, caption = paste(shortName,oneSite$ActivityStartDateGiven[j])))
+#     }
 
       
   }
+  if(nrow(summaryBySite) > 0){
+    summary <- arrange(summaryBySite, chnm, desc(EAR)) %>%
+      group_by(chnm, endPoint, class, type, type_sub, family, family_sub) %>%
+      summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
+      arrange(desc(maxEAR))
+    
+    print(kable(summary, digits=3,caption = shortName))
+  }
+
 }
+
 
