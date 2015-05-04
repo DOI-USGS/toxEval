@@ -552,6 +552,8 @@ for(i in unique(waterSamples$site)){
   
   cat("\n\n###", shortName, "\n")
   
+  summaryBySite <- data.frame()
+  
   for(j in 1:nrow(oneSite)){
   
     oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
@@ -570,20 +572,34 @@ for(i in unique(waterSamples$site)){
       filter(!is.na(endPointValue)) %>%
       mutate(EAR=measuredValue/endPointValue) %>%
       filter(EAR > 0.1) %>%
-      arrange(desc(EAR)) %>%
       left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
       select(chnm, EAR, endPoint, contains("intended")) %>%
-      arrange(chnm)
+      arrange(chnm, desc(EAR))
     
     names(oneSiteLonger) <- gsub("intended_target_", "", names(oneSiteLonger))
 
-    if(nrow(oneSiteLonger) > 0){
-          print(kable(oneSiteLonger, digits=3, caption = paste(shortName,oneSite$ActivityStartDateGiven[j])))
+    if(j == 1){
+      summaryBySite <- oneSiteLonger
+    } else {
+      summaryBySite <- rbind(summaryBySite, oneSiteLonger)
     }
+#     if(nrow(oneSiteLonger) > 0){
+#           print(kable(oneSiteLonger, digits=3, caption = paste(shortName,oneSite$ActivityStartDateGiven[j])))
+#     }
 
       
   }
+  if(nrow(summaryBySite) > 0){
+    summary <- arrange(summaryBySite, chnm, desc(EAR)) %>%
+      group_by(chnm, endPoint, type, type_sub, family, family_sub) %>%
+      summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
+      arrange(desc(maxEAR))
+    
+    print(kable(summary, digits=3,caption = shortName))
+  }
+
 }
+
 ```
 
 
