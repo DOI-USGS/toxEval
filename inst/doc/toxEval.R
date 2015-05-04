@@ -3,7 +3,8 @@ options(continue=" ")
 options(width=100)
 library(knitr)
 library(rmarkdown)
-
+library(dplyr)
+library(reshape2)
 
 
 ## -------------------------------------------------------------------------------------------------
@@ -333,9 +334,9 @@ waterData[waterSamples[,qualColumns] == "<"] <- NA
 
 ## ----echo=FALSE, warning=FALSE--------------------------------------------------------------------
 
-dataSummary  <- data.frame(pcode=names(waterData),
-                         maxValue=apply(waterData, 2, max, na.rm=TRUE),
-                         row.names=NULL, stringsAsFactors=FALSE)  %>%
+dataSummary  <- suppressWarnings(data.frame(pcode=names(waterData),
+                         maxValue=apply(waterData, 2, max, na.rm=TRUE, na.action=NA),
+                         row.names=NULL, stringsAsFactors=FALSE) ) %>%
   mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
   left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
   select(casrn, pCode, maxValue) %>%
@@ -349,6 +350,7 @@ kable(dataSummary, digits=3)
 
 
 ## ----message=FALSE--------------------------------------------------------------------------------
+endPointInfo <- endPointInfo
 
 #Let's get rid of rows with all NA's:
 naRows <- rowSums(is.na(waterData))!= ncol(waterData)
@@ -361,26 +363,33 @@ oneSite <- cbind(waterSamples[,1:2],waterData) %>%
 valColumns <- grep("valueToUse",names(oneSite))
 
 oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
-                         value=as.numeric(oneSite[1,valColumns]),
+                         value=as.numeric(oneSite[1,valColumns]), #1 is first date
                          row.names=NULL, stringsAsFactors=FALSE) %>%
   mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
   left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
   select(casrn, pCode, value) %>%
-  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
-  filter(!is.na(value)) %>%
-  mutate(EAR=value/minEndPoint) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  filter(!is.na(value))  %>%
+  rename(measuredValue=value)
+
+oneSiteLonger <- melt(oneSiteLong, id.vars = names(oneSiteLong)[1:7]) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
   filter(EAR > 0.1) %>%
-  arrange(desc(EAR)) 
-  
-kable(oneSiteLong[,c("chnm","EAR")], digits=3, caption = "USGS-04101500")
+  arrange(desc(EAR)) %>%
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+  select(chnm, EAR,endPoint, contains("intended"))
+
+names(oneSiteLonger) <- gsub("intended_target_", "", names(oneSiteLonger))
+
+kable(oneSiteLonger, digits=3, caption = "USGS-04101500")
 
 
 ## ----message=FALSE, results='asis'----------------------------------------------------------------
 
-#Let's get rid of rows with all NA's:
-naRows <- rowSums(is.na(waterData))!= ncol(waterData)
-waterData <- waterData[naRows,]
-waterSamples <- waterSamples[naRows,]
+
 
 for(i in unique(waterSamples$site)){
   
@@ -388,20 +397,40 @@ for(i in unique(waterSamples$site)){
     filter(site==i) 
   
   valColumns <- grep("valueToUse",names(oneSite))
+  shortName <- stationINFO$shortName[i == stationINFO$fullSiteID]
+  
+  cat("\n\n###", shortName, "\n")
+  
   for(j in 1:nrow(oneSite)){
+  
     oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
-                             value=as.numeric(oneSite[j,valColumns]),
+                             value=as.numeric(oneSite[j,valColumns]), #1 is first date
                              row.names=NULL, stringsAsFactors=FALSE) %>%
       mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
       left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
       select(casrn, pCode, value) %>%
-      right_join(maxMinSummary, by=c("casrn"="casn")) %>%
-      filter(!is.na(value)) %>%
-      mutate(EAR=value/minEndPoint) %>%
+      right_join(endPoint, by=c("casrn"="casn")) %>%
+      filter(!is.na(value))  %>%
+      rename(measuredValue=value)
+    
+    oneSiteLonger <- melt(oneSiteLong, id.vars = names(oneSiteLong)[1:7]) %>%
+      mutate(variable=as.character(variable)) %>%
+      rename(endPointValue=value, endPoint=variable) %>%
+      filter(!is.na(endPointValue)) %>%
+      mutate(EAR=measuredValue/endPointValue) %>%
       filter(EAR > 0.1) %>%
-      arrange(desc(EAR)) 
+      arrange(desc(EAR)) %>%
+      left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+      select(chnm, EAR, endPoint, contains("intended")) %>%
+      arrange(chnm)
+    
+    names(oneSiteLonger) <- gsub("intended_target_", "", names(oneSiteLonger))
+
+    if(nrow(oneSiteLonger) > 0){
+          print(kable(oneSiteLonger, digits=3, caption = paste(shortName,oneSite$ActivityStartDateGiven[j])))
+    }
+
       
-    print(kable(oneSiteLong[,c("chnm","EAR")], digits=3, caption = paste(i,oneSite$ActivityStartDateGiven[j])))
   }
 }
 
