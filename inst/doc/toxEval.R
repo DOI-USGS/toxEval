@@ -14,7 +14,7 @@ molweight <- cir_query('3380-34-5', "mw")
 molweight
 
 
-## ----echo=TRUE, eval=TRUE-------------------------------------------------------------------------
+## ----echo=FALSE, eval=TRUE------------------------------------------------------------------------
 
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "passiveData.RData")
@@ -94,11 +94,11 @@ sum(maxMinSummary$MLD > maxMinSummary$minEndPoint)
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------
-dfToPrint <- mutate(maxMinSummary, MLD_EAR = MLD*100/minEndPoint) %>%
+dfToPrint <- mutate(maxMinSummary, MLD_EAR = MLD/minEndPoint) %>%
   filter(MLD_EAR > 1) %>%
   select(Chemical, minEndPoint, MLD, MLD_EAR) %>%
   arrange(desc(MLD_EAR)) %>%
-  rename("Max EAR [%]"=MLD_EAR)
+  rename("Max EAR"=MLD_EAR)
   
 kable(dfToPrint, digits=2)
 
@@ -122,11 +122,11 @@ dataSummary <- select(passiveData, CAS, Units) %>%
 
 maxMinSummaryNew <- left_join(maxMinSummary, dataSummary, 
                               by=c("casn" = "CAS", "Units"="Units")) %>%
-  mutate(EAR = maxMeasure*100/minEndPoint) %>%
-  filter(EAR > 10) %>%
+  mutate(EAR = maxMeasure/minEndPoint) %>%
+  filter(EAR > 0.10) %>%
   arrange(desc(EAR)) %>%
   select(Chemical, minEndPoint, maxMeasure, EAR, shortname) %>%
-  rename("EAR [%]"=EAR, "Station"=shortname)
+  rename("Station"=shortname)
   
 
 kable(maxMinSummaryNew, digits=2)
@@ -155,7 +155,7 @@ head(oneSite)
 ## ----warning=FALSE--------------------------------------------------------------------------------
 passiveRatio <- right_join(oneSite, endPointSummary, 
                            by=c("CAS"="casn", "Units"="Units")) %>%
-  mutate(EAR = value*100/minEndPoint)
+  mutate(EAR = value/minEndPoint)
 
   
 
@@ -164,7 +164,7 @@ passiveRatio <- right_join(oneSite, endPointSummary,
 siteColumns <- grep("site",names(passiveData))
 passiveRatio <- right_join(passiveData, endPointSummary, 
                            by=c("CAS"="casn", "Units"="Units"))
-passiveRatio[,siteColumns] <- passiveRatio[,siteColumns]*100/passiveRatio$minEndPoint
+passiveRatio[,siteColumns] <- passiveRatio[,siteColumns]/passiveRatio$minEndPoint
 
 maxKey <- setNames(apply(passiveRatio[,siteColumns], 2, max),
                    gsub("site","", names(passiveRatio[,siteColumns])))
@@ -184,7 +184,7 @@ maxRatioBySite <-  data.frame(site=names(passiveData)[siteColumns],
   filter(maxRatio > 50) %>%
   arrange(desc(maxRatio)) %>%
   select(shortName, maxRatio, Chemical, Endpoint) %>%
-  rename(Station=shortName, "Max Ratio [%]"=maxRatio, "End Point"=Endpoint)
+  rename(Station=shortName, "Max Ratio"=maxRatio, "End Point"=Endpoint)
  
 kable(maxRatioBySite, digits=2, row.names = FALSE)
 
@@ -200,16 +200,16 @@ for(i in siteColumns){
 
   oneSiteRatios <- left_join(oneSite,endPoint, by=c("CAS"="casn")) 
   
-  oneSiteRatios[,endpointNames] <- oneSiteRatios$value*100/oneSiteRatios[,endpointNames]
+  oneSiteRatios[,endpointNames] <- oneSiteRatios$value/oneSiteRatios[,endpointNames]
   
   summary <- select(oneSiteRatios, Chemical) %>%
     mutate(min=apply(oneSiteRatios[,endpointNames],1,min,na.rm=TRUE)) %>%
     mutate(max=apply(oneSiteRatios[,endpointNames],1,max,na.rm=TRUE)) %>%
-    mutate(count= apply(oneSiteRatios[,endpointNames],1,function(x) length(which(!is.na(x)))) ) %>%
+    mutate(count= apply(oneSiteRatios[,endpointNames],1,function(x) length(which(x>0.10))) ) %>%
     filter(count != 0) %>%
-    filter(max > 25) %>%
+    filter(max > 0.25) %>%
     arrange(desc(max)) %>%
-    rename("Min EAR [%]"=min, "Max EAR [%]"=max, "Number of End Points"=count)
+    rename("Min EAR"=min, "Max EAR"=max, "Number of End Points > 0.10"=count)
   if(nrow(summary) != 0){
     print(kable(summary, digits=2, caption = siteKey[gsub("site","",names(passiveData)[i])]))
   }
@@ -342,7 +342,7 @@ dataSummary  <- data.frame(pcode=names(waterData),
   right_join(maxMinSummary, by=c("casrn"="casn")) %>%
   mutate(EAR=maxValue/minEndPoint) %>%
   arrange(desc(EAR)) %>%
-  filter(EAR > 1)
+  filter(EAR > 0.1)
   
 
 kable(dataSummary, digits=3)
@@ -368,41 +368,40 @@ oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
   select(casrn, pCode, value) %>%
   right_join(maxMinSummary, by=c("casrn"="casn")) %>%
   filter(!is.na(value)) %>%
-  mutate(EAR=100*value/minEndPoint) %>%
-  arrange(desc(EAR)) %>%
-  rename("Ratio [%]"=EAR)
+  mutate(EAR=value/minEndPoint) %>%
+  filter(EAR > 0.1) %>%
+  arrange(desc(EAR)) 
   
-kable(oneSiteLong, digits=3)
+kable(oneSiteLong[,c("chnm","EAR")], digits=3, caption = "USGS-04101500")
 
 
-## -------------------------------------------------------------------------------------------------
-# First, we need to know what CAS is associated with which column:
-pCodeLookup <- setNames(pCodeInfo$casrn, pCodeInfo$parameter_cd)
+## ----message=FALSE, results='asis'----------------------------------------------------------------
 
-columnCAS <- setNames(names(waterData), 
-                      pCodeLookup[sapply(strsplit(names(waterData), "_"), 
-                                         function(x) x[2])])
-                      
-# Next, let's remove the columns that don't have toxCast data:
-columnsInToxCast <- columnCAS[AC50gain$casn][!is.na(columnCAS[AC50gain$casn])]
-waterRatio <- waterData[,columnsInToxCast]
-waterRatio <- waterRatio[,]
+#Let's get rid of rows with all NA's:
+naRows <- rowSums(is.na(waterData))!= ncol(waterData)
+waterData <- waterData[naRows,]
+waterSamples <- waterSamples[naRows,]
 
-#Get rid of rows with all NA's:
-naRows <- rowSums(is.na(waterRatio))!= ncol(waterRatio)
-waterRatio <- waterRatio[naRows,]
-waterSamplesRatio <- waterSamples[naRows,]
-
-# Finally, divide the minimum endpoint with the value:
-for(i in 1:ncol(waterRatio)){
-  CAS <- names(columnsInToxCast)[i]
-  waterRatio[,i] <- waterRatio[,i] / maxMinSummary$minEndPoint[maxMinSummary$casn == CAS]
+for(i in unique(waterSamples$site)){
+  
+  oneSite <- cbind(waterSamples[,1:2],waterData) %>%
+    filter(site==i) 
+  
+  valColumns <- grep("valueToUse",names(oneSite))
+  for(j in 1:nrow(oneSite)){
+    oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
+                             value=as.numeric(oneSite[j,valColumns]),
+                             row.names=NULL, stringsAsFactors=FALSE) %>%
+      mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
+      left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+      select(casrn, pCode, value) %>%
+      right_join(maxMinSummary, by=c("casrn"="casn")) %>%
+      filter(!is.na(value)) %>%
+      mutate(EAR=value/minEndPoint) %>%
+      filter(EAR > 0.1) %>%
+      arrange(desc(EAR)) 
+      
+    print(kable(oneSiteLong[,c("chnm","EAR")], digits=3, caption = paste(i,oneSite$ActivityStartDateGiven[j])))
+  }
 }
-
-waterRatio <- cbind(waterSamplesRatio[,1:2], waterRatio)
-
-
-## -------------------------------------------------------------------------------------------------
-
-
 
