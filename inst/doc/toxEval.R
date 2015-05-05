@@ -109,7 +109,8 @@ kable(dfToPrint, digits=2)
 
 ## ----warning=FALSE--------------------------------------------------------------------------------
 siteColumns <- grep("site",names(passiveData))
-passiveData[,siteColumns] <- sapply(passiveData[,siteColumns], function(x) as.numeric(x))
+passiveData[,siteColumns] <- suppressWarnings(
+  sapply(passiveData[,siteColumns], function(x) as.numeric(x)))
 
 #For this analysis, we'll consider NA's to be 0 (other options exist):
 passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
@@ -202,8 +203,6 @@ endpointNames <- endpointNames[!(endpointNames %in% c("casn","Units","mlWt","con
 for(i in siteColumns){
   oneSite <- passiveData[,infoColumns]
   oneSite$value <- passiveData[,i]
-
-  
   
   oneSiteLong <- filter(oneSite, value != 0) %>%
     rename(measuredValue = value) %>%
@@ -236,6 +235,34 @@ for(i in siteColumns){
   
   
 }
+
+
+## ----message=FALSE, results='asis'----------------------------------------------------------------
+infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt")
+
+
+chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(value != 0) %>%
+  rename(measuredValue=value, site=variable) %>%
+  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
+  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  filter(EAR > 0.1) %>%
+  group_by(Chemical, endPoint) %>%
+  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=ncol(passiveData)) %>%
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+  select(Chemical, minEAR, maxEAR, hits, nSites, endPoint, contains("intended_target_")) %>%
+  arrange(Chemical, desc(maxEAR)) %>%
+  rename(type=intended_target_type, type_sub=intended_target_type_sub,
+         family=intended_target_family, family_sub=intended_target_family_sub) %>%
+  select(-contains("intended_target_")) %>%
+  arrange(desc(maxEAR))
+  
+  print(kable(chemicalSummary, digits=2, caption = "Passive chemical summary", row.names = FALSE))
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------
@@ -408,5 +435,37 @@ for(i in unique(waterSamples$site)){
   
 
 }
+
+
+## ----message=FALSE, results='asis'----------------------------------------------------------------
+valColumns <- grep("valueToUse",names(oneSite))
+
+chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  filter(EAR > 0.1) %>%
+  group_by(chnm, endPoint) %>%
+  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=length(unique(site))) %>%
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+  select(chnm, minEAR, maxEAR, hits, nSites, endPoint, contains("intended_target_")) %>%
+  arrange(chnm, desc(maxEAR)) %>%
+  rename(type=intended_target_type, type_sub=intended_target_type_sub,
+         family=intended_target_family, family_sub=intended_target_family_sub) %>%
+  select(-contains("intended_target_")) %>%
+  arrange(desc(maxEAR))
+  
+  print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
 
 
