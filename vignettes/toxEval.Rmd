@@ -5,6 +5,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
     toc: true
+    number_sections: true
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Introduction to toxEval}
@@ -494,49 +495,7 @@ kable(dataSummary, digits=3)
 ```
 
 
-### Data Analysis
-Let's start our analysis with one site on one day (the first reported the site: USGS-04101500, on 2010-09-13):
 
-```{r message=FALSE}
-endPointInfo <- endPointInfo
-
-#Let's get rid of rows with all NA's:
-naRows <- rowSums(is.na(waterData))!= ncol(waterData)
-waterData <- waterData[naRows,]
-waterSamples <- waterSamples[naRows,]
-
-oneSite <- cbind(waterSamples[,1:2],waterData) %>%
-  filter(site=="USGS-04101500") 
-
-valColumns <- grep("valueToUse",names(oneSite))
-
-oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
-                         value=as.numeric(oneSite[1,valColumns]), #1 is first date
-                         row.names=NULL, stringsAsFactors=FALSE) %>%
-  mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
-  select(casrn, pCode, value) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  filter(!is.na(value))  %>%
-  rename(measuredValue=value)
-
-oneSiteLonger <- melt(oneSiteLong, id.vars = names(oneSiteLong)[1:7]) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  arrange(desc(EAR)) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select(chnm, EAR,endPoint, contains("intended"))
-
-names(oneSiteLonger) <- gsub("intended_target_", "", names(oneSiteLonger))
-
-kable(oneSiteLonger, digits=3, caption = "USGS-04101500")
-
-```
-
-We can extend our analsis to all sites and all times. 
 
 ```{r message=FALSE, results='asis'}
 
@@ -552,51 +511,31 @@ for(i in unique(waterSamples$site)){
   
   cat("\n\n###", shortName, "\n")
   
-  summaryBySite <- data.frame()
-  
-  for(j in 1:nrow(oneSite)){
-  
-    oneSiteLong <- data.frame(pcode=names(oneSite[,valColumns]),
-                             value=as.numeric(oneSite[j,valColumns]), #1 is first date
-                             row.names=NULL, stringsAsFactors=FALSE) %>%
-      mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
-      left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-      select(casrn, pCode, class, value) %>%
-      right_join(endPoint, by=c("casrn"="casn")) %>%
-      filter(!is.na(value))  %>%
-      rename(measuredValue=value)
-    
-    oneSiteLonger <- melt(oneSiteLong, id.vars = names(oneSiteLong)[1:8]) %>%
-      mutate(variable=as.character(variable)) %>%
-      rename(endPointValue=value, endPoint=variable) %>%
-      filter(!is.na(endPointValue)) %>%
-      mutate(EAR=measuredValue/endPointValue) %>%
-      filter(EAR > 0.1) %>%
-      left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-      select(chnm, EAR, class, endPoint, contains("intended")) %>%
-      arrange(chnm, desc(EAR))
-    
-    names(oneSiteLonger) <- gsub("intended_target_", "", names(oneSiteLonger))
+  oneSiteLong2 <- melt(oneSite[,valColumns]) %>%
+    mutate(variable=as.character(variable)) %>%
+    mutate(pCode=sapply(strsplit(variable, "_"), function(x) x[2])) %>%
+    select(-variable) %>%
+    filter(!is.na(value)) %>%
+    rename(measuredValue=value) %>%
+    left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+    select(casrn, class, measuredValue) %>%
+    right_join(endPoint, by=c("casrn"="casn")) %>%
+    select(-mlWt, -conversion, -casrn,  -Units) %>%
+    melt(id.vars = c("measuredValue", "chnm", "class")) %>%
+    mutate(variable=as.character(variable)) %>%
+    rename(endPointValue=value, endPoint=variable) %>%
+    filter(!is.na(endPointValue)) %>%
+    mutate(EAR=measuredValue/endPointValue) %>%
+    filter(EAR > 0.1) %>%
+    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+    select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
+    arrange(chnm, desc(EAR)) %>%
+    group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub) %>%
+    rename(type=intended_target_type, type_sub=intended_target_type_sub) %>%
+    summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
+    arrange(desc(maxEAR))
 
-    if(j == 1){
-      summaryBySite <- oneSiteLonger
-    } else {
-      summaryBySite <- rbind(summaryBySite, oneSiteLonger)
-    }
-#     if(nrow(oneSiteLonger) > 0){
-#           print(kable(oneSiteLonger, digits=3, caption = paste(shortName,oneSite$ActivityStartDateGiven[j])))
-#     }
-
-      
-  }
-  if(nrow(summaryBySite) > 0){
-    summary <- arrange(summaryBySite, chnm, desc(EAR)) %>%
-      group_by(chnm, endPoint, class, type, type_sub, family, family_sub) %>%
-      summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
-      arrange(desc(maxEAR))
-    
-    print(kable(summary, digits=3,caption = shortName))
-  }
+  print(kable(oneSiteLong2, digits=3,caption = shortName))
 
 }
 
@@ -606,7 +545,11 @@ for(i in unique(waterSamples$site)){
 
 
 
+```{r}
 
+
+
+```
 
 
 
