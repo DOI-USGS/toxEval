@@ -54,6 +54,10 @@ load(file=filePath)
 #Site Info:
 filePath <- file.path(packagePath, "stationINFO.RData")
 load(file=filePath)
+filePath <- file.path(packagePath, "pCodeInfo.RData")
+load(file=filePath)
+
+pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
 # Some chemicals have 2 rows (different units)...
 # To simplify for now, we'll ignore the duplicate chemicals:
@@ -231,7 +235,7 @@ endPointSummary <- select(endPoint, casn, Units) %>%
 
 ```
 
-### Data Analysis
+
 Let's start our analysis with one site (the first of the site columns: `r siteKey["04101500"]`):
 
 ```{r message=FALSE}
@@ -302,20 +306,35 @@ for(i in siteColumns){
   oneSite <- passiveData[,infoColumns]
   oneSite$value <- passiveData[,i]
 
-  oneSiteRatios <- left_join(oneSite,endPoint, by=c("CAS"="casn")) 
   
-  oneSiteRatios[,endpointNames] <- oneSiteRatios$value/oneSiteRatios[,endpointNames]
   
-  summary <- select(oneSiteRatios, Chemical) %>%
-    mutate(min=apply(oneSiteRatios[,endpointNames],1,min,na.rm=TRUE)) %>%
-    mutate(max=apply(oneSiteRatios[,endpointNames],1,max,na.rm=TRUE)) %>%
-    mutate(count= apply(oneSiteRatios[,endpointNames],1,function(x) length(which(x>0.10))) ) %>%
-    filter(count != 0) %>%
-    filter(max > 0.25) %>%
-    arrange(desc(max)) %>%
-    rename("Min EAR"=min, "Max EAR"=max, "Number of End Points > 0.10"=count)
-  if(nrow(summary) != 0){
-    print(kable(summary, digits=2, caption = siteKey[gsub("site","",names(passiveData)[i])]))
+  oneSiteLong <- filter(oneSite, value != 0) %>%
+    rename(measuredValue = value) %>%
+    left_join(pCodeInfo[c("parameter_cd","casrn","class","parameter_nm")], by=c("CAS"="casrn"))%>%
+    select(Chemical, CAS, class, measuredValue) %>%
+    right_join(endPoint, by=c("CAS"="casn")) %>%
+    select(-mlWt, -conversion, -CAS,  -Units) %>%
+    rename(chnm=Chemical) %>%
+    melt(id.vars = c("measuredValue", "chnm", "class")) %>%
+    mutate(variable=as.character(variable)) %>%
+    rename(endPointValue=value, endPoint=variable) %>%
+    filter(!is.na(endPointValue)) %>%
+    mutate(EAR=measuredValue/endPointValue) %>%
+    filter(EAR > 0.1) %>%
+    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+    select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
+    arrange(chnm, desc(EAR)) %>%
+    rename(type=intended_target_type, type_sub=intended_target_type_sub,
+           family=intended_target_family, family_sub=intended_target_family_sub) %>%
+    select(-contains("intended_target_"))
+  
+  oneSiteLong <- unique(oneSiteLong)
+
+
+  if(nrow(oneSiteLong) != 0){
+    cat("\n###",siteKey[gsub("site","",names(passiveData)[i])])
+    
+    print(kable(oneSiteLong, digits=2, caption = siteKey[gsub("site","",names(passiveData)[i])], row.names = FALSE))
   }
   
   
@@ -368,11 +387,6 @@ pCodeInfo$mlWt <- as.numeric(pCodeInfo$mlWt)
 ```
 
 ```{r message=FALSE, echo=FALSE}
-packagePath <- system.file("extdata", package="toxEval")
-filePath <- file.path(packagePath, "pCodeInfo.RData")
-load(file=filePath)
-
-pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
 waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
 waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
@@ -499,8 +513,6 @@ kable(dataSummary, digits=3)
 
 ```{r message=FALSE, results='asis'}
 
-
-
 for(i in unique(waterSamples$site)){
   
   oneSite <- cbind(waterSamples[,1:2],waterData) %>%
@@ -509,7 +521,7 @@ for(i in unique(waterSamples$site)){
   valColumns <- grep("valueToUse",names(oneSite))
   shortName <- stationINFO$shortName[i == stationINFO$fullSiteID]
   
-  cat("\n\n###", shortName, "\n")
+  
   
   oneSiteLong2 <- melt(oneSite[,valColumns]) %>%
     mutate(variable=as.character(variable)) %>%
@@ -530,12 +542,18 @@ for(i in unique(waterSamples$site)){
     left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
     select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
     arrange(chnm, desc(EAR)) %>%
-    group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub) %>%
-    rename(type=intended_target_type, type_sub=intended_target_type_sub) %>%
+    group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub, 
+             intended_target_family, intended_target_family_sub) %>%
+    rename(type=intended_target_type, type_sub=intended_target_type_sub,
+           family=intended_target_family, family_sub=intended_target_family_sub) %>%
     summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
     arrange(desc(maxEAR))
 
-  print(kable(oneSiteLong2, digits=3,caption = shortName))
+  if(nrow(oneSiteLong2) > 0){
+    cat("\n\n###", shortName, "\n")
+    print(kable(oneSiteLong2, digits=3,caption = shortName, row.names = FALSE))
+  }
+  
 
 }
 
@@ -545,15 +563,8 @@ for(i in unique(waterSamples$site)){
 
 
 
-```{r}
 
 
-
-```
-
-
-
-
-### Relavent Censored Values
+## Relavent Censored Values
 Remember that `r detLevels$chnm` have detection limits higher than at least one reported end point.
 
