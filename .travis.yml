@@ -1,10 +1,8 @@
 # Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
 
-language: c
+language: r
+warnings_are_errors: true
 
-os:
-  - osx
-  - linux
 
 env:
    global:
@@ -14,16 +12,6 @@ env:
      - BOOTSTRAP_LATEX=""
      - NOT_CRAN="true" 
 
-script: "./travis-tool.sh run_tests"
-
-before_script:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - "./travis-tool.sh bootstrap"
-  - "./travis-tool.sh install_deps - ./travis-tool.sh install_r dplyr webchem xtable knitr testthat"
-
-after_script:
-  - "./travis-tool.sh dump_logs"
 
 notifications:
   email:
