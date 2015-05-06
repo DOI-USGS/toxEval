@@ -44,7 +44,7 @@ molweight
 --> 
 Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. 
 
-## Passive Data
+# Passive Data
 Passive data was returned from the laboratory in a 'long' format. A sample of the data is shown below:
 
 ```{r echo=FALSE, eval=TRUE}
@@ -223,7 +223,7 @@ kable(maxMinSummaryNew, digits=2)
 
 ```
 
-
+## Passive Site tables
 Let's create a set of summary tables for each site.
 
 ```{r warning=FALSE, echo=FALSE, results='asis'}
@@ -272,7 +272,7 @@ for(i in siteColumns){
 ## Chemical Summary Tables Passive
 
 
-```{r message=FALSE, results='asis'}
+```{r message=FALSE, results='asis', echo=FALSE}
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt")
 
 
@@ -333,7 +333,7 @@ ggplot(dataPassive, aes(x = Chemical, y = endPointValue, fill=endPoint)) +
 ```
 
 
-## Water Sample Data
+# Water Sample Data
 The data returned from water sample tests was returned in a 'wide' format:
 
 ```{r echo=FALSE}
@@ -499,9 +499,9 @@ kable(dataSummary, digits=3)
 ```
 
 
+## Water Sample Site Tables
 
-
-```{r message=FALSE, results='asis'}
+```{r message=FALSE, results='asis', echo=FALSE}
 
 for(i in unique(waterSamples$site)){
   
@@ -549,14 +549,12 @@ for(i in unique(waterSamples$site)){
 
 ```
 
-## Relavent Censored Values
-Remember that `r detLevels$chnm` have detection limits higher than at least one reported end point.
 
 
 ## Chemical Summary Tables Water Samples
 
 
-```{r message=FALSE, results='asis'}
+```{r message=FALSE, results='asis', echo=FALSE}
 valColumns <- grep("valueToUse",names(oneSite))
 
 chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
