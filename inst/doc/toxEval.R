@@ -469,3 +469,33 @@ chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
   print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
 
 
+## ----fig.width=7, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured water sample values"----
+library(ggplot2)
+
+data <- cbind(waterSamples[,1:2],waterData) %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  filter(endPointValue <= 50)
+
+# ggplot(ep[1:50,], aes(variable)) + geom_bar() + facet_wrap(~ chnm)
+# ggplot(ep[1:50,], aes(variable, fill=chnm)) + geom_bar() # + scale_fill_brewer()
+
+ggplot(data, aes(x = chnm, y = endPointValue, fill=endPoint)) +
+    geom_bar(stat='identity',guide=FALSE,colour="grey") + 
+    ylim(0,10) +   
+    theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = "none") +
+    labs(x = "Chemical", y="Concentration") + 
+    geom_point(aes(x=chnm, y=measuredValue))
+
+
