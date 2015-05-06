@@ -5,6 +5,7 @@ library(knitr)
 library(rmarkdown)
 library(dplyr)
 library(reshape2)
+library(DT)
 
 
 ## -------------------------------------------------------------------------------------------------
@@ -166,14 +167,15 @@ for(i in siteColumns){
     arrange(chnm, desc(EAR)) %>%
     rename(type=intended_target_type, type_sub=intended_target_type_sub,
            family=intended_target_family, family_sub=intended_target_family_sub) %>%
-    select(-contains("intended_target_"))
+    select(-contains("intended_target_")) 
   
   oneSiteLong <- unique(oneSiteLong)
-
+    
 
   if(nrow(oneSiteLong) != 0){
     cat("\n###",siteKey[gsub("site","",names(passiveData)[i])])
     
+#     datatable(oneSiteLong, rownames = FALSE) %>% formatRound(c("EAR"), digits = 2)
     print(kable(oneSiteLong, digits=2, caption = siteKey[gsub("site","",names(passiveData)[i])], row.names = FALSE))
   }
   
@@ -204,9 +206,14 @@ chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
   select(-contains("intended_target_")) %>%
-  arrange(desc(maxEAR))
-  
-  print(kable(chemicalSummary, digits=2, caption = "Passive chemical summary", row.names = FALSE))
+  arrange(desc(maxEAR)) 
+
+  chemicalSummary <- unique(chemicalSummary)
+
+#   print(kable(chemicalSummary, digits=2, caption = "Passive chemical summary", row.names = FALSE))
+  datatable(chemicalSummary, rownames = FALSE, 
+            options = list(pageLength = 50)) %>% 
+    formatRound(c("minEAR","maxEAR"), digits = 2)
 
 
 ## ----fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured passive water sample values"----
@@ -239,8 +246,8 @@ ggplot(dataPassive, aes(x = Chemical, y = endPointValue, fill=endPoint)) +
 
 #Clear out local enviornment:
 rm(AC50, dataSummary, dfToPrint,endPoint,
-   endPointData, maxMinSummary, maxMinSummaryNew, maxRatioBySite,
-   oneSite, passiveData,  commonColumns, filePath,
+   endPointData, maxMinSummary, maxMinSummaryNew,
+   oneSite, passiveData,  filePath,
    infoColumns, maxEndPoints,
    minEndPoints, packagePath, siteColumns,unitConversion)
 
@@ -434,9 +441,13 @@ chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
   select(-contains("intended_target_")) %>%
-  arrange(desc(maxEAR))
+  arrange(desc(maxEAR)) 
   
-  print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
+
+  datatable(chemicalSummary, rownames = FALSE, 
+            options = list(pageLength = 50))%>% 
+    formatRound(c("minEAR","maxEAR"), digits = 2)
+#   print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
 
 
 ## ----fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured water sample values"----
