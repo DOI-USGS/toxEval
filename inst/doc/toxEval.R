@@ -181,7 +181,7 @@ for(i in siteColumns){
 }
 
 
-## ----message=FALSE, results='asis'----------------------------------------------------------------
+## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt")
 
 
@@ -360,7 +360,7 @@ dataSummary  <- suppressWarnings(data.frame(pcode=names(waterData),
 kable(dataSummary, digits=3)
 
 
-## ----message=FALSE, results='asis'----------------------------------------------------------------
+## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
 
 for(i in unique(waterSamples$site)){
   
@@ -407,7 +407,7 @@ for(i in unique(waterSamples$site)){
 }
 
 
-## ----message=FALSE, results='asis'----------------------------------------------------------------
+## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
 valColumns <- grep("valueToUse",names(oneSite))
 
 chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
