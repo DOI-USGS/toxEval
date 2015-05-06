@@ -116,7 +116,7 @@ passiveData[,siteColumns] <- suppressWarnings(
 passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
 
 
-## -------------------------------------------------------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------------------------------------
 siteKey <- setNames(stationINFO$shortName, stationINFO$STAID)
 
 dataSummary <- select(passiveData, CAS, Units) %>%
@@ -137,62 +137,6 @@ maxMinSummaryNew <- left_join(maxMinSummary, dataSummary,
 
 kable(maxMinSummaryNew, digits=2)
 
-
-
-## ----echo=TRUE------------------------------------------------------------------------------------
-endPointSummary <- select(endPoint, casn, Units) %>%  
-  mutate(minEndPoint = apply(endPointData, 1, min, na.rm=TRUE)) %>%
-  #Other filters would be done here (for example, only ATG, or find the closest)
-  mutate(endPoint = colnames(endPointData)[apply(endPointData, 1, which.min)]) %>% 
-  filter(casn %in% passiveData$CAS &
-           Units %in% passiveData$Units) %>%
-  slice(match(passiveData$CAS, casn)[!is.na(match(passiveData$CAS, casn))]) 
-# kable(head(endPointSummary), digits=2)
-
-
-## ----message=FALSE--------------------------------------------------------------------------------
-commonColumns <- c("Chemical", "Units", 
-                  "MLD", "MQL", "CAS", "mlWt")
-oneSite <- passiveData[,c(commonColumns, "site04101500")]
-oneSite <- rename(oneSite, value = site04101500)
-head(oneSite)
-
-
-## ----warning=FALSE--------------------------------------------------------------------------------
-passiveRatio <- right_join(oneSite, endPointSummary, 
-                           by=c("CAS"="casn", "Units"="Units")) %>%
-  mutate(EAR = value/minEndPoint)
-
-  
-
-## ----echo=TRUE, eval=TRUE, warning=FALSE----------------------------------------------------------
-
-siteColumns <- grep("site",names(passiveData))
-passiveRatio <- right_join(passiveData, endPointSummary, 
-                           by=c("CAS"="casn", "Units"="Units"))
-passiveRatio[,siteColumns] <- passiveRatio[,siteColumns]/passiveRatio$minEndPoint
-
-maxKey <- setNames(apply(passiveRatio[,siteColumns], 2, max),
-                   gsub("site","", names(passiveRatio[,siteColumns])))
-chemKey <- setNames(passiveRatio$Chemical[apply(passiveRatio[,siteColumns], 2, which.max)],
-                   gsub("site","", names(passiveRatio[,siteColumns])))
-
-endKey <- setNames(passiveRatio$endPoint[apply(passiveRatio[,siteColumns], 2, which.max)],
-                   gsub("site","", names(passiveRatio[,siteColumns])))
-
-
-maxRatioBySite <-  data.frame(site=names(passiveData)[siteColumns],
-                             stringsAsFactors=FALSE) %>%
-  mutate(shortName = siteKey[gsub("site","",site)]) %>%
-  mutate(maxRatio = maxKey[gsub("site","",site)]) %>%
-  mutate(Chemical = chemKey[gsub("site","",site)]) %>%
-  mutate(Endpoint = endKey[gsub("site","",site)]) %>%
-  filter(maxRatio > 50) %>%
-  arrange(desc(maxRatio)) %>%
-  select(shortName, maxRatio, Chemical, Endpoint) %>%
-  rename(Station=shortName, "Max Ratio"=maxRatio, "End Point"=Endpoint)
- 
-kable(maxRatioBySite, digits=2, row.names = FALSE)
 
 
 ## ----warning=FALSE, echo=FALSE, results='asis'----------------------------------------------------
@@ -263,6 +207,32 @@ chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
   arrange(desc(maxEAR))
   
   print(kable(chemicalSummary, digits=2, caption = "Passive chemical summary", row.names = FALSE))
+
+
+## ----fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured passive water sample values"----
+library(ggplot2)
+
+maxY <- 50000
+dataPassive <- melt(passiveData, id.vars = infoColumns) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(value != 0) %>%
+  rename(measuredValue=value, site=variable) %>%
+  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
+  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(endPointValue=ifelse(endPointValue>maxY, maxY, endPointValue))
+
+# ggplot(ep[1:50,], aes(variable)) + geom_bar() + facet_wrap(~ chnm)
+# ggplot(ep[1:50,], aes(variable, fill=chnm)) + geom_bar() # + scale_fill_brewer()
+
+ggplot(dataPassive, aes(x = Chemical, y = endPointValue, fill=endPoint)) +
+    geom_bar(stat='identity',guide=FALSE,colour="grey") + 
+    ylim(0,maxY) +   
+    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
+    labs(x = "Chemical", y="Concentration [ng/L]") + 
+    geom_point(aes(x=Chemical, y=measuredValue))
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------
@@ -469,9 +439,9 @@ chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
   print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
 
 
-## ----fig.width=7, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured water sample values"----
-library(ggplot2)
+## ----fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured water sample values"----
 
+maxY <- 10
 data <- cbind(waterSamples[,1:2],waterData) %>%
   melt(id.vars=c("ActivityStartDateGiven","site")) %>%
   mutate(variable=as.character(variable)) %>%
@@ -486,7 +456,7 @@ data <- cbind(waterSamples[,1:2],waterData) %>%
   filter(!is.na(value)) %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
-  filter(endPointValue <= 50)
+  mutate(endPointValue=ifelse(endPointValue <= maxY, maxY, endPointValue)) 
 
 # ggplot(ep[1:50,], aes(variable)) + geom_bar() + facet_wrap(~ chnm)
 # ggplot(ep[1:50,], aes(variable, fill=chnm)) + geom_bar() # + scale_fill_brewer()
@@ -494,7 +464,7 @@ data <- cbind(waterSamples[,1:2],waterData) %>%
 ggplot(data, aes(x = chnm, y = endPointValue, fill=endPoint)) +
     geom_bar(stat='identity',guide=FALSE,colour="grey") + 
     ylim(0,10) +   
-    theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position = "none") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
     labs(x = "Chemical", y="Concentration") + 
     geom_point(aes(x=chnm, y=measuredValue))
 
