@@ -673,6 +673,66 @@ ggplot(data, aes(x = chnm, y = endPointValue, fill=endPoint)) +
     labs(x = "Chemical", y="Concentration") + 
     geom_point(aes(x=chnm, y=measuredValue))
 
+
+
+```
+
+```{r fig.width=10, fig.height=7, warning=FALSE, echo=FALSE, fig.cap="Boxplot of all EARS over 0.1"}
+
+data2 <- cbind(waterSamples[,1:2],waterData) %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, measuredValue, site) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units) %>%
+  melt(id.vars = c("site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR = measuredValue/endPointValue) %>%
+  filter(EAR >= 0.1)
+
+ggplot(data2, aes(x = chnm, y = EAR)) +
+    geom_boxplot() + 
+    ylim(0,3) +    
+    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
+    labs(x = "Chemical", y="EAR")
+
+
 ```
 
 
+```{r fig.width=10, fig.height=7, warning=FALSE, echo=FALSE, fig.cap="Boxplot of all max EARS per site per chemical (filtered over 0.1)"}
+
+data3 <- group_by(data2, site, chnm) %>%
+  mutate(maxEAR = max(EAR))
+
+ggplot(data3, aes(x = chnm, y = maxEAR)) +
+    geom_boxplot() + 
+    ylim(0,3) +    
+    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25)) +
+    labs(x = "Chemical", y="maxEAR")+ 
+    geom_point(aes(x=chnm, y=EAR, color="red"))
+
+```
+
+
+```{r fig.width=10, fig.height=7, warning=FALSE, echo=FALSE, fig.cap="Boxplot of  EARS per site (filtered over 0.1, max per endpoint)"}
+
+data4 <- mutate(data2, site = newSiteKey[site]) %>%
+  group_by(site, chnm, endPoint) %>%
+  mutate(maxEAR = max(EAR))
+  
+
+ggplot(data4, aes(x = site, y = maxEAR)) +
+    geom_boxplot() + 
+    ylim(0,3) +    
+    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
+    labs(x = "Site", y="maxEAR")+ 
+    geom_point(aes(x=site, y=EAR, color="red") )
+
+```
