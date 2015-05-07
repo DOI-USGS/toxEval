@@ -41,6 +41,8 @@ passiveData <- left_join(passiveData, passiveCAS, by=c("CAS", "Chemical"))
 passiveData <- passiveData[!duplicated(passiveData$CAS),]
 passiveData$class[passiveData$Chemical == "Aspirin"] <-"Pharmaceuticals"
 
+passiveData <- passiveData[,-which(names(passiveData) == "site04249000.1")]
+
 head(passiveData[,1:7])
 
 # Unique units:
@@ -127,72 +129,6 @@ passiveData[,siteColumns] <- suppressWarnings(
 passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
 
 
-## ----echo=FALSE-----------------------------------------------------------------------------------
-siteKey <- setNames(stationINFO$shortName, stationINFO$STAID)
-
-dataSummary <- select(passiveData, CAS, Units) %>%
-  mutate(maxMeasure = apply(passiveData[,siteColumns], 1, max, na.rm=TRUE)) %>%
-  mutate(minMeasure = apply(passiveData[,siteColumns], 1, min, na.rm=TRUE)) %>%
-  mutate(maxIndex = apply(passiveData[,siteColumns], 1, which.max)) %>%
-  mutate(site = gsub("site","",names(passiveData[,siteColumns])[maxIndex])) %>%
-  mutate(shortname = siteKey[site])
-
-maxMinSummaryNew <- left_join(maxMinSummary, dataSummary, 
-                              by=c("casn" = "CAS", "Units"="Units")) %>%
-  mutate(EAR = maxMeasure/minEndPoint) %>%
-  filter(EAR > 0.10) %>%
-  arrange(desc(EAR)) %>%
-  select(Chemical, minEndPoint, maxMeasure, EAR, shortname) %>%
-  rename("Station"=shortname)
-  
-
-kable(maxMinSummaryNew, digits=2)
-
-
-
-## ----warning=FALSE, echo=FALSE, results='asis'----------------------------------------------------
-infoColumns <- c("Chemical", "CAS", "class")
-endpointNames <- names(endPoint)
-endpointNames <- endpointNames[!(endpointNames %in% c("casn","Units","mlWt","conversion"))]
-
-for(i in siteColumns){
-  oneSite <- passiveData[,infoColumns]
-  oneSite$value <- passiveData[,i]
-  
-  oneSiteLong <- filter(oneSite, value != 0) %>%
-    rename(measuredValue = value) %>%
-#     left_join(pCodeInfo[c("parameter_cd","casrn","parameter_nm")], by=c("CAS"="casrn")) %>%
-    select(Chemical, CAS, class, measuredValue) %>%
-    right_join(endPoint, by=c("CAS"="casn")) %>%
-    select(-mlWt, -conversion, -CAS,  -Units) %>%
-    rename(chnm=Chemical) %>%
-    melt(id.vars = c("measuredValue", "chnm", "class")) %>%
-    mutate(variable=as.character(variable)) %>%
-    rename(endPointValue=value, endPoint=variable) %>%
-    filter(!is.na(endPointValue)) %>%
-    mutate(EAR=measuredValue/endPointValue) %>%
-    filter(EAR > 0.1) %>%
-    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-    select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
-    arrange(chnm, desc(EAR)) %>%
-    rename(type=intended_target_type, type_sub=intended_target_type_sub,
-           family=intended_target_family, family_sub=intended_target_family_sub) %>%
-    select(-contains("intended_target_")) 
-  
-  oneSiteLong <- unique(oneSiteLong)
-    
-
-  if(nrow(oneSiteLong) != 0){
-    cat("\n###",siteKey[gsub("site","",names(passiveData)[i])])
-    
-#     datatable(oneSiteLong, rownames = FALSE) %>% formatRound(c("EAR"), digits = 2)
-    print(kable(oneSiteLong, digits=2, caption = siteKey[gsub("site","",names(passiveData)[i])], row.names = FALSE))
-  }
-  
-  
-}
-
-
 ## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
 
@@ -214,7 +150,8 @@ chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
   arrange(Chemical, desc(maxEAR)) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_")) %>%
+  select(-contains("intended_target_")) %>% 
+    data.frame %>%
   arrange(desc(maxEAR)) 
 
   chemicalSummary <- unique(chemicalSummary) #some endpoints have multiple genes....so there are duplicated rows, there wouldn't be if we didn't have select(-contains("intended_target_"))
@@ -226,6 +163,7 @@ chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
 
 ## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
+siteKey <- setNames(stationINFO$shortName, stationINFO$STAID)
 
 siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
   mutate(variable=as.character(variable)) %>%
@@ -240,13 +178,9 @@ siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
   filter(EAR > 0.1) %>%
   mutate(site=siteKey[gsub("site","",site)])%>%
   group_by(site, endPoint) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(Chemical)) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select(site, minEAR, maxEAR, hits, nChem, endPoint, contains("intended_target_")) %>%
-  arrange(site, desc(maxEAR)) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_")) %>%
+  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(Chemical), nEndPoints=length(unique(endPoint))) %>%
+  select(site, minEAR, maxEAR, hits, nChem, nEndPoints)  %>%
+    data.frame %>%
   arrange(desc(maxEAR))  
 
   datatable(siteSummary, rownames = FALSE, 
@@ -254,8 +188,56 @@ siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
     formatRound(c("minEAR","maxEAR"), digits = 2)
 
 
+## ----warning=FALSE, echo=FALSE, results='asis'----------------------------------------------------
+infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
+
+endpointNames <- names(endPoint)
+endpointNames <- endpointNames[!(endpointNames %in% c("casn","Units","mlWt","conversion"))]
+
+reversesiteKey <- setNames(paste0("site",stationINFO$STAID), stationINFO$shortName)
+
+for(i in siteSummary$site){
+  oneSite <- passiveData[,infoColumns]
+  index <- reversesiteKey[i]
+  oneSite$value <- passiveData[,index]
+  
+  oneSiteLong <- filter(oneSite, value != 0) %>%
+    rename(measuredValue = value) %>%
+#     left_join(pCodeInfo[c("parameter_cd","casrn","parameter_nm")], by=c("CAS"="casrn")) %>%
+    select(Chemical, CAS, class, measuredValue) %>%
+    right_join(endPoint, by=c("CAS"="casn")) %>%
+    select(-mlWt, -conversion, -CAS,  -Units) %>%
+    rename(chnm=Chemical) %>%
+    melt(id.vars = c("measuredValue", "chnm", "class")) %>%
+    mutate(variable=as.character(variable)) %>%
+    rename(endPointValue=value, endPoint=variable) %>%
+    filter(!is.na(endPointValue)) %>%
+    mutate(EAR=measuredValue/endPointValue) %>%
+    filter(EAR > 0.1) %>%
+    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+    select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
+    rename(type=intended_target_type, type_sub=intended_target_type_sub,
+           family=intended_target_family, family_sub=intended_target_family_sub) %>%
+    select(-contains("intended_target_")) %>%
+    arrange(desc(EAR))
+  
+  oneSiteLong <- unique(oneSiteLong)
+    
+
+  if(nrow(oneSiteLong) != 0){
+    cat("\n###",i)
+    
+#     datatable(oneSiteLong, rownames = FALSE) %>% formatRound(c("EAR"), digits = 2)
+    print(kable(oneSiteLong, digits=2, caption = i, row.names = FALSE))
+  }
+  
+  
+}
+
+
 ## ----fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured passive water sample values"----
 library(ggplot2)
+infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
 
 maxY <- 50000
 dataPassive <- melt(passiveData, id.vars = infoColumns) %>%
@@ -365,7 +347,7 @@ all(apply(detectionLimits, 2, function(x) length(unique(x))==1))
 #They do!
 
 
-## ----warning=FALSE--------------------------------------------------------------------------------
+## ----warning=FALSE, echo=FALSE--------------------------------------------------------------------
 detLevels  <- data.frame(dl_pcode=names(detectionLimits),
                          minDetLevel=apply(detectionLimits, 2, min),
                          row.names=NULL, stringsAsFactors=FALSE) %>%
@@ -391,34 +373,86 @@ waterData <- waterSamples[,valColumns]
 waterData[waterSamples[,qualColumns] == "<"] <- NA
 
 
-## ----echo=FALSE, warning=FALSE--------------------------------------------------------------------
+## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
-dataSummary  <- suppressWarnings(data.frame(pcode=names(waterData),
-                         maxValue=apply(waterData, 2, max, na.rm=TRUE, na.action=NA),
-                         row.names=NULL, stringsAsFactors=FALSE) ) %>%
-  mutate(pCode=sapply(strsplit(pcode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
-  select(casrn, pCode, maxValue) %>%
-  right_join(maxMinSummary, by=c("casrn"="casn")) %>%
-  mutate(EAR=maxValue/minEndPoint) %>%
-  arrange(desc(EAR)) %>%
-  filter(EAR > 0.1)
+wData <- cbind(waterSamples[,1:2],waterData)
+valColumns <- grep("valueToUse",names(wData))
+
+chemicalSummary <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  filter(EAR > 0.1) %>%
+  group_by(chnm, endPoint, class) %>%
+  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=length(unique(site))) %>%
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+  select(chnm, minEAR, maxEAR, hits, nSites, endPoint, class, contains("intended_target_")) %>%
+  arrange(chnm, desc(maxEAR)) %>%
+  rename(type=intended_target_type, type_sub=intended_target_type_sub,
+         family=intended_target_family, family_sub=intended_target_family_sub) %>%
+  select(-contains("intended_target_"))  %>%
+  data.frame %>%
+  arrange(desc(maxEAR))
   
 
-kable(dataSummary, digits=3)
+  datatable(chemicalSummary, rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("minEAR","maxEAR"), digits = 2)
+#   print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
 
 
 ## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
 
-for(i in unique(waterSamples$site)){
+siteSummary <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  filter(EAR > 0.1) %>%
+  mutate(site=newSiteKey[site]) %>%
+  group_by(site) %>%
+  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(unique(chnm)), nEndPoints=length(unique(endPoint))) %>%
+  select(site, minEAR, maxEAR, hits, nChem, nEndPoints) %>%
+  data.frame %>%
+  arrange(desc(hits))
   
-  oneSite <- cbind(waterSamples[,1:2],waterData) %>%
-    filter(site==i) 
+
+  datatable(siteSummary, rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("minEAR","maxEAR"), digits = 2)
+
+
+## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
+
+for(i in siteSummary$site){
+  
+  oneSite <- wData %>%
+    mutate(site = newSiteKey[site]) %>%
+    filter(site == i) 
   
   valColumns <- grep("valueToUse",names(oneSite))
-  shortName <- stationINFO$shortName[i == stationINFO$fullSiteID]
-  
-  
   
   oneSiteLong2 <- melt(oneSite[,valColumns]) %>%
     mutate(variable=as.character(variable)) %>%
@@ -444,88 +478,17 @@ for(i in unique(waterSamples$site)){
     rename(type=intended_target_type, type_sub=intended_target_type_sub,
            family=intended_target_family, family_sub=intended_target_family_sub) %>%
     summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
+    select(chnm, minEAR, maxEAR, hits, count, endPoint, class, type, type_sub, family, family_sub) %>%
+    data.frame %>%
     arrange(desc(maxEAR))
 
   if(nrow(oneSiteLong2) > 0){
-    cat("\n\n###", shortName, "\n")
-    print(kable(oneSiteLong2, digits=3,caption = shortName, row.names = FALSE))
+    cat("\n\n###", i, "\n")
+    print(kable(oneSiteLong2, digits=3,caption = i, row.names = FALSE))
   }
   
 
 }
-
-
-## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
-valColumns <- grep("valueToUse",names(oneSite))
-
-chemicalSummary <- cbind(waterSamples[,1:2],waterData) %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(srsname,casrn, class, measuredValue, site) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  group_by(chnm, endPoint, class) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=length(unique(site))) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select(chnm, minEAR, maxEAR, hits, nSites, endPoint, class, contains("intended_target_")) %>%
-  arrange(chnm, desc(maxEAR)) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_")) %>%
-  arrange(desc(maxEAR))
-  
-
-  datatable(chemicalSummary, rownames = FALSE, 
-            options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
-#   print(kable(chemicalSummary, digits=2, caption = "Water Sample Chemical Summary", row.names = FALSE))
-
-
-## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
-valColumns <- grep("valueToUse",names(oneSite))
-newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
-
-siteSummary <- cbind(waterSamples[,1:2],waterData) %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(srsname,casrn, class, measuredValue, site) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  mutate(site=newSiteKey[site]) %>%
-  group_by(site, endPoint) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(unique(chnm))) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select(site, minEAR, maxEAR, hits, nChem, endPoint, contains("intended_target_")) %>%
-  arrange(site, desc(maxEAR)) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_")) %>%
-  arrange(desc(maxEAR))
-  
-
-  datatable(siteSummary, rownames = FALSE, 
-            options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
 
 
 ## ----fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured water sample values"----
