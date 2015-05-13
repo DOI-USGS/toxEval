@@ -259,13 +259,14 @@ siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
   rename(measuredValue=value, site=variable) %>%
   right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
   melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
+  select(Chemical, class, site, measuredValue, variable, value) %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
   filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
   filter(EAR > 0.1) %>%
-  mutate(site=siteKey[gsub("site","",site)])%>%
-  group_by(site, endPoint) %>%
+  mutate(site=siteKey[gsub("site","",site)]) %>%
+  group_by(site) %>%
   summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(Chemical), nEndPoints=length(unique(endPoint))) %>%
   select(site, minEAR, maxEAR, hits, nChem, nEndPoints)  %>%
     data.frame %>%
