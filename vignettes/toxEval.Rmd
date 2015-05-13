@@ -320,7 +320,8 @@ for(i in siteSummary$site){
   if(nrow(oneSiteLong) != 0){
     cat("\n###",i)
     
-#     datatable(oneSiteLong, rownames = FALSE) %>% formatRound(c("EAR"), digits = 2)
+
+#       datatable(oneSiteLong, rownames = FALSE) %>% formatRound(c("EAR"), digits = 2)
     print(kable(oneSiteLong, digits=2, caption = i, row.names = FALSE))
   }
   
@@ -714,7 +715,7 @@ data3 <- group_by(data2, site, chnm) %>%
 ggplot(data3, aes(x = chnm, y = maxEAR)) +
     geom_boxplot() + 
     ylim(0,3) +    
-    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
     labs(x = "Chemical", y="maxEAR")+ 
     geom_point(aes(x=chnm, y=EAR, color="red"))
 
