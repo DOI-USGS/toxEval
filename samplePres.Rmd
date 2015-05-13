@@ -112,26 +112,31 @@ chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
   select(-contains("intended_target_")) %>% 
     data.frame %>%
-  arrange(desc(maxEAR)) 
+  arrange(desc(maxEAR)) %>%
+  mutate(frequency=hits/nSites)
 
   chemicalSummary <- unique(chemicalSummary) #some endpoints have multiple genes....so there are duplicated rows, there wouldn't be if we didn't have select(-contains("intended_target_"))
 
 ```
 
-## Slide with Plot
+## Passive Chemical Summary
 
 ```{r, echo=FALSE, results='asis'}
-  datatable(chemicalSummary, rownames = FALSE, 
+  datatable(chemicalSummary[,c("Chemical","minEAR","maxEAR","frequency","class")], rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
+    formatRound(c("minEAR","maxEAR","frequency"), digits = 2)
 ```
 
+## Passive Site Summary
 
 ## Map
 
 ```{r, echo=FALSE, results='asis'}
 library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
+
+
+
 m = leaflet(stationINFO) %>%
   addProviderTiles("Esri.WorldPhysical") %>%
   setView(lng = -84.45, lat = 43.8, zoom=6)%>%

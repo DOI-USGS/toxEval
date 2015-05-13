@@ -440,7 +440,7 @@ AC50 <- left_join(AC50gain, pCodeInfo[,c("casrn", "parameter_units", "mlWt")],
 
 Next we can create a data frame with the AC50 converted endpoints:
 ```{r}
-AC50Converted <- left_join(AC50, AC50gain)
+AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
 infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
 
 endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
@@ -495,7 +495,7 @@ detLevels  <- data.frame(dl_pcode=names(detectionLimits),
   rename(Chemical=chnm) %>%
   select(Chemical, EAR, minDetLevel, minEndPoint, class)
 
-datatable(detLevels, rownames = FALSE)  %>% 
+datatable(detLevels, rownames = FALSE,options = list(pageLength = 25))  %>% 
     formatRound(c("EAR","minDetLevel", "minEndPoint"), digits = 3)
 
 ```
@@ -539,7 +539,7 @@ chemicalSummary <- wData %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
   filter(EAR > 0.1) %>%
-  group_by(chnm, endPoint, class) %>%
+  group_by(chnm, endPoint, class) %>% 
   summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=length(unique(site))) %>%
   left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
   select(chnm, minEAR, maxEAR, hits, nSites, endPoint, class, contains("intended_target_")) %>%
@@ -578,17 +578,50 @@ siteSummary <- wData %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
   filter(EAR > 0.1) %>%
-  mutate(site=newSiteKey[site]) %>%
-  group_by(site) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(unique(chnm)), nEndPoints=length(unique(endPoint))) %>%
-  select(site, minEAR, maxEAR, hits, nChem, nEndPoints) %>%
+  mutate(site=newSiteKey[site]) 
+
+
+summ1 <- siteSummary %>%
+  group_by(site) %>% #FIX FREQ!!!!!!!!!!!!!!!!
+  summarize(minEAR=min(EAR), maxEAR=max(EAR), totalEARsAbove10=length(EAR), nChem=length(unique(chnm)), nEndPoints=length(unique(endPoint))) %>%
+  select(site, minEAR, maxEAR, totalEARsAbove10, nChem, nEndPoints) %>%
   data.frame %>%
-  arrange(desc(hits))
+  arrange(desc(totalEARsAbove10))
+
+nSamples <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(ActivityStartDateGiven, srsname,casrn, class, measuredValue, site) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm", "ActivityStartDateGiven")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  filter(EAR > 0.1) %>%
+  mutate(site=newSiteKey[site]) %>%
+  select(-endPoint, -endPointValue, -measuredValue)
   
 
-  datatable(siteSummary, rownames = FALSE, 
+summ2 <- siteSummary %>%
+  group_by(site, chnm) %>%
+  summarize(totalEARsAbove10=length(EAR))
+
+  datatable(summ1, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
     formatRound(c("minEAR","maxEAR"), digits = 2)
+
+  datatable(summ2, rownames = FALSE, 
+            options = list(pageLength = 10)) 
+
+  datatable(nSamples, rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("EAR"), digits = 2)
 
 ```
 
@@ -627,9 +660,9 @@ for(i in siteSummary$site){
     group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub, 
              intended_target_family, intended_target_family_sub) %>%
     rename(type=intended_target_type, type_sub=intended_target_type_sub,
-           family=intended_target_family, family_sub=intended_target_family_sub) %>%
-    summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), count=nrow(oneSite)) %>%
-    select(chnm, minEAR, maxEAR, hits, count, endPoint, class, type, type_sub, family, family_sub) %>%
+           family=intended_target_family, family_sub=intended_target_family_sub) %>% #FIX FREQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    summarize(minEAR=min(EAR), maxEAR=max(EAR), frequency=length(EAR), count=nrow(oneSite)) %>%
+    select(chnm, minEAR, maxEAR, frequency, count, endPoint, class, type, type_sub, family, family_sub) %>%
     data.frame %>%
     arrange(desc(maxEAR))
 
