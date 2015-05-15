@@ -253,6 +253,8 @@ chemicalSummary <- wData %>%
 
 ## Water sample site summaries
 
+The first site summary table groups only by site:
+
 ```{r message=FALSE, results='asis', echo=FALSE}
 
 siteSummary <- wData %>%
@@ -270,56 +272,47 @@ siteSummary <- wData %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
+#   filter(EAR > 0.1) %>%
   mutate(site=newSiteKey[site]) %>%
-  select(site, chnm, EAR, endPoint, class) %>% 
+  select(site, chnm, EAR, endPoint, class, date) %>% 
   arrange(site, chnm, EAR)
 
 
 summ1 <- siteSummary %>%
   group_by(site) %>% #FIX FREQ!!!!!!!!!!!!!!!!
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), totalEARsAbove10=length(EAR), nChem=length(unique(chnm)), nEndPoints=length(unique(endPoint))) %>%
-  select(site, minEAR, maxEAR, totalEARsAbove10, nChem, nEndPoints) %>%
+  summarize(minEAR=min(EAR), 
+            maxEAR=max(EAR), 
+            hits=sum(EAR > 0.1), 
+            nChem=length(unique(chnm)), 
+            nEndPoints=length(unique(endPoint)),
+            nSamples = length(unique(date))) %>%
+#             ,freq = hits/(nSamples*nChem)) %>% # I don't think this makes sense with multi-endpoints
+  select(site, minEAR, maxEAR, hits, nChem, nEndPoints, nSamples) %>%
   data.frame %>%
-  arrange(desc(totalEARsAbove10))
+  arrange(desc(maxEAR))  
 
-nSamples <- wData %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(ActivityStartDateGiven, srsname,casrn, class, measuredValue, site) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm", "ActivityStartDateGiven")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  mutate(site=newSiteKey[site]) %>%
-  select(-endPoint, -endPointValue, -measuredValue)
-  
-
-summ2 <- siteSummary %>%
-  group_by(site, chnm) %>%
-  summarize(totalEARsAbove10=length(EAR))
-
-  datatable(summ1, rownames = FALSE, 
-            options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
-
-  datatable(summ2, rownames = FALSE, 
-            options = list(pageLength = 10)) 
-
-#   datatable(nSamples, rownames = FALSE, 
-#             options = list(pageLength = 10)) %>% 
-#     formatRound(c("EAR"), digits = 2)
+datatable(summ1, rownames = FALSE, 
+          options = list(pageLength = 10)) %>% 
+  formatRound(c("minEAR","maxEAR"), digits = 2)
 
 ```
 
+The second tables groups by site, chemical, and endpoint:
+
+```{r message=FALSE, results='asis', echo=FALSE}
+summ2 <- siteSummary %>%
+  group_by(site, chnm, endPoint) %>%
+  summarize(hits=sum(EAR > 0.10),
+            nSamples=length(unique(date)),
+            freq=hits/nSamples) %>%
+  filter(freq>0) %>%
+  arrange(site, chnm,desc(hits))
+
+datatable(summ2, rownames = FALSE, 
+          options = list(pageLength = 10)) %>% 
+  formatRound(c("freq"), digits = 2)
+
+```
 
 ## Water Sample Site Tables
 
