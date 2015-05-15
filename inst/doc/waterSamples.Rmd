@@ -324,39 +324,69 @@ for(i in summ1$site){
     mutate(site = newSiteKey[site]) %>%
     filter(site == i) 
   
-  valColumns <- grep("valueToUse",names(oneSite))
-  
-  oneSiteLong2 <- melt(oneSite[,valColumns]) %>%
+  oneSiteLong <- select(oneSite, -site) %>%
+    melt(id.vars=c("ActivityStartDateGiven")) %>%
     mutate(variable=as.character(variable)) %>%
-    mutate(pCode=sapply(strsplit(variable, "_"), function(x) x[2])) %>%
-    select(-variable) %>%
     filter(!is.na(value)) %>%
-    rename(measuredValue=value) %>%
-    left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-    select(casrn, class, measuredValue) %>%
+    rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+    mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+    left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+    select(srsname,casrn, class, measuredValue, date) %>%
     right_join(endPoint, by=c("casrn"="casn")) %>%
-    select(-mlWt, -conversion, -casrn,  -Units) %>%
-    melt(id.vars = c("measuredValue", "chnm", "class")) %>%
+    select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+    melt(id.vars = c("class", "date","measuredValue","chnm")) %>% 
+    filter(!is.na(value)) %>%
     mutate(variable=as.character(variable)) %>%
     rename(endPointValue=value, endPoint=variable) %>%
-    filter(!is.na(endPointValue)) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
-    filter(EAR > 0.1) %>%
+  #   filter(EAR > 0.1) %>%
+    select(chnm, EAR, endPoint, class, date) %>% 
+    arrange(chnm, EAR) %>%
+    group_by(chnm, endPoint, class) %>%
+    summarize(hits=sum(EAR > 0.10),
+              nSamples=length(unique(date)),
+              freq=hits/nSamples) %>%
+    filter(freq>0) %>%
+    arrange(chnm, desc(hits)) %>%
     left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-    select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
-    arrange(chnm, desc(EAR)) %>%
-    group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub, 
-             intended_target_family, intended_target_family_sub) %>%
+    select(chnm, hits, freq, nSamples, class, endPoint, contains("intended_target_"))%>%
     rename(type=intended_target_type, type_sub=intended_target_type_sub,
-           family=intended_target_family, family_sub=intended_target_family_sub) %>% #FIX FREQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    summarize(minEAR=min(EAR), maxEAR=max(EAR), frequency=length(EAR), count=nrow(oneSite)) %>%
-    select(chnm, minEAR, maxEAR, frequency, count, endPoint, class, type, type_sub, family, family_sub) %>%
-    data.frame %>%
-    arrange(desc(maxEAR))
+           family=intended_target_family, family_sub=intended_target_family_sub,
+           gene_id=intended_target_gene_id, gene_symbol=intended_target_gene_symbol) 
+  
+#   valColumns <- grep("valueToUse",names(oneSite))
+#   
+#   oneSiteLong2 <- melt(oneSite[,valColumns]) %>%
+#     mutate(variable=as.character(variable)) %>%
+#     mutate(pCode=sapply(strsplit(variable, "_"), function(x) x[2])) %>%
+#     select(-variable) %>%
+#     filter(!is.na(value)) %>%
+#     rename(measuredValue=value) %>%
+#     left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+#     select(casrn, class, measuredValue) %>%
+#     right_join(endPoint, by=c("casrn"="casn")) %>%
+#     select(-mlWt, -conversion, -casrn,  -Units) %>%
+#     melt(id.vars = c("measuredValue", "chnm", "class")) %>%
+#     mutate(variable=as.character(variable)) %>%
+#     rename(endPointValue=value, endPoint=variable) %>%
+#     filter(!is.na(endPointValue)) %>%
+#     mutate(EAR=measuredValue/endPointValue) %>%
+#     filter(EAR > 0.1) %>%
+#     left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
+#     select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
+#     arrange(chnm, desc(EAR)) %>%
+#     group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub, 
+#              intended_target_family, intended_target_family_sub) %>%
+#     rename(type=intended_target_type, type_sub=intended_target_type_sub,
+#            family=intended_target_family, family_sub=intended_target_family_sub) %>% #FIX FREQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#     summarize(minEAR=min(EAR), maxEAR=max(EAR), frequency=length(EAR), count=nrow(oneSite)) %>%
+#     select(chnm, minEAR, maxEAR, frequency, count, endPoint, class, type, type_sub, family, family_sub) %>%
+#     data.frame %>%
+#     arrange(desc(maxEAR))
 
-  if(nrow(oneSiteLong2) > 0){
+  if(nrow(oneSiteLong) > 0){
     cat("\n\n###", i, "\n")
-    print(kable(oneSiteLong2, digits=3,caption = i, row.names = FALSE))
+    print(kable(oneSiteLong, digits=3,caption = i, row.names = FALSE))
   }
   
 
