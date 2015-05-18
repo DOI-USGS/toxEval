@@ -1,7 +1,7 @@
 ---
-title: "Test"
-author: "R"
-date: "Wednesday, May 13, 2015"
+title: "test"
+author: "test"
+date: "Wednesday, May 27, 2015"
 output: 
   ioslides_presentation:
     widescreen: true
@@ -9,7 +9,10 @@ output:
     logo: USGS_avatar_github.png
 ---
 
-## R Markdown
+## Collaborators
+- USEPA: 
+ - Duluth, MN
+ - Athens, GA
 
 This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -23,11 +26,13 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ## Slide with R Code and Output
 
-```{r echo=FALSE, message=FALSE}
+```{r message=FALSE, echo=FALSE}
+
 library(dplyr)
 library(reshape2)
 library(DT)
 library(toxEval)
+
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
 AC50gain <- AC50gain
