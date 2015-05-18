@@ -115,5 +115,8 @@ Chemicals table
         * Endocrine disruptors
 * Endocrine disruptors
     * Comparison of estrogenic equivalents to ToxCast results
-    
+* Factors that may influence biological effects
+    * Seasonality
+    * Hydrologic condition
+    * Land use
   
