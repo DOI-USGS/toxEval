@@ -195,7 +195,7 @@ qualColumns <- grep("qualifier", names(waterSamples))
 valColumns <- grep("valueToUse", names(waterSamples))
 
 waterData <- waterSamples[,valColumns]
-# waterData[waterSamples[,qualColumns] == "<"] <- NA
+waterData[waterSamples[,qualColumns] == "<"] <- 0
 
 ```
 
@@ -277,48 +277,51 @@ siteSummary <- wData %>%
   select(site, chnm, EAR, endPoint, class, date) %>% 
   arrange(site, chnm, EAR)
 
-
 summ1 <- siteSummary %>%
-  group_by(site) %>% #FIX FREQ!!!!!!!!!!!!!!!!
-  summarize(minEAR=min(EAR), 
-            maxEAR=max(EAR), 
-            hits=sum(EAR > 0.1), 
-            nChem=length(unique(chnm)), 
-            nEndPoints=length(unique(endPoint)),
-            nSamples = length(unique(date))) %>%
-#             ,freq = hits/(nSamples*nChem)) %>% # I don't think this makes sense with multi-endpoints
-  select(site, minEAR, maxEAR, hits, nChem, nEndPoints, nSamples) %>%
-  data.frame %>%
-  arrange(desc(maxEAR))  
+  group_by(site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(site) %>%
+  summarize(nHits=sum(hits),
+            freq=nHits/length(unique(date)),
+            nSamples=length(unique(date))) %>%
+  filter(freq>0)
 
-datatable(summ1, rownames = FALSE, 
-          options = list(pageLength = 10)) %>% 
-  formatRound(c("minEAR","maxEAR"), digits = 2)
+summ2 <-  siteSummary %>%
+  filter(EAR > 0.1) %>%
+  group_by(site) %>%
+  summarize(nChem = length(unique(chnm)),
+            nEndPoints = length(unique(endPoint)),
+            maxEAR = max(EAR))
+
+
+summary <- left_join(summ1, summ2, by="site") %>%
+  arrange(desc(maxEAR))
+
+# summ1 <- siteSummary %>%
+#   group_by(site) %>% #FIX FREQ!!!!!!!!!!!!!!!!
+#   summarize(minEAR=min(EAR), 
+#             maxEAR=max(EAR), 
+#             hits=sum(EAR > 0.1), 
+#             nChem=length(unique(chnm)), 
+#             nEndPoints=length(unique(endPoint)),
+#             nSamples = length(unique(date))) %>%
+# #             ,freq = hits/(nSamples*nChem)) %>% # I don't think this makes sense with multi-endpoints
+#   select(site, minEAR, maxEAR, hits, nChem, nEndPoints, nSamples) %>%
+#   data.frame %>%
+#   arrange(desc(maxEAR))  
+
+datatable(summary, rownames = FALSE, 
+          options = list(pageLength = 50)) %>% 
+  formatRound(c("freq","maxEAR"), digits = 2)
 
 ```
 
-The second tables groups by site, chemical, and endpoint:
-
-```{r message=FALSE, results='asis', echo=FALSE}
-summ2 <- siteSummary %>%
-  group_by(site, chnm, endPoint) %>%
-  summarize(hits=sum(EAR > 0.10),
-            nSamples=length(unique(date)),
-            freq=hits/nSamples) %>%
-  filter(freq>0) %>%
-  arrange(site, chnm,desc(hits))
-
-datatable(summ2, rownames = FALSE, 
-          options = list(pageLength = 10)) %>% 
-  formatRound(c("freq"), digits = 2)
-
-```
 
 ## Water Sample Site Tables
 
 ```{r message=FALSE, results='asis', echo=FALSE}
 
-for(i in summ1$site){
+for(i in summary$site[!is.na(summary$site)]){
   
   oneSite <- wData %>%
     mutate(site = newSiteKey[site]) %>%

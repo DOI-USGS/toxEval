@@ -114,7 +114,7 @@ summ1 <- siteSummary %>%
 
 ```
 
-## Passive Chemical Summary
+## Passive Site Summary
 
 ```{r, echo=FALSE, results='asis'}
 datatable(summ1, rownames = FALSE, 
@@ -122,9 +122,9 @@ datatable(summ1, rownames = FALSE,
   formatRound(c("minEAR","maxEAR"), digits = 2)
 ```
 
-## Passive Site Summary
 
-## Map
+
+## Map: maxEAR (color) and number of hits (size)
 
 ```{r, echo=FALSE, results='asis'}
 library(leaflet)
@@ -132,6 +132,7 @@ stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
 mapData <- left_join(stationINFO, summ1, by=c("shortName"="site"))
 mapData <- mapData[!is.na(mapData$dec.lat.va),]
+mapData <- mapData[!is.na(mapData$nChem),]
 
 col_types <- c( "red","orange", "yellow", "grey80","dodgerblue","darkblue")
 leg_vals <- seq(0,2500, 500)
@@ -140,18 +141,28 @@ cols <- colorNumeric(col_types, domain = leg_vals)
 rad <- seq(2500,15000, 2500)
 mapData$sizes <- rad[as.numeric(cut(mapData$hits, c(-1,0,1,10,50,100,1000)))]
 
+pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+
+
 m = leaflet(mapData) %>%
   addProviderTiles("Esri.WorldPhysical") %>%
-  setView(lng = -84.45, lat = 43.8, zoom=5)%>%
+  setView(lng = -84.45, lat = 43.8, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-             popup=mapData$shortName,
-             fillColor = ~cols(maxEAR),
-             color = "grey60", 
+             popup=paste(mapData$Station.Name,'<br/>',
+                         "nHits:",mapData$hits,'<br/>',
+                         "maxEAR:",sprintf("%1.1f", mapData$maxEAR)),
+#              fillColor = ~cols(maxEAR), 
+              fillColor = ~pal(maxEAR), 
+             weight = 1,
+             color = "grey60",
              fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
     addLegend(
       position = 'bottomleft',
-      colors = cols(leg_vals),
-      labels = paste0(leg_vals,''), opacity = 0.8,
+      pal=pal,
+      values=~maxEAR,
+#       colors = cols(leg_vals),
+      opacity = 0.8,
+#       labels = paste0(leg_vals,'-'),
       title = 'maxEAR') 
 m  # a map with the default OSM tile laye
 
