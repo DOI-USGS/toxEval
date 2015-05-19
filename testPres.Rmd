@@ -105,10 +105,25 @@ Chemicals table
 
 ## Water Quality Guidelines Results
 
+## Comparison of ToxCast and Water Quality Guideline Results
 
+## Challenges with this work
+* Detection levels
+    * ToxCast: Some compounds have adverse effects lower than analytical reporting limits
+    * Water samples
+        * Dichlorvos  (min EAR = 36)
+        * Metolachlor (min EAR = 14)
+        * Cotinine    (min EAR = 7)
+        * Naphthalene (min EAR = 1.7)
+        * dl-Menthol  (min EAR = 1.4)
+* Compounds included
+    * The numbers are increasing, but many are still not included
+        * ToxCast and water quality guidelines/literature
+* Interpretation of ToxCast in the environmental setting
+        
 ## Work Remaining For This Analysis
 * ToxCast
-    * Zebrafish LIVERS???
+    * Zebrafish developmental toxicity testing
 * Passive samplers
     * Compile established water quality guidelines and compare
         * Toxicity
@@ -119,4 +134,5 @@ Chemicals table
     * Seasonality
     * Hydrologic condition
     * Land use
+
   
