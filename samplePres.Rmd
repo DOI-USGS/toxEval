@@ -97,19 +97,25 @@ siteSummary <- wData %>%
   select(site, chnm, EAR, endPoint, class, date) %>% 
   arrange(site, chnm, EAR)
 
-
 summ1 <- siteSummary %>%
-  group_by(site) %>% #FIX FREQ!!!!!!!!!!!!!!!!
-  summarize(minEAR=min(EAR), 
-            maxEAR=max(EAR), 
-            hits=sum(EAR > 0.1), 
-            nChem=length(unique(chnm)), 
-            nEndPoints=length(unique(endPoint)),
-            nSamples = length(unique(date))) %>%
-#             ,freq = hits/(nSamples*nChem)) %>% # I don't think this makes sense with multi-endpoints
-  select(site, minEAR, maxEAR, hits, nChem, nEndPoints, nSamples) %>%
-  data.frame %>%
-  arrange(desc(maxEAR))  
+  group_by(site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(site) %>%
+  summarize(nHits=sum(hits),
+            freq=nHits/length(unique(date)),
+            nSamples=length(unique(date))) %>%
+  filter(freq>0)
+
+summ2 <-  siteSummary %>%
+  filter(EAR > 0.1) %>%
+  group_by(site) %>%
+  summarize(nChem = length(unique(chnm)),
+            nEndPoints = length(unique(endPoint)),
+            maxEAR = max(EAR))
+
+
+summary <- left_join(summ1, summ2, by="site") %>%
+  arrange(desc(maxEAR))
 
 
 ```
@@ -117,20 +123,20 @@ summ1 <- siteSummary %>%
 ## Passive Site Summary
 
 ```{r, echo=FALSE, results='asis'}
-datatable(summ1, rownames = FALSE, 
+datatable(summary, rownames = FALSE, 
           options = list(pageLength = 10)) %>% 
-  formatRound(c("minEAR","maxEAR"), digits = 2)
+  formatRound(c("freq","maxEAR"), digits = 2)
 ```
 
 
 
 ## Map: maxEAR (color) and number of hits (size)
 
-```{r, echo=FALSE, results='asis'}
+```{r, echo=FALSE, results='asis', fig.width=9}
 library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
-mapData <- left_join(stationINFO, summ1, by=c("shortName"="site"))
+mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
 mapData <- mapData[!is.na(mapData$dec.lat.va),]
 mapData <- mapData[!is.na(mapData$nChem),]
 
@@ -139,7 +145,7 @@ leg_vals <- seq(0,2500, 500)
 
 cols <- colorNumeric(col_types, domain = leg_vals)
 rad <- seq(2500,15000, 2500)
-mapData$sizes <- rad[as.numeric(cut(mapData$hits, c(-1,0,1,10,50,100,1000)))]
+mapData$sizes <- rad[as.numeric(cut(mapData$nHits, c(-1,0,1,10,50,100,1000)))]
 
 pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
 
@@ -149,8 +155,9 @@ m = leaflet(mapData) %>%
   setView(lng = -84.45, lat = 43.8, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
              popup=paste(mapData$Station.Name,'<br/>',
-                         "nHits:",mapData$hits,'<br/>',
-                         "maxEAR:",sprintf("%1.1f", mapData$maxEAR)),
+                         "Samples with at least 1 hits:",mapData$nHits,'<br/>',
+                         "maxEAR:",sprintf("%1.1f", mapData$maxEAR),'<br/>',
+                         "Number of Chemicals with Hits:",mapData$nChem),
 #              fillColor = ~cols(maxEAR), 
               fillColor = ~pal(maxEAR), 
              weight = 1,
