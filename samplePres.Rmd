@@ -145,14 +145,12 @@ summ1 <- siteSummary %>%
   group_by(site) %>%
   summarize(nHits=sum(hits),
             freq=nHits/length(unique(date)),
-            nSamples=length(unique(date))) %>%
-  filter(freq>0)
+            nSamples=length(unique(date))) 
 
 summ2 <-  siteSummary %>%
-  filter(EAR > 0.1) %>%
   group_by(site) %>%
-  summarize(nChem = length(unique(chnm)),
-            nEndPoints = length(unique(endPoint)),
+  summarize(nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
             maxEAR = max(EAR))
 
 
@@ -173,14 +171,15 @@ summary <- left_join(summ1, summ2, by="site") %>%
 ## Water Sample Site Summary
 
 ```{r, echo=FALSE, results='asis'}
-datatable(summary, rownames = FALSE, 
-          extensions = 'Scroller', options = list(
-  deferRender = TRUE,
-  dom = "frtiS",
-  scrollY = 200,
-  scrollCollapse = TRUE,
-  pageLength = 20
-)) %>% 
+datatable(summary, rownames = FALSE
+#           , extensions = 'Scroller', options = list(
+#   deferRender = TRUE,
+#   dom = "frtiS",
+#   scrollY = 200,
+#   scrollCollapse = TRUE,
+#   pageLength = 10
+# )
+) %>% 
   formatRound(c("freq","maxEAR"), digits = 2)
 ```
 

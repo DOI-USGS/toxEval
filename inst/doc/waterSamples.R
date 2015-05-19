@@ -245,8 +245,8 @@ summ1 <- siteSummary %>%
 
 summ2 <-  siteSummary %>%
   group_by(site) %>%
-  summarize(nChem = length(unique(chnm)),
-            nEndPoints = length(unique(endPoint)),
+  summarize(nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
             maxEAR = max(EAR))
 
 
