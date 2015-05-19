@@ -4,7 +4,7 @@ author: "R"
 date: "Wednesday, May 13, 2015"
 output: 
   ioslides_presentation:
-    widescreen: true
+    widescreen: false
     smaller: true
     logo: USGS_avatar_github.png
 ---
@@ -21,7 +21,7 @@ When you click the **Knit** button a document will be generated that includes bo
 - Bullet 2
 - Bullet 3
 
-## Slide with R Code and Output
+
 
 ```{r echo=FALSE, message=FALSE}
 library(dplyr)
@@ -77,6 +77,48 @@ waterData[waterSamples[,qualColumns] == "<"] <- 0
 newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 wData <- cbind(waterSamples[,1:2],waterData)
 
+valColumns <- grep("valueToUse",names(wData))
+
+chemicalSummary <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site, date) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm","date")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) 
+
+
+chemSum1 <- chemicalSummary %>%
+  group_by(chnm,  class, date, site) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(chnm,  class, site) %>%
+  summarize(hits=as.numeric(any(hits > 0)),
+            counts=n(),
+            freq=hits/counts) %>%
+  group_by(chnm, class) %>%
+  summarize(freq=sum(hits)/n()) 
+
+chemSum2 <- chemicalSummary %>%
+  group_by(chnm,  class) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=nrow(unique(data.frame(date,site))),
+            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+  left_join(chemSum1, by=c("chnm","class")) %>%
+  data.frame %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq, maxEAR, nEndPoints, nSamples)
+
+
+
+
 siteSummary <- wData %>%
   melt(id.vars=c("ActivityStartDateGiven","site")) %>%
   mutate(variable=as.character(variable)) %>%
@@ -120,19 +162,31 @@ summary <- left_join(summ1, summ2, by="site") %>%
 
 ```
 
-## Passive Site Summary
-
+## Water Sample Chemical Summary
 ```{r, echo=FALSE, results='asis'}
-datatable(summary, rownames = FALSE, 
-          options = list(pageLength = 10)) %>% 
-  formatRound(c("freq","maxEAR"), digits = 2)
+  datatable(chemSum2, rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 4)
 ```
 
 
+## Water Sample Site Summary
+
+```{r, echo=FALSE, results='asis'}
+datatable(summary, rownames = FALSE, 
+          extensions = 'Scroller', options = list(
+  deferRender = TRUE,
+  dom = "frtiS",
+  scrollY = 200,
+  scrollCollapse = TRUE,
+  pageLength = 20
+)) %>% 
+  formatRound(c("freq","maxEAR"), digits = 2)
+```
 
 ## Map: maxEAR (color) and number of hits (size)
 
-```{r, echo=FALSE, results='asis', fig.width=9}
+```{r, echo=FALSE, results='asis', fig.width=8}
 library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
