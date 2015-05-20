@@ -9,18 +9,6 @@ output:
     logo: USGS_avatar_github.png
 ---
 
-## R Markdown
-
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
 
 
 ```{r echo=FALSE, message=FALSE}
@@ -117,8 +105,6 @@ chemSum2 <- chemicalSummary %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSamples)
 
 
-
-
 siteSummary <- wData %>%
   melt(id.vars=c("ActivityStartDateGiven","site")) %>%
   mutate(variable=as.character(variable)) %>%
@@ -134,7 +120,6 @@ siteSummary <- wData %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
-#   filter(EAR > 0.1) %>%
   mutate(site=newSiteKey[site]) %>%
   select(site, chnm, EAR, endPoint, class, date) %>% 
   arrange(site, chnm, EAR)
@@ -143,9 +128,9 @@ summ1 <- siteSummary %>%
   group_by(site, date) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(site) %>%
-  summarize(nHits=sum(hits),
-            freq=nHits/length(unique(date)),
-            nSamples=length(unique(date))) 
+  summarize(freq=sum(hits)/length(unique(date)),
+            nSamples=length(unique(date)),
+            nHits=sum(hits)) 
 
 summ2 <-  siteSummary %>%
   group_by(site) %>%
@@ -171,15 +156,8 @@ summary <- left_join(summ1, summ2, by="site") %>%
 ## Water Sample Site Summary
 
 ```{r, echo=FALSE, results='asis'}
-datatable(summary, rownames = FALSE
-#           , extensions = 'Scroller', options = list(
-#   deferRender = TRUE,
-#   dom = "frtiS",
-#   scrollY = 200,
-#   scrollCollapse = TRUE,
-#   pageLength = 10
-# )
-) %>% 
+sumToPrint <- select(summary, -nHits)
+datatable(sumToPrint, rownames = FALSE) %>% 
   formatRound(c("freq","maxEAR"), digits = 2)
 ```
 
