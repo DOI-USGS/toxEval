@@ -166,9 +166,6 @@ datatable(dfToPrint, rownames=FALSE) %>%
 
 ```
 
-This table shows us the chemicals that `r detLevels$chnm` may lead to issues since the detection levels are higher than some of the end point values.
-
-In this case therefore, we cannot simply ignore all of the left-censored values. However, for the time being, we will use only non-censored values in our analysis. Let's begin by trimming down the waterSamples data frame to only the relavent information. Here, we are setting all left-censored values to NA, we could instead use the detection limit.
 
 ```{r}
 siteColumns <- grep("site",names(passiveData))
@@ -235,6 +232,7 @@ chemSum2 <- chemicalSummary %>%
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
+
 chemSum2 <- chemicalSummary  %>%
   group_by(chnm, endPoint, class) %>% 
   summarize(maxEAR=max(EAR), 
@@ -252,7 +250,7 @@ chemSum2 <- chemicalSummary  %>%
 
   datatable(unique(chemSum2), rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
-    formatRound(c("maxEAR", "freq"), digits = 2)
+    formatRound(c("maxEAR"), digits = 2)
 
 ```
 
@@ -295,7 +293,7 @@ summ1 <- siteSummary %>%
 
 datatable(summary, rownames = FALSE) %>% 
 #           options = list(pageLength = 50)) %>% 
-  formatRound(c("freq","maxEAR"), digits = 2)
+  formatRound(c("maxEAR"), digits = 2)
 
 ```
 
@@ -349,164 +347,4 @@ datatable(summary, rownames = FALSE) %>%
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Next we can create a data frame with the AC50 converted endpoints:
-```{r}
-AC50Converted <- left_join(AC50, AC50gain, by="casn")
-infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
-
-endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData <- 10^endPointData
-endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50, data.frame(endPointData)) %>%
-  rename(Units=desiredUnits) %>%
-  filter(rowSums(is.na(endPointData)) != ncol(endPointData))
-
-endPointData <- endPointData[rowSums(is.na(endPointData)) != 
-                               ncol(endPointData),]
-
-```
-
-
-
-Now, let's look at the extreme reported endpoint (not including `r NA`'s):
-
-```{r warning=FALSE}
-maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
-minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
-
-maxMinSummary <- cbind(endPoint[,c("casn", "Units")], 
-                       maxEndPoint=maxEndPoints, 
-                       minEndPoint=minEndPoints) %>%
-  arrange(desc(casn))
-
-```
-
-## Passive Detection Limits
-
-Next, let's determine if the MQL or MLD are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.
-
-```{r warning=FALSE, echo=FALSE}
-siteColumns <- grep("site",names(passiveData))
-maxMinSummary <- left_join(maxMinSummary,passiveData[,-siteColumns], 
-                           by=c("casn"="CAS", "Units"="Units")) 
-
-```
-
-
-If any of the MLD are higher than the maxEndPoint, we wouldn't be able to make any conclusions about the toxicity of the water.
-
-```{r echo=FALSE}
-sum(maxMinSummary$MLD > maxMinSummary$minEndPoint)
-
-```
-
-`r sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)` measurements have detection limitations that are greater than the minimum endpoint concentration. We might be interested to know how close the detection limit values come to the minimum endpoints. 
-
-The following chemicals have MLD's within 1% of the miniumum endpoint value:
-
-```{r echo=FALSE}
-dfToPrint <- mutate(maxMinSummary, MLD_EAR = MLD/minEndPoint) %>%
-  filter(MLD_EAR > 0.01) %>%
-  select(Chemical, minEndPoint, MLD, MLD_EAR, class) %>%
-  arrange(desc(MLD_EAR)) %>%
-  rename("Max EAR"=MLD_EAR)
-  
-datatable(dfToPrint, rownames=FALSE) %>% 
-    formatRound(c("Max EAR","MLD","minEndPoint"), digits = 3)
-
-```
-
-Since it appears that we can ignore the censored values, the easist way to convert data to numbers then is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. To convert all the columns with the word 'site' in their column name to numeric, use the following commands:
-
-```{r warning=FALSE}
-siteColumns <- grep("site",names(passiveData))
-passiveData[,siteColumns] <- suppressWarnings(
-  sapply(passiveData[,siteColumns], function(x) as.numeric(x)))
-
-#For this analysis, we'll consider NA's to be 0 (other options exist):
-passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
-
-```
-
-## Chemical Summary Tables Passive
-
-```{r message=FALSE, results='asis', echo=FALSE}
-infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
-
-chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(value != 0) %>%
-  rename(measuredValue=value, site=variable) %>%
-  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
-  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  group_by(Chemical, endPoint, class) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=ncol(passiveData)) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select(Chemical, minEAR, maxEAR, hits, nSites, endPoint, class, contains("intended_target_")) %>%
-  arrange(Chemical, desc(maxEAR)) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_")) %>% 
-    data.frame %>%
-  arrange(desc(maxEAR)) 
-
-  chemicalSummary <- unique(chemicalSummary) #some endpoints have multiple genes....so there are duplicated rows, there wouldn't be if we didn't have select(-contains("intended_target_"))
-
-  datatable(chemicalSummary, rownames = FALSE, 
-            options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
-
-```
-
-There are actually multiple genes for the endpoint that corresponds to Aspirin/`Tox21_TR_LUC_GH3_Antagonist`.
-
-## Passive site summaries
-
-```{r message=FALSE, results='asis', echo=FALSE}
-infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
-siteKey <- setNames(stationINFO$shortName, stationINFO$STAID)
-
-siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(value != 0) %>%
-  rename(measuredValue=value, site=variable) %>%
-  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
-  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
-  select(Chemical, class, site, measuredValue, variable, value) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  mutate(site=siteKey[gsub("site","",site)]) %>%
-  group_by(site) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(Chemical), nEndPoints=length(unique(endPoint))) %>%
-  select(site, minEAR, maxEAR, hits, nChem, nEndPoints)  %>%
-    data.frame %>%
-  arrange(desc(maxEAR))  
-
-  datatable(siteSummary, rownames = FALSE, 
-            options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
-
-```
 
