@@ -9,7 +9,7 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Introduction to toxEval}
+  %\VignetteIndexEntry{Water Samples}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -234,7 +234,7 @@ chemSum1 <- chemicalSummary %>%
             counts=n(),
             freq=hits/counts) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n()) 
+  summarize(freq=sum(hits)/n()) # add nSite?
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -258,14 +258,16 @@ chemSum2 <- chemicalSummary %>%
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
-
+###########################################
+# nSites seems wrong???
+###########################################
 chemSum2 <- chemicalSummary  %>%
   group_by(chnm, endPoint, class) %>% 
   summarize(maxEAR=max(EAR), 
 #there are some sites that have sample times at exactly the same time!:
             nSamples=nrow(unique(data.frame(date,site))), 
             freq=sum(EAR > 0.1)/nSamples, 
-            nSites=length(which(EAR>0.1))) %>%
+            nSites=length(unique(site[EAR>0.1]))) %>%
 #This line adds rows because there are repeated endpoints in the endPointInfo table (maybe unique this table at the end to see if it matters)
   left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
   select(chnm, maxEAR, freq, nSamples, nSites, 
@@ -510,3 +512,4 @@ for(i in summary$site[!is.na(summary$site)]){
 #     geom_point(aes(x=site, y=EAR, color="red") )
 
 ```
+
