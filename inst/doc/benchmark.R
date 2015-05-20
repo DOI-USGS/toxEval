@@ -9,14 +9,9 @@ library(DT)
 library(ggplot2)
 
 
-## ----message=FALSE, echo=FALSE--------------------------------------------------------------------
+## ----echo=FALSE, eval=TRUE, message=FALSE---------------------------------------------------------
 library(toxEval)
-endPointInfo <- endPointInfo
-# AC50 data provided in the toxEval package:
-AC50gain <- AC50gain
 
-
-## ----echo=FALSE, eval=TRUE------------------------------------------------------------------------
 packagePath <- system.file("extdata", package="toxEval")
 #Site Info:
 filePath <- file.path(packagePath, "stationINFO.RData")
@@ -28,10 +23,13 @@ load(file=filePath)
 
 pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
-# Some chemicals have 2 rows (different units)...
-# To simplify for now, we'll ignore the duplicate chemicals:
 
 
+## ----message=FALSE, echo=FALSE--------------------------------------------------------------------
+
+# AC50 data provided in the toxEval package:
+AC50gain <- select(pCodeInfo, srsname, casrn, AqT_EPA_acute, 
+                   AqT_EPA_chronic, AqT_other_acute, AqT_other_chronic)
 
 
 ## ----echo=TRUE, eval=TRUE-------------------------------------------------------------------------
@@ -41,6 +39,24 @@ load(file=filePath)
 
 head(waterSamples[,1:10])
 
+
+## ----message=FALSE, eval=FALSE--------------------------------------------------------------------
+#  library(dataRetrieval)
+#  
+#  waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
+#  waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+#  
+#  pCodeInfo <- readNWISpCode(waterSamplePCodes)
+#  
+#  unique(pCodeInfo$parameter_units)
+#  
+#  library(webchem)
+#  pCodeInfo$mlWt <- rep(NA, nrow(pCodeInfo))
+#  pCodeInfo$mlWt[pCodeInfo$casrn != ""] <- sapply(pCodeInfo$casrn[
+#    pCodeInfo$casrn != ""],
+#                  function(x) cir_query(x, "mw", first = TRUE))
+#  pCodeInfo$mlWt <- as.numeric(pCodeInfo$mlWt)
+#  
 
 ## ----message=FALSE, echo=FALSE--------------------------------------------------------------------
 
@@ -52,24 +68,29 @@ waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
 
 ## -------------------------------------------------------------------------------------------------
 
-AC50_ws <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
-                   by= c("casn"="casrn")) %>%
+AC50 <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
+                   by= c("casrn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
   rename(desiredUnits = parameter_units) %>%
-  mutate(conversion = mlWt) %>%
-  select(casn, chnm, desiredUnits, mlWt, conversion)
+  mutate(conversion = 1) %>%
+  select(casrn, srsname, desiredUnits, mlWt, conversion) 
 
 
 ## -------------------------------------------------------------------------------------------------
-AC50Converted <- left_join(AC50_ws, AC50gain, by = c("casn", "chnm"))
-infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+AC50Converted <- left_join(AC50, AC50gain, by = c("casrn", "srsname")) %>%
+  rename(casn=casrn, chnm=srsname)
+
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion")
 
 endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData <- 10^endPointData
-endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50_ws, data.frame(endPointData))
-endPoint <- rename(endPoint, Units=desiredUnits)
 
+endPointData <- endPointData * AC50Converted$conversion
+
+AC50 <- rename(AC50, casn=casrn, chnm=srsname)
+
+endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- rename(endPoint, Units=desiredUnits)
+# endPoint <- na.omit(endPoint)
 
 ## ----warning=FALSE--------------------------------------------------------------------------------
 maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
@@ -151,7 +172,7 @@ chemSum1 <- chemicalSummary %>%
             counts=n(),
             freq=hits/counts) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n()) # add nSite?
+  summarize(freq=sum(hits)/n()) 
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -163,6 +184,7 @@ chemSum2 <- chemicalSummary %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSamples)
 
+
   datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
     formatRound(c("maxEAR", "freq"), digits = 4)
@@ -170,26 +192,19 @@ chemSum2 <- chemicalSummary %>%
 
 
 ## ----message=FALSE, results='asis', echo=FALSE----------------------------------------------------
-###########################################
-# nSites seems wrong???
-###########################################
+
 chemSum2 <- chemicalSummary  %>%
   group_by(chnm, endPoint, class) %>% 
   summarize(maxEAR=max(EAR), 
 #there are some sites that have sample times at exactly the same time!:
             nSamples=nrow(unique(data.frame(date,site))), 
             freq=sum(EAR > 0.1)/nSamples, 
-            nSites=length(unique(site[EAR>0.1]))) %>%
-#This line adds rows because there are repeated endpoints in the endPointInfo table (maybe unique this table at the end to see if it matters)
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
-  select(chnm, maxEAR, freq, nSamples, nSites, 
-         endPoint, class, contains("intended_target_")) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_"))  %>%
+            nSites=length(unique(site[EAR>0.1]))) %>% 
+  select(chnm, maxEAR, freq, nSamples, nSites, endPoint, class) %>%
   data.frame %>%
   filter(maxEAR > 0.1) %>%
-  arrange(desc(maxEAR))  
+  arrange(desc(maxEAR))
+  
 
   datatable(unique(chemSum2), rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
@@ -262,6 +277,7 @@ for(i in summary$site[!is.na(summary$site)]){
     mutate(variable=as.character(variable)) %>%
     rename(endPointValue=value, endPoint=variable) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
+  #   filter(EAR > 0.1) %>%
     select(chnm, EAR, endPoint, class, date) %>% 
     arrange(chnm, EAR) %>%
     group_by(chnm, endPoint, class) %>%
@@ -270,12 +286,7 @@ for(i in summary$site[!is.na(summary$site)]){
               freq=hits/nSamples) %>%
     data.frame()%>%
     filter(freq>0) %>%
-    arrange(chnm, desc(hits)) %>%
-    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-    select(chnm, hits, freq, nSamples, class, endPoint, contains("intended_target_"))%>%
-    rename(type=intended_target_type, type_sub=intended_target_type_sub,
-           family=intended_target_family, family_sub=intended_target_family_sub,
-           gene_id=intended_target_gene_id, gene_symbol=intended_target_gene_symbol) 
+    arrange(chnm, desc(hits))  
 
   if(nrow(oneSiteLong) > 0){
     cat("\n\n###", i, "\n")

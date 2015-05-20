@@ -1,5 +1,5 @@
 ---
-title: "Water Samples"
+title: "Water Samples: ToxCast"
 author: "Steven R. Corsi, Laura A. De Cicco"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -9,7 +9,7 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Introduction to toxEval}
+  %\VignetteIndexEntry{Water Samples: ToxCast}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -71,24 +71,6 @@ head(waterSamples[,1:10])
 
 The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the **dataRetrieval** package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes, then use **webchem** to get the molecular weights.
 
-```{r message=FALSE, eval=FALSE}
-library(dataRetrieval)
-
-waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
-waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
-
-pCodeInfo <- readNWISpCode(waterSamplePCodes)
-
-unique(pCodeInfo$parameter_units)
-
-library(webchem)
-pCodeInfo$mlWt <- rep(NA, nrow(pCodeInfo))
-pCodeInfo$mlWt[pCodeInfo$casrn != ""] <- sapply(pCodeInfo$casrn[
-  pCodeInfo$casrn != ""],
-                function(x) cir_query(x, "mw", first = TRUE))
-pCodeInfo$mlWt <- as.numeric(pCodeInfo$mlWt)
-
-```
 
 ```{r message=FALSE, echo=FALSE}
 
@@ -113,7 +95,7 @@ $$
 
 ```{r}
 
-AC50 <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
+AC50_ws <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
                    by= c("casn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
   rename(desiredUnits = parameter_units) %>%
@@ -124,13 +106,13 @@ AC50 <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCo
 
 Next we can create a data frame with the AC50 converted endpoints:
 ```{r}
-AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
+AC50Converted <- left_join(AC50_ws, AC50gain, by = c("casn", "chnm"))
 infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
 
 endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
 endPointData <- 10^endPointData
 endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- cbind(AC50_ws, data.frame(endPointData))
 endPoint <- rename(endPoint, Units=desiredUnits)
 
 ```
@@ -234,7 +216,7 @@ chemSum1 <- chemicalSummary %>%
             counts=n(),
             freq=hits/counts) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n()) 
+  summarize(freq=sum(hits)/n()) # add nSite?
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -245,7 +227,6 @@ chemSum2 <- chemicalSummary %>%
   data.frame %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSamples)
-
 
   datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
@@ -258,26 +239,26 @@ chemSum2 <- chemicalSummary %>%
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
-
+###########################################
+# nSites seems wrong???
+###########################################
 chemSum2 <- chemicalSummary  %>%
   group_by(chnm, endPoint, class) %>% 
   summarize(maxEAR=max(EAR), 
 #there are some sites that have sample times at exactly the same time!:
             nSamples=nrow(unique(data.frame(date,site))), 
             freq=sum(EAR > 0.1)/nSamples, 
-            nSites=length(which(EAR>0.1))) %>%
+            nSites=length(unique(site[EAR>0.1]))) %>%
 #This line adds rows because there are repeated endpoints in the endPointInfo table (maybe unique this table at the end to see if it matters)
   left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
   select(chnm, maxEAR, freq, nSamples, nSites, 
          endPoint, class, contains("intended_target_")) %>%
-#   arrange(chnm, desc(maxEAR)) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
   select(-contains("intended_target_"))  %>%
   data.frame %>%
   filter(maxEAR > 0.1) %>%
-  arrange(desc(maxEAR))
-  
+  arrange(desc(maxEAR))  
 
   datatable(unique(chemSum2), rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
@@ -359,7 +340,6 @@ for(i in summary$site[!is.na(summary$site)]){
     mutate(variable=as.character(variable)) %>%
     rename(endPointValue=value, endPoint=variable) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
-  #   filter(EAR > 0.1) %>%
     select(chnm, EAR, endPoint, class, date) %>% 
     arrange(chnm, EAR) %>%
     group_by(chnm, endPoint, class) %>%
@@ -374,36 +354,6 @@ for(i in summary$site[!is.na(summary$site)]){
     rename(type=intended_target_type, type_sub=intended_target_type_sub,
            family=intended_target_family, family_sub=intended_target_family_sub,
            gene_id=intended_target_gene_id, gene_symbol=intended_target_gene_symbol) 
-  
-#   valColumns <- grep("valueToUse",names(oneSite))
-#   
-#   oneSiteLong2 <- melt(oneSite[,valColumns]) %>%
-#     mutate(variable=as.character(variable)) %>%
-#     mutate(pCode=sapply(strsplit(variable, "_"), function(x) x[2])) %>%
-#     select(-variable) %>%
-#     filter(!is.na(value)) %>%
-#     rename(measuredValue=value) %>%
-#     left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-#     select(casrn, class, measuredValue) %>%
-#     right_join(endPoint, by=c("casrn"="casn")) %>%
-#     select(-mlWt, -conversion, -casrn,  -Units) %>%
-#     melt(id.vars = c("measuredValue", "chnm", "class")) %>%
-#     mutate(variable=as.character(variable)) %>%
-#     rename(endPointValue=value, endPoint=variable) %>%
-#     filter(!is.na(endPointValue)) %>%
-#     mutate(EAR=measuredValue/endPointValue) %>%
-#     filter(EAR > 0.1) %>%
-#     left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-#     select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
-#     arrange(chnm, desc(EAR)) %>%
-#     group_by(chnm, endPoint, class, intended_target_type, intended_target_type_sub, 
-#              intended_target_family, intended_target_family_sub) %>%
-#     rename(type=intended_target_type, type_sub=intended_target_type_sub,
-#            family=intended_target_family, family_sub=intended_target_family_sub) %>% #FIX FREQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#     summarize(minEAR=min(EAR), maxEAR=max(EAR), frequency=length(EAR), count=nrow(oneSite)) %>%
-#     select(chnm, minEAR, maxEAR, frequency, count, endPoint, class, type, type_sub, family, family_sub) %>%
-#     data.frame %>%
-#     arrange(desc(maxEAR))
 
   if(nrow(oneSiteLong) > 0){
     cat("\n\n###", i, "\n")
@@ -510,3 +460,4 @@ for(i in summary$site[!is.na(summary$site)]){
 #     geom_point(aes(x=site, y=EAR, color="red") )
 
 ```
+
