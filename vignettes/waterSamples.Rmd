@@ -95,7 +95,7 @@ $$
 
 ```{r}
 
-AC50_ws <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
+AC50 <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
                    by= c("casn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
   rename(desiredUnits = parameter_units) %>%
@@ -106,13 +106,13 @@ AC50_ws <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSample
 
 Next we can create a data frame with the AC50 converted endpoints:
 ```{r}
-AC50Converted <- left_join(AC50_ws, AC50gain, by = c("casn", "chnm"))
+AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
 infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
 
 endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
 endPointData <- 10^endPointData
 endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50_ws, data.frame(endPointData))
+endPoint <- cbind(AC50, data.frame(endPointData))
 endPoint <- rename(endPoint, Units=desiredUnits)
 
 ```
@@ -207,16 +207,14 @@ chemicalSummary <- wData %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
-
 chemSum1 <- chemicalSummary %>%
-  group_by(chnm,  class, date, site) %>%
+  group_by(chnm,  class, site, date) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(chnm,  class, site) %>%
-  summarize(hits=as.numeric(any(hits > 0)),
-            counts=n(),
-            freq=hits/counts) %>%
+  summarize(hits=as.numeric(any(hits > 0))) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n()) # add nSite?
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -226,7 +224,7 @@ chemSum2 <- chemicalSummary %>%
   left_join(chemSum1, by=c("chnm","class")) %>%
   data.frame %>%
   arrange(desc(freq)) %>%
-  select(chnm, class, freq, maxEAR, nEndPoints, nSamples)
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
 
   datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
@@ -239,9 +237,6 @@ chemSum2 <- chemicalSummary %>%
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
-###########################################
-# nSites seems wrong???
-###########################################
 chemSum2 <- chemicalSummary  %>%
   group_by(chnm, endPoint, class) %>% 
   summarize(maxEAR=max(EAR), 
@@ -311,153 +306,6 @@ summary <- left_join(summ1, summ2, by="site") %>%
 datatable(summary, rownames = FALSE) %>% 
 #           options = list(pageLength = 50)) %>% 
   formatRound(c("freq","maxEAR"), digits = 2)
-
-```
-
-
-## Water Sample Site Tables
-
-```{r message=FALSE, results='asis', echo=FALSE}
-
-for(i in summary$site[!is.na(summary$site)]){
-  
-  oneSite <- wData %>%
-    mutate(site = newSiteKey[site]) %>%
-    filter(site == i) 
-  
-  oneSiteLong <- select(oneSite, -site) %>%
-    melt(id.vars=c("ActivityStartDateGiven")) %>%
-    mutate(variable=as.character(variable)) %>%
-    filter(!is.na(value)) %>%
-    rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
-    mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-    left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-    select(srsname,casrn, class, measuredValue, date) %>%
-    right_join(endPoint, by=c("casrn"="casn")) %>%
-    select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-    melt(id.vars = c("class", "date","measuredValue","chnm")) %>% 
-    filter(!is.na(value)) %>%
-    mutate(variable=as.character(variable)) %>%
-    rename(endPointValue=value, endPoint=variable) %>%
-    mutate(EAR=measuredValue/endPointValue) %>%
-    select(chnm, EAR, endPoint, class, date) %>% 
-    arrange(chnm, EAR) %>%
-    group_by(chnm, endPoint, class) %>%
-    summarize(hits=sum(EAR > 0.10),
-              nSamples=length(unique(date)),
-              freq=hits/nSamples) %>%
-    data.frame()%>%
-    filter(freq>0) %>%
-    arrange(chnm, desc(hits)) %>%
-    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-    select(chnm, hits, freq, nSamples, class, endPoint, contains("intended_target_"))%>%
-    rename(type=intended_target_type, type_sub=intended_target_type_sub,
-           family=intended_target_family, family_sub=intended_target_family_sub,
-           gene_id=intended_target_gene_id, gene_symbol=intended_target_gene_symbol) 
-
-  if(nrow(oneSiteLong) > 0){
-    cat("\n\n###", i, "\n")
-    print(kable(oneSiteLong, digits=3,caption = i, row.names = FALSE))
-  }
-  
-
-}
-
-```
-
-
-## Water sample visualizations
-
-```{r fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured water sample values"}
-
-# maxY <- 10
-# data <- cbind(waterSamples[,1:2],waterData) %>%
-#   melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-#   mutate(variable=as.character(variable)) %>%
-#   filter(!is.na(value)) %>%
-#   rename(measuredValue=value, pCode=variable) %>%
-#   mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-#   left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-#   select(srsname,casrn, class, measuredValue, site) %>%
-#   right_join(endPoint, by=c("casrn"="casn")) %>%
-#   select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-#   melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
-#   filter(!is.na(value)) %>%
-#   mutate(variable=as.character(variable)) %>%
-#   rename(endPointValue=value, endPoint=variable) %>%
-#   mutate(endPointValue=ifelse(endPointValue <= maxY, maxY, endPointValue)) 
-# 
-# # ggplot(ep[1:50,], aes(variable)) + geom_bar() + facet_wrap(~ chnm)
-# # ggplot(ep[1:50,], aes(variable, fill=chnm)) + geom_bar() # + scale_fill_brewer()
-# 
-# ggplot(data, aes(x = chnm, y = endPointValue, fill=endPoint)) +
-#     geom_bar(stat='identity',guide=FALSE,colour="grey") + 
-#     ylim(0,10) +   
-#     theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
-#     labs(x = "Chemical", y="Concentration") + 
-#     geom_point(aes(x=chnm, y=measuredValue))
-
-
-
-```
-
-```{r fig.width=10, fig.height=7, warning=FALSE, echo=FALSE, fig.cap="Boxplot of all EARS over 0.1"}
-
-# data2 <- cbind(waterSamples[,1:2],waterData) %>%
-#   melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-#   mutate(variable=as.character(variable)) %>%
-#   filter(!is.na(value)) %>%
-#   rename(measuredValue=value, pCode=variable) %>%
-#   mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-#   left_join(pCodeInfo[c("parameter_cd","casrn")], by=c("pCode"="parameter_cd")) %>%
-#   select(casrn, measuredValue, site) %>%
-#   right_join(endPoint, by=c("casrn"="casn")) %>%
-#   select(-mlWt, -conversion, -casrn,  -Units) %>%
-#   melt(id.vars = c("site", "measuredValue","chnm")) %>% 
-#   filter(!is.na(value)) %>%
-#   mutate(variable=as.character(variable)) %>%
-#   rename(endPointValue=value, endPoint=variable) %>%
-#   mutate(EAR = measuredValue/endPointValue) %>%
-#   filter(EAR >= 0.1)
-# 
-# ggplot(data2, aes(x = chnm, y = EAR)) +
-#     geom_boxplot() + 
-#     ylim(0,3) +    
-#     theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
-#     labs(x = "Chemical", y="EAR")
-
-
-```
-
-
-```{r fig.width=10, fig.height=7, warning=FALSE, echo=FALSE, fig.cap="Boxplot of all max EARS per site per chemical (filtered over 0.1)"}
-
-# data3 <- group_by(data2, site, chnm) %>%
-#   mutate(maxEAR = max(EAR))
-# 
-# ggplot(data3, aes(x = chnm, y = maxEAR)) +
-#     geom_boxplot() + 
-#     ylim(0,3) +    
-#     theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
-#     labs(x = "Chemical", y="maxEAR")+ 
-#     geom_point(aes(x=chnm, y=EAR, color="red"))
-
-```
-
-
-```{r fig.width=10, fig.height=7, warning=FALSE, echo=FALSE, fig.cap="Boxplot of  EARS per site (filtered over 0.1, max per endpoint)"}
-
-# data4 <- mutate(data2, site = newSiteKey[site]) %>%
-#   group_by(site, chnm, endPoint) %>%
-#   mutate(maxEAR = max(EAR))
-#   
-# 
-# ggplot(data4, aes(x = site, y = maxEAR)) +
-#     geom_boxplot() + 
-#     ylim(0,3) +    
-#     theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
-#     labs(x = "Site", y="maxEAR")+ 
-#     geom_point(aes(x=site, y=EAR, color="red") )
 
 ```
 
