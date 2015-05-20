@@ -104,6 +104,10 @@ AC50 <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCo
 
 ```
 
+################################
+Same for all vignettes?
+################################
+
 Next we can create a data frame with the AC50 converted endpoints:
 ```{r}
 AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
