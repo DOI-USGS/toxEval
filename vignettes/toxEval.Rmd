@@ -291,7 +291,7 @@ summ1 <- siteSummary %>%
 
 
 
-datatable(summary, rownames = FALSE) %>% 
+datatable(summ1, rownames = FALSE) %>% 
 #           options = list(pageLength = 50)) %>% 
   formatRound(c("maxEAR"), digits = 2)
 
