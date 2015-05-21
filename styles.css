@@ -1,0 +1,52 @@
+#nextsteps {
+   color: blue;
+}
+
+.emphasized {
+   font-size: 1.2em;
+}
+
+#bigTable td{
+  font-size: 0.8em;
+  width: 1500px;
+}
+
+.title-slide hgroup h1 {
+    color: #515151;
+    font-size: 40px;
+    letter-spacing: -3px;
+    line-height: 1.4;
+}
+
+h2 {
+    color: #515151;
+    font-size: 45px;
+    letter-spacing: -2px;
+    line-height: 2em;
+}
+
+slides > slide > hgroup + article{
+  margin-top:10px;
+}
+
+#testingStuff{
+  width:100%
+}
+
+#leftSideDiv{
+  width:75%;
+  float:left;
+}
+
+.diffH2 h2{
+  line-height:0px;
+}
+
+#study-sites-tributaries {
+    margin-top: 120px;
+}
+
+#rightSideDiv{
+  width:25%;
+  float:right;
+}

@@ -4,8 +4,8 @@ author: "<b>USGS</b>: Steve Corsi, Laura DeCicco, Austin Baldwin, David Alvarez,
 date: "Wednesday, May 13, 2015"
 output:
   ioslides_presentation:
-    logo: USGS_avatar_github.png
     smaller: yes
+    css: styles.css    
 ---
 
 ## Multi-agency team
@@ -31,7 +31,8 @@ output:
     * Characterize sites based on potential adverse impact
     * Prioritize contaminants based on prevalence of potential adverse impact
     
-## Study sites: Tributaries of the Great Lakes {.flexbox .vcenter}
+## Study sites: Tributaries  {.flexbox .vcenter .diffH2}
+
 ![Site Map](GLRI_sm.png)
 
 
@@ -40,10 +41,7 @@ output:
     * Organic Waste Compounds
     * 15 Classes of contaminants
 
-<table width="500">
-  <col width="130">
-  <col width="100">
-<tbody>    
+<table id="bigTable">
 <tr>
    <td style="text-align:left;"> PAHs (6) </td>
    <td style="text-align:left;"> Antimicrobial disinfectants (3) </td>
@@ -72,17 +70,13 @@ output:
    <td style="text-align:left;"> Detergent metabolites (8) </td>
    <td style="text-align:left;"> Misc (3) </td>
   </tr>
-</tbody>
 </table>
-<br/>
 
+## Water quality data collected (cont.)
 * Passive samplers (155 compounds)
     * One deployment of POCIS and SPMD samplers
 
-<table width="500">
-  <col width="130">
-  <col width="100">
-<tbody>    
+<table width="500" id="bigTable">
 <tr>
    <td style="text-align:left;"> PAHs (33) </td>
    <td style="text-align:left;"> Organic Waste Compounds (53) </td>
@@ -95,15 +89,16 @@ output:
    <td style="text-align:left;"> Pharmaceuticals (31) </td>
    <td style="text-align:left;"> PCB (sum of total) </td>
   </tr>
-</tbody>
 </table>
 
     
 ## Screening Endpoints Used in Analysis
+
 * ToxCast
     * General info on toxcast
     * 1800??? compounds
     * 851 endpoints
+
 * Water quality guidelines
     * Water sample analysis
         * Established water quality guidelines
@@ -123,11 +118,13 @@ output:
     *Passive samplers
         * Not yet complete
 
-```{r echo=FALSE, message=FALSE}
+```{r message=FALSE, echo=FALSE}
+
 library(dplyr)
 library(reshape2)
 library(DT)
 library(toxEval)
+
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
 AC50gain <- AC50gain
