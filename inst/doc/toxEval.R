@@ -8,14 +8,6 @@ library(reshape2)
 library(DT)
 
 
-## -------------------------------------------------------------------------------------------------
-
-library("webchem")
-
-molweight <- cir_query('3380-34-5', "mw")
-molweight
-
-
 ## ----echo=FALSE, eval=TRUE------------------------------------------------------------------------
 
 packagePath <- system.file("extdata", package="toxEval")
@@ -69,6 +61,7 @@ AC50 <- right_join(AC50gain[,c("casn"), drop=FALSE],
   filter(!is.na(mlWt)) %>%
   mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
   select(casn, desiredUnits, mlWt, conversion)
+
 
 
 ## ----echo=FALSE-----------------------------------------------------------------------------------

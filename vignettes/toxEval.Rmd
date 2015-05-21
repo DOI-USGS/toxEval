@@ -9,7 +9,7 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Introduction to toxEval}
+  %\VignetteIndexEntry{Passive Data: ToxCast}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -28,21 +28,7 @@ library(DT)
 # Introduction
 
 This package **toxEval** is an early test version of the package that will encompass the various approaches to evaluate ToxCast data in relation to measured aquatic concentrations.
-<!--
-## Molecular weights
-ToxCast reports values in $\log$$\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package **webchem** supports this functionality. 
 
-
-```{r}
-
-library("webchem")
-
-molweight <- cir_query('3380-34-5', "mw")
-molweight
-
-```
-
---> 
 Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. 
 
 # Passive Data
@@ -115,12 +101,13 @@ library(dplyr)
 unitConversion <- setNames(c(10^6, 10^3), c("pg/L", "ng/L") )
 
 AC50 <- right_join(AC50gain[,c("casn"), drop=FALSE], 
-                   passiveData[,c("CAS", "Units", "mlWt")],
+                   passiveData[,c("CAS", "Units", "mlWt","Chemical")],
                    by= c("casn" = "CAS")) %>%
-  rename(desiredUnits = Units) %>%
+  rename(desiredUnits = Units, chnm=Chemical) %>%
   filter(!is.na(mlWt)) %>%
   mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
-  select(casn, desiredUnits, mlWt, conversion)
+  select(casn, chnm, desiredUnits, mlWt, conversion)
+
 
 ```
 
@@ -131,44 +118,32 @@ kable(head(AC50), digits=2, row.names = FALSE)
 
 ```
 
+################################
+Same for all vignettes?
+################################
 
 Next we can create a data frame with the AC50 converted endpoints:
 ```{r}
-AC50Converted <- left_join(AC50, AC50gain, by="casn")
+AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
 infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
 
 endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
 endPointData <- 10^endPointData
 endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50, data.frame(endPointData)) %>%
-  rename(Units=desiredUnits) %>%
-  filter(rowSums(is.na(endPointData)) != ncol(endPointData))
-
-endPointData <- endPointData[rowSums(is.na(endPointData)) != 
-                               ncol(endPointData),]
+endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- rename(endPoint, Units=desiredUnits)
 
 ```
 
-
-
-Now, let's look at the extreme reported endpoint (not including `r NA`'s):
+First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually may be important):
 
 ```{r warning=FALSE}
 maxEndPoints <- apply(endPointData, 1, max, na.rm=TRUE) 
 minEndPoints <- apply(endPointData, 1, min, na.rm=TRUE)
 
-maxMinSummary <- cbind(endPoint[,c("casn", "Units")], 
+maxMinSummary <- cbind(endPoint[,c("chnm", "casn", "Units")], 
                        maxEndPoint=maxEndPoints, 
-                       minEndPoint=minEndPoints) %>%
-  arrange(desc(casn))
-
-```
-
-## Passive Detection Limits
-
-Next, let's determine if the MQL or MLD are going to tell us anything in relation to the ToxCast endpoints. Likewise, we can look at the maximum and minimum measured values.
-
-```{r warning=FALSE, echo=FALSE}
+                       minEndPoint=minEndPoints)
 siteColumns <- grep("site",names(passiveData))
 maxMinSummary <- left_join(maxMinSummary,passiveData[,-siteColumns], 
                            by=c("casn"="CAS", "Units"="Units")) 
@@ -176,32 +151,23 @@ maxMinSummary <- left_join(maxMinSummary,passiveData[,-siteColumns],
 ```
 
 
-If any of the MLD are higher than the maxEndPoint, we wouldn't be able to make any conclusions about the toxicity of the water.
+## Water Sample Detection Levels
 
-```{r echo=FALSE}
-sum(maxMinSummary$MLD > maxMinSummary$minEndPoint)
-
-```
-
-`r sum(maxMinSummary$MLD > maxMinSummary$maxEndPoint)` measurements have detection limitations that are greater than the minimum endpoint concentration. We might be interested to know how close the detection limit values come to the minimum endpoints. 
-
-The following chemicals have MLD's within 1% of the miniumum endpoint value:
-
-```{r echo=FALSE}
+For now, we'll focus on the minimum detection level:
+```{r warning=FALSE, echo=FALSE}
 dfToPrint <- mutate(maxMinSummary, MLD_EAR = MLD/minEndPoint) %>%
-  filter(MLD_EAR > 0.01) %>%
   select(Chemical, minEndPoint, MLD, MLD_EAR, class) %>%
   arrange(desc(MLD_EAR)) %>%
-  rename("Max EAR"=MLD_EAR)
+  rename("maxEAR"=MLD_EAR)%>%
+  filter(maxEAR > 0.01) 
   
 datatable(dfToPrint, rownames=FALSE) %>% 
-    formatRound(c("Max EAR","MLD","minEndPoint"), digits = 3)
+    formatRound(c("maxEAR","MLD","minEndPoint"), digits = 3)
 
 ```
 
-Since it appears that we can ignore the censored values, the easist way to convert data to numbers then is to use the `as.numeric` function. This will convert the left-censored data to `NA`, generating a warning. To convert all the columns with the word 'site' in their column name to numeric, use the following commands:
 
-```{r warning=FALSE}
+```{r}
 siteColumns <- grep("site",names(passiveData))
 passiveData[,siteColumns] <- suppressWarnings(
   sapply(passiveData[,siteColumns], function(x) as.numeric(x)))
@@ -211,155 +177,174 @@ passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
 
 ```
 
-## Chemical Summary Tables Passive
 
+## Chemical Summary Tables: Water Samples
+
+### Overall
 ```{r message=FALSE, results='asis', echo=FALSE}
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
 
 chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
   mutate(variable=as.character(variable)) %>%
-  filter(value != 0) %>%
-  rename(measuredValue=value, site=variable) %>%
-  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
-  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
+  filter(!is.na(value)) %>%
+  select(srsname=Chemical,
+         casrn=CAS,
+         class=class,
+         measuredValue=value, 
+         site=variable) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  group_by(Chemical, endPoint, class) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nSites=ncol(passiveData)) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select(Chemical, minEAR, maxEAR, hits, nSites, endPoint, class, contains("intended_target_")) %>%
-  arrange(Chemical, desc(maxEAR)) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_")) %>% 
-    data.frame %>%
-  arrange(desc(maxEAR)) 
+  mutate(EAR=measuredValue/endPointValue) 
 
-  chemicalSummary <- unique(chemicalSummary) #some endpoints have multiple genes....so there are duplicated rows, there wouldn't be if we didn't have select(-contains("intended_target_"))
+chemSum1 <- chemicalSummary %>%
+  group_by(chnm,  class, site) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+#   group_by(chnm,  class, site) %>%
+#   summarize(hits=as.numeric(any(hits > 0))) %>%
+  group_by(chnm, class) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
 
-  datatable(chemicalSummary, rownames = FALSE, 
+chemSum2 <- chemicalSummary %>%
+  group_by(chnm,  class) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=1,
+            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+  left_join(chemSum1, by=c("chnm","class")) %>%
+  data.frame %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+
+  datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
+    formatRound(c("maxEAR", "freq"), digits = 4)
+
 
 ```
 
-There are actually multiple genes for the endpoint that corresponds to Aspirin/`Tox21_TR_LUC_GH3_Antagonist`.
-
-## Passive site summaries
+### Individual EndPoints
+Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
+
+chemSum2 <- chemicalSummary  %>%
+  group_by(chnm, endPoint, class) %>% 
+  summarize(maxEAR=max(EAR), 
+            nSites=length(unique(site[EAR>0.1]))) %>%
+#This line adds rows because there are repeated endpoints in the endPointInfo table (maybe unique this table at the end to see if it matters)
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
+  select(chnm, maxEAR, nSites, 
+         endPoint, class, contains("intended_target_")) %>%
+  rename(type=intended_target_type, type_sub=intended_target_type_sub,
+         family=intended_target_family, family_sub=intended_target_family_sub) %>%
+  select(-contains("intended_target_"))  %>%
+  data.frame %>%
+  filter(maxEAR > 0.1) %>%
+  arrange(desc(maxEAR))  
+
+  datatable(unique(chemSum2), rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("maxEAR"), digits = 2)
+
+```
+
+## Site Summaries: Water Samples
+
+The first site summary table groups only by site:
+
+```{r message=FALSE, results='asis', echo=FALSE}
+
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
-siteKey <- setNames(stationINFO$shortName, stationINFO$STAID)
 
 siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
   mutate(variable=as.character(variable)) %>%
-  filter(value != 0) %>%
-  rename(measuredValue=value, site=variable) %>%
-  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
-  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
-  select(Chemical, class, site, measuredValue, variable, value) %>%
+  filter(!is.na(value)) %>%
+  select(srsname=Chemical,
+         casrn=CAS,
+         class=class,
+         measuredValue=value, 
+         site=variable) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
-  filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
-  filter(EAR > 0.1) %>%
-  mutate(site=siteKey[gsub("site","",site)]) %>%
+  mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
+  select(site, chnm, EAR, endPoint, class) %>% 
+  arrange(site, chnm, EAR)
+
+summ1 <- siteSummary %>%
   group_by(site) %>%
-  summarize(minEAR=min(EAR), maxEAR=max(EAR), hits=length(EAR), nChem=length(Chemical), nEndPoints=length(unique(endPoint))) %>%
-  select(site, minEAR, maxEAR, hits, nChem, nEndPoints)  %>%
-    data.frame %>%
-  arrange(desc(maxEAR))  
-
-  datatable(siteSummary, rownames = FALSE, 
-            options = list(pageLength = 10)) %>% 
-    formatRound(c("minEAR","maxEAR"), digits = 2)
-
-```
+  summarize(hits= as.numeric(any(EAR > 0.1)),
+            nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
+            maxEAR = max(EAR))%>%
+  arrange(desc(maxEAR))
 
 
-## Passive Site tables
-Let's create a set of summary tables for each site.
 
-```{r warning=FALSE, echo=FALSE, results='asis'}
-infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
-
-endpointNames <- names(endPoint)
-endpointNames <- endpointNames[!(endpointNames %in% c("casn","Units","mlWt","conversion"))]
-
-reversesiteKey <- setNames(paste0("site",stationINFO$STAID), stationINFO$shortName)
-
-for(i in siteSummary$site){
-  oneSite <- passiveData[,infoColumns]
-  index <- reversesiteKey[i]
-  oneSite$value <- passiveData[,index]
-  
-  oneSiteLong <- filter(oneSite, value != 0) %>%
-    rename(measuredValue = value) %>%
-#     left_join(pCodeInfo[c("parameter_cd","casrn","parameter_nm")], by=c("CAS"="casrn")) %>%
-    select(Chemical, CAS, class, measuredValue) %>%
-    right_join(endPoint, by=c("CAS"="casn")) %>%
-    select(-mlWt, -conversion, -CAS,  -Units) %>%
-    rename(chnm=Chemical) %>%
-    melt(id.vars = c("measuredValue", "chnm", "class")) %>%
-    mutate(variable=as.character(variable)) %>%
-    rename(endPointValue=value, endPoint=variable) %>%
-    filter(!is.na(endPointValue)) %>%
-    mutate(EAR=measuredValue/endPointValue) %>%
-    filter(EAR > 0.1) %>%
-    left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>%
-    select(chnm, EAR, class, endPoint, contains("intended_target_")) %>%
-    rename(type=intended_target_type, type_sub=intended_target_type_sub,
-           family=intended_target_family, family_sub=intended_target_family_sub) %>%
-    select(-contains("intended_target_")) %>%
-    arrange(desc(EAR))
-  
-  oneSiteLong <- unique(oneSiteLong)
-    
-
-  if(nrow(oneSiteLong) != 0){
-    cat("\n###",i)
-    
-
-#       datatable(oneSiteLong, rownames = FALSE) %>% formatRound(c("EAR"), digits = 2)
-    print(kable(oneSiteLong, digits=2, caption = i, row.names = FALSE))
-  }
-  
-  
-}
+datatable(summ1, rownames = FALSE) %>% 
+#           options = list(pageLength = 50)) %>% 
+  formatRound(c("maxEAR"), digits = 2)
 
 ```
 
 
-## Passive visualizations
 
-```{r fig.width=10, fig.height=10, warning=FALSE, echo=FALSE, fig.cap="Colors represent different endpoints, dots represent measured passive water sample values"}
-library(ggplot2)
-infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
 
-maxY <- 50000
-dataPassive <- melt(passiveData, id.vars = infoColumns) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(value != 0) %>%
-  rename(measuredValue=value, site=variable) %>%
-  right_join(endPoint, by=c("CAS"="casn", "Units"="Units", "mlWt"="mlWt")) %>%
-  melt(id.vars = c(infoColumns, "site", "measuredValue","conversion")) %>% 
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(endPointValue=ifelse(endPointValue>maxY, maxY, endPointValue))
 
-# ggplot(ep[1:50,], aes(variable)) + geom_bar() + facet_wrap(~ chnm)
-# ggplot(ep[1:50,], aes(variable, fill=chnm)) + geom_bar() # + scale_fill_brewer()
 
-ggplot(dataPassive[!is.na(dataPassive$measuredValue),], aes(x = Chemical, y = endPointValue, fill=endPoint)) +
-    geom_bar(stat='identity',guide=FALSE,colour="grey") + 
-    ylim(0,maxY) +   
-    theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), legend.position = "none") +
-    labs(x = "Chemical", y="Concentration [ng/L]") + 
-    geom_point(aes(x=Chemical, y=measuredValue))
 
-```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

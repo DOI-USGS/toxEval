@@ -9,7 +9,7 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Introduction to toxEval}
+  %\VignetteIndexEntry{Passive Data: ToxCast}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -28,21 +28,7 @@ library(DT)
 # Introduction
 
 This package **toxEval** is an early test version of the package that will encompass the various approaches to evaluate ToxCast data in relation to measured aquatic concentrations.
-<!--
-## Molecular weights
-ToxCast reports values in $\log$$\mu$M. Data from water samples collected are typically mg/L, ng/L, or pg/L. Therefore, the first step is to determine the molecular weight of the measured data. The package **webchem** supports this functionality. 
 
-
-```{r}
-
-library("webchem")
-
-molweight <- cir_query('3380-34-5', "mw")
-molweight
-
-```
-
---> 
 Data measured in aquatic environments can come in many different formats. This package will use example data measured from passive samplers, as well as water samples taken at a variety of sites around the Great Lakes. 
 
 # Passive Data
@@ -121,6 +107,7 @@ AC50 <- right_join(AC50gain[,c("casn"), drop=FALSE],
   filter(!is.na(mlWt)) %>%
   mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
   select(casn, desiredUnits, mlWt, conversion)
+
 
 ```
 

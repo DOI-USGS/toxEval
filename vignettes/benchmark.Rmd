@@ -1,5 +1,5 @@
 ---
-title: "Water Samples: ToxCast"
+title: "Water Samples: Water Quality Benchmarks"
 author: "Steven R. Corsi, Laura A. De Cicco"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -9,7 +9,7 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Water Samples: ToxCast}
+  %\VignetteIndexEntry{Water Sample: Benchmarks}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -28,16 +28,9 @@ library(ggplot2)
 
 # Introduction
 
-```{r message=FALSE, echo=FALSE}
+```{r echo=FALSE, eval=TRUE, message=FALSE}
 library(toxEval)
-endPointInfo <- endPointInfo
-# AC50 data provided in the toxEval package:
-AC50gain <- AC50gain
 
-```
-
-
-```{r echo=FALSE, eval=TRUE}
 packagePath <- system.file("extdata", package="toxEval")
 #Site Info:
 filePath <- file.path(packagePath, "stationINFO.RData")
@@ -49,12 +42,18 @@ load(file=filePath)
 
 pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
-# Some chemicals have 2 rows (different units)...
-# To simplify for now, we'll ignore the duplicate chemicals:
-
-
 
 ```
+
+
+```{r message=FALSE, echo=FALSE}
+
+# AC50 data provided in the toxEval package:
+AC50gain <- select(pCodeInfo, srsname, casrn, AqT_EPA_acute, 
+                   AqT_EPA_chronic, AqT_other_acute, AqT_other_chronic)
+
+```
+
 
 
 # Water Sample Data
@@ -71,6 +70,24 @@ head(waterSamples[,1:10])
 
 The first job is to once again find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the **dataRetrieval** package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes, then use **webchem** to get the molecular weights.
 
+```{r message=FALSE, eval=FALSE}
+library(dataRetrieval)
+
+waterSamplePCodes <- names(waterSamples)[grep("valueToUse", names(waterSamples))]
+waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+
+pCodeInfo <- readNWISpCode(waterSamplePCodes)
+
+unique(pCodeInfo$parameter_units)
+
+library(webchem)
+pCodeInfo$mlWt <- rep(NA, nrow(pCodeInfo))
+pCodeInfo$mlWt[pCodeInfo$casrn != ""] <- sapply(pCodeInfo$casrn[
+  pCodeInfo$casrn != ""],
+                function(x) cir_query(x, "mw", first = TRUE))
+pCodeInfo$mlWt <- as.numeric(pCodeInfo$mlWt)
+
+```
 
 ```{r message=FALSE, echo=FALSE}
 
@@ -96,29 +113,30 @@ $$
 ```{r}
 
 AC50 <- left_join(AC50gain, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
-                   by= c("casn"="casrn")) %>%
+                   by= c("casrn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
   rename(desiredUnits = parameter_units) %>%
-  mutate(conversion = mlWt) %>%
-  select(casn, chnm, desiredUnits, mlWt, conversion)
+  mutate(conversion = 1) %>%
+  select(casrn, srsname, desiredUnits, mlWt, conversion) 
 
 ```
 
-################################
-Same for all vignettes?
-################################
-
 Next we can create a data frame with the AC50 converted endpoints:
 ```{r}
-AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
-infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+AC50Converted <- left_join(AC50, AC50gain, by = c("casrn", "srsname")) %>%
+  rename(casn=casrn, chnm=srsname)
+
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion")
 
 endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData <- 10^endPointData
+
 endPointData <- endPointData * AC50Converted$conversion
+
+AC50 <- rename(AC50, casn=casrn, chnm=srsname)
+
 endPoint <- cbind(AC50, data.frame(endPointData))
 endPoint <- rename(endPoint, Units=desiredUnits)
-
+# endPoint <- na.omit(endPoint)
 ```
 
 First, let's look at the extreme reported endpoint (not including `r NA`'s...that will actually may be important):
@@ -230,6 +248,7 @@ chemSum2 <- chemicalSummary %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
 
+
   datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
     formatRound(c("maxEAR", "freq"), digits = 4)
@@ -241,23 +260,19 @@ chemSum2 <- chemicalSummary %>%
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
+
 chemSum2 <- chemicalSummary  %>%
   group_by(chnm, endPoint, class) %>% 
   summarize(maxEAR=max(EAR), 
 #there are some sites that have sample times at exactly the same time!:
             nSamples=nrow(unique(data.frame(date,site))), 
             freq=sum(EAR > 0.1)/nSamples, 
-            nSites=length(unique(site[EAR>0.1]))) %>%
-#This line adds rows because there are repeated endpoints in the endPointInfo table (maybe unique this table at the end to see if it matters)
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
-  select(chnm, maxEAR, freq, nSamples, nSites, 
-         endPoint, class, contains("intended_target_")) %>%
-  rename(type=intended_target_type, type_sub=intended_target_type_sub,
-         family=intended_target_family, family_sub=intended_target_family_sub) %>%
-  select(-contains("intended_target_"))  %>%
+            nSites=length(unique(site[EAR>0.1]))) %>% 
+  select(chnm, maxEAR, freq, nSamples, nSites, endPoint, class) %>%
   data.frame %>%
   filter(maxEAR > 0.1) %>%
-  arrange(desc(maxEAR))  
+  arrange(desc(maxEAR))
+  
 
   datatable(unique(chemSum2), rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
