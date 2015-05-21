@@ -277,7 +277,7 @@ siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
   mutate(variable=as.character(variable)) %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
-#   mutate(site=newSiteKey[site]) %>%
+  mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
   select(site, chnm, EAR, endPoint, class) %>% 
   arrange(site, chnm, EAR)
 
