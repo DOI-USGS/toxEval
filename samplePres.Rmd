@@ -1,15 +1,127 @@
 ---
-title: "Test"
-author: "R"
+title: "Organic Contaminants in Great Lakes Tributaries: Watersheds and Chemicals of Greatest Concern"
+author: "<b>USGS</b>: Steve Corsi, Laura DeCicco, Austin Baldwin, David Alvarez, Peter Lenaker <br/><b>North Carolina State University</b>: David Reif"
 date: "Wednesday, May 13, 2015"
-output: 
+output:
   ioslides_presentation:
-    widescreen: false
-    smaller: true
     logo: USGS_avatar_github.png
+    smaller: yes
 ---
 
+## Multi-agency team
+* USEPA ORD
+    + Mid-Continent Ecology Division, Duluth, MN
+    + Ecosystems Research Division, Athens, GA
+* Fish and Wildlife Service
+* NOAA Mussel Watch
+* U.S. Army Corps of Engineers
+* USGS
+    + WI, OH, NY, MN, and MI Water Science Centers
+    + Minnesota Water Science Center
+    + Upper Mississippi Environmental Science Center
+* St. Cloud University
 
+## Objectives
+* Evaluate Great Lakes tributaries for adverse biological impact based on water chemistry monitoring data
+    * Water chemistry and passive sampler data 
+    * Compare water chemistry and passive sampler data to bioassay endpoints
+        * ToxCast^TM^
+        * Water quality guidelines
+        * Estrogenic equivalents
+    * Characterize sites based on potential adverse impact
+    * Prioritize contaminants based on prevalence of potential adverse impact
+    
+## Study sites: Tributaries of the Great Lakes {.flexbox .vcenter}
+![Site Map](GLRI_sm.png)
+
+
+## Water quality data collected
+* Water samples
+    * Organic Waste Compounds
+    * 15 Classes of contaminants
+
+<table width="500">
+  <col width="130">
+  <col width="100">
+<tbody>    
+<tr>
+   <td style="text-align:left;"> PAHs (6) </td>
+   <td style="text-align:left;"> Antimicrobial disinfectants (3) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Insecticides (6) </td>
+   <td style="text-align:left;"> Fuels (4) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Herbicides (7) </td>
+   <td style="text-align:left;"> Solvents (2) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Fire retardants (4) </td>
+   <td style="text-align:left;"> Dye/pigments (1) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Human drugs, nonRx (3) </td>
+   <td style="text-align:left;"> Flavors &amp; fragrances (10) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Plasticizers (5) </td>
+   <td style="text-align:left;"> Sterols (4) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Detergent metabolites (8) </td>
+   <td style="text-align:left;"> Misc (3) </td>
+  </tr>
+</tbody>
+</table>
+<br/>
+
+* Passive samplers (155 compounds)
+    * One deployment of POCIS and SPMD samplers
+
+<table width="500">
+  <col width="130">
+  <col width="100">
+<tbody>    
+<tr>
+   <td style="text-align:left;"> PAHs (33) </td>
+   <td style="text-align:left;"> Organic Waste Compounds (53) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Organochlorine Pesticides (32) </td>
+   <td style="text-align:left;"> PBDEs (5) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Pharmaceuticals (31) </td>
+   <td style="text-align:left;"> PCB (sum of total) </td>
+  </tr>
+</tbody>
+</table>
+
+    
+## Screening Endpoints Used in Analysis
+* ToxCast
+    * General info on toxcast
+    * 1800??? compounds
+    * 851 endpoints
+* Water quality guidelines
+    * Water sample analysis
+        * Established water quality guidelines
+
+## Compound Matches for Screening Endpoints
+* ToxCast
+    * Water samples
+        * XX compounds of YY total 
+        * (LIST CLASSES THAT HAVE COMPOUNDS HERE)
+    * Passive samplers
+        * XX compounds of YY total
+        * (LIST CLASSES THAT HAVE COMPOUNDS HERE)
+* Water Quality Guidelines
+    * Water samples
+    * (LIST CLASSES THAT HAVE COMPOUNDS HERE)
+        * XX compounds of YY total
+    *Passive samplers
+        * Not yet complete
 
 ```{r echo=FALSE, message=FALSE}
 library(dplyr)
@@ -163,7 +275,7 @@ datatable(summary, rownames = FALSE) %>%
   formatRound(c("freq","maxEAR"), digits = 2)
 ```
 
-## Water Samples: 
+## Water Samples: Map
 maxEAR (color) and freq (size)
 
 ```{r, echo=FALSE, results='asis', fig.width=8}
@@ -195,7 +307,6 @@ m = leaflet(mapData) %>%
                          "maxEAR:",sprintf("%1.1f", mapData$maxEAR),'<br/>',
                          "nChem:",mapData$nChem,'<br/>',
                          "nEndPoints", mapData$nEndPoints,'<br/>'),
-#              fillColor = ~cols(maxEAR), 
               fillColor = ~pal(maxEAR), 
              weight = 1,
              color = "black",
@@ -204,16 +315,15 @@ m = leaflet(mapData) %>%
       position = 'bottomleft',
       pal=pal,
       values=~maxEAR,
-#       colors = cols(leg_vals),
       opacity = 0.8,
 #       labels = paste0(leg_vals,'-'),
       title = 'maxEAR') 
-m  # a map with the default OSM tile laye
+m  
 
 ```
 
 
-## Passive Sample: Chemical Summary
+## Passive Data: Chemical Summary
 
 ```{r, echo=FALSE}
 
@@ -341,7 +451,7 @@ summ1 <- siteSummary %>%
 
 ```{r, echo=FALSE, results='asis'}
 
-  datatable(chemSum2, rownames = FALSE, 
+  datatable(chemSum2[,-7], rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
     formatRound(c("maxEAR", "freq"), digits = 4)
 
@@ -357,12 +467,11 @@ datatable(summ1[,-2], rownames = FALSE) %>%
 ```
 
 
-## Water Samples: 
+## Passive Data: Map 
 maxEAR (color) and number of chemicals with hits (size)
 
 ```{r, echo=FALSE, results='asis', fig.width=8}
 
-library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
 mapDataPassive <- left_join(stationINFO, summ1, by=c("shortName"="site"))
@@ -379,7 +488,8 @@ mapDataPassive$sizes[is.na(mapDataPassive$sizes)] <- 1000
 pal = colorBin(col_types, mapDataPassive$maxEAR, bins = leg_vals)
 
 
-m = leaflet(mapDataPassive) %>%
+map2 = leaflet(mapDataPassive) %>%
+#   addProviderTiles("Hydda.Full") %>% # There are more maybe worth looking at
   addProviderTiles("Esri.WorldPhysical") %>%
   setView(lng = -83.5, lat = 44.5, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
@@ -399,7 +509,120 @@ m = leaflet(mapDataPassive) %>%
       opacity = 0.8,
 #       labels = paste0(leg_vals,'-'),
       title = 'maxEAR') 
-m  
+map2  
 
 ```
 
+## ToxCast Combo Map
+
+```{r, echo=FALSE, results='asis', fig.width=8}
+
+mapDataPassive$Passive <- rep(TRUE, nrow(mapDataPassive))
+mapDataPassive$nSamples <- rep(1, nrow(mapDataPassive))
+mapData$Passive <- rep(FALSE, nrow(mapData))
+
+comboMap <- rbind(mapDataPassive[,-which("hits" == names(mapDataPassive))], 
+                  mapData[,-which("freq" == names(mapData))])
+
+latOffset <- 0.1
+
+comboMap$dec.lat.va[comboMap$Passive] <- comboMap$dec.lat.va[comboMap$Passive] + latOffset
+comboMap$dec.lat.va[!comboMap$Passive] <- comboMap$dec.lat.va[!comboMap$Passive] - latOffset
+
+col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
+leg_vals <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR scale
+
+cols <- colorNumeric(col_types, domain = leg_vals)
+
+pal = colorBin(col_types, comboMap$maxEAR, bins = leg_vals)
+
+
+map3 = leaflet(comboMap) %>%
+  addProviderTiles("Esri.WorldPhysical") %>%
+  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+  addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
+             popup=paste("<b>",comboMap$Station.Name,'</b><br/>',
+                         "maxEAR:",sprintf("%1.1f", comboMap$maxEAR),'<br/>',
+                         "nChem:",comboMap$nChem,'<br/>',
+                         "nEndPoints", comboMap$nEndPoints,'<br/>'),
+             fillColor = ~pal(maxEAR), 
+             weight = 1,
+             color = "blue",
+             fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
+    addLegend(
+      position = 'bottomleft',
+      pal=pal,
+      values=~maxEAR,
+#       colors = cols(leg_vals),
+      opacity = 0.8,
+#       labels = paste0(leg_vals,'-'),
+      title = 'maxEAR') 
+map3
+
+
+```
+
+
+## Water Sample: Chemical Summary from Benchmarks
+
+```{r, eval=TRUE, echo=FALSE}
+AC50gain_bm <- select(pCodeInfo, srsname, casrn, AqT_EPA_acute, 
+                   AqT_EPA_chronic, AqT_other_acute, AqT_other_chronic)
+
+AC50_bm <- left_join(AC50gain_bm, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
+                   by= c("casrn"="casrn")) %>%
+  filter(!is.na(parameter_units)) %>%
+  rename(desiredUnits = parameter_units) %>%
+  mutate(conversion = 1) %>%
+  select(casrn, srsname, desiredUnits, mlWt, conversion)
+
+AC50Converted_bm <- left_join(AC50_bm, AC50gain_bm, by = c("casrn", "srsname")) %>%
+  rename(casn=casrn, chnm=srsname)
+
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion")
+
+endPointData_bm <- AC50Converted_bm[,!(names(AC50Converted_bm) %in% infoColumns)]
+endPointData_bm <- endPointData_bm * AC50Converted_bm$conversion
+AC50_bm <- rename(AC50_bm, casn=casrn, chnm=srsname)
+endPoint_bm <- cbind(AC50_bm, data.frame(endPointData_bm))
+endPoint_bm <- rename(endPoint_bm, Units=desiredUnits)
+
+chemicalSummary_BM <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site, date) %>%
+  right_join(endPoint_bm, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm","date")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) 
+
+chemSum1_BM <- chemicalSummary_BM %>%
+  group_by(chnm,  class, site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(chnm,  class, site) %>%
+  summarize(hits=as.numeric(any(hits > 0))) %>%
+  group_by(chnm, class) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
+
+chemSum2_BM <- chemicalSummary_BM %>%
+  group_by(chnm,  class) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=nrow(unique(data.frame(date,site))),
+            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+  left_join(chemSum1_BM, by=c("chnm","class")) %>%
+  data.frame %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+
+  datatable(chemSum2_BM, rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 4)
+```
