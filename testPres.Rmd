@@ -20,7 +20,6 @@ output:
 * U.S. Army Corps of Engineers
 * USGS
     + WI, OH, NY, MN, and MI Water Science Centers
-    + Minnesota Water Science Center
     + Upper Mississippi Environmental Science Center
 * St. Cloud University
 
@@ -94,8 +93,9 @@ output:
     * Water samples
     * (LIST CLASSES THAT HAVE COMPOUNDS HERE)
         * XX compounds of YY total
-    *Passive samplers
+    * Passive samplers
         * Not yet complete
+        
 ## ToxCast Results
 Sites table??
 ??Additional slide for map??
