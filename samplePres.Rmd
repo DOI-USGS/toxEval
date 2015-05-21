@@ -67,6 +67,11 @@ wData <- cbind(waterSamples[,1:2],waterData)
 
 valColumns <- grep("valueToUse",names(wData))
 
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+wData <- cbind(waterSamples[,1:2],waterData)
+valColumns <- grep("valueToUse",names(wData))
+
 chemicalSummary <- wData %>%
   melt(id.vars=c("ActivityStartDateGiven","site")) %>%
   mutate(variable=as.character(variable)) %>%
@@ -83,16 +88,14 @@ chemicalSummary <- wData %>%
   rename(endPointValue=value, endPoint=variable) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
-
 chemSum1 <- chemicalSummary %>%
-  group_by(chnm,  class, date, site) %>%
+  group_by(chnm,  class, site, date) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(chnm,  class, site) %>%
-  summarize(hits=as.numeric(any(hits > 0)),
-            counts=n(),
-            freq=hits/counts) %>%
+  summarize(hits=as.numeric(any(hits > 0))) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n()) 
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -102,7 +105,8 @@ chemSum2 <- chemicalSummary %>%
   left_join(chemSum1, by=c("chnm","class")) %>%
   data.frame %>%
   arrange(desc(freq)) %>%
-  select(chnm, class, freq, maxEAR, nEndPoints, nSamples)
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+
 
 
 siteSummary <- wData %>%
@@ -129,8 +133,7 @@ summ1 <- siteSummary %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(site) %>%
   summarize(freq=sum(hits)/length(unique(date)),
-            nSamples=length(unique(date)),
-            nHits=sum(hits)) 
+            nSamples=length(unique(date))) 
 
 summ2 <-  siteSummary %>%
   group_by(site) %>%
@@ -145,7 +148,7 @@ summary <- left_join(summ1, summ2, by="site") %>%
 
 ```
 
-## Water Sample Chemical Summary
+## Water Sample: Chemical Summary
 ```{r, echo=FALSE, results='asis'}
   datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
@@ -153,17 +156,18 @@ summary <- left_join(summ1, summ2, by="site") %>%
 ```
 
 
-## Water Sample Site Summary
+## Water Sample: Site Summary
 
 ```{r, echo=FALSE, results='asis'}
-sumToPrint <- select(summary, -nHits)
-datatable(sumToPrint, rownames = FALSE) %>% 
+datatable(summary, rownames = FALSE) %>% 
   formatRound(c("freq","maxEAR"), digits = 2)
 ```
 
-## Map: maxEAR (color) and number of hits (size)
+## Water Samples: 
+maxEAR (color) and freq (size)
 
 ```{r, echo=FALSE, results='asis', fig.width=8}
+
 library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
@@ -171,28 +175,30 @@ mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
 mapData <- mapData[!is.na(mapData$dec.lat.va),]
 mapData <- mapData[!is.na(mapData$nChem),]
 
-col_types <- c( "red","orange", "yellow", "grey80","dodgerblue","darkblue")
-leg_vals <- seq(0,2500, 500)
+col_types <- c("darkblue","dodgerblue","yellow","orange","red")
+leg_vals <- c(0,1,10,100,1000,2500)#seq(0,2500, 500)
 
 cols <- colorNumeric(col_types, domain = leg_vals)
 rad <- seq(2500,15000, 2500)
-mapData$sizes <- rad[as.numeric(cut(mapData$nHits, c(-1,0,1,10,50,100,1000)))]
+mapData$sizes <- rad[as.numeric(cut(mapData$freq, c(-1,0,0.2,0.4,0.6,0.8,1)))]
 
 pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
 
 
 m = leaflet(mapData) %>%
   addProviderTiles("Esri.WorldPhysical") %>%
-  setView(lng = -84.45, lat = 43.8, zoom=6)%>%
+  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-             popup=paste(mapData$Station.Name,'<br/>',
-                         "Samples with at least 1 hits:",mapData$nHits,'<br/>',
+             popup=paste('<b>',mapData$Station.Name,'</b><br/>',
+                         "Frequency:",sprintf("%1.1f", mapData$freq),'<br/>',
+                         "nSample:",mapData$nSamples,'<br/>',
                          "maxEAR:",sprintf("%1.1f", mapData$maxEAR),'<br/>',
-                         "Number of Chemicals with Hits:",mapData$nChem),
+                         "nChem:",mapData$nChem,'<br/>',
+                         "nEndPoints", mapData$nEndPoints,'<br/>'),
 #              fillColor = ~cols(maxEAR), 
               fillColor = ~pal(maxEAR), 
              weight = 1,
-             color = "grey60",
+             color = "black",
              fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
     addLegend(
       position = 'bottomleft',
@@ -205,3 +211,195 @@ m = leaflet(mapData) %>%
 m  # a map with the default OSM tile laye
 
 ```
+
+
+## Passive Sample: Chemical Summary
+
+```{r, echo=FALSE}
+
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "passiveData.RData")
+load(file=filePath)
+#Site Info:
+filePath <- file.path(packagePath, "stationINFO.RData")
+load(file=filePath)
+#parameter info:
+filePath <- file.path(packagePath, "pCodeInfo.RData")
+load(file=filePath)
+
+#passive class info:
+passiveCAS <- readRDS(file.path(packagePath, "passiveCAS.rds"))
+
+pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
+
+# Some chemicals have 2 rows (different units)...
+# To simplify for now, we'll ignore the duplicate chemicals:
+
+
+passiveData <- left_join(passiveData, passiveCAS, by=c("CAS", "Chemical"))
+passiveData <- passiveData[!duplicated(passiveData$CAS),]
+passiveData$class[passiveData$Chemical == "Aspirin"] <-"Pharmaceuticals"
+
+passiveData <- passiveData[,-which(names(passiveData) == "site04249000.1")]
+
+
+unitConversion <- setNames(c(10^6, 10^3), c("pg/L", "ng/L") )
+
+AC50 <- right_join(AC50gain[,c("casn"), drop=FALSE], 
+                   passiveData[,c("CAS", "Units", "mlWt","Chemical")],
+                   by= c("casn" = "CAS")) %>%
+  rename(desiredUnits = Units, chnm=Chemical) %>%
+  filter(!is.na(mlWt)) %>%
+  mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
+  select(casn, chnm, desiredUnits, mlWt, conversion)
+
+AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+
+endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
+endPointData <- 10^endPointData
+endPointData <- endPointData * AC50Converted$conversion
+endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- rename(endPoint, Units=desiredUnits)
+
+siteColumns <- grep("site",names(passiveData))
+passiveData[,siteColumns] <- suppressWarnings(
+  sapply(passiveData[,siteColumns], function(x) as.numeric(x)))
+
+#For this analysis, we'll consider NA's to be 0 (other options exist):
+passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
+
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
+
+chemicalSummary <- melt(passiveData, id.vars = infoColumns) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  select(srsname=Chemical,
+         casrn=CAS,
+         class=class,
+         measuredValue=value, 
+         site=variable) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) 
+
+chemSum1 <- chemicalSummary %>%
+  group_by(chnm,  class, site) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+#   group_by(chnm,  class, site) %>%
+#   summarize(hits=as.numeric(any(hits > 0))) %>%
+  group_by(chnm, class) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
+
+chemSum2 <- chemicalSummary %>%
+  group_by(chnm,  class) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=1,
+            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+  left_join(chemSum1, by=c("chnm","class")) %>%
+  data.frame %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+
+siteSummary <- melt(passiveData, id.vars = infoColumns) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  select(srsname=Chemical,
+         casrn=CAS,
+         class=class,
+         measuredValue=value, 
+         site=variable) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
+  select(site, chnm, EAR, endPoint, class) %>% 
+  arrange(site, chnm, EAR)
+
+summ1 <- siteSummary %>%
+  group_by(site) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1)),
+            nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
+            maxEAR = max(EAR))%>%
+  arrange(desc(maxEAR))
+
+
+```
+
+
+```{r, echo=FALSE, results='asis'}
+
+  datatable(chemSum2, rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 4)
+
+```
+
+
+## Passive Sample: Site Summary
+
+```{r, echo=FALSE, results='asis'}
+datatable(summ1[,-2], rownames = FALSE) %>% 
+#           options = list(pageLength = 50)) %>% 
+  formatRound(c("maxEAR"), digits = 2)
+```
+
+
+## Water Samples: 
+maxEAR (color) and number of chemicals with hits (size)
+
+```{r, echo=FALSE, results='asis', fig.width=8}
+
+library(leaflet)
+stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
+
+mapDataPassive <- left_join(stationINFO, summ1, by=c("shortName"="site"))
+mapDataPassive <- mapDataPassive[!is.na(mapDataPassive$dec.lat.va),]
+
+col_types <- c("darkblue","dodgerblue","yellow","orange","red")
+leg_vals <- c(0,1,3,5,7,9)#seq(0,2500, 500) # This is maxEAR scale
+
+cols <- colorNumeric(col_types, domain = leg_vals)
+rad <- seq(2500,15000, 2500)
+mapDataPassive$sizes <- rad[as.numeric(cut(mapDataPassive$nChem, c(-1,0,1,2,3)))]
+mapDataPassive$sizes[is.na(mapDataPassive$sizes)] <- 1000
+
+pal = colorBin(col_types, mapDataPassive$maxEAR, bins = leg_vals)
+
+
+m = leaflet(mapDataPassive) %>%
+  addProviderTiles("Esri.WorldPhysical") %>%
+  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+  addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
+             popup=paste("<b>",mapDataPassive$Station.Name,'</b><br/>',
+                         "maxEAR:",sprintf("%1.1f", mapDataPassive$maxEAR),'<br/>',
+                         "nChem:",mapDataPassive$nChem,'<br/>',
+                         "nEndPoints", mapDataPassive$nEndPoints,'<br/>'),
+             fillColor = ~pal(maxEAR), 
+             weight = 1,
+             color = "blue",
+             fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
+    addLegend(
+      position = 'bottomleft',
+      pal=pal,
+      values=~maxEAR,
+#       colors = cols(leg_vals),
+      opacity = 0.8,
+#       labels = paste0(leg_vals,'-'),
+      title = 'maxEAR') 
+m  
+
+```
+
