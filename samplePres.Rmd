@@ -76,7 +76,7 @@ output:
 * Passive samplers (155 compounds)
     * One deployment of POCIS and SPMD samplers
 
-<table width="500" id="bigTable">
+<table id="bigTable">
 <tr>
    <td style="text-align:left;"> PAHs (33) </td>
    <td style="text-align:left;"> Organic Waste Compounds (53) </td>
