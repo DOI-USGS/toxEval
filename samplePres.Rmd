@@ -512,7 +512,7 @@ map2
 
 ## ToxCast Combo Map
 
-```{r, echo=FALSE, results='asis', fig.width=8}
+```{r, echo=FALSE, results='asis', fig.width=8, warning=FALSE}
 
 mapDataPassive$Passive <- rep(TRUE, nrow(mapDataPassive))
 mapDataPassive$nSamples <- rep(1, nrow(mapDataPassive))
@@ -527,33 +527,51 @@ comboMap$dec.lat.va[comboMap$Passive] <- comboMap$dec.lat.va[comboMap$Passive] +
 comboMap$dec.lat.va[!comboMap$Passive] <- comboMap$dec.lat.va[!comboMap$Passive] - latOffset
 
 col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
-leg_vals <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR scale
+leg_vals_WS <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR scale
+cols_WS <- colorNumeric(col_types, domain = leg_vals)
+pal_WS = colorBin(col_types, comboMap$maxEAR, bins = leg_vals)
 
-cols <- colorNumeric(col_types, domain = leg_vals)
+leg_vals_P <- c(0,1,3,5,7,9)#seq(0,2500, 500) # This is maxEAR scale
+cols_P <- colorNumeric(col_types, domain = leg_vals)
+pal_P = colorBin(col_types, mapDataPassive$maxEAR, bins = leg_vals)
 
-pal = colorBin(col_types, comboMap$maxEAR, bins = leg_vals)
 
-
-map3 = leaflet(comboMap) %>%
+map3 = leaflet() %>%
   addProviderTiles("Esri.WorldPhysical") %>%
   setView(lng = -83.5, lat = 44.5, zoom=6)%>%
-  addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-             popup=paste("<b>",comboMap$Station.Name,'</b><br/>',
-                         "maxEAR:",sprintf("%1.1f", comboMap$maxEAR),'<br/>',
-                         "nChem:",comboMap$nChem,'<br/>',
-                         "nEndPoints", comboMap$nEndPoints,'<br/>'),
-             fillColor = ~pal(maxEAR), 
+  addCircles(lat=comboMap$dec.lat.va[comboMap$Passive], lng=comboMap$dec.long.va[comboMap$Passive], 
+             popup=paste("<b>Passive:",comboMap$Station.Name[comboMap$Passive],'</b><br/>',
+                         "maxEAR:",sprintf("%1.1f", comboMap$maxEAR[comboMap$Passive]),'<br/>',
+                         "nChem:",comboMap$nChem[comboMap$Passive],'<br/>',
+                         "nEndPoints", comboMap$nEndPoints[comboMap$Passive],'<br/>'),
+             fillColor = pal_P(comboMap$maxEAR[comboMap$Passive]), 
              weight = 1,
-             color = "blue",
-             fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
+             color = "black",
+             fillOpacity = 0.8, opacity = 0.8,
+             radius = comboMap$sizes[comboMap$Passive] ) %>%
     addLegend(
       position = 'bottomleft',
-      pal=pal,
-      values=~maxEAR,
-#       colors = cols(leg_vals),
+      pal=pal_P,
+      values=comboMap$maxEAR[comboMap$Passive],
       opacity = 0.8,
-#       labels = paste0(leg_vals,'-'),
-      title = 'maxEAR') 
+      title = 'Passive maxEAR') %>%
+  addCircles(lat=comboMap$dec.lat.va[!comboMap$Passive], lng=comboMap$dec.long.va[!comboMap$Passive], 
+             popup=paste("<b>Water Samples:",comboMap$Station.Name[!comboMap$Passive],'</b><br/>',
+                         "maxEAR:",sprintf("%1.1f", comboMap$maxEAR[!comboMap$Passive]),'<br/>',
+                         "nChem:",comboMap$nChem[!comboMap$Passive],'<br/>',
+                         "nEndPoints", comboMap$nEndPoints[!comboMap$Passive],'<br/>'),
+             fillColor = pal_WS(comboMap$maxEAR[!comboMap$Passive]), 
+             weight = 1,
+             color = "yellow",
+             fillOpacity = 0.8, 
+             radius = comboMap$sizes[!comboMap$Passive], 
+             opacity = 0.8) %>%
+    addLegend(
+      position = 'topright',
+      pal=pal_WS,
+      values=comboMap$maxEAR[!comboMap$Passive],
+      opacity = 0.8,
+      title = 'WaterSamples maxEAR')
 map3
 
 
