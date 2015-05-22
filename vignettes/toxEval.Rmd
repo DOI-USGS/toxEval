@@ -57,7 +57,9 @@ pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
 passiveData <- left_join(passiveData, passiveCAS, by=c("CAS", "Chemical"))
 passiveData <- passiveData[!duplicated(passiveData$CAS),]
-passiveData$class[passiveData$Chemical == "Aspirin"] <-"Pharmaceuticals"
+passiveData$class[passiveData$Chemical == "Hexachlorobenzene (HCB)"] <-"OC Pesticides"
+passiveData$class[passiveData$Chemical == "Pentachloroanisole (PCA)"] <-"OC Pesticides"
+passiveData$class[is.na(passiveData$class)] <-"Pharmaceuticals"
 
 passiveData <- passiveData[,-which(names(passiveData) == "site04249000.1")]
 
