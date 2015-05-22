@@ -678,7 +678,27 @@ map3
 
 ## Comparisons
 
+```{r echo=FALSE}
+# ToxCast Water Samples:
+toxWS <- chemSum2 %>%
+  arrange(desc(freq)) %>%
+  select(chnm,class,freq)
 
+toxWS <- toxWS[1:10,]
+
+toxPassive <- chemSum2_passive %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq)
+  
+toxPassive <- toxPassive[1:10,]
+
+tradWS <- chemSum2_BM %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq)
+
+tradWS <- tradWS[1:10,]
+
+```
 
 ## Conclusions
 
