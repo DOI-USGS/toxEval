@@ -46,6 +46,8 @@ load(file=filePath)
 filePath <- file.path(packagePath, "pCodeInfo.RData")
 load(file=filePath)
 
+pCodeInfo$class <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(pCodeInfo$class), perl=TRUE)
+pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
 
 pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
@@ -64,6 +66,9 @@ The data returned from water sample tests was returned in a 'wide' format:
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "waterSamples.RData")
 load(file=filePath)
+
+waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
+
 
 head(waterSamples[,1:10])
 
