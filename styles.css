@@ -29,6 +29,10 @@ slides > slide > hgroup + article{
   margin-top:10px;
 }
 
+#study-sites-tributaries {
+    margin-top: 10px;
+}
+
 #testingStuff{
   width:100%
 }
@@ -40,10 +44,6 @@ slides > slide > hgroup + article{
 
 .diffH2 h2{
   line-height:0px;
-}
-
-#study-sites-tributaries {
-    margin-top: 120px;
 }
 
 #rightSideDiv{
