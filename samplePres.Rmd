@@ -11,26 +11,29 @@ output:
 ## Multi-agency team
 * USEPA ORD
     + Mid-Continent Ecology Division, Duluth, MN
+        * Tony Schroeder, Dan Villeneuve, Brett Blackwell, Gary Ankley
     + Ecosystems Research Division, Athens, GA
+    + National Center for Computational Toxicolgy
 * Fish and Wildlife Service
 * NOAA Mussel Watch
 * U.S. Army Corps of Engineers
 * USGS
     + WI, OH, NY, MN, and MI Water Science Centers
-    + Minnesota Water Science Center
+    + Columbia Environmental Research Center
     + Upper Mississippi Environmental Science Center
 * St. Cloud University
 
 ## Objectives
-Evaluate Great Lakes tributaries for adverse biological impact based on water chemistry monitoring data
-
-* Water chemistry and passive sampler data 
-* Compare water chemistry and passive sampler data to bioassay endpoints
-    + ToxCast^TM^
-    + Water quality guidelines
-    + Estrogenic equivalents
-* Characterize sites based on potential adverse impact
-* Prioritize contaminants based on prevalence of potential adverse impact
+* 58 Great Lakes Tributaries sampled from 2010-2013 for GLRI
+* Trace organic compounds measured in samples
+* Sampling methods used: Water samples and passive samplers
+* Adverse biological effect potential based on chemistry results
+    * Sites with greatest potential
+    * Chemicals with greatest potential
+* Different methods for biological effect evaluation
+    * ToxCast-based evaluation
+    * Water quality guideline-based evaluation
+    * Comparison of these two methods
     
 ## Study sites: Tributaries  {.flexbox .vcenter }
 
@@ -39,68 +42,19 @@ Evaluate Great Lakes tributaries for adverse biological impact based on water ch
 
 ## Water quality data collected
 
-<table id="bigTable">
-<tr>
-   <td style="text-align:left;"> <b>Water Samples</b> </td>
-   <td style="text-align:left;"> <b>Passive Samples (155 compounds) </b></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> PAHs (6) </td>
-   <td style="text-align:left;"> PAHs (33) </td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Insecticides (6) </td>
-   <td style="text-align:left;"> Organic Waste Compounds (53) </td>   
-</tr>
-<tr>
-   <td style="text-align:left;"> Herbicides (7) </td>
-   <td style="text-align:left;"> Organochlorine Pesticides (32) </td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Fire retardants (4) </td>
-   <td style="text-align:left;"> PBDEs (5) </td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Pharmaceuticals (3) </td>
-   <td style="text-align:left;"> Pharmaceuticals (31) </td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Plasticizers (5) </td>
-   <td style="text-align:left;"> PCB (sum of total) </td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Detergent metabolites (8) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Antimicrobial disinfectants (3) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Solvents (2) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Fuels (4) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Dye/pigments (1) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Flavors &amp; fragrances (10) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Sterols (4) </td>
-   <td style="text-align:left;"></td>
-</tr>
-<tr>
-   <td style="text-align:left;"> Misc (3) </td>
-   <td style="text-align:left;"></td>
-</tr>
-</table>
+```{r echo=FALSE}
+library(knitr)
+ws <- c("PAHs (6)", "Insecticides (6)", "Herbicides (7)", "Fire retardants (4)", "Pharmaceuticals (3)", "Plasticizers (5)", "Detergent metabolites (8)", "Antimicrobial disinfectants (3)", "Solvents (2)", "Fuels (4)", "Dye/pigments (1)", "Flavors &amp; fragrances (10)", "Sterols (4)", "Misc (3)")
+
+ps <- c("PAHs (33)", "Organic Waste Compounds (53)", "Organochlorine Pesticides (32)", "PBDEs (5)", "Pharmaceuticals (31)", "PCB (sum of total)",rep("", 8))
+
+df <- data.frame(ws=ws, ps=ps, stringsAsFactors=FALSE)
+
+names(df) <- c("Water Samples: Organic Waste Compounds", "Passive Samples")
+
+kable(df, row.names = FALSE)
+
+```
 
     
 
@@ -110,6 +64,7 @@ library(dplyr)
 library(reshape2)
 library(DT)
 library(toxEval)
+library(knitr)
 
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
@@ -471,14 +426,22 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 
 ## Screening Endpoints Used in Analysis
 
-* ToxCast
-    + General info on toxcast
-    + 1800??? compounds
-    + 851 endpoints
-
+* ToxCast: 
+    * "High throughput screening assays"
+        * Expose living cells or isolated protiens
+        * Screens for potential adverse biological effects
+        * Much is focused on gaining information on biological pathways
+    * 1860 compounds
+    * 821 endpoints
+    * AC50 used for this analysis (concentration at which activity is 50% of its maximum)
+    * Exposure Activity Ratio (EAR) = concentration / AC50
 * Water quality guidelines
-    + Water sample analysis
+    * Water sample analysis (not complete for passive samplers yet)
         * Established water quality guidelines
+            * USEPA
+            * Canadian Council of Ministers of the Environment
+            * USGS
+            * Literature
 
 ## Screening Endpoints Matches
 * ToxCast
@@ -496,7 +459,7 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
         * Not yet complete
 
 
-## Water Sample: Chemical Summary
+## ToxCast: Water Sample Chemical Summary
 ```{r, echo=FALSE, results='asis'}
   datatable(chemSum2, rownames = FALSE, 
             options = list(pageLength = 10)) %>% 
@@ -504,7 +467,7 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 ```
 
 
-## Water Sample: Site Summary
+## ToxCast: Water Sample Site Summary
 
 ```{r, echo=FALSE, results='asis'}
 summary_display <- left_join(summary, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
@@ -514,7 +477,7 @@ datatable(summary_display, rownames = FALSE) %>%
 ```
 
 
-## Water Samples: Map
+## ToxCast: Water Samples Map
 <b>Color:</b> maxEAR <b>Size:</b> numer of chemicals with hits
 
 ```{r, echo=FALSE, results='asis', fig.width=8}
@@ -561,7 +524,7 @@ m
 ```
 
 
-## Passive Data: Map 
+## ToxCast: Passive Data Map 
 <b>Color:</b> maxEAR <b>Size:</b> numer of chemicals with hits
 
 ```{r, echo=FALSE, results='asis', fig.width=8}
@@ -608,7 +571,7 @@ map2
 
 ```
 
-## ToxCast Combo Map
+## ToxCast: Comparison of Water Sample and Passive Sample Results
 <b>Color:</b> maxEAR <b>Size:</b> numer of chemicals with hits
 
 ```{r, echo=FALSE, results='asis', fig.width=8, warning=FALSE}
@@ -676,6 +639,13 @@ map3
 
 ```
 
+## Water Quality Guidelines Results
+
+```{r echo=FALSE, fig.width=4, fig.height=4}
+plot(1:10)
+
+```
+
 ## Comparisons
 
 ```{r echo=FALSE}
@@ -684,23 +654,77 @@ toxWS <- chemSum2 %>%
   arrange(desc(freq)) %>%
   select(chnm,class,freq)
 
-toxWS <- toxWS[1:10,]
+toxWS <- toxWS[1:7,1:2]
 
 toxPassive <- chemSum2_passive %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq)
   
-toxPassive <- toxPassive[1:10,]
+toxPassive <- toxPassive[1:7,1:2]
 
 tradWS <- chemSum2_BM %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq)
 
-tradWS <- tradWS[1:10,]
+tradWS <- tradWS[1:7,1:2]
+
+comboData <- cbind(toxWS, toxPassive, tradWS)
+names(comboData) <- c("ToxCast: WS Chem", "ToxCast: WS Class", "ToxCast: Passive Chem", "ToxCast: Passive Class", "WQG: WS Chem", "WQG: WS Class")
+
+kable(comboData,row.names = FALSE)
+
 
 ```
 
-## Conclusions
+## Challenges with this work
+* Detection levels
+    * ToxCast: Some compounds have adverse effects lower than analytical reporting limits
+    * Water samples
+        * Dichlorvos  (min EAR = 36)
+        * Metolachlor (min EAR = 14)
+        * Cotinine    (min EAR = 7)
+        * Naphthalene (min EAR = 1.7)
+        * dl-Menthol  (min EAR = 1.4)
+* Compounds included
+    * The numbers are increasing, but many are still not included
+        * ToxCast and water quality guidelines/literature
+* Interpretation of ToxCast in the environmental setting
+        
+## Work Remaining For This Analysis
+* ToxCast
+    * Chemical mixtures: how to evaluate within ToxCast results 
+    * Zebrafish developmental toxicity testing (subset of ToxCast chemicals)
+* Passive samplers
+    * Compile established water quality guidelines and compare
+        * Toxicity
+        * Endocrine disruptors
+* Endocrine disruptors
+    * Comparison of estrogenic equivalents to ToxCast results
+* Factors that may influence biological effects
+    * Seasonality
+    * Hydrologic condition
+    * Land use
+* Use all methods to summarize potential effects by site and chemical
+* ToxCast direct environmental sample analysis
+    * Comparison with analysis using water chemistry data alone with ToxCast
+    
+## Summary
+* Multiple methods can be used to evaluate potential biological effects
+* Different conclusions may be reached based on methods
+* Combining methods:
+    * Note commonalities and differences in final evaluations
+* Adverse effect potential exists and urban and agricultural sites
+* Multiple contaminant classes could be influential
+* The classes that appear to be of largest concern include:
+    * PAHs
+    * Pesticides
+    * Pharmaceuticals
+* Keep in mind the limited chemicals and classes included here
+* Much work yet to be done to better understand how to use these methods effectively
+
+## Questions {.flexbox .vcenter}
+
+![Ending slide](OntanoganTrib2.jpg)
 
 
 ## Passive Sample: Chemical Summary
