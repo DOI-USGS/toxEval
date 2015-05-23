@@ -699,19 +699,19 @@ toxWS <- chemSum2 %>%
   arrange(desc(freq)) %>%
   select(chnm,class,freq)
 
-toxWS <- toxWS[1:7,1:2]
+toxWS <- toxWS[1:10,1:2]
 
 toxPassive <- chemSum2_passive %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq)
   
-toxPassive <- toxPassive[1:7,1:2]
+toxPassive <- toxPassive[1:10,1:2]
 
 tradWS <- chemSum2_BM %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq)
 
-tradWS <- tradWS[1:7,1:2]
+tradWS <- tradWS[1:10,1:2]
 
 comboData <- cbind(toxWS, toxPassive, tradWS)
 names(comboData) <- c("ToxCast:<br/>WS Chem", "ToxCast<br/>WS Class", "ToxCast<br/>Passive Chem", "ToxCast<br/>Passive Class", "WQG<br/>WS Chem", "WQG<br/>WS Class")
@@ -726,32 +726,155 @@ names(comboData) <- c("ToxCast:<br/>WS Chem", "ToxCast<br/>WS Class", "ToxCast<b
 
 <div id="leftSideThird">
 ToxCast: Water Samples
-chnm|class  
---- | --- 
-Fluorene|PAHs
-Aspirin|Pharmaceuticals  
-Erythromycin|Pharmaceuticals   
-Naphthalene|PAHs
-Gemfibrozil|Pharmaceuticals 
-1,4-Dichlorobenzene|Other
-4-Octylphenol|Detergent metabolites
+
+    Chemical           Class      
+----------------- ----------------
+      DEET          Insecticide   
+   Metolachlor       Herbicide    
+    Atrazine         Herbicide    
+    Caffeine      Pharmaceuticals 
+  Benzophenone    Flavor/fragrance
+   Naphthalene        **PAH**       
+Diethyl phthalate   Plasticizer 
 
 </div>
 
 <div id="middleThird">
 ToxCast: Passive Data
-```{r echo=FALSE}
-pander(toxPassive, style = 'simple')
-```
 
+      Chemical               Class        
+------------------- ---------------------
+     Fluorene             **PAH**        
+      Aspirin          Pharmaceuticals   
+   Erythromycin        Pharmaceuticals   
+    Naphthalene           **PAH**         
+    Gemfibrozil        Pharmaceuticals   
+1,4-Dichlorobenzene         Other        
+   4-Octylphenol    Detergent metabolites
+
+   
 </div>
 
 <div id="rightSideThird">
 WQG: Water Samples
-```{r echo=FALSE}
-pander(tradWS, style = 'simple')
-```
 
+   Chemical       Class   
+-------------- -------------
+ Fluoranthene  **PAH**    
+    Pyrene     **PAH**    
+Benzo[a]pyrene     **PAH**    
+   Atrazine     Herbicide 
+  Anthracene       **PAH**    
+   Carbaryl    Insecticide
+ Metolachlor    Herbicide 
+ 
+ 
+</div>
+
+</div>
+
+## Comparisons
+
+<div id="testingStuff">
+
+<div id="leftSideThird">
+ToxCast: Water Samples
+
+    Chemical           Class      
+----------------- ----------------
+      DEET          Insecticide   
+   Metolachlor       Herbicide    
+    Atrazine         Herbicide    
+    Caffeine      **Pharmaceuticals** 
+  Benzophenone    Flavor/fragrance
+   Naphthalene          PAH      
+Diethyl phthalate   Plasticizer 
+
+</div>
+
+<div id="middleThird">
+ToxCast: Passive Data
+
+      Chemical               Class        
+------------------- ---------------------
+     Fluorene               PAH        
+      Aspirin          **Pharmaceuticals**   
+   Erythromycin        **Pharmaceuticals**   
+    Naphthalene             PAH         
+    Gemfibrozil        **Pharmaceuticals**   
+1,4-Dichlorobenzene         Other        
+   4-Octylphenol    Detergent metabolites
+
+   
+</div>
+
+<div id="rightSideThird">
+WQG: Water Samples
+
+   Chemical       Class   
+-------------- -------------
+ Fluoranthene      PAH    
+    Pyrene         PAH    
+Benzo[a]pyrene     PAH    
+   Atrazine     Herbicide 
+  Anthracene       PAH    
+   Carbaryl    Insecticide
+ Metolachlor    Herbicide 
+ 
+ 
+</div>
+
+</div>
+
+## Comparisons
+
+<div id="testingStuff">
+
+<div id="leftSideThird">
+ToxCast: Water Samples
+
+    Chemical           Class      
+----------------- ----------------
+      DEET          **Insecticide**   
+   Metolachlor       **Herbicide**    
+    Atrazine         **Herbicide**    
+    Caffeine      Pharmaceuticals 
+  Benzophenone    Flavor/fragrance
+   Naphthalene          PAH      
+Diethyl phthalate   Plasticizer 
+
+</div>
+
+<div id="middleThird">
+ToxCast: Passive Data
+
+      Chemical               Class        
+------------------- ---------------------
+     Fluorene               PAH        
+      Aspirin          Pharmaceuticals   
+   Erythromycin        Pharmaceuticals   
+    Naphthalene             PAH         
+    Gemfibrozil        Pharmaceuticals   
+1,4-Dichlorobenzene         Other        
+   4-Octylphenol    Detergent metabolites
+
+   
+</div>
+
+<div id="rightSideThird">
+WQG: Water Samples
+
+   Chemical       Class   
+-------------- -------------
+ Fluoranthene      PAH    
+    Pyrene         PAH    
+Benzo[a]pyrene     PAH    
+   Atrazine     **Herbicide** 
+  Anthracene       PAH    
+   Carbaryl    **Insecticide**
+ Metolachlor    **Herbicide** 
+ 
+ 
 </div>
 
 </div>
