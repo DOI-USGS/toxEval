@@ -39,6 +39,35 @@ plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
 
 ```
 
+## Comparing ToxCast to WQGs: Number of chemicals with hits
+
+```{r echo=FALSE, message = FALSE, fig.show='asis',fig.width=4,fig.height=5}
+
+mainTitle <- "Water Samples:ToxCast"
+response <- "nChem"
+dat <- mapData
+minbucket <- 6
+minsplit <- minbucket*3
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
+
+
+mainTitle <- "Water Samples:WQGs"
+response <- "nChem"
+dat <- mapDataBM
+minbucket <- 6
+minsplit <- minbucket*3
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
+
+```
+
 ## ToxCast Regression Tree Model: Maximum EAR
 
 ```{r echo=FALSE, message = FALSE, fig.show='asis',fig.width=4,fig.height=5}
@@ -68,6 +97,7 @@ if(dim(m2$cptable)[1] >1){
 plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
 } else {print("No Splits Determined")
 }
+
 
 ```
 
