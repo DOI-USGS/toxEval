@@ -641,8 +641,27 @@ map3
 
 ## Water Quality Guidelines Results
 
-```{r echo=FALSE, fig.width=4, fig.height=4}
-plot(1:10)
+```{r  message=FALSE, echo=FALSE, results='asis', fig.width=7, fig.height=6}
+
+library(rpart)
+library(party)
+library(partykit)
+
+#################
+dat <- mapDataPassive
+mainTitle <- "Passive Samplers"
+response <- "nChem"
+
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.01,minBucket=3, minsplit = 10),data=dat)
+#plot(as.party(m1), tp_args=list(id=FALSE),main=mainTitle,font=2)
+
+#print(m1$cptable)
+
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), tp_args=list(id=FALSE))
+
 
 ```
 
