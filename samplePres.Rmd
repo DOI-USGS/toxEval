@@ -6,7 +6,7 @@ output:
   ioslides_presentation:
     smaller: yes
     css: styles.css    
-    logo: USGS_avatar_github.png
+    logo: simple-shadow.png
 ---
 
 ## Multi-agency team
@@ -711,21 +711,21 @@ toxWS <- chemSum2 %>%
   select(chnm,class,freq) %>%
   rename(Chemical=chnm, Class=class)
 
-toxWS <- toxWS[1:10,1:2]
+toxWS <- toxWS[1:12,1:2]
 
 toxPassive <- chemSum2_passive %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq) %>%
   rename(Chemical=chnm, Class=class)
   
-toxPassive <- toxPassive[1:10,1:2]
+toxPassive <- toxPassive[1:12,1:2]
 
 tradWS <- chemSum2_BM %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq) %>%
   rename(Chemical=chnm, Class=class)
 
-tradWS <- tradWS[1:10,1:2]
+tradWS <- tradWS[1:12,1:2]
 
 # pander(tradWS,row.names = FALSE, style = 'simple')
 
