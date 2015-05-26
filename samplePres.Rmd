@@ -6,10 +6,12 @@ output:
   ioslides_presentation:
     smaller: yes
     css: styles.css    
+    logo: simple-shadow.png
 ---
 
 ## Multi-agency team
-* USEPA ORD
+* USEPA 
+    + Great Lakes National Program Office
     + Mid-Continent Ecology Division, Duluth, MN
         * Tony Schroeder, Dan Villeneuve, Brett Blackwell, Gary Ankley
     + Ecosystems Research Division, Athens, GA
@@ -23,11 +25,11 @@ output:
     + Upper Mississippi Environmental Science Center
 * St. Cloud University
 
-## Objectives
-* 58 Great Lakes Tributaries sampled from 2010-2013 for GLRI
-* Trace organic compounds measured in samples
-* Sampling methods used: Water samples and passive samplers
-* Adverse biological effect potential based on chemistry results
+## Overview
+* Sampled Great Lakes Tributaries
+    * 2010-2013: Multiple trace organic compounds
+    * Sampling methods: Water samples and passive samplers
+* Evaluating adverse biological effect potential based on chemistry results
     * Sites with greatest potential
     * Chemicals with greatest potential
 * Different methods for biological effect evaluation
@@ -483,10 +485,10 @@ datatable(summary_display, rownames = FALSE,
 
 
 ## ToxCast: Water Samples Map
-<b>Color:</b> maxEAR<br/>
-<b>Size:</b> Number of chemicals with hits
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits (0-19)
 
-```{r, echo=FALSE, results='asis', fig.width=8}
+```{r, echo=FALSE, results='asis', echo=FALSE, fig.width=8}
 
 library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
@@ -524,17 +526,18 @@ m = leaflet(mapData) %>%
       pal=pal,
       values=~maxEAR,
       opacity = 0.8,
-      title = 'maxEAR') 
-m  
+      title = 'Maximum EAR') 
+
+m
 
 ```
 
 
 ## ToxCast: Passive Data Map 
-<b>Color:</b> maxEAR<br/>
-<b>Size:</b> Number of chemicals with hits
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits (0-3)
 
-```{r, echo=FALSE, results='asis', fig.width=8}
+```{r, echo=FALSE, results='asis', echo=FALSE, fig.width=8}
 
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
@@ -573,83 +576,17 @@ map2 = leaflet(mapDataPassive) %>%
 #       colors = cols(leg_vals),
       opacity = 0.8,
 #       labels = paste0(leg_vals,'-'),
-      title = 'maxEAR') 
-map2  
+      title = 'Maximum EAR')
+map2
 
 ```
 
-## ToxCast: Comparison of Water Sample and Passive Sample Results
-<b>Color:</b> maxEAR<br/>
-<b>Size:</b> Number of chemicals with hits
-
-```{r, echo=FALSE, results='asis', fig.width=8, warning=FALSE}
-
-mapDataPassive$Passive <- rep(TRUE, nrow(mapDataPassive))
-mapDataPassive$nSamples <- rep(1, nrow(mapDataPassive))
-mapData$Passive <- rep(FALSE, nrow(mapData))
-
-comboMap <- rbind(mapDataPassive[,-which("hits" == names(mapDataPassive))], 
-                  mapData[,-which("freq" == names(mapData))])
-
-latOffset <- 0.1
-
-comboMap$dec.lat.va[comboMap$Passive] <- comboMap$dec.lat.va[comboMap$Passive] + latOffset
-comboMap$dec.lat.va[!comboMap$Passive] <- comboMap$dec.lat.va[!comboMap$Passive] - latOffset
-
-col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
-leg_vals_WS <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR scale
-cols_WS <- colorNumeric(col_types, domain = leg_vals_WS)
-pal_WS = colorBin(col_types, comboMap$maxEAR, bins = leg_vals_WS)
-
-leg_vals_P <- c(0,1,2,3,5,7,9)#seq(0,2500, 500) # This is maxEAR scale
-cols_P <- colorNumeric(col_types, domain = leg_vals_P)
-pal_P = colorBin(col_types, mapDataPassive$maxEAR, bins = leg_vals_P)
 
 
-map3 = leaflet() %>%
-  addProviderTiles("Esri.WorldPhysical") %>%
-  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
-  addCircles(lat=comboMap$dec.lat.va[comboMap$Passive], lng=comboMap$dec.long.va[comboMap$Passive], 
-             popup=paste("Passive:<b>",comboMap$Station.Name[comboMap$Passive],'</b><br/>',
-                         "maxEAR:",sprintf("%1.1f", comboMap$maxEAR[comboMap$Passive]),'<br/>',
-                         "nChem:",comboMap$nChem[comboMap$Passive],'<br/>',
-                         "nEndPoints", comboMap$nEndPoints[comboMap$Passive],'<br/>'),
-             fillColor = pal_P(comboMap$maxEAR[comboMap$Passive]), 
-             weight = 1,
-             color = "black",
-             fillOpacity = 0.8, opacity = 0.8,
-             radius = comboMap$sizes[comboMap$Passive] ) %>%
-    addLegend(
-      position = 'bottomleft',
-      pal=pal_P,
-      values=comboMap$maxEAR[comboMap$Passive],
-      opacity = 0.8,
-      title = 'Passive maxEAR') %>%
-  addCircles(lat=comboMap$dec.lat.va[!comboMap$Passive], lng=comboMap$dec.long.va[!comboMap$Passive], 
-             popup=paste("<font color='red'>Water Samples:</font><b>",comboMap$Station.Name[!comboMap$Passive],'</b><br/>',
-                         "<table><tr><td>maxEAR</td><td>",sprintf("%1.1f", comboMap$maxEAR[!comboMap$Passive]),'</td></tr>',
-                         "<tr><td>nChem</td><td>",comboMap$nChem[!comboMap$Passive],'</td></tr>',
-                         "<tr><td>nEndPoints</td><td>", comboMap$nEndPoints[!comboMap$Passive],'</td></tr></table>'),
-             fillColor = pal_WS(comboMap$maxEAR[!comboMap$Passive]), 
-             weight = 1.5,
-             color = "red",
-             fillOpacity = 0.8, 
-             radius = comboMap$sizes[!comboMap$Passive], 
-             opacity = 0.8) %>%
-    addLegend(
-      position = 'topright',
-      pal=pal_WS,
-      values=comboMap$maxEAR[!comboMap$Passive],
-      opacity = 0.8,
-      title = '<font color="red">Water Samples</font> maxEAR')
-map3
-
-
-```
 
 ## Water Quality Guidelines Results
-<b>Color:</b> maxEAR<br/>
-<b>Size:</b> Number of chemicals with hits
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits (0-10)
 
 ```{r echo=FALSE, results='asis', fig.width=8}
 mapDataWQ <- left_join(stationINFO, summary_BM, by=c("shortName"="site"))
@@ -686,8 +623,82 @@ map4 = leaflet(mapDataWQ) %>%
 #       colors = cols(leg_vals),
       opacity = 0.8,
 #       labels = paste0(leg_vals,'-'),
-      title = 'maxEAR') 
+      title = 'Maximum EAR') 
 map4  
+
+```
+
+## ToxCast Regression Tree Model: Number of chemicals with hits
+
+```{r  message=FALSE, echo=FALSE, fig.show='asis',fig.width=3.5,fig.height=5}
+
+library(rpart)
+library(party)
+library(partykit)
+
+#################
+mainTitle <- "Passive Samplers:ToxCast"
+response <- "nChem"
+dat <- mapDataPassive
+minbucket <- 6
+minsplit <- minbucket*3
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
+
+
+mainTitle <- "Water Samples:ToxCast"
+response <- "nChem"
+dat <- mapData
+minbucket <- 6
+minsplit <- minbucket*3
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
+
+# mainTitle <- "Water Samples:Water Quality Guidelines"
+# response <- "nChem"
+# dat <- mapDataWQ
+# minbucket <- 6
+# minsplit <- minbucket*3
+# set.seed(seed = 10)
+# form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+# m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+# m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+# plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
+
+```
+
+## Comparing ToxCast to WQGs: Number of chemicals with hits
+
+```{r echo=FALSE, message = FALSE, fig.show='asis',fig.width=4,fig.height=5}
+
+mainTitle <- "Water Samples:ToxCast"
+response <- "nChem"
+dat <- mapData
+minbucket <- 6
+minsplit <- minbucket*3
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
+
+
+mainTitle <- "Water Samples:WQGs"
+response <- "nChem"
+dat <- mapDataWQ
+minbucket <- 6
+minsplit <- minbucket*3
+set.seed(seed = 10)
+form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
+m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
+m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
+plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
 
 ```
 
@@ -697,76 +708,108 @@ map4
 # ToxCast Water Samples:
 toxWS <- chemSum2 %>%
   arrange(desc(freq)) %>%
-  select(chnm,class,freq)
+  select(chnm,class,freq) %>%
+  rename(Chemical=chnm, Class=class)
 
-toxWS <- toxWS[1:10,1:2]
+toxWS <- toxWS[1:12,1:2]
 
 toxPassive <- chemSum2_passive %>%
   arrange(desc(freq)) %>%
-  select(chnm, class, freq)
+  select(chnm, class, freq) %>%
+  rename(Chemical=chnm, Class=class)
   
-toxPassive <- toxPassive[1:10,1:2]
+toxPassive <- toxPassive[1:12,1:2]
 
 tradWS <- chemSum2_BM %>%
   arrange(desc(freq)) %>%
-  select(chnm, class, freq)
+  select(chnm, class, freq) %>%
+  rename(Chemical=chnm, Class=class)
 
-tradWS <- tradWS[1:10,1:2]
+tradWS <- tradWS[1:12,1:2]
 
-comboData <- cbind(toxWS, toxPassive, tradWS)
-names(comboData) <- c("ToxCast:<br/>WS Chem", "ToxCast<br/>WS Class", "ToxCast<br/>Passive Chem", "ToxCast<br/>Passive Class", "WQG<br/>WS Chem", "WQG<br/>WS Class")
-
-
-# pander(comboData,row.names = FALSE, style = 'rmarkdown')
+# pander(tradWS,row.names = FALSE, style = 'simple')
 
 
 ```
 
-<div id="testingStuff">
+<div class="testingStuff">
 
 <div id="leftSideThird">
-ToxCast: Water Samples
+ToxCast<br/>
+Water Samples
 
-    Chemical           Class      
------------------ ----------------
-      DEET          Insecticide   
-   Metolachlor       Herbicide    
-    Atrazine         Herbicide    
-    Caffeine      Pharmaceuticals 
-  Benzophenone    Flavor/fragrance
-   Naphthalene        **PAH**       
-Diethyl phthalate   Plasticizer 
+```{r, echo=FALSE}
+toxWS_1 <- toxWS
+emphasize.strong.cells(which(toxWS_1 == "PAH", arr.ind = TRUE))
+pander(toxWS_1, row.names = FALSE, style = 'simple')
+```
 
 </div>
 
 <div id="middleThird">
-ToxCast: Passive Data
+ToxCast<br/>
+Passive Data
 
-      Chemical               Class        
-------------------- ---------------------
-     Fluorene             **PAH**        
-      Aspirin          Pharmaceuticals   
-   Erythromycin        Pharmaceuticals   
-    Naphthalene           **PAH**         
-    Gemfibrozil        Pharmaceuticals   
-1,4-Dichlorobenzene         Other        
-   4-Octylphenol    Detergent metabolites
+```{r, echo=FALSE}
+toxPassive_1 <- toxPassive
+emphasize.strong.cells(which(toxPassive_1 == "PAHs", arr.ind = TRUE))
+pander(toxPassive_1,row.names = FALSE, style = 'simple')
+```
+   
+</div>
+
+<div id="rightSideThird">
+WQG<br/>
+Water Samples
+
+```{r, echo=FALSE}
+tradWS_1 <- tradWS
+emphasize.strong.cells(which(tradWS_1 == "PAH", arr.ind = TRUE))
+pander(tradWS_1,row.names = FALSE, style = 'simple')
+```
+ 
+</div>
+
+</div>
+
+## Comparisons
+
+<div class="testingStuff">
+
+<div id="leftSideThird">
+ToxCast<br/>
+Water Samples
+
+```{r, echo=FALSE}
+toxWS_2 <- toxWS
+emphasize.strong.cells(which(toxWS_2 == "Pharmaceuticals", arr.ind = TRUE))
+pander(toxWS_2, row.names = FALSE, style = 'simple')
+```
+
+</div>
+
+<div id="middleThird">
+ToxCast<br/>
+Passive Data
+
+```{r, echo=FALSE}
+toxPassive_2 <- toxPassive
+emphasize.strong.cells(which(toxPassive_2 == "Pharmaceuticals", arr.ind = TRUE))
+pander(toxPassive_2,row.names = FALSE, style = 'simple')
+```
 
    
 </div>
 
 <div id="rightSideThird">
-WQG: Water Samples
+WQG<br/>
+Water Samples
 
-   Chemical       Class   
--------------- -------------
- Fluoranthene  **PAH**    
-    Pyrene     **PAH**    
-Benzo[a]pyrene     **PAH**    
-   Atrazine     Herbicide 
-  Anthracene       **PAH**    
-   Carbaryl    Insecticide
- Metolachlor    Herbicide 
+```{r, echo=FALSE}
+tradWS_2 <- tradWS
+emphasize.strong.cells(which(tradWS_2 == "Pharmaceuticals", arr.ind = TRUE))
+pander(tradWS_2,row.names = FALSE, style = 'simple')
+```
  
  
 </div>
@@ -775,105 +818,45 @@ Benzo[a]pyrene     **PAH**
 
 ## Comparisons
 
-<div id="testingStuff">
+<div class="testingStuff">
 
 <div id="leftSideThird">
-ToxCast: Water Samples
+ToxCast<br/>
+Water Samples
 
-    Chemical           Class      
------------------ ----------------
-      DEET          Insecticide   
-   Metolachlor       Herbicide    
-    Atrazine         Herbicide    
-    Caffeine      **Pharmaceuticals** 
-  Benzophenone    Flavor/fragrance
-   Naphthalene          PAH      
-Diethyl phthalate   Plasticizer 
+```{r, echo=FALSE}
+toxWS_3 <- toxWS
+emphasize.strong.cells(which(toxWS_3 == "Herbicide", arr.ind = TRUE))
+pander(toxWS_3, row.names = FALSE, style = 'simple')
+```
+
 
 </div>
 
 <div id="middleThird">
-ToxCast: Passive Data
+ToxCast<br/>
+Passive Data
 
-      Chemical               Class        
-------------------- ---------------------
-     Fluorene               PAH        
-      Aspirin          **Pharmaceuticals**   
-   Erythromycin        **Pharmaceuticals**   
-    Naphthalene             PAH         
-    Gemfibrozil        **Pharmaceuticals**   
-1,4-Dichlorobenzene         Other        
-   4-Octylphenol    Detergent metabolites
+```{r, echo=FALSE}
+toxPassive_3 <- toxPassive
+emphasize.strong.cells(which(toxPassive_3 == "Herbicide", arr.ind = TRUE))
+pander(toxPassive_3,row.names = FALSE, style = 'simple')
+```
+
 
    
 </div>
 
 <div id="rightSideThird">
-WQG: Water Samples
+WQG<br/>
+Water Samples
 
-   Chemical       Class   
--------------- -------------
- Fluoranthene      PAH    
-    Pyrene         PAH    
-Benzo[a]pyrene     PAH    
-   Atrazine     Herbicide 
-  Anthracene       PAH    
-   Carbaryl    Insecticide
- Metolachlor    Herbicide 
- 
- 
-</div>
-
-</div>
-
-## Comparisons
-
-<div id="testingStuff">
-
-<div id="leftSideThird">
-ToxCast: Water Samples
-
-    Chemical           Class      
------------------ ----------------
-      DEET          **Insecticide**   
-   Metolachlor       **Herbicide**    
-    Atrazine         **Herbicide**    
-    Caffeine      Pharmaceuticals 
-  Benzophenone    Flavor/fragrance
-   Naphthalene          PAH      
-Diethyl phthalate   Plasticizer 
-
-</div>
-
-<div id="middleThird">
-ToxCast: Passive Data
-
-      Chemical               Class        
-------------------- ---------------------
-     Fluorene               PAH        
-      Aspirin          Pharmaceuticals   
-   Erythromycin        Pharmaceuticals   
-    Naphthalene             PAH         
-    Gemfibrozil        Pharmaceuticals   
-1,4-Dichlorobenzene         Other        
-   4-Octylphenol    Detergent metabolites
-
-   
-</div>
-
-<div id="rightSideThird">
-WQG: Water Samples
-
-   Chemical       Class   
--------------- -------------
- Fluoranthene      PAH    
-    Pyrene         PAH    
-Benzo[a]pyrene     PAH    
-   Atrazine     **Herbicide** 
-  Anthracene       PAH    
-   Carbaryl    **Insecticide**
- Metolachlor    **Herbicide** 
- 
+```{r, echo=FALSE}
+tradWS_3 <- tradWS
+emphasize.strong.cells(which(tradWS_3 == "Herbicide", arr.ind = TRUE))
+pander(tradWS_3,row.names = FALSE, style = 'simple')
+```
+  
  
 </div>
 
@@ -953,6 +936,74 @@ datatable(summary_display_passive, rownames = FALSE,
   formatRound(c("maxEAR"), digits = 2)
 ```
 
+## ToxCast: Comparison of Water Sample and Passive Sample Results
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits
+
+```{r, echo=FALSE, results='asis', fig.width=8, warning=FALSE}
+
+mapDataPassive$Passive <- rep(TRUE, nrow(mapDataPassive))
+mapDataPassive$nSamples <- rep(1, nrow(mapDataPassive))
+mapData$Passive <- rep(FALSE, nrow(mapData))
+
+comboMap <- rbind(mapDataPassive[,-which("hits" == names(mapDataPassive))], 
+                  mapData[,-which("freq" == names(mapData))])
+
+latOffset <- 0.1
+
+comboMap$dec.lat.va[comboMap$Passive] <- comboMap$dec.lat.va[comboMap$Passive] + latOffset
+comboMap$dec.lat.va[!comboMap$Passive] <- comboMap$dec.lat.va[!comboMap$Passive] - latOffset
+
+col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
+leg_vals_WS <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR scale
+cols_WS <- colorNumeric(col_types, domain = leg_vals_WS)
+pal_WS = colorBin(col_types, comboMap$maxEAR, bins = leg_vals_WS)
+
+leg_vals_P <- c(0,1,2,3,5,7,9)#seq(0,2500, 500) # This is maxEAR scale
+cols_P <- colorNumeric(col_types, domain = leg_vals_P)
+pal_P = colorBin(col_types, mapDataPassive$maxEAR, bins = leg_vals_P)
+
+
+map3 = leaflet() %>%
+  addProviderTiles("Esri.WorldPhysical") %>%
+  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+  addCircles(lat=comboMap$dec.lat.va[comboMap$Passive], lng=comboMap$dec.long.va[comboMap$Passive], 
+             popup=paste("Passive:<b>",comboMap$Station.Name[comboMap$Passive],'</b><br/>',
+                         "maxEAR:",sprintf("%1.1f", comboMap$maxEAR[comboMap$Passive]),'<br/>',
+                         "nChem:",comboMap$nChem[comboMap$Passive],'<br/>',
+                         "nEndPoints", comboMap$nEndPoints[comboMap$Passive],'<br/>'),
+             fillColor = pal_P(comboMap$maxEAR[comboMap$Passive]), 
+             weight = 1,
+             color = "black",
+             fillOpacity = 0.8, opacity = 0.8,
+             radius = comboMap$sizes[comboMap$Passive] ) %>%
+    addLegend(
+      position = 'bottomleft',
+      pal=pal_P,
+      values=comboMap$maxEAR[comboMap$Passive],
+      opacity = 0.8,
+      title = 'Passive maxEAR') %>%
+  addCircles(lat=comboMap$dec.lat.va[!comboMap$Passive], lng=comboMap$dec.long.va[!comboMap$Passive], 
+             popup=paste("<font color='red'>Water Samples:</font><b>",comboMap$Station.Name[!comboMap$Passive],'</b><br/>',
+                         "<table><tr><td>maxEAR</td><td>",sprintf("%1.1f", comboMap$maxEAR[!comboMap$Passive]),'</td></tr>',
+                         "<tr><td>nChem</td><td>",comboMap$nChem[!comboMap$Passive],'</td></tr>',
+                         "<tr><td>nEndPoints</td><td>", comboMap$nEndPoints[!comboMap$Passive],'</td></tr></table>'),
+             fillColor = pal_WS(comboMap$maxEAR[!comboMap$Passive]), 
+             weight = 1.5,
+             color = "red",
+             fillOpacity = 0.8, 
+             radius = comboMap$sizes[!comboMap$Passive], 
+             opacity = 0.8) %>%
+    addLegend(
+      position = 'topright',
+      pal=pal_WS,
+      values=comboMap$maxEAR[!comboMap$Passive],
+      opacity = 0.8,
+      title = '<font color="red">Water Samples</font> maxEAR')
+map3
+
+
+```
 
 
 ## Traditional Benchmarks

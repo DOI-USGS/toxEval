@@ -50,11 +50,6 @@ slides > slide > hgroup + article{
   float:left;
 }
 
-table.rmdtable td, table th {
-    font-size: 18px;
-    padding: 0.5em 0.5em;
-    
-}
 
 .diffH2 h2{
   line-height:0px;
@@ -64,3 +59,33 @@ table.rmdtable td, table th {
   width:25%;
   float:right;
 }
+
+table.rmdtable td, table th {
+    font-size: 18px;
+    padding: 0.5em 0.5em;
+    
+}
+
+table.rmdtable tr > td:first-child, table th {
+    font-weight: normal;
+    color: #515151;
+}
+
+article.smaller table td {
+    font-size: 14px;
+    font-weight: normal;
+    color: #515151;
+}
+
+
+article.rmdtable table th {
+    font-size: 16px;
+    font-weight: normal;
+    color: #FFF;
+}
+
+.testingStuff b, strong {
+  font-weight: bold;
+  color: #FF0000;
+}
+
