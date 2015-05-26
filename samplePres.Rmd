@@ -88,6 +88,14 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "waterSamples.RData")
 load(file=filePath)
 
+#Correct DEET:
+# casDEET <- AC50gain$casn[AC50gain$chnm == "DEET"]
+# pCodeDEET <- pCodeInfo$parameter_cd[pCodeInfo$casrn == casDEET]
+# dlDEET <- min(waterSamples$valueToUse_61947, na.rm = TRUE)
+# waterSamples$qualifier_61947 <- ifelse(waterSamples$valueToUse_61947 <= dlDEET*4, "<", "")
+# Just removing DEET:
+waterSamples <- waterSamples[,-grep("61947",x = names(waterSamples))]
+
 waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
 
 waterSamplePCodes <- names(waterSamples)[grep("valueToUse", 
