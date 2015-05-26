@@ -483,10 +483,8 @@ datatable(summary_display, rownames = FALSE,
 
 
 ## ToxCast: Water Samples Map
-<b>Color:</b> maxEAR<br/>
-<b>Size:</b> Number of chemicals with hits
 
-```{r, echo=FALSE, results='asis', fig.width=8}
+```{r, echo=FALSE, results='hide'}
 
 library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
@@ -524,11 +522,32 @@ m = leaflet(mapData) %>%
       pal=pal,
       values=~maxEAR,
       opacity = 0.8,
-      title = 'maxEAR') 
-m  
+      title = 'Maximum EAR') 
+  
+
+sizeChem <- c("1","19")
+library(grid)
+png("web_map_legend.png",width=300,height=70,unit="px")
+par(mar=c(1,1,0,0), bg = "transparent")
+plot(leg_vals,type="n",axes=FALSE,xlab="",ylab="")
+grid.roundrect(width=.85, height=0.7, y=0.6, x=0.51, r=unit(0.3, "snpc"), gp=gpar(col="grey"))
+legend("center",pch=21,pt.cex=c(1,3),horiz = TRUE,bty="n",
+       legend=sizeChem,pt.lwd=1,y.intersp=1.2,xpd=TRUE, title="Number of Chemicals (scales with radius)")
+dev.off()
+
+# m
+
+```
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits
+
+```{r results='asis', echo=FALSE, fig.width=8}
+
+m
 
 ```
 
+![legend](web_map_legend.png)
 
 ## ToxCast: Passive Data Map 
 <b>Color:</b> maxEAR<br/>
