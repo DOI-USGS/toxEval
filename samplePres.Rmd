@@ -542,18 +542,16 @@ dev.off()
 <b>Size:</b> Number of chemicals with hits
 
 ```{r results='asis', echo=FALSE, fig.width=8}
-
 m
-
 ```
 
 ![legend](web_map_legend.png)
 
 ## ToxCast: Passive Data Map 
-<b>Color:</b> maxEAR<br/>
+<b>Color:</b> Maximum EAR<br/>
 <b>Size:</b> Number of chemicals with hits
 
-```{r, echo=FALSE, results='asis', fig.width=8}
+```{r, echo=FALSE, results='hide'}
 
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
@@ -592,10 +590,28 @@ map2 = leaflet(mapDataPassive) %>%
 #       colors = cols(leg_vals),
       opacity = 0.8,
 #       labels = paste0(leg_vals,'-'),
-      title = 'maxEAR') 
-map2  
+      title = 'maxEAR')
+
+sizeChem <- c("1","3")
+library(grid)
+png("web_map_legend_passive.png",width=300,height=70,unit="px")
+par(mar=c(1,1,0,0), bg = "transparent")
+plot(leg_vals,type="n",axes=FALSE,xlab="",ylab="")
+grid.roundrect(width=.85, height=0.7, y=0.6, x=0.51, r=unit(0.3, "snpc"), gp=gpar(col="grey"))
+legend("center",pch=21,pt.cex=c(1,2.2),horiz = TRUE,bty="n",
+       legend=sizeChem,pt.lwd=1,y.intersp=1.2,xpd=TRUE, title="Number of Chemicals (scales with radius)")
+dev.off()
 
 ```
+
+
+```{r results='asis', echo=FALSE, fig.width=8}
+map2
+```
+
+![legend](web_map_legend_passive.png)
+
+
 
 ## ToxCast: Comparison of Water Sample and Passive Sample Results
 <b>Color:</b> maxEAR<br/>
