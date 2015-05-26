@@ -39,7 +39,7 @@ output:
     
 ## Study sites: Tributaries  {.flexbox .vcenter }
 
-![Site Map](GLRI_smaller.png)
+![Site Map](GLRI_med.png)
 
 
 ## Water quality data collected
@@ -87,6 +87,14 @@ pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "waterSamples.RData")
 load(file=filePath)
+
+#Correct DEET:
+# casDEET <- AC50gain$casn[AC50gain$chnm == "DEET"]
+# pCodeDEET <- pCodeInfo$parameter_cd[pCodeInfo$casrn == casDEET]
+# dlDEET <- min(waterSamples$valueToUse_61947, na.rm = TRUE)
+# waterSamples$qualifier_61947 <- ifelse(waterSamples$valueToUse_61947 <= dlDEET*4, "<", "")
+# Just removing DEET:
+waterSamples <- waterSamples[,-grep("61947",x = names(waterSamples))]
 
 waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
 
@@ -630,7 +638,7 @@ map4
 
 ## ToxCast Regression Tree Model: Number of chemicals with hits
 
-```{r  message=FALSE, echo=FALSE, fig.show='asis',fig.width=3.5,fig.height=5}
+```{r  message=FALSE, echo=FALSE, fig.show='asis',fig.width=4,fig.height=5}
 
 library(rpart)
 library(party)
@@ -659,17 +667,6 @@ form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
 m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
 m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
 plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
-
-# mainTitle <- "Water Samples:Water Quality Guidelines"
-# response <- "nChem"
-# dat <- mapDataWQ
-# minbucket <- 6
-# minsplit <- minbucket*3
-# set.seed(seed = 10)
-# form <- formula(paste(response,"~","Urban.pct + Ag.pct"))
-# m1 <- rpart(form,control=rpart.control(xval=10, cp=0.02, minBucket=minbucket, minsplit = minsplit),data=dat)
-# m2 <- prune(m1,cp=m1$cptable[which.min(m1$cptable[,"xerror"])])
-# plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
 
 ```
 
@@ -704,6 +701,27 @@ plot(as.party(m2), main=mainTitle, tp_args=list(id=FALSE))
 
 ## Comparisons
 
+
+<table width="100%">
+<col style="width:36%">
+<col style="width:36%">
+<col style="width:28%">
+<tr>
+<td>ToxCast</td>
+<td>ToxCast</td>
+<td>WQG</td>
+</tr>
+<tr>
+<td>Water Samples</td>
+<td>Passive Data</td>
+<td>Water Samples</td>
+</tr>
+</table>
+
+
+
+<div class="testingStuff">
+
 ```{r echo=FALSE}
 # ToxCast Water Samples:
 toxWS <- chemSum2 %>%
@@ -719,6 +737,7 @@ toxPassive <- chemSum2_passive %>%
   rename(Chemical=chnm, Class=class)
   
 toxPassive <- toxPassive[1:12,1:2]
+toxPassive$Class[toxPassive$Class == "PAHs"] <- "PAH"
 
 tradWS <- chemSum2_BM %>%
   arrange(desc(freq)) %>%
@@ -727,138 +746,71 @@ tradWS <- chemSum2_BM %>%
 
 tradWS <- tradWS[1:12,1:2]
 
-# pander(tradWS,row.names = FALSE, style = 'simple')
+combo <- cbind(toxWS, toxPassive, tradWS)
+emphasize.strong.cells(which(combo == "PAH", arr.ind = TRUE))
+pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
 
 
 ```
 
-<div class="testingStuff">
 
-<div id="leftSideThird">
-ToxCast<br/>
-Water Samples
-
-```{r, echo=FALSE}
-toxWS_1 <- toxWS
-emphasize.strong.cells(which(toxWS_1 == "PAH", arr.ind = TRUE))
-pander(toxWS_1, row.names = FALSE, style = 'simple')
-```
-
-</div>
-
-<div id="middleThird">
-ToxCast<br/>
-Passive Data
-
-```{r, echo=FALSE}
-toxPassive_1 <- toxPassive
-emphasize.strong.cells(which(toxPassive_1 == "PAHs", arr.ind = TRUE))
-pander(toxPassive_1,row.names = FALSE, style = 'simple')
-```
-   
-</div>
-
-<div id="rightSideThird">
-WQG<br/>
-Water Samples
-
-```{r, echo=FALSE}
-tradWS_1 <- tradWS
-emphasize.strong.cells(which(tradWS_1 == "PAH", arr.ind = TRUE))
-pander(tradWS_1,row.names = FALSE, style = 'simple')
-```
- 
-</div>
 
 </div>
 
 ## Comparisons
 
+<table width="100%">
+<col style="width:36%">
+<col style="width:36%">
+<col style="width:28%">
+<tr>
+<td>ToxCast</td>
+<td>ToxCast</td>
+<td>WQG</td>
+</tr>
+<tr>
+<td>Water Samples</td>
+<td>Passive Data</td>
+<td>Water Samples</td>
+</tr>
+</table>
+
 <div class="testingStuff">
 
-<div id="leftSideThird">
-ToxCast<br/>
-Water Samples
 
 ```{r, echo=FALSE}
-toxWS_2 <- toxWS
-emphasize.strong.cells(which(toxWS_2 == "Pharmaceuticals", arr.ind = TRUE))
-pander(toxWS_2, row.names = FALSE, style = 'simple')
+emphasize.strong.cells(which(combo == "Pharmaceuticals", arr.ind = TRUE))
+pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
 ```
 
-</div>
-
-<div id="middleThird">
-ToxCast<br/>
-Passive Data
-
-```{r, echo=FALSE}
-toxPassive_2 <- toxPassive
-emphasize.strong.cells(which(toxPassive_2 == "Pharmaceuticals", arr.ind = TRUE))
-pander(toxPassive_2,row.names = FALSE, style = 'simple')
-```
-
-   
-</div>
-
-<div id="rightSideThird">
-WQG<br/>
-Water Samples
-
-```{r, echo=FALSE}
-tradWS_2 <- tradWS
-emphasize.strong.cells(which(tradWS_2 == "Pharmaceuticals", arr.ind = TRUE))
-pander(tradWS_2,row.names = FALSE, style = 'simple')
-```
- 
- 
-</div>
 
 </div>
 
 ## Comparisons
 
+<table width="100%">
+<col style="width:36%">
+<col style="width:36%">
+<col style="width:28%">
+<tr>
+<td>ToxCast</td>
+<td>ToxCast</td>
+<td>WQG</td>
+</tr>
+<tr>
+<td>Water Samples</td>
+<td>Passive Data</td>
+<td>Water Samples</td>
+</tr>
+</table>
+
 <div class="testingStuff">
 
-<div id="leftSideThird">
-ToxCast<br/>
-Water Samples
 
 ```{r, echo=FALSE}
-toxWS_3 <- toxWS
-emphasize.strong.cells(which(toxWS_3 == "Herbicide", arr.ind = TRUE))
-pander(toxWS_3, row.names = FALSE, style = 'simple')
+emphasize.strong.cells(which(combo == "Herbicide", arr.ind = TRUE))
+pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
 ```
-
-
-</div>
-
-<div id="middleThird">
-ToxCast<br/>
-Passive Data
-
-```{r, echo=FALSE}
-toxPassive_3 <- toxPassive
-emphasize.strong.cells(which(toxPassive_3 == "Herbicide", arr.ind = TRUE))
-pander(toxPassive_3,row.names = FALSE, style = 'simple')
-```
-
-
-   
-</div>
-
-<div id="rightSideThird">
-WQG<br/>
-Water Samples
-
-```{r, echo=FALSE}
-tradWS_3 <- tradWS
-emphasize.strong.cells(which(tradWS_3 == "Herbicide", arr.ind = TRUE))
-pander(tradWS_3,row.names = FALSE, style = 'simple')
-```
-  
- 
-</div>
 
 </div>
 
