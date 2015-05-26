@@ -9,7 +9,8 @@ output:
 ---
 
 ## Multi-agency team
-* USEPA ORD
+* USEPA
+    + Great Lakes National Program Office
     + Mid-Continent Ecology Division, Duluth, MN
         * Tony Schroeder, Dan Villeneuve, Brett Blackwell, Gary Ankley
     + Ecosystems Research Division, Athens, GA
@@ -23,11 +24,11 @@ output:
     + Upper Mississippi Environmental Science Center
 * St. Cloud University
 
-## Objectives
-* 58 Great Lakes Tributaries sampled from 2010-2013 for GLRI
-* Trace organic compounds measured in samples
-* Sampling methods used: Water samples and passive samplers
-* Adverse biological effect potential based on chemistry results
+## Overview
+* Sampled Great Lakes Tributaries 
+    * 2010-13: Multiple trace organic compounds
+    * Sampling methods: Water samples and passive samplers
+* Evaluating adverse biological effect potential based on chemistry results
     * Sites with greatest potential
     * Chemicals with greatest potential
 * Different methods for biological effect evaluation
