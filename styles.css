@@ -56,7 +56,7 @@ slides > slide > hgroup + article{
 }
 
 #rightSideDiv{
-  width:25%;
+  width:33%;
   float:right;
 }
 
@@ -88,4 +88,5 @@ article.rmdtable table th {
   font-weight: bold;
   color: #FF0000;
 }
+
 
