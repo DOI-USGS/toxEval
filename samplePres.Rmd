@@ -11,7 +11,7 @@ output:
 
 ## Multi-agency team
 * USEPA 
-    + Great Lakes National Program Office
+    + Great Lakes National Program Office, GLRI
     + Mid-Continent Ecology Division, Duluth, MN
         * Tony Schroeder, Dan Villeneuve, Brett Blackwell, Gary Ankley
     + Ecosystems Research Division, Athens, GA
@@ -26,6 +26,8 @@ output:
 * St. Cloud University
 
 ## Overview
+<div class="columns-2">
+
 * Sampled Great Lakes Tributaries
     * 2010-2013: Multiple trace organic compounds
     * Sampling methods: Water samples and passive samplers
@@ -36,6 +38,11 @@ output:
     * ToxCast-based evaluation
     * Water quality guideline-based evaluation
     * Comparison of these two methods
+
+![Sampling](NemadjiSampling2.png)
+
+</div>
+
     
 ## Study sites: Tributaries  {.flexbox .vcenter }
 
@@ -808,7 +815,7 @@ pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
 
 
 ```{r, echo=FALSE}
-emphasize.strong.cells(which(combo == "Herbicide", arr.ind = TRUE))
+emphasize.strong.cells(which(combo == "Herbicide" | combo == "Insecticide", arr.ind = TRUE))
 pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
 ```
 
@@ -828,43 +835,41 @@ pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
         * ToxCast and water quality guidelines/literature
 * Interpretation of ToxCast in the environmental setting
         
+## Summary
+<div class="columns-2">
+* Multiple contaminant classes could be influential
+* The classes that appear to be of largest concern include:
+    * PAHs
+    * Pesticides
+    * Pharmaceuticals
+* Combining multiple evaluation methods can provide a more comprehensive assessment
+* Adverse effect potential exists in urban and agricultural sites
+
+* Much work yet to be done to better understand how to use these methods effectively
+    + Mixtures, endocrine disruptors, influential factors (season, hydrology...)
+    + Direct ToxCast analysis of environmental samples
+
+![Sampling](Sampling.png)
+
+## Questions {.flexbox .vcenter}
+
+![Ending slide](OntanoganTrib_sm.png)
+
 ## Work Remaining For This Analysis
 * ToxCast
-    * Chemical mixtures: how to evaluate within ToxCast results 
-    * Zebrafish developmental toxicity testing (subset of ToxCast chemicals)
+    * Chemical mixtures 
 * Passive samplers
     * Compile established water quality guidelines and compare
-        * Toxicity
-        * Endocrine disruptors
 * Endocrine disruptors
     * Comparison of estrogenic equivalents to ToxCast results
 * Factors that may influence biological effects
     * Seasonality
     * Hydrologic condition
     * Land use
-* Use all methods to summarize potential effects by site and chemical
 * ToxCast direct environmental sample analysis
     * Comparison with analysis using water chemistry data alone with ToxCast
     
-## Summary
-* Multiple methods can be used to evaluate potential biological effects
-* Different conclusions may be reached based on methods
-* Combining methods:
-    * Note commonalities and differences in final evaluations
-* Adverse effect potential exists and urban and agricultural sites
-* Multiple contaminant classes could be influential
-* The classes that appear to be of largest concern include:
-    * PAHs
-    * Pesticides
-    * Pharmaceuticals
-* Keep in mind the limited chemicals and classes included here
-* Much work yet to be done to better understand how to use these methods effectively
-
-## Questions {.flexbox .vcenter}
-
-![Ending slide](OntanoganTrib_sm.png)
-
-
+    
 ## Passive Sample: Chemical Summary
 
 ```{r, echo=FALSE, results='asis'}
