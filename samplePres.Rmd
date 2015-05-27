@@ -10,7 +10,7 @@ output:
 ---
 
 ## Multi-agency team
-* USEPA 
+* USEPA  (EPA NCCT)
     + Great Lakes National Program Office, GLRI
     + Mid-Continent Ecology Division, Duluth, MN
         * Tony Schroeder, Dan Villeneuve, Brett Blackwell, Gary Ankley
@@ -444,7 +444,7 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 
 ## Screening Endpoints Used in Analysis
 
-* ToxCast: 
+* ToxCast:  (EPA NCCT)
     * "High throughput screening assays"
         * Expose living cells or isolated protiens
         * Screens for potential adverse biological effects
@@ -453,15 +453,14 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
     * 821 endpoints
     * AC50 used for this analysis (concentration at which activity is 50% of its maximum)
     * Exposure Activity Ratio (EAR) = concentration / AC50
-* Water quality guidelines
+* Established Water quality guidelines
     * Water sample analysis (not complete for passive samplers yet)
-        * Established water quality guidelines
-            * USEPA
-            * Canadian Council of Ministers of the Environment
-            * USGS
-            * Literature
+        * USEPA
+        * Canadian Council of Ministers of the Environment
+        * USGS
+        * Literature
 
-## Screening Endpoints Matches
+## Matches of Screening Endpoints
 * ToxCast
     + Water samples
         * `r length(unique(chemSum2$chnm))` compounds of `r length(waterSamplePCodes)` total 
@@ -473,9 +472,6 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
     + Water samples
         * `r length(unique(chemSum2_BM$chnm))` compounds of `r length(waterSamplePCodes)` total
         * `r paste(unique(chemSum2_BM$class), collapse=", ")`
-    + Passive samplers
-        * Not yet complete
-
 
 ## ToxCast: Water Sample Chemical Summary
 ```{r, echo=FALSE, results='asis'}
@@ -842,9 +838,8 @@ pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
     * PAHs
     * Pesticides
     * Pharmaceuticals
-* Combining multiple evaluation methods can provide a more comprehensive assessment
 * Adverse effect potential exists in urban and agricultural sites
-
+* Combining multiple evaluation methods can provide a more comprehensive assessment
 * Much work yet to be done to better understand how to use these methods effectively
     + Mixtures, endocrine disruptors, influential factors (season, hydrology...)
     + Direct ToxCast analysis of environmental samples
