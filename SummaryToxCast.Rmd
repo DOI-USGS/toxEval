@@ -283,7 +283,7 @@ datatable(summary_display, rownames = FALSE,
 
 ## ToxCast: Water Samples Sites Boxplots
 
-```{r fig.width=7, fig.height=5, echo=FALSE}
+```{r fig.width=7, fig.height=5, echo=FALSE,warning=FALSE, message=FALSE}
 library(ggplot2)
 library(grid)
 summary_display1 <- transform(summary_display, 
@@ -311,7 +311,7 @@ ggplot(summary_display2, aes(x=site, y=EAR)) +
 
 ## ToxCast: Water Samples Chemical Boxplots
 
-```{r fig.width=7, fig.height=5, echo=FALSE}
+```{r fig.width=7, fig.height=5, echo=FALSE,warning=FALSE, message=FALSE}
 
 chemLimits <- filter(chemSum2, freq>0) %>%
   arrange(desc(freq)) %>%
