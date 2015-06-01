@@ -842,3 +842,149 @@ ggplot(chemicalSummary_display_BM, aes(x=chnm, y=EAR)) +
 
 ```
 
+## Water Quality Guidelines Results
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits (0-10)
+
+```{r echo=FALSE, results='asis', fig.width=8}
+mapDataWQ <- left_join(stationINFO, summary_BM, by=c("shortName"="site"))
+mapDataWQ <- mapDataWQ[!is.na(mapDataWQ$dec.lat.va),]
+mapDataWQ <- mapDataWQ[!is.na(mapDataWQ$maxEAR),]
+
+col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
+leg_vals_BM <- c(0,1,25,50,75,100,125)#seq(0,2500, 500) # This is maxEAR scale
+
+colsWQ <- colorNumeric(col_types, domain = leg_vals_BM)
+radWQ <- seq(2500,15000, 2500)
+mapDataWQ$sizes <- rad[as.numeric(cut(mapDataWQ$nChem, c(-1,0,1,5,10)))]
+mapDataWQ$sizes[is.na(mapDataWQ$sizes)] <- 1000
+
+palWQ = colorBin(col_types, mapDataWQ$maxEAR, bins = leg_vals_BM)
+
+
+map4 = leaflet(mapDataWQ) %>%
+  addProviderTiles("Esri.WorldPhysical") %>%
+  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+  addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
+             popup=paste("<b>",mapDataWQ$Station.Name,'</b><br/>',
+                         "<table><tr><td>maxEAR</td><td>",sprintf("%1.1f", mapDataWQ$maxEAR),'</td></tr>',
+                         "<tr><td>nChem</td><td>",mapDataWQ$nChem,'</td></tr>',
+                         "<tr><td>nEndPoints</td><td>", mapDataWQ$nEndPoints,'</td></tr></table>'),
+             fillColor = ~palWQ(maxEAR), 
+             weight = 1,
+             color = "blue",
+             fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
+    addLegend(
+      position = 'bottomleft',
+      pal=pal,
+      values=~maxEAR,
+#       colors = cols(leg_vals),
+      opacity = 0.8,
+#       labels = paste0(leg_vals,'-'),
+      title = 'Maximum EAR') 
+map4  
+
+```
+
+
+## Comparisons
+
+
+<table width="100%">
+<col style="width:36%">
+<col style="width:36%">
+<col style="width:28%">
+<tr>
+<td>ToxCast</td>
+<td>ToxCast</td>
+<td>WQG</td>
+</tr>
+<tr>
+<td>Water Samples</td>
+<td>Passive Data</td>
+<td>Water Samples</td>
+</tr>
+</table>
+
+
+```{r echo=FALSE}
+# ToxCast Water Samples:
+toxWS <- chemSum2 %>%
+  arrange(desc(freq)) %>%
+  select(chnm,class,freq) %>%
+  rename(Chemical=chnm, Class=class)
+
+toxPassive <- chemSum2_passive %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq) %>%
+  rename(Chemical=chnm, Class=class)
+  
+toxPassive$Class[toxPassive$Class == "PAHs"] <- "PAH"
+
+tradWS <- chemSum2_BM %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq) %>%
+  rename(Chemical=chnm, Class=class)
+
+tradWS <- tradWS[1:20,1:2]
+toxPassive <- toxPassive[1:20,1:2]
+toxWS <- toxWS[1:20,1:2]
+
+combo <- cbind(toxWS, toxPassive, tradWS)
+emphasize.strong.cells(which(combo == "PAH", arr.ind = TRUE))
+pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
+
+
+```
+
+## Comparisons
+
+<table width="100%">
+<col style="width:36%">
+<col style="width:36%">
+<col style="width:28%">
+<tr>
+<td>ToxCast</td>
+<td>ToxCast</td>
+<td>WQG</td>
+</tr>
+<tr>
+<td>Water Samples</td>
+<td>Passive Data</td>
+<td>Water Samples</td>
+</tr>
+</table>
+
+
+```{r, echo=FALSE}
+emphasize.strong.cells(which(combo == "Pharmaceuticals", arr.ind = TRUE))
+pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
+```
+
+
+## Comparisons
+
+<table width="100%">
+<col style="width:36%">
+<col style="width:36%">
+<col style="width:28%">
+<tr>
+<td>ToxCast</td>
+<td>ToxCast</td>
+<td>WQG</td>
+</tr>
+<tr>
+<td>Water Samples</td>
+<td>Passive Data</td>
+<td>Water Samples</td>
+</tr>
+</table>
+
+
+
+```{r, echo=FALSE}
+emphasize.strong.cells(which(combo == "Herbicide" | combo == "Insecticide", arr.ind = TRUE))
+pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
+```
+
+
