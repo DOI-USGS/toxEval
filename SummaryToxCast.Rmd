@@ -1,0 +1,386 @@
+---
+title: "ToxCast Summaries"
+author: "Steven R. Corsi, Laura A. De Cicco"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+    fig_caption: yes
+
+---
+
+
+
+```{r message=FALSE, echo=FALSE}
+library(pander)
+library(dplyr)
+library(reshape2)
+library(DT)
+library(toxEval)
+library(knitr)
+
+endPointInfo <- endPointInfo
+# AC50 data provided in the toxEval package:
+AC50gain <- AC50gain
+packagePath <- system.file("extdata", package="toxEval")
+#Site Info:
+filePath <- file.path(packagePath, "stationINFO.RData")
+load(file=filePath)
+#parameter info:
+filePath <- file.path(packagePath, "pCodeInfo.RData")
+load(file=filePath)
+
+pCodeInfo$class <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(pCodeInfo$class), perl=TRUE)
+pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
+pCodeInfo$class[pCodeInfo$class == "Human Drug, Non Prescription"] <- "Pharmaceuticals"
+
+pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "waterSamples.RData")
+load(file=filePath)
+
+#Correct DEET:
+# casDEET <- AC50gain$casn[AC50gain$chnm == "DEET"]
+# pCodeDEET <- pCodeInfo$parameter_cd[pCodeInfo$casrn == casDEET]
+# dlDEET <- min(waterSamples$valueToUse_61947, na.rm = TRUE)
+# waterSamples$qualifier_61947 <- ifelse(waterSamples$valueToUse_61947 <= dlDEET*4, "<", "")
+# Just removing DEET:
+waterSamples <- waterSamples[,-grep("61947",x = names(waterSamples))]
+
+waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
+
+waterSamplePCodes <- names(waterSamples)[grep("valueToUse", 
+                                              names(waterSamples))]
+waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+
+
+AC50 <- left_join(AC50gain, 
+                  pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,
+                            c("casrn", "parameter_units", "mlWt")],
+                   by= c("casn"="casrn")) %>%
+  filter(!is.na(parameter_units)) %>%
+  rename(desiredUnits = parameter_units) %>%
+  mutate(conversion = mlWt) %>%
+  select(casn, chnm, desiredUnits, mlWt, conversion)
+
+AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+
+endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
+endPointData <- 10^endPointData
+endPointData <- endPointData * AC50Converted$conversion
+endPoint <- cbind(AC50, data.frame(endPointData))
+endPoint <- rename(endPoint, Units=desiredUnits)
+
+qualColumns <- grep("qualifier", names(waterSamples))
+valColumns <- grep("valueToUse", names(waterSamples))
+
+waterData <- waterSamples[,valColumns]
+waterData[waterSamples[,qualColumns] == "<"] <- 0
+
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+wData <- cbind(waterSamples[,1:2],waterData)
+
+valColumns <- grep("valueToUse",names(wData))
+
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+wData <- cbind(waterSamples[,1:2],waterData)
+valColumns <- grep("valueToUse",names(wData))
+
+chemicalSummary <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site, date) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm","date")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) 
+
+chemSum1 <- chemicalSummary %>%
+  group_by(chnm,  class, site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(chnm,  class, site) %>%
+  summarize(hits=as.numeric(any(hits > 0))) %>%
+  group_by(chnm, class) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
+
+chemSum2 <- chemicalSummary %>%
+  group_by(chnm,  class) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=nrow(unique(data.frame(date,site))),
+            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+  left_join(chemSum1, by=c("chnm","class")) %>%
+  data.frame %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+
+
+
+siteSummary <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site, date) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "date","measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  mutate(site=newSiteKey[site]) %>%
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)
+
+summ1 <- siteSummary %>%
+  group_by(site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(site) %>%
+  summarize(freq=sum(hits)/length(unique(date)),
+            nSamples=length(unique(date))) 
+
+summ2 <-  siteSummary %>%
+  group_by(site) %>%
+  summarize(nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
+            maxEAR = max(EAR))
+
+
+summary <- left_join(summ1, summ2, by="site") %>%
+  arrange(desc(maxEAR))
+
+
+```
+
+
+# Water Sample Data
+The data returned from water sample tests was returned in a 'wide' format. The first job is to find the unique units. This data is arranged by a 5 digit USGS parameter code. Using the **dataRetrieval** package, information about the parameter codes can be retrieved. Each parameter code has 6 columns: detectionLimit, rep_lev_cd, qualifier, valueToUse, val_qual_tex, meth_cd, dqi_cd. We can pull out one of those columns to find the unique paremeter codes, then use **webchem** to get the molecular weights. In this dataset, all the data is reported in `r unique(pCodeInfo$parameter_units)`. Our conversion therefore is:
+
+$$
+\require{cancel}
+\begin{aligned}
+Reported Data = \log \mu M \\
+\mu M = 10^{\log \mu M} \\
+MW = \frac{g}{mol} , M = \frac{mol}{L}  \\
+\cancel{\mu M} \left[\frac{\cancel{M}}{\cancel{10^6} \cancel{\mu M}}\right] \left[\frac{1}{\cancel{M}}  \frac{\cancel{mol}}{L}\right] \left[ \frac{MW \cancel{g}}{\cancel{mol}}\right] \left[\frac{\cancel{10^6} \mu g}{\cancel{g}}\right] = MW * \frac{\mu g}{L} 
+\end{aligned}
+$$
+
+The next task is to determine if the detectionLimit is going to tell us anything in relation to the ToxCast endpoints. 
+
+
+## Water Sample Detection Levels
+
+For now, we'll focus on the minimum detection level:
+```{r warning=FALSE, echo=FALSE}
+pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt) %>%
+  filter(pCodeInfo$parameter_cd %in% waterSamplePCodes)
+
+detectionLimits <- waterSamples[,grep("detectionLimit", names(waterSamples))]
+detectionLimits <- na.omit(detectionLimits)
+
+detLevels  <- data.frame(dl_pcode=names(detectionLimits),
+                         minDetLevel=apply(detectionLimits, 2, min),
+                         row.names=NULL, stringsAsFactors=FALSE) %>%
+  mutate(pCode=sapply(strsplit(dl_pcode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class")], 
+            by=c("pCode"="parameter_cd")) %>%
+  select(casrn, class, minDetLevel) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units) %>%
+  melt(id.vars = c("class", "minDetLevel","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=minDetLevel/endPointValue) %>%
+  filter(EAR >= 0.1) %>%
+  select(Chemical=chnm, Class=class, EAR, endPoint, minDetLevel) %>%
+  arrange(desc(EAR)) 
+
+
+datatable(detLevels, rownames = FALSE,options = list(pageLength = 25))  %>% 
+    formatRound(c("EAR","minDetLevel"), digits = 1)
+
+```
+
+This table shows us the chemicals that `r detLevels$chnm` may lead to issues since the detection levels are higher than some of the end point values.
+
+In this case therefore, we cannot simply ignore all of the left-censored values. However, for the time being, we will use only non-censored values in our analysis. Let's begin by trimming down the waterSamples data frame to only the relavent information. Here, we are setting all left-censored values to NA, we could instead use the detection limit.
+
+
+## Chemical Summary Tables: Water Samples
+
+### Overall
+```{r, echo=FALSE, results='asis'}
+  
+datatable(chemSum2, rownames = FALSE, 
+            options = list(pageLength = 10), 
+            colnames=c("Chemical","Class","Fraction of Hits Per Site","Maximum EAR","Number End Points", "Sites With Hits", "Total Samples")) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 3)
+```
+
+### Individual EndPoints
+Looking at individual endpoints (filtering only rows that have some hit):
+
+```{r message=FALSE, results='asis', echo=FALSE}
+
+
+chemSum3 <- chemicalSummary %>%
+  group_by(chnm,  class, site, date, endPoint) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(chnm,  class, site, endPoint) %>%
+  summarize(hits=as.numeric(any(hits > 0))) %>%
+  group_by(chnm, class, endPoint) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
+
+chemSum4 <- chemicalSummary %>%
+  group_by(chnm,  class, endPoint) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=nrow(unique(data.frame(date,site)))) %>%
+  left_join(chemSum3, by=c("chnm","class","endPoint")) %>%
+  select(chnm, class, freq, maxEAR, nSites, nSamples, endPoint) %>%
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
+  select(chnm, maxEAR, freq, nSites, 
+         endPoint, class, contains("intended_target_")) %>%
+  rename(type=intended_target_type, type_sub=intended_target_type_sub,
+         family=intended_target_family, family_sub=intended_target_family_sub) %>%
+  select(-contains("intended_target_"))  %>%
+  data.frame %>%
+  arrange(desc(freq)) 
+
+
+  datatable(unique(chemSum4), rownames = FALSE, 
+            options = list(pageLength = 10)) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 2)
+
+```
+
+## Site Summaries: Water Samples
+
+The first site summary table groups only by site:
+
+```{r, echo=FALSE, results='asis'}
+summary_display <- left_join(summary, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
+
+datatable(summary_display, rownames = FALSE, 
+          colnames=c("Station Name","Fraction of Hits Per Samples", "Total Samples","Number of Chemicals With Hits", "Number End Points", "Maximum EAR","Ag [%]","Urban [%]")) %>% 
+  formatRound(c("freq","maxEAR","Ag.pct","Urban.pct"), digits = 2)
+```
+
+## ToxCast: Water Samples Sites Boxplots
+
+```{r fig.width=7, fig.height=5, echo=FALSE}
+library(ggplot2)
+library(grid)
+summary_display1 <- transform(summary_display, 
+                             site = reorder(site, order(nChem,decreasing=TRUE)))
+
+siteLimits <- filter(summary_display, freq>0) %>%
+  arrange(desc(nChem)) %>%
+  select(site,nEndPoints,nChem)
+
+
+summary_display2 <- siteSummary %>%
+  filter(EAR>0.1)
+
+
+ggplot(summary_display2, aes(x=site, y=EAR)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+        legend.position = "none")+
+  ylim(-2,50) + 
+  scale_x_discrete(limits=siteLimits$site)+
+  labs(x = "Site (ordered by number of chemicals with hits)") +
+  geom_text(data=data.frame(), aes(x=siteLimits$site, y=-1.5,
+                                   label=siteLimits$nEndPoints),size=3) 
+```
+
+## ToxCast: Water Samples Chemical Boxplots
+
+```{r fig.width=7, fig.height=5, echo=FALSE}
+
+chemLimits <- filter(chemSum2, freq>0) %>%
+  arrange(desc(freq)) %>%
+  select(chnm, nEndPoints)
+
+chemicalSummary_display <- chemicalSummary %>%
+  filter(EAR>=0.1) 
+
+ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+        legend.position = "none") +
+  ylim(-2,50) + 
+  scale_x_discrete(limits=chemLimits$chnm) +
+  labs(x = "Chemical Name (ordered by fraction of sites with hits)")+
+  geom_text(data=data.frame(), aes(x=chemLimits$chnm, y=-1.5,
+                                   label=chemLimits$nEndPoints),size=3) 
+
+```
+
+
+## ToxCast: Water Samples Map
+<b>Color:</b> Maximum EAR<br/>
+<b>Size:</b> Number of chemicals with hits (0-19)
+
+```{r, echo=FALSE, results='asis', echo=FALSE, fig.width=7, fig.height=5}
+
+library(leaflet)
+stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
+
+mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
+mapData <- mapData[!is.na(mapData$dec.lat.va),]
+mapData <- mapData[!is.na(mapData$nChem),]
+
+
+col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
+leg_vals <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR 
+
+cols <- colorNumeric(col_types, domain = leg_vals)
+rad <- seq(5000,15000, 500)
+mapData$sizes <- rad[as.numeric(cut(mapData$nChem, c(-1:19)))]
+
+pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+
+m = leaflet(mapData) %>%
+  addProviderTiles("Esri.WorldPhysical") %>%
+  setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+  addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
+             popup=paste('<b>',mapData$Station.Name,'</b><br/>',
+                         "<table><tr><td>Frequency</td><td>",sprintf("%1.1f", mapData$freq),'</td></tr>',
+                         "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
+                         "<tr><td>maxEAR</td><td>",sprintf("%1.1f", mapData$maxEAR),'</td></tr>',
+                         "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
+                         "<tr><td>nEndPoints</td><td>", mapData$nEndPoints,'</td></tr></table>'),
+              fillColor = ~pal(maxEAR), 
+             weight = 1,
+             color = "black",
+             fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
+    addLegend(
+      position = 'bottomleft',
+      pal=pal,
+      values=~maxEAR,
+      opacity = 0.8,
+      title = 'Maximum EAR') 
+
+m
+
+```
+
+
+
+
