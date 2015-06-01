@@ -221,9 +221,8 @@ This table shows us the chemicals that `r detLevels$chnm` may lead to issues sin
 In this case therefore, we cannot simply ignore all of the left-censored values. However, for the time being, we will use only non-censored values in our analysis. Let's begin by trimming down the waterSamples data frame to only the relavent information. Here, we are setting all left-censored values to NA, we could instead use the detection limit.
 
 
-## Chemical Summary Tables: Water Samples
+## Chemical Summary Tables: Water Samples (ToxCast)
 
-### Overall
 ```{r, echo=FALSE, results='asis'}
   
 datatable(chemSum2, rownames = FALSE, 
@@ -232,7 +231,7 @@ datatable(chemSum2, rownames = FALSE,
     formatRound(c("maxEAR", "freq"), digits = 3)
 ```
 
-### Individual EndPoints
+### ToxCast Individual EndPoints: Water Samples
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
@@ -269,7 +268,7 @@ chemSum4 <- chemicalSummary %>%
 
 ```
 
-## Site Summaries: Water Samples
+## Site Summaries: Water Samples (ToxCast)
 
 The first site summary table groups only by site:
 
@@ -508,9 +507,7 @@ summ1_passive <- siteSummary_passive %>%
 
 ```
 
-## Chemical Summary Tables: Water Samples
-
-### Overall
+## Chemical Summary Tables: Passive Data
 
 ```{r, echo=FALSE, results='asis'}
 chemSum2_passive <- chemSum2_passive[,-7] %>%
@@ -524,7 +521,7 @@ datatable(chemSum2_passive, rownames = FALSE,
 ```
 
 
-### Individual EndPoints
+### Individual EndPoints: Passive Data
 Looking at individual endpoints (filtering only rows that have some hit):
 
 ```{r message=FALSE, results='asis', echo=FALSE}
@@ -674,6 +671,174 @@ ggplot(chemicalSummary_display_passive, aes(x=chnm, y=EAR)) +
 
 ```
 
+# Water Quality Guidelines: Water Samples
+
+```{r, eval=TRUE, echo=FALSE}
+AC50gain_bm <- select(pCodeInfo, srsname, casrn, AqT_EPA_acute, 
+                   AqT_EPA_chronic, AqT_other_acute, AqT_other_chronic)
+
+AC50_bm <- left_join(AC50gain_bm, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
+                   by= c("casrn"="casrn")) %>%
+  filter(!is.na(parameter_units)) %>%
+  rename(desiredUnits = parameter_units) %>%
+  mutate(conversion = 1) %>%
+  select(casrn, srsname, desiredUnits, mlWt, conversion)
+
+AC50Converted_bm <- left_join(AC50_bm, AC50gain_bm, by = c("casrn", "srsname")) %>%
+  rename(casn=casrn, chnm=srsname)
+
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion")
+
+endPointData_bm <- AC50Converted_bm[,!(names(AC50Converted_bm) %in% infoColumns)]
+endPointData_bm <- endPointData_bm * AC50Converted_bm$conversion
+AC50_bm <- rename(AC50_bm, casn=casrn, chnm=srsname)
+endPoint_bm <- cbind(AC50_bm, data.frame(endPointData_bm))
+endPoint_bm <- rename(endPoint_bm, Units=desiredUnits)
+
+chemicalSummary_BM <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site, date) %>%
+  right_join(endPoint_bm, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "measuredValue","chnm","date")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) 
+
+chemSum1_BM <- chemicalSummary_BM %>%
+  group_by(chnm,  class, site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(chnm,  class, site) %>%
+  summarize(hits=as.numeric(any(hits > 0))) %>%
+  group_by(chnm, class) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits)) 
+
+chemSum2_BM <- chemicalSummary_BM %>%
+  group_by(chnm,  class) %>%  
+  summarize(maxEAR=max(EAR), 
+            nSamples=nrow(unique(data.frame(date,site))),
+            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+  left_join(chemSum1_BM, by=c("chnm","class")) %>%
+  data.frame %>%
+  arrange(desc(freq)) %>%
+  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+
+siteSummary_BM <- wData %>%
+  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
+  mutate(variable=as.character(variable)) %>%
+  filter(!is.na(value)) %>%
+  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
+  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
+  select(srsname,casrn, class, measuredValue, site, date) %>%
+  right_join(endPoint_bm, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
+  melt(id.vars = c("class", "site", "date","measuredValue","chnm")) %>% 
+  filter(!is.na(value)) %>%
+  mutate(variable=as.character(variable)) %>%
+  rename(endPointValue=value, endPoint=variable) %>%
+  mutate(EAR=measuredValue/endPointValue) %>%
+  mutate(site=newSiteKey[site]) %>%
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)
+
+summ1_BM <- siteSummary_BM %>%
+  group_by(site, date) %>%
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(site) %>%
+  summarize(freq=sum(hits)/length(unique(date)),
+            nSamples=length(unique(date))) 
+
+summ2_BM <-  siteSummary_BM %>%
+  group_by(site) %>%
+  summarize(nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
+            maxEAR = max(EAR))
 
 
+summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
+  arrange(desc(maxEAR))
+
+```
+
+
+## Chemical Summary Tables: Water Samples (Water Quality Benchmarks)
+
+```{r, echo=FALSE, results='asis'}
+  
+datatable(chemSum2_BM, rownames = FALSE, 
+            options = list(pageLength = 10), 
+            colnames=c("Chemical","Class","Fraction of Hits Per Site","Maximum EAR","Number End Points", "Sites With Hits", "Total Samples")) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 3)
+```
+
+## Site Summaries: Water Samples (Water Quality Benchmarks)
+
+The first site summary table groups only by site:
+
+```{r, echo=FALSE, results='asis'}
+summary_display_BM <- left_join(summary_BM, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
+
+datatable(summary_display_BM, rownames = FALSE, 
+          colnames=c("Station Name","Fraction of Hits Per Samples", "Total Samples","Number of Chemicals With Hits", "Number End Points", "Maximum EAR","Ag [%]","Urban [%]")) %>% 
+  formatRound(c("freq","maxEAR","Ag.pct","Urban.pct"), digits = 2)
+```
+
+
+## Water Quality Benchmarks: Water Samples Sites Boxplots
+
+```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
+
+summary_display1_BM <- transform(summary_display_BM, 
+                             site = reorder(site, order(nChem,decreasing=TRUE)))
+
+siteLimits_BM <- filter(summary_display_BM, freq>0) %>%
+  arrange(desc(nChem)) %>%
+  select(site,nEndPoints,nChem)
+
+
+summary_display2_BM <- siteSummary_BM %>%
+  filter(EAR>0.1)
+
+
+ggplot(summary_display2_BM, aes(x=site, y=EAR)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+        legend.position = "none")+
+  ylim(-2,50) + 
+  scale_x_discrete(limits=siteLimits_BM$site)+
+  labs(x = "Site (ordered by number of chemicals with hits)") +
+  geom_text(data=data.frame(), aes(x=siteLimits_BM$site, y=-1.5,
+                                   label=siteLimits_BM$nEndPoints),size=3) 
+```
+
+## Water Quality Benchmarks: Water Samples Chemical Boxplots
+
+```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
+
+chemLimits_BM <- filter(chemSum2_BM, freq>0) %>%
+  arrange(desc(freq)) %>%
+  select(chnm, nEndPoints)
+
+chemicalSummary_display_BM <- chemicalSummary_BM %>%
+  filter(EAR>=0.1) 
+
+ggplot(chemicalSummary_display_BM, aes(x=chnm, y=EAR)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+        legend.position = "none") +
+  ylim(-2,50) + 
+  scale_x_discrete(limits=chemLimits_BM$chnm) +
+  labs(x = "Chemical Name (ordered by fraction of sites with hits)")+
+  geom_text(data=data.frame(), aes(x=chemLimits_BM$chnm, y=-1.5,
+                                   label=chemLimits_BM$nEndPoints),size=3) 
+
+```
 
