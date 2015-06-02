@@ -510,10 +510,10 @@ summ1_passive <- siteSummary_passive %>%
 ## Chemical Summary Tables: Passive Data
 
 ```{r, echo=FALSE, results='asis'}
-chemSum2_passive <- chemSum2_passive[,-7] %>%
+chemSum2_passive_dt <- chemSum2_passive[,-7] %>%
   filter(freq > 0)
 
-datatable(chemSum2_passive, rownames = FALSE, 
+datatable(chemSum2_passive_dt, rownames = FALSE, 
             options = list(pageLength = 10),
             colnames=c("Chemical","Class","Fraction of Hits Per Site","Maximum EAR","Number of End Points", "Sites With Hits")) %>% 
     formatRound(c("maxEAR", "freq"), digits = 4)
@@ -886,26 +886,7 @@ map4
 
 ```
 
-
-## Comparisons
-
-
-<table width="100%">
-<col style="width:36%">
-<col style="width:36%">
-<col style="width:28%">
-<tr>
-<td>ToxCast</td>
-<td>ToxCast</td>
-<td>WQG</td>
-</tr>
-<tr>
-<td>Water Samples</td>
-<td>Passive Data</td>
-<td>Water Samples</td>
-</tr>
-</table>
-
+# Comparisons
 
 ```{r echo=FALSE}
 # ToxCast Water Samples:
@@ -931,60 +912,43 @@ toxPassive <- toxPassive[1:20,1:2]
 toxWS <- toxWS[1:20,1:2]
 
 combo <- cbind(toxWS, toxPassive, tradWS)
-emphasize.strong.cells(which(combo == "PAH", arr.ind = TRUE))
-pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
+names(combo) <- c("ToxCast-Water Samples: Chemical", "ToxCast-Water Samples: Class","ToxCast-Passive: Chemical", "ToxCast-Passive: Class","WQG-Water Samples: Chemical", "WQG-Water Samples: Class")
+# emphasize.strong.cells(which(combo == "PAH", arr.ind = TRUE))
+# pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
 
 
 ```
 
-## Comparisons
 
-<table width="100%">
-<col style="width:36%">
-<col style="width:36%">
-<col style="width:28%">
-<tr>
-<td>ToxCast</td>
-<td>ToxCast</td>
-<td>WQG</td>
-</tr>
-<tr>
-<td>Water Samples</td>
-<td>Passive Data</td>
-<td>Water Samples</td>
-</tr>
-</table>
+```{r, echo=FALSE, results='asis'}
+library(formattable)
 
+formattable(combo, list(
+  'ToxCast-Water Samples: Class' = formatter("span",
+    style = x ~ ifelse(x == "PAH", 
+                       style(color = "green", font.weight = "bold"), 
+                   ifelse( x == "Pharmaceuticals", 
+                               style(color = "red", font.weight = "bold"), 
+                     ifelse(x == "Herbicide" | x == "Insecticide",
+                               style(color = "blue", font.weight = "bold"),NA)))),
+  'ToxCast-Passive: Class' = formatter("span",
+    style = x ~ ifelse(x == "PAH", 
+                       style(color = "green", font.weight = "bold"), 
+                   ifelse( x == "Pharmaceuticals", 
+                               style(color = "red", font.weight = "bold"), 
+                     ifelse(x == "Herbicide" | x == "Insecticide",
+                               style(color = "blue", font.weight = "bold"),NA)))),
+   'WQG-Water Samples: Class' = formatter("span",
+    style = x ~ ifelse(x == "PAH", 
+                       style(color = "green", font.weight = "bold"), 
+                   ifelse( x == "Pharmaceuticals", 
+                               style(color = "red", font.weight = "bold"), 
+                     ifelse(x == "Herbicide" | x == "Insecticide",
+                               style(color = "blue", font.weight = "bold"),NA))))
+))
 
-```{r, echo=FALSE}
-emphasize.strong.cells(which(combo == "Pharmaceuticals", arr.ind = TRUE))
-pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
-```
-
-
-## Comparisons
-
-<table width="100%">
-<col style="width:36%">
-<col style="width:36%">
-<col style="width:28%">
-<tr>
-<td>ToxCast</td>
-<td>ToxCast</td>
-<td>WQG</td>
-</tr>
-<tr>
-<td>Water Samples</td>
-<td>Passive Data</td>
-<td>Water Samples</td>
-</tr>
-</table>
-
-
-
-```{r, echo=FALSE}
-emphasize.strong.cells(which(combo == "Herbicide" | combo == "Insecticide", arr.ind = TRUE))
-pander(combo,row.names = FALSE, style = 'simple', split.table = Inf)
+# emphasize.strong.cells(which(combo == "Herbicide" | combo == "Insecticide", arr.ind = TRUE))
+# pander(combo,row.names = FALSE,  split.table = Inf)
 ```
 
 
