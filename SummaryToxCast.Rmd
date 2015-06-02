@@ -196,7 +196,7 @@ passiveData <- passiveData[,-which(names(passiveData) == "site04249000.1")]
 
 unitConversion <- setNames(c(10^6, 10^3), c("pg/L", "ng/L") )
 
-AC50 <- right_join(AC50gain[,c("casn"), drop=FALSE], 
+AC50_passive <- right_join(AC50gain[,c("casn"), drop=FALSE], 
                    passiveData[,c("CAS", "Units", "mlWt","Chemical")],
                    by= c("casn" = "CAS")) %>%
   rename(desiredUnits = Units, chnm=Chemical) %>%
@@ -204,14 +204,14 @@ AC50 <- right_join(AC50gain[,c("casn"), drop=FALSE],
   mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
   select(casn, chnm, desiredUnits, mlWt, conversion)
 
-AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
+AC50Converted_passive <- left_join(AC50_passive, AC50gain, by = c("casn", "chnm"))
 infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
 
-endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData <- 10^endPointData
-endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50, data.frame(endPointData))
-endPoint <- rename(endPoint, Units=desiredUnits)
+endPointData_passive <- AC50Converted_passive[,!(names(AC50Converted) %in% infoColumns)]
+endPointData_passive <- 10^endPointData_passive
+endPointData_passive <- endPointData_passive *  AC50Converted_passive$conversion
+endPoint_passive <- cbind(AC50_passive, data.frame(endPointData_passive))
+endPoint_passive <- rename(endPoint_passive, Units=desiredUnits)
 
 siteColumns <- grep("site",names(passiveData))
 passiveData[,siteColumns] <- suppressWarnings(
@@ -232,7 +232,7 @@ chemicalSummary_passive <- melt(passiveData, id.vars = infoColumns) %>%
          class=class,
          measuredValue=value, 
          site=variable) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
+  right_join(endPoint_passive, by=c("casrn"="casn")) %>%
   select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
   melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
   filter(!is.na(value)) %>%
@@ -267,7 +267,7 @@ siteSummary_passive <- melt(passiveData, id.vars = infoColumns) %>%
          class=class,
          measuredValue=value, 
          site=variable) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
+  right_join(endPoint_passive, by=c("casrn"="casn")) %>%
   select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
   melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
   filter(!is.na(value)) %>%
@@ -593,7 +593,7 @@ ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
 ```{r warning=FALSE, echo=FALSE}
 
 detLevels_passive  <- select(passiveData, Chemical, MQL, CAS) %>%
-  right_join(endPoint, by=c("CAS"="casn")) %>%
+  right_join(endPoint_passive, by=c("CAS"="casn")) %>%
   select(-mlWt, -conversion,   -Chemical, -CAS) %>%
   melt(id.vars = c( "MQL","chnm", "Units")) %>% 
   filter(!is.na(value)) %>%
