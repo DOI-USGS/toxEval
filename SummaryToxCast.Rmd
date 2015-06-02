@@ -593,7 +593,7 @@ ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
 ```{r warning=FALSE, echo=FALSE}
 
 detLevels_passive  <- select(passiveData, Chemical, MQL, CAS) %>%
-  right_join(endPoint, by=c("CAS"="casn")) %>%
+  right_join(endPoint_passive, by=c("CAS"="casn")) %>%
   select(-mlWt, -conversion,   -Chemical, -CAS) %>%
   melt(id.vars = c( "MQL","chnm", "Units")) %>% 
   filter(!is.na(value)) %>%
