@@ -538,6 +538,7 @@ datatable(summary_display, rownames = FALSE,
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 library(ggplot2)
 library(grid)
+library(gridExtra)
 summary_display1 <- transform(summary_display, 
                              site = reorder(site, order(nChem,decreasing=TRUE)))
 
@@ -550,7 +551,7 @@ summary_display2 <- siteSummary %>%
   filter(EAR>0.1)
 
 
-ggplot(summary_display2, aes(x=site, y=EAR)) +
+sToxWS <- ggplot(summary_display2, aes(x=site, y=EAR)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none")+
@@ -558,7 +559,13 @@ ggplot(summary_display2, aes(x=site, y=EAR)) +
   scale_x_discrete(limits=siteLimits$site)+
   labs(x = "Site (ordered by number of chemicals with hits)") +
   geom_text(data=data.frame(), aes(x=siteLimits$site, y=-1.5,
-                                   label=siteLimits$nEndPoints),size=3) 
+                                   label=siteLimits$nEndPoints),size=3) +
+  annotation_custom(grob=textGrob("nEndPoints:", gp = gpar(fontface = "italic", fontsize = 8)),xmin = -0.9, xmax = -0.9, ymin = -1.5, ymax = -1.5)
+
+g_sToxWS <- ggplotGrob(sToxWS)
+g_sToxWS$layout$clip[g_sToxWS$layout$name=="panel"] <- "off"
+grid.draw(g_sToxWS)
+
 ```
 
 ## ToxCast: Water Samples Chemical Boxplots
@@ -572,7 +579,7 @@ chemLimits <- filter(chemSum2, freq>0) %>%
 chemicalSummary_display <- chemicalSummary %>%
   filter(EAR>=0.1) 
 
-ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
+chemToxWS <- ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none") +
@@ -580,7 +587,12 @@ ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
   scale_x_discrete(limits=chemLimits$chnm) +
   labs(x = "Chemical Name (ordered by fraction of sites with hits)")+
   geom_text(data=data.frame(), aes(x=chemLimits$chnm, y=-1.5,
-                                   label=chemLimits$nEndPoints),size=3) 
+                                   label=chemLimits$nEndPoints),size=3) +
+  annotation_custom(grob=textGrob("nEndPoints:", gp = gpar(fontface = "italic", fontsize = 8)),xmin = -0.7, xmax = -0.7, ymin = -1.5, ymax = -1.5)
+
+g_chemToxWS <- ggplotGrob(chemToxWS)
+g_chemToxWS$layout$clip[g_chemToxWS$layout$name=="panel"] <- "off"
+grid.draw(g_chemToxWS)
 
 ```
 
@@ -691,15 +703,22 @@ summary_display2_passive <- siteSummary_passive %>%
   filter(EAR>0.1)
 
 
-ggplot(summary_display2_passive, aes(x=site, y=EAR)) +
-  geom_boxplot() +
+sp <- ggplot(summary_display2_passive, aes(x=site, y=EAR)) +
+  geom_point() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none")+
-  ylim(-2,10) + 
+  ylim(-1,10) + 
   scale_x_discrete(limits=siteLimits_passive$site)+
   labs(x = "Site (ordered by number of chemicals with hits)") +
   geom_text(data=data.frame(), aes(x=siteLimits_passive$site,
-                                   y=-1.5, label=siteLimits_passive$nEndPoints),size=3) 
+                                   y=-.75, label=siteLimits_passive$nEndPoints),size=3) +
+  annotation_custom(grob=textGrob("nEndPoints:", gp = gpar(fontface = "italic", fontsize = 8)),xmin = -0.7, xmax = -0.7, ymin = -0.75, ymax = -0.75)
+
+g_sp <- ggplotGrob(sp)
+g_sp$layout$clip[g_sp$layout$name=="panel"] <- "off"
+grid.draw(g_sp)
+
+
 ```
 
 
@@ -714,15 +733,21 @@ chemLimits_passive <- filter(chemSum2_passive, freq>0) %>%
 chemicalSummary_display_passive <- chemicalSummary_passive %>%
   filter(EAR>=0.1) 
 
-ggplot(chemicalSummary_display_passive, aes(x=chnm, y=EAR)) +
-  geom_boxplot() +
+cp <- ggplot(chemicalSummary_display_passive, aes(x=chnm, y=EAR)) +
+  geom_point() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none") +
-  ylim(-2,10) + 
+  ylim(-1,10) + 
   scale_x_discrete(limits=chemLimits_passive$chnm) +
   labs(x = "Chemical Name (ordered by fraction of sites with hits)")+
-  geom_text(data=data.frame(), aes(x=chemLimits_passive$chnm, y=-1.5,
-                                   label=chemLimits_passive$nEndPoints),size=3) 
+  geom_text(data=data.frame(), aes(x=chemLimits_passive$chnm, y=-0.75,
+                                   label=chemLimits_passive$nEndPoints),size=3) +
+  annotation_custom(grob=textGrob("nEndPoints:", gp = gpar(fontface = "italic", fontsize = 8)),xmin = 0.5, xmax = 0.5, ymin = -0.75, ymax = -0.75)
+
+
+g_cp <- ggplotGrob(cp)
+g_cp$layout$clip[g_cp$layout$name=="panel"] <- "off"
+grid.draw(g_cp)
 
 ```
 
