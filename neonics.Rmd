@@ -1,0 +1,54 @@
+---
+title: "Neonicotinoid ToxCast evaluation with data from Hladick et. al 2014"
+author: "Steve Corsi with Data from Michelle Hladick, Dana Kolpin, and Kathy Quivila"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+# Introduction
+
+This analysis uses data from the Iowa neonic study and compares it to ToxCast endpoints to evaluate potential for adverse bio-effect by neonics
+
+```{r setup, include=FALSE}
+options(continue=" ")
+options(width=100)
+library(pander)
+library(dplyr)
+library(reshape2)
+library(DT)
+library(toxEval)
+library(knitr)
+
+sites <- c("0545510","0541210","05418400","06604440","05418600","06810000","05465500","05420500","06610000")
+clothMax <- c(257,38,73.8,6.3,13.2,59.9,78.8,12.7,25.9)
+clothMedian <- c(17.1,9.2,4.6,2,3.8,2.7,12.6,3.8,3.9)
+temp <- as.data.frame(rbind(clothMax,clothMedian))
+
+names(temp) <- sites
+neonicData <- temp
+neonicData$casn <- "210880-92-5"
+
+endPointInfo <- endPointInfo
+# AC50 data provided in the toxEval package:
+AC50gain <- AC50gain
+packagePath <- system.file("extdata", package="toxEval")
+#Site Info:
+neonicCAS <- read.csv("neonicCAS.csv")
+
+#parameter info:
+neonicCAS$class <- "Neonicotinoids"
+
+neonicData <- left_join(neonicData, neonicCAS, by=c("CAS"))
+t(neonicData[,2:3])
+
+neonicData <- neonicData[!duplicated(neonicData$CAS),]
+neonicData$class[neonicData$Chemical == "Hexachlorobenzene (HCB)"] <-"OC Pesticides"
+neonicData$class[neonicData$Chemical == "Pentachloroanisole (PCA)"] <-"OC Pesticides"
+neonicData$class[is.na(neonicData$class)] <-"Pharmaceuticals"
+
+neonicData <- neonicData[,-which(names(neonicData) == "site04249000.1")]
+
+head(neonicData[,1:7])
+
+```
+
