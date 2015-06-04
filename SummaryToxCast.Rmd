@@ -539,11 +539,11 @@ datatable(summary_display, rownames = FALSE,
 library(ggplot2)
 library(grid)
 library(gridExtra)
-summary_display1 <- transform(summary_display, 
-                             site = reorder(site, order(nChem,decreasing=TRUE)))
+# summary_display1 <- transform(summary_display, 
+#                              site = reorder(site, order(nChem,decreasing=TRUE)))
 
 siteLimits <- filter(summary_display, freq>0) %>%
-  arrange(desc(nChem)) %>%
+  arrange(desc(nChem), desc(nEndPoints)) %>%
   select(site,nEndPoints,nChem)
 
 
@@ -555,7 +555,7 @@ sToxWS <- ggplot(summary_display2, aes(x=site, y=EAR)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none")+
   scale_x_discrete(limits=siteLimits$site) +
-  scale_y_log10(limits=c(0.045,250)) +
+  scale_y_log10(limits=c(0.045,5000)) +
   labs(x = "Site") +
   geom_text(data=data.frame(), aes(x=siteLimits$site, y=0.07,
                                    label=siteLimits$nEndPoints),size=3) +
@@ -575,7 +575,7 @@ grid.draw(g_sToxWS)
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
 chemLimits <- filter(chemSum2, freq>0) %>%
-  arrange(desc(freq)) %>%
+  arrange(desc(freq),desc(nEndPoints)) %>%
   select(chnm, nEndPoints, freq) %>%
   mutate(freq=sprintf("%.0f",100*freq))
 
@@ -587,7 +587,7 @@ chemToxWS <- ggplot(chemicalSummary_display, aes(x=chnm, y=EAR)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none") +
   scale_x_discrete(limits=chemLimits$chnm) +
-  scale_y_log10(limits=c(0.045,250)) +
+  scale_y_log10(limits=c(0.045,5000)) +
   labs(x = "Chemical Name")+
   geom_text(data=data.frame(), aes(x=chemLimits$chnm, y=0.07,
                                    label=chemLimits$nEndPoints),size=3) +
@@ -693,7 +693,7 @@ datatable(summary_display_passive, rownames = FALSE,
   formatRound(c("maxEAR"), digits = 2)
 ```
 
-## ToxCast: Passive Data Sites Boxplots
+## ToxCast: Passive Data Sites Visualization
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
@@ -744,7 +744,7 @@ chemicalSummary_display_passive <- chemicalSummary_passive %>%
   filter(EAR>=0.1) 
 
 cp <- ggplot(chemicalSummary_display_passive, aes(x=chnm, y=EAR)) +
-  geom_point() +
+  geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
         legend.position = "none") +
   ylim(-1,10) + 
