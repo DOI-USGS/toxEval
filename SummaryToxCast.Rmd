@@ -1013,7 +1013,7 @@ formattable(combo, list(
 
 # Maps
 
-## ToxCast: Water Samples Map
+## ToxCast: Water Samples: Map
 This map summarizes the water sample ToxCast results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
 
 <b>Color:</b> Maximum EAR<br/>
@@ -1042,12 +1042,14 @@ m = leaflet(mapData) %>%
   addProviderTiles("Esri.WorldPhysical") %>%
   setView(lng = -83.5, lat = 44.5, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-             popup=paste('<b>',mapData$Station.Name,'</b><br/>',
-                         "<table><tr><td>Frequency</td><td>",sprintf("%1.1f", mapData$freq),'</td></tr>',
-                         "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
-                         "<tr><td>maxEAR</td><td>",sprintf("%1.1f", mapData$maxEAR),'</td></tr>',
-                         "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
-                         "<tr><td>nEndPoints</td><td>", mapData$nEndPoints,'</td></tr></table>'),
+             popup=
+    paste0('<b>',mapData$Station.Name,"</b><br/><table>",
+   "<tr><td>Frequency</td><td>",sprintf("%1.1f",mapData$freq),'</td></tr>',
+   "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
+   "<tr><td>maxEAR</td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
+   "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
+   "<tr><td>nEndPoints</td><td>",mapData$nEndPoints,'</td></tr></table>')
+   ,
               fillColor = ~pal(maxEAR), 
              weight = 1,
              color = "black",
@@ -1063,7 +1065,7 @@ m
 
 ```
 
-## ToxCast: Passive Data Map 
+## ToxCast: Passive: Map 
 This map summarizes the passive ToxCast results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
 
 <b>Color:</b> Maximum EAR<br/>
@@ -1093,10 +1095,11 @@ map2 = leaflet(mapDataPassive) %>%
   addProviderTiles("Esri.WorldPhysical") %>%
   setView(lng = -83.5, lat = 44.5, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-             popup=paste("<b>",mapDataPassive$Station.Name,'</b><br/>',
-                         "<table><tr><td>maxEAR</td><td>",sprintf("%1.1f", mapDataPassive$maxEAR),'</td></tr>',
-                         "<tr><td>nChem</td><td>",mapDataPassive$nChem,'</td></tr>',
-                         "<tr><td>nEndPoints</td><td>", mapDataPassive$nEndPoints,'</td></tr></table>'),
+             popup=
+               paste0("<b>",mapDataPassive$Station.Name,"</b><br/><table>",
+    "<tr><td>maxEAR</td><td>",sprintf("%1.1f",mapDataPassive$maxEAR),'</td></tr>',
+    "<tr><td>nChem</td><td>",mapDataPassive$nChem,'</td></tr>',
+    "<tr><td>nEndPoints</td><td>",mapDataPassive$nEndPoints,'</td></tr></table>'),
              fillColor = ~pal(maxEAR), 
              weight = 1,
              color = "blue",
@@ -1114,7 +1117,7 @@ map2
 ```
 
 
-## Water Quality Guidelines: Water Samples Map
+## Water Quality Guidelines: Water Samples: Map
 This map summarizes the passive water quality guideline results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
 
 <b>Color:</b> Maximum EAR<br/>
@@ -1140,10 +1143,10 @@ map4 = leaflet(mapDataWQ) %>%
   addProviderTiles("Esri.WorldPhysical") %>%
   setView(lng = -83.5, lat = 44.5, zoom=6)%>%
   addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-             popup=paste("<b>",mapDataWQ$Station.Name,'</b><br/>',
-                         "<table><tr><td>maxEAR</td><td>",sprintf("%1.1f", mapDataWQ$maxEAR),'</td></tr>',
-                         "<tr><td>nChem</td><td>",mapDataWQ$nChem,'</td></tr>',
-                         "<tr><td>nEndPoints</td><td>", mapDataWQ$nEndPoints,'</td></tr></table>'),
+             popup=paste0("<b>",mapDataWQ$Station.Name,"</b><br/><table>",
+  "<tr><td>maxEAR</td><td>",sprintf("%1.1f", mapDataWQ$maxEAR),'</td></tr>',
+  "<tr><td>nChem</td><td>",mapDataWQ$nChem,'</td></tr>',
+  "<tr><td>nEndPoints</td><td>", mapDataWQ$nEndPoints,'</td></tr></table>'),
              fillColor = ~palWQ(maxEAR), 
              weight = 1,
              color = "blue",
