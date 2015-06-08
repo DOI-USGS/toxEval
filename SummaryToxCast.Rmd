@@ -1,6 +1,6 @@
 ---
-title: "ToxCast Summaries"
-author: "Steven R. Corsi, Laura A. De Cicco"
+title: "Assessment of Potential Biological Effects in Great Lakes Tributaries Using ToxCast with Comparisons to Assessment Using Water Quality Guidelines."
+author: "<b>USGS</b>: Steve Corsi, Laura DeCicco, Austin Baldwin, David Alvarez, Peter Lenaker <br/><b>USEPA</b>: Anthony Schroeder, Dan Villeneuve, Brett Blackwell, Gerald Ankley"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
@@ -377,13 +377,13 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 
 * ToxCast: (EPA NCCT)
     * "High throughput screening assays"
-        * In-vitro Exposures to living cells or isolated protiens
+        * In-vitro Exposures to living cells or isolated proteins
         * Screens for potential adverse biological effects
         * Much is focused on gaining information on biological pathways
     * 1860 compounds
     * 821 endpoints
     * AC50 used for this analysis (concentration at which activity is 50% of its maximum)
-    * Exposure Activity Ratio (EAR) = concentration / AC50
+    * Exposure:Activity Ratio (EAR) = concentration / AC50
 * Established Water quality guidelines
     * Water sample analysis (not complete for passive samplers yet)
         * USEPA
@@ -392,7 +392,7 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
         * Literature
 
 ## Matches of Screening Endpoints
-* ToxCast
+* Which chemicals are included in ToxCast and Water Quality Guideline assessments?
     + Water samples
         * `r length(unique(chemSum2$chnm))` compounds of `r length(waterSamplePCodes)` total 
         * `r paste(unique(chemSum2$class), collapse=", ")`
@@ -405,7 +405,7 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
         * `r paste(unique(chemSum2_BM$class), collapse=", ")`
 
 
-# ToxCast: Water Sample Data {#toxWS}
+# ToxCast, Water Sample Data {#toxWS}
 
 Water samples were analyzed for the following classes of compounds with the number of individual compounds per class in parenthesis.
 
@@ -425,9 +425,9 @@ pander(df)
 ```
 
 
-## ToxCast: Water Samples: Detection Levels
+## ToxCast, Water Samples: Detection Levels
 
-As an initial exploration of limitations of using ToxCast with the water sample data, ToxCast endpoints were compared with detection levels for each analyzed compound. The EAR for a concentration at the detection level is presented in this table:
+As an initial exploration of limitations of using ToxCast with the water sample data, ToxCast endpoints were compared with detection levels for each analyzed compound. The exposure:activity ratio (EAR) for a concentration at the detection level for the endpoint with the minimum AC50 for that chemical is presented in this table.  Only compounds with detection levels great than 10% of the lowest AC50 are included.
 
 ```{r warning=FALSE, echo=FALSE}
 pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt) %>%
@@ -461,9 +461,9 @@ datatable(detLevels, rownames = FALSE,options = list(pageLength = 10))  %>%
 ```
 
 
-## ToxCast: Water Samples: Chemical Summary Tables
+## ToxCast, Water Samples: Chemical Summary Tables
 
-This table focuses on the individual compounds, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, and number of endpoints with hits to evaluate results based on different priorities.
+This table focuses on the individual compounds and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, and number of endpoints with hits to evaluate results based on different priorities. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
 
 ```{r, echo=FALSE, results='asis'}
 
@@ -473,8 +473,8 @@ datatable(chemSum2[,-6], rownames = FALSE,
     formatRound(c("maxEAR", "freq"), digits = 3)
 ```
 
-### ToxCast: Water Samples: Individual EndPoints
-This table focuses on the individual endpoints/compound combinations, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, endpoints with hits, and several variables that describe the ToxCast endpoints to evaluate results based on different priorities.
+### ToxCast, Water Samples: Individual EndPoints
+This table focuses on the individual endpoint/compound combinations and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, endpoints with hits, and several variables that describe the ToxCast endpoints to evaluate results based on different priorities. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
 
 ```{r message=FALSE, results='asis', echo=FALSE}
 
@@ -511,9 +511,9 @@ chemSum4 <- chemicalSummary %>%
 
 ```
 
-## ToxCast: Water Samples: Site Summaries
+## ToxCast, Water Samples: Site Summaries
 
-This table focuses on the individual sites, and the prevalence of potential adverse biological effects (`r length(unique(chemSum2$chnm))` total chemicals included in ToxCast). The table can be sorted by the fraction of samples with hits, number of chemicals with hits, number of endpoints with hits, maximum EAR, and land cover attributes to evaluate results based on different priorities.
+This table focuses on the individual sites and the prevalence of potential adverse biological effects (`r length(unique(chemSum2$chnm))` total chemicals included in ToxCast). The table can be sorted by the fraction of samples with hits, number of chemicals with hits, number of endpoints with hits, maximum EAR, and land cover attributes to evaluate results based on different priorities. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
 
 ```{r, echo=FALSE, results='asis'}
 summary_display <- left_join(summary, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
@@ -523,8 +523,8 @@ datatable(summary_display, rownames = FALSE,
   formatRound(c("freq","maxEAR","Ag.pct","Urban.pct"), digits = 2)
 ```
 
-## ToxCast: Water Sample: Boxplots by Site
-This figure displays ranges of EAR values for each site. Information on the number of endpoints with hits, number of chemicals with hits, and the total number collected samples is included.
+## ToxCast, Water Sample: Boxplots by Site
+This figure displays ranges of EAR values for each site. Information on the number of endpoints with hits, number of chemicals with hits, and the total number of collected samples is included. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater. Only samples with hits are included.
 
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
@@ -566,9 +566,9 @@ grid.draw(g_sToxWS)
 
 ```
 
-## ToxCast: Water Sample: Boxplots by Chemical
+## ToxCast, Water Sample: Boxplots by Chemical
 
-This figure displays ranges of EAR values for each chemical. Information on the number of endpoints with hits, and percentage of sites with hits is included.
+This figure displays ranges of EAR values for each chemical. Information on the number of endpoints with hits, and percentage of sites with hits is included. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater. Only samples with hits are included.
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
@@ -600,8 +600,7 @@ grid.draw(g_chemToxWS)
 
 ```
 
-
-# ToxCast: Passive Data {#toxPassive}
+# ToxCast, Passive Data {#toxPassive}
 
 Passive samples were analyzed for the following classes of compounds with the number of individual compounds per class in parenthesis.
 
@@ -621,9 +620,9 @@ pander(df)
 ```
 
 
-## ToxCast: Passive: Detection Levels
+## ToxCast, Passive: Detection Levels
 
-As an initial exploration of limitations of using ToxCast with the passive data, ToxCast endpoints were compared with detection levels (MQL) for each analyzed compound. The EAR for a concentration at the detection level is presented in this table:
+As an initial exploration of limitations of using ToxCast with the passive data, ToxCast endpoints were compared with detection levels (MQL) for each analyzed compound. The exposure:activity ratio (EAR) for a concentration at the detection level is presented in this table. Only compounds with detection levels great than 10% of the lowest AC50 are included.
 
 ```{r warning=FALSE, echo=FALSE}
 
@@ -646,9 +645,9 @@ datatable(detLevels_passive, rownames = FALSE,options = list(pageLength = 10))  
 ```
 
 
-## ToxCast: Passive: Chemical Summary Tables
+## ToxCast, Passive: Chemical Summary Tables
 
-This table focuses on the individual compounds, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, and number of endpoints with hits to evaluate results based on different priorities.
+This table focuses on the individual compounds, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum exposure:activity ratio (EAR), and number of endpoints with hits to evaluate results based on different priorities. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
 
 ```{r, echo=FALSE, results='asis'}
 chemSum2_passive_dt <- chemSum2_passive[,-6:-7] %>%
@@ -661,8 +660,8 @@ datatable(chemSum2_passive_dt, rownames = FALSE,
 
 ```
 
-### ToxCast: Passive: Individual EndPoints
-This table focuses on the individual endpoints/compound combinations, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, endpoints with hits, and several variables that describe the ToxCast endpoints to evaluate results based on different priorities.
+### ToxCast, Passive: Individual EndPoints
+This table focuses on the individual endpoint/compound combinations, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum exposure:activity ratio (EAR), endpoints with hits, and several variables that describe the ToxCast endpoints to evaluate results based on different priorities. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
 
 ```{r message=FALSE, results='asis', echo=FALSE}
 
@@ -699,9 +698,9 @@ chemSum4_passive <- chemicalSummary_passive %>%
 
 ```
 
-## ToxCast: Passive: Site Summaries
+## ToxCast, Passive: Site Summaries
 
-This table focuses on the individual sites, and the prevalence of potential adverse biological effects (`r length(unique(chemSum2_passive$chnm))` total chemicals included in ToxCast). The table can be sorted by number of chemicals with hits, number of endpoints with hits, maximum EAR, and land cover attributes to evaluate results based on different priorities.
+This table focuses on the individual sites, and the prevalence of potential adverse biological effects (`r length(unique(chemSum2_passive$chnm))` total chemicals included in ToxCast). The table can be sorted by number of chemicals with hits, number of endpoints with hits, maximum exposure:activity ratio (EAR), and land cover attributes to evaluate results based on different priorities. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
 
 ```{r, echo=FALSE, results='asis'}
 summary_display_passive <- left_join(summ1_passive, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
@@ -713,9 +712,9 @@ datatable(summary_display_passive, rownames = FALSE,
   formatRound(c("maxEAR"), digits = 2)
 ```
 
-## ToxCast: Passive: Boxplots by Sites
+## ToxCast, Passive: Boxplots by Sites
 
-This figure displays ranges of EAR values for each site. Information on the number of endpoints with hits and number of chemicals with hits is included.
+This figure displays ranges of exposure:activity ratio (EAR) values for each site. Information on the number of endpoints with hits and number of chemicals with hits is included."Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater. Only samples with hits are included.
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
@@ -753,9 +752,10 @@ grid.draw(g_sp)
 ```
 
 
-## ToxCast: Passive: Boxplots by Chemical
+## ToxCast, Passive: Boxplots by Chemical
 
-This figure displays ranges of EAR values for each chemical. Information on the number of endpoints with hits, and percentage of sites with hits is included.
+This figure displays ranges of EAR values for each chemical. Information on the number of endpoints with hits, and percentage of sites with hits is included."Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater. Only samples with hits are included.
+
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
@@ -788,11 +788,12 @@ grid.draw(g_cp)
 
 ```
 
-# Water Quality Guidelines: Water Samples {#WQGws}
 
-## Water Quality Guidelines: Water Samples: Detection Levels
+# Water Quality Guidelines, Water Samples {#WQGws}
 
-As an initial exploration of limitations of using water quality guidelines with the water sample data, water quality guidelines endpoints were compared with detection levels for each analyzed compound. The EAR for a concentration at the detection level is presented in this table:
+## Water Quality Guidelines, Water Samples: Detection Levels
+
+As an initial exploration of limitations of using water quality guidelines with the water sample data, water quality guidelines endpoints were compared with detection levels for each analyzed compound. The exposure:activity ratio (EAR) for a concentration at the detection level is presented in this table.  Only compounds with detection levels great than 10% of the lowest AC50 are included.
 
 ```{r warning=FALSE, echo=FALSE}
 
@@ -821,9 +822,10 @@ datatable(detLevels_BM, rownames = FALSE,options = list(pageLength = 10))  %>%
 ```
 
 
-## Water Quality Guidelines: Water Samples: Chemical Summary Tables
+## Water Quality Guidelines, Water Samples: Chemical Summary Tables
 
-This table focuses on the individual compounds, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, and number of endpoints with hits to evaluate results based on different priorities.
+This table focuses on the individual compounds, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, and number of endpoints with hits to evaluate results based on different priorities."Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
+
 
 ```{r, echo=FALSE, results='asis'}
   
@@ -833,9 +835,10 @@ datatable(chemSum2_BM[-6], rownames = FALSE,
     formatRound(c("maxEAR", "freq"), digits = 3)
 ```
 
-## Water Quality Guidelines: Water Samples: Site Summaries
+## Water Quality Guidelines, Water Samples: Site Summaries
 
-This table focuses on the individual endpoints/compound combinations, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, endpoints with hits, and several variables that describe the water quality benchmark endpoints to evaluate results based on different priorities.
+This table focuses on the individual endpoint/compound combinations, and the prevalence of potential adverse biological effects (57 total sites). The table can be sorted by the fraction of sites with hits, maximum EAR, endpoints with hits, and several variables that describe the water quality benchmark endpoints to evaluate results based on different priorities."Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater.
+
 
 ```{r, echo=FALSE, results='asis'}
 summary_display_BM <- left_join(summary_BM, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
@@ -846,9 +849,10 @@ datatable(summary_display_BM, rownames = FALSE,
 ```
 
 
-## Water Quality Guidelines: Water Samples: Boxplots by Site
+## Water Quality Guidelines, Water Samples: Boxplots by Site
 
-This figure displays ranges of EAR values for each site. Information on the number of endpoints with hits and number of chemicals with hits is included.
+This figure displays ranges of EAR values for each site. Information on the number of endpoints with hits and number of chemicals with hits is included. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater. Only samples with hits are included.
+
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
@@ -887,9 +891,9 @@ grid.draw(g_sBenchWS)
 
 ```
 
-## Water Quality Guidelines: Water Samples: Boxplots by Chemical
+## Water Quality Guidelines, Water Samples: Boxplots by Chemical
 
-This figure displays ranges of EAR values for each chemical. Information on the number of endpoints with hits, and percentage of sites with hits is included.
+This figure displays ranges of EAR values for each chemical. Information on the number of endpoints with hits, and percentage of sites with hits is included. "Hits" are defined as EAR > 0.1, indicating that the measured concentration is 10% of the AC50 or greater. Only samples with hits are included.
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
@@ -994,8 +998,8 @@ formattable(combo, list(
 
 # Maps {#maps}
 
-## ToxCast: Water Samples: Map
-This map summarizes the water sample ToxCast results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
+## ToxCast, Water Samples: Map
+This map summarizes the water sample ToxCast results by showing maximum exposure:activity ratio (EAR) for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
 
 <b>Color:</b> Maximum EAR<br/>
 <b>Size:</b> Number of chemicals with hits (0-19)
@@ -1046,8 +1050,8 @@ m
 
 ```
 
-## ToxCast: Passive: Map 
-This map summarizes the passive ToxCast results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
+## ToxCast, Passive: Map 
+This map summarizes the passive ToxCast results by showing maximum exposure:activity ratio (EAR) for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
 
 <b>Color:</b> Maximum EAR<br/>
 <b>Size:</b> Number of chemicals with hits (0-3)
@@ -1098,8 +1102,8 @@ map2
 ```
 
 
-## Water Quality Guidelines: Water Samples: Map
-This map summarizes the passive water quality guideline results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
+## Water Quality Guidelines, Water Samples: Map
+This map summarizes the passive water quality guideline results by showing maximum exposure:activity ratio (EAR) for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
 
 <b>Color:</b> Maximum EAR<br/>
 <b>Size:</b> Number of chemicals with hits (0-10)
