@@ -14,6 +14,7 @@ output:
 library(pander)
 library(dplyr)
 library(reshape2)
+library(tidyr)
 library(DT)
 library(toxEval)
 library(knitr)
@@ -89,32 +90,28 @@ wData <- cbind(waterSamples[,1:2],waterData)
 valColumns <- grep("valueToUse",names(wData))
 
 chemicalSummary <- wData %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(srsname,casrn, class, measuredValue, site, date) %>%
+  gather(pCode, measuredValue, -ActivityStartDateGiven, -site)  %>%
+  rename(date=ActivityStartDateGiven)%>%
+  filter(!is.na(measuredValue)) %>%
+  mutate(pCode=sapply(strsplit(as.character(pCode), "_"), function(x) x[2])) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd"))  %>%
   right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm","date")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  mutate(EAR=measuredValue/endPointValue) 
+  select(-mlWt, -conversion, -casrn,  -Units, -srsname, -pCode) %>%
+  gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date)  %>% 
+  filter(!is.na(endPointValue)) %>%
+  mutate(endPoint=as.character(endPoint)) %>%
+  mutate(EAR=measuredValue/endPointValue)
+
 
 chemSum1 <- chemicalSummary %>%
-  group_by(chnm,  class, site, date) %>%
-  summarise(hits= as.numeric(any(EAR > 0.1))) %>%
-  # mutate(hits= as.numeric(any(EAR > 0.1))) %>%
+  mutate(hits= as.numeric(EAR > 0.1)) %>%
   group_by(chnm,  class, site) %>%
-  summarize(hits=as.numeric(any(hits > 0))) %>%
-  # summarize(hits=as.numeric(any(hits > 0))
-            # median=median(EAR)) %>%
+  summarize(hits=as.numeric(any(hits > 0)), 
+            median=median(EAR)) %>%
   group_by(chnm, class) %>%
   summarize(freq=sum(hits)/length(unique(site)),
-            nSites=sum(hits)) 
+            nSites=sum(hits),
+            aveMedian=mean(median)) 
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -127,29 +124,26 @@ chemSum2 <- chemicalSummary %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
 
-
-
 siteSummary <- wData %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(srsname,casrn, class, measuredValue, site, date) %>%
+  gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
+  mutate(pCode=as.character(pCode)) %>%
+  filter(!is.na(measuredValue)) %>%
+  rename(date=ActivityStartDateGiven) %>%
+  separate(pCode, into=c("colName","pCode"),sep="_") %>%
+  select(-colName) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
   right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "date","measuredValue","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  mutate(site=newSiteKey[site]) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -pCode) %>%
+  gather(endPoint, endPointValue, -class, -site, -date,-measuredValue,-chnm) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(endPoint=as.character(endPoint),
+         EAR=measuredValue/endPointValue,
+         site=as.character(newSiteKey[site])) %>% 
   select(site, chnm, EAR, endPoint, class, date) %>% 
   arrange(site, chnm, EAR)
-
+  
 summ1 <- siteSummary %>%
-  group_by(site, date) %>%
+  group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(site) %>%
   summarize(freq=sum(hits)/length(unique(date)),
@@ -160,7 +154,6 @@ summ2 <-  siteSummary %>%
   summarize(nChem = length(unique(chnm[EAR > 0.1])),
             nEndPoints = length(unique(endPoint[EAR > 0.1])),
             maxEAR = max(EAR))
-
 
 summary <- left_join(summ1, summ2, by="site") %>%
   arrange(desc(maxEAR))
@@ -174,12 +167,6 @@ summary <- left_join(summ1, summ2, by="site") %>%
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "passiveData.RData")
 load(file=filePath)
-# #Site Info:
-# filePath <- file.path(packagePath, "stationINFO.RData")
-# load(file=filePath)
-# #parameter info:
-# filePath <- file.path(packagePath, "pCodeInfo.RData")
-# load(file=filePath)
 
 #passive class info:
 passiveCAS <- readRDS(file.path(packagePath, "passiveCAS.rds"))
@@ -229,27 +216,21 @@ newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
 infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
 
-chemicalSummary_passive <- melt(passiveData, id.vars = infoColumns) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  select(srsname=Chemical,
-         casrn=CAS,
-         class=class,
-         measuredValue=value, 
-         site=variable) %>%
+chemicalSummary_passive <- passiveData %>%
+  gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns) )) %>%
+  mutate(site=as.character(site)) %>%
+  filter(!is.na(measuredValue)) %>%
+  select(casrn=CAS,class, measuredValue, site)%>%
   right_join(endPoint_passive, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+  select(-mlWt, -conversion, -casrn,  -Units) %>%
+  gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(endPoint=as.character(endPoint)) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
 chemSum1_passive <- chemicalSummary_passive %>%
   group_by(chnm,  class, site) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-#   group_by(chnm,  class, site) %>%
-#   summarize(hits=as.numeric(any(hits > 0))) %>%
   group_by(chnm, class) %>%
   summarize(freq=sum(hits)/length(unique(site)),
             nSites=sum(hits)) 
@@ -390,7 +371,7 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 
 ```
 
-# Introduction
+# Introduction {#intro}
 
 ## Screening Endpoints Used in Analysis
 
@@ -424,16 +405,16 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
         * `r paste(unique(chemSum2_BM$class), collapse=", ")`
 
 
-# ToxCast: Water Sample Data
+# ToxCast: Water Sample Data {#toxWS}
 
 Water samples were analyzed for the following classes of compounds with the number of individual compounds per class in parenthesis.
 
 ```{r echo=FALSE, eval=TRUE}
 library(knitr)
 library(pander)
-ws <- c("PAHs (6)", "Insecticides (6)", "Herbicides (7)", "Fire retardants (4)", "Pharmaceuticals (3)", "Plasticizers (5)", "Detergent metabolites (8)", "Antimicrobial disinfectants (3)", "Solvents (2)", "Fuels (4)", "Dye/pigments (1)", "Flavors &amp; fragrances (10)", "Sterols (4)", "Misc (3)")
+ws <- c("PAH (6)", "Insecticides (6)", "Herbicides (7)", "Fire retardants (4)", "Pharmaceuticals (3)", "Plasticizers (5)", "Detergent metabolites (8)", "Antimicrobial disinfectants (3)", "Solvents (2)", "Fuels (4)", "Dye/pigments (1)", "Flavors &amp; fragrances (10)", "Sterols (4)", "Misc (3)")
 
-ps <- c("PAHs (33)", "Organic Waste Compounds (53)", "Organochlorine Pesticides (32)", "PBDEs (5)", "Pharmaceuticals (31)", "PCB (sum of total)",rep("", 8))
+ps <- c("PAH (33)", "Organic Waste Compounds (53)", "Organochlorine Pesticides (32)", "PBDEs (5)", "Pharmaceuticals (31)", "PCB (sum of total)",rep("", 8))
 
 df <- data.frame(ws=ws,  stringsAsFactors=FALSE)
 
@@ -620,16 +601,16 @@ grid.draw(g_chemToxWS)
 ```
 
 
-# ToxCast: Passive Data
+# ToxCast: Passive Data {#toxPassive}
 
 Passive samples were analyzed for the following classes of compounds with the number of individual compounds per class in parenthesis.
 
 ```{r echo=FALSE, eval=TRUE}
 library(knitr)
 library(pander)
-# ws <- c("PAHs (6)", "Insecticides (6)", "Herbicides (7)", "Fire retardants (4)", "Pharmaceuticals (3)", "Plasticizers (5)", "Detergent metabolites (8)", "Antimicrobial disinfectants (3)", "Solvents (2)", "Fuels (4)", "Dye/pigments (1)", "Flavors &amp; fragrances (10)", "Sterols (4)", "Misc (3)")
+# ws <- c("PAH (6)", "Insecticides (6)", "Herbicides (7)", "Fire retardants (4)", "Pharmaceuticals (3)", "Plasticizers (5)", "Detergent metabolites (8)", "Antimicrobial disinfectants (3)", "Solvents (2)", "Fuels (4)", "Dye/pigments (1)", "Flavors &amp; fragrances (10)", "Sterols (4)", "Misc (3)")
 
-ps <- c("PAHs (33)", "Organic Waste Compounds (53)", "Organochlorine Pesticides (32)", "PBDEs (5)", "Pharmaceuticals (31)", "PCB (sum of total)")
+ps <- c("PAH (33)", "Organic Waste Compounds (53)", "Organochlorine Pesticides (32)", "PBDEs (5)", "Pharmaceuticals (31)", "PCB (sum of total)")
 
 df <- data.frame(ps=ps,  stringsAsFactors=FALSE)
 
@@ -807,7 +788,7 @@ grid.draw(g_cp)
 
 ```
 
-# Water Quality Guidelines: Water Samples
+# Water Quality Guidelines: Water Samples {#WQGws}
 
 ## Water Quality Guidelines: Water Samples: Detection Levels
 
@@ -1011,7 +992,7 @@ formattable(combo, list(
 ```
 
 
-# Maps
+# Maps {#maps}
 
 ## ToxCast: Water Samples: Map
 This map summarizes the water sample ToxCast results by showing maximum EAR for each site as the color scale, and number of chemicals with hits as the symbol size. Additional information is available by clicking on the points.
@@ -1162,3 +1143,8 @@ map4 = leaflet(mapDataWQ) %>%
 map4  
 
 ```
+
+
+
+
+
