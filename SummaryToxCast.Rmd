@@ -93,13 +93,12 @@ chemicalSummary <- wData %>%
   gather(pCode, measuredValue, -ActivityStartDateGiven, -site)  %>%
   rename(date=ActivityStartDateGiven)%>%
   filter(!is.na(measuredValue)) %>%
-  mutate(pCode=sapply(strsplit(as.character(pCode), "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd"))  %>%
+  separate(pCode, into=c("colHeader","pCode"), "_")%>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd"))  %>%
   right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname, -pCode) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -pCode, -colHeader) %>%
   gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date)  %>% 
   filter(!is.na(endPointValue)) %>%
-  mutate(endPoint=as.character(endPoint)) %>%
   mutate(EAR=measuredValue/endPointValue)
 
 
@@ -116,7 +115,7 @@ chemSum1 <- chemicalSummary %>%
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
   summarize(maxEAR=max(EAR),
-            nSamples=nrow(unique(data.frame(date,site))),
+            nSamples=nrow(unique(data.frame(date,site))), #Better way?
             nEndPoints=length(unique(endPoint[EAR > 0.1])),
             EAR90overall=quantile(EAR,probs = .9)) %>%
   left_join(chemSum1, by=c("chnm","class")) %>%
@@ -126,7 +125,6 @@ chemSum2 <- chemicalSummary %>%
 
 siteSummary <- wData %>%
   gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
-  mutate(pCode=as.character(pCode)) %>%
   filter(!is.na(measuredValue)) %>%
   rename(date=ActivityStartDateGiven) %>%
   separate(pCode, into=c("colName","pCode"),sep="_") %>%
@@ -218,14 +216,12 @@ infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
 
 chemicalSummary_passive <- passiveData %>%
   gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns) )) %>%
-  mutate(site=as.character(site)) %>%
   filter(!is.na(measuredValue)) %>%
   select(casrn=CAS,class, measuredValue, site)%>%
   right_join(endPoint_passive, by=c("casrn"="casn")) %>%
   select(-mlWt, -conversion, -casrn,  -Units) %>%
   gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm) %>%
   filter(!is.na(endPointValue)) %>%
-  mutate(endPoint=as.character(endPoint)) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
 chemSum1_passive <- chemicalSummary_passive %>%
@@ -299,24 +295,20 @@ endPoint_bm <- cbind(AC50_bm, data.frame(endPointData_bm))
 endPoint_bm <- rename(endPoint_bm, Units=desiredUnits)
 
 chemicalSummary_BM <- wData %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(srsname,casrn, class, measuredValue, site, date) %>%
+  gather(pCode,measuredValue,-ActivityStartDateGiven,-site) %>%
+  filter(!is.na(measuredValue)) %>%
+  rename(date=ActivityStartDateGiven) %>%
+  separate(pCode,c("colHeader","pCode"),"_") %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+  # select(casrn, class, measuredValue, site, date) %>%
   right_join(endPoint_bm, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm","date")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -colHeader, -pCode)%>%
+  gather(endPoint, endPointValue, -class, -site, -measuredValue,-chnm,-date) %>%
+  filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
 chemSum1_BM <- chemicalSummary_BM %>%
-  group_by(chnm,  class, site, date) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  mutate(hits= as.numeric(EAR > 0.1)) %>%
   group_by(chnm,  class, site) %>%
   summarize(hits=as.numeric(any(hits > 0))) %>%
   group_by(chnm, class) %>%
@@ -334,19 +326,16 @@ chemSum2_BM <- chemicalSummary_BM %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
 
 siteSummary_BM <- wData %>%
-  melt(id.vars=c("ActivityStartDateGiven","site")) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  rename(measuredValue=value, pCode=variable, date=ActivityStartDateGiven) %>%
-  mutate(pCode=sapply(strsplit(pCode, "_"), function(x) x[2])) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class","srsname")], by=c("pCode"="parameter_cd")) %>%
-  select(srsname,casrn, class, measuredValue, site, date) %>%
+  gather(pCode,measuredValue,-ActivityStartDateGiven,-site) %>%
+  filter(!is.na(measuredValue)) %>%
+  rename(date=ActivityStartDateGiven) %>%
+  separate(pCode, into=c("colHeader","pCode"),"_") %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+  select(casrn, class, measuredValue, site, date) %>%
   right_join(endPoint_bm, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "date","measuredValue","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+  select(-mlWt, -conversion, -casrn,  -Units) %>%
+  gather(endPoint, endPointValue, -class, -site, -date, -measuredValue, -chnm) %>%
+  filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
   mutate(site=newSiteKey[site]) %>%
   select(site, chnm, EAR, endPoint, class, date) %>% 
