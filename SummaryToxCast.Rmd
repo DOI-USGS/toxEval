@@ -17,7 +17,8 @@ library(tidyr)
 library(DT)
 library(toxEval)
 library(knitr)
-library(ggthemes)
+library(leaflet)
+library(formattable)
 
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
@@ -961,8 +962,6 @@ names(combo) <- c("ToxCast-Water Samples: Chemical", "ToxCast-Water Samples: Cla
 
 
 ```{r, echo=FALSE, results='asis'}
-library(formattable)
-
 formattable(combo, list(
   'ToxCast-Water Samples: Class' = formatter("span",
     style = x ~ ifelse(x == "PAH", 
@@ -1001,8 +1000,6 @@ This map summarizes the water sample ToxCast results by showing maximum exposure
 <b>Size:</b> Number of chemicals with hits (0-19)
 
 ```{r, echo=FALSE, results='asis', echo=FALSE, fig.width=7, fig.height=5}
-
-library(leaflet)
 stationINFO <- stationINFO[!is.na(stationINFO$dec.lat.va),]
 
 mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
