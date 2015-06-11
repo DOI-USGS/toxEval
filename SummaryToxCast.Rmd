@@ -13,7 +13,6 @@ output:
 ```{r message=FALSE, echo=FALSE}
 library(pander)
 library(dplyr)
-library(reshape2)
 library(tidyr)
 library(DT)
 library(toxEval)
@@ -241,20 +240,14 @@ chemSum2_passive <- chemicalSummary_passive %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples) %>%
   arrange(desc(freq)) 
 
-siteSummary_passive <- melt(passiveData, id.vars = infoColumns) %>%
-  mutate(variable=as.character(variable)) %>%
-  filter(!is.na(value)) %>%
-  select(srsname=Chemical,
-         casrn=CAS,
-         class=class,
-         measuredValue=value, 
-         site=variable) %>%
-  right_join(endPoint_passive, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -srsname) %>%
-  melt(id.vars = c("class", "site", "measuredValue","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+siteSummary_passive <- passiveData %>%
+  gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns))) %>%
+  filter(!is.na(measuredValue)) %>%
+  select(Chemical,CAS,class, measuredValue, site) %>%
+  right_join(endPoint_passive, by=c("CAS"="casn")) %>%
+  select(-mlWt, -conversion, -CAS,  -Units) %>%
+  gather(endPoint,endPointValue,-Chemical,-class, -site, -measuredValue,-chnm) %>% 
+  filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) %>%
   mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
   select(site, chnm, EAR, endPoint, class) %>% 
@@ -434,10 +427,8 @@ detLevels  <- data.frame(dl_pcode=names(detectionLimits),
   select(casrn, class, minDetLevel) %>%
   right_join(endPoint, by=c("casrn"="casn")) %>%
   select(-mlWt, -conversion, -casrn,  -Units) %>%
-  melt(id.vars = c("class", "minDetLevel","chnm")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+  gather(endPoint, endPointValue,-class, -minDetLevel,-chnm) %>% 
+  filter(!is.na(endPointValue)) %>%
   mutate(EAR=minDetLevel/endPointValue) %>%
   filter(EAR >= 0.1) %>%
   select(Chemical=chnm, Class=class, EAR, endPoint, minDetLevel) %>%
@@ -469,20 +460,15 @@ This table focuses on the individual endpoint/compound combinations and the prev
 
 
 chemSum3 <- chemicalSummary %>%
-  group_by(chnm,  class, site, date, endPoint) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  mutate(hits= as.numeric(EAR > 0.1)) %>%
   group_by(chnm,  class, site, endPoint) %>%
-  summarize(hits=as.numeric(any(hits > 0))) %>%
+  summarize(hits=as.numeric(any(hits > 0)),
+            maxEAR=max(EAR)) %>%
   group_by(chnm, class, endPoint) %>%
   summarize(freq=sum(hits)/length(unique(site)),
-            nSites=sum(hits)) 
-
-chemSum4 <- chemicalSummary %>%
-  group_by(chnm,  class, endPoint) %>%  
-  summarize(maxEAR=max(EAR), 
-            nSamples=nrow(unique(data.frame(date,site)))) %>%
-  left_join(chemSum3, by=c("chnm","class","endPoint")) %>%
-  select(chnm, class, freq, maxEAR, nSites, nSamples, endPoint) %>%
+            nSites=sum(hits),
+            maxEAR=max(maxEAR)) %>%
+  mutate(endPoint=as.character(endPoint))%>%
   left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
   select(chnm, maxEAR, freq, nSites, 
          endPoint, class, contains("intended_target_")) %>%
@@ -492,11 +478,36 @@ chemSum4 <- chemicalSummary %>%
   data.frame %>%
   arrange(desc(freq)) 
 
-
-  datatable(unique(chemSum4[-4]), rownames = FALSE, 
+  datatable(unique(chemSum3[,-4]), rownames = FALSE, 
             options = list(pageLength = 10), 
             colnames=c("Chemical","Maximum EAR","Fraction of Sites with Hits","Endpoint","Class","Type","Type_sub","Family","Family_sub")) %>% 
     formatRound(c("maxEAR", "freq"), digits = 2)
+  
+  
+endpointSummary <- chemicalSummary %>%
+  mutate(hits= as.numeric(EAR > 0.1)) %>%
+  group_by(site, date, endPoint) %>%
+  summarize(hits=as.numeric(any(hits > 0)),
+            maxEAR=max(EAR)) %>%
+  group_by(endPoint) %>%
+  summarize(freq=sum(hits)/length(unique(site)),
+            nSites=sum(hits),
+            maxEAR=max(maxEAR))  %>%
+  mutate(endPoint=as.character(endPoint))%>%
+  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
+  select(endPoint, maxEAR, freq, nSites, 
+         endPoint, contains("intended_target_")) %>%
+  rename(type=intended_target_type, type_sub=intended_target_type_sub,
+         family=intended_target_family, family_sub=intended_target_family_sub) %>%
+  select(-contains("intended_target_"))  %>%
+  data.frame %>%
+  arrange(desc(freq)) 
+
+  datatable(unique(endpointSummary), rownames = FALSE, 
+            options = list(pageLength = 10), 
+            colnames=c("End Point","Maximum EAR","Fraction of Sites with Hits","nSites","Type","Type_sub","Family","Family_sub")) %>% 
+    formatRound(c("maxEAR", "freq"), digits = 2)
+
 
 ```
 
@@ -618,10 +629,8 @@ As an initial exploration of limitations of using ToxCast with the passive data,
 detLevels_passive  <- select(passiveData, Chemical, MQL, CAS, class) %>%
   right_join(endPoint_passive, by=c("CAS"="casn")) %>%
   select(-mlWt, -conversion,   -Chemical, -CAS) %>%
-  melt(id.vars = c( "MQL","chnm", "Units","class")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+  gather(endPoint,endPointValue,-MQL,-chnm, -Units,-class) %>% 
+  filter(!is.na(endPointValue)) %>%
   mutate(EAR=MQL/endPointValue) %>%
   filter(EAR >= 0.1) %>%
   select(Chemical=chnm, Class=class, EAR, endPoint, minDetLevel=MQL) %>%
@@ -795,10 +804,8 @@ detLevels_BM  <- data.frame(dl_pcode=names(detectionLimits),
   select(casrn, class, minDetLevel) %>%
   right_join(endPoint_bm, by=c("casrn"="casn")) %>%
   select(-mlWt, -conversion, -casrn) %>%
-  melt(id.vars = c("class", "minDetLevel","chnm","Units")) %>% 
-  filter(!is.na(value)) %>%
-  mutate(variable=as.character(variable)) %>%
-  rename(endPointValue=value, endPoint=variable) %>%
+  gather(endPoint,endPointValue,-class, -minDetLevel,-chnm,-Units) %>% 
+  filter(!is.na(endPointValue)) %>%
   mutate(EAR=minDetLevel/endPointValue) %>%
   filter(EAR >= 0.1) %>%
   select(Chemical=chnm, Class=class, EAR, endPoint, minDetLevel) %>%
