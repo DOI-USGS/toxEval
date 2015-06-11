@@ -96,19 +96,25 @@ chemSum1 <- chemicalSummary %>%
   mutate(hits= as.numeric(EAR > 0.1)) %>%
   group_by(chnm,  class, site) %>%
   summarize(hits=as.numeric(any(hits > 0)), 
-            median=median(EAR)) %>%
+            median=median(EAR),
+            maxEAR=max(EAR)) %>%
   group_by(chnm, class) %>%
   summarize(freq=sum(hits)/length(unique(site)),
             nSites=sum(hits),
             aveMedian=mean(median)) 
 
+tempSamples <- select(chemicalSummary,date,site,chnm) %>%
+  distinct()%>%
+  group_by(chnm) %>%
+  summarise(nSamples=n())
+
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
   summarize(maxEAR=max(EAR),
-            nSamples=nrow(unique(data.frame(date,site))), #Better way?
             nEndPoints=length(unique(endPoint[EAR > 0.1])),
             EAR90overall=quantile(EAR,probs = .9)) %>%
   left_join(chemSum1, by=c("chnm","class")) %>%
+  left_join(tempSamples, by=c("chnm")) %>%
   data.frame %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
@@ -280,12 +286,16 @@ chemicalSummary_BM <- wData %>%
   rename(date=ActivityStartDateGiven) %>%
   separate(pCode,c("colHeader","pCode"),"_") %>%
   left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  # select(casrn, class, measuredValue, site, date) %>%
   right_join(endPoint_bm, by=c("casrn"="casn")) %>%
   select(-mlWt, -conversion, -casrn,  -Units, -colHeader, -pCode)%>%
   gather(endPoint, endPointValue, -class, -site, -measuredValue,-chnm,-date) %>%
   filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) 
+
+tempSamples_bm <- select(chemicalSummary_BM,date,site,chnm) %>%
+    distinct()%>%
+    group_by(chnm) %>%
+    summarise(nSamples=n())
 
 chemSum1_BM <- chemicalSummary_BM %>%
   mutate(hits= as.numeric(EAR > 0.1)) %>%
@@ -298,9 +308,9 @@ chemSum1_BM <- chemicalSummary_BM %>%
 chemSum2_BM <- chemicalSummary_BM %>%
   group_by(chnm,  class) %>%  
   summarize(maxEAR=max(EAR), 
-            nSamples=nrow(unique(data.frame(date,site))),
             nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
   left_join(chemSum1_BM, by=c("chnm","class")) %>%
+  left_join(tempSamples_bm, by="chnm") %>%
   data.frame %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
