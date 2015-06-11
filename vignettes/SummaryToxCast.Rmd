@@ -22,6 +22,8 @@ library(toxEval)
 library(knitr)
 library(leaflet)
 library(formattable)
+library(ggplot2)
+library(gridExtra)
 
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
@@ -532,9 +534,6 @@ This figure displays ranges of EAR values for each site. Information on the numb
 
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
-library(ggplot2)
-library(grid)
-library(gridExtra)
 # summary_display1 <- transform(summary_display, 
 #                              site = reorder(site, order(nChem,decreasing=TRUE)))
 

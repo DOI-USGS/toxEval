@@ -7,6 +7,8 @@ library(toxEval)
 library(knitr)
 library(leaflet)
 library(formattable)
+library(ggplot2)
+library(gridExtra)
 
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
@@ -448,9 +450,6 @@ datatable(summary_display, rownames = FALSE,
   formatRound(c("freq","maxEAR","Ag.pct","Urban.pct"), digits = 2)
 
 ## ----fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE----
-library(ggplot2)
-library(grid)
-library(gridExtra)
 # summary_display1 <- transform(summary_display, 
 #                              site = reorder(site, order(nChem,decreasing=TRUE)))
 
