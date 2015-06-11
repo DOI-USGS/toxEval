@@ -99,14 +99,15 @@ chemSum1 <- chemicalSummary %>%
             median=median(EAR),
             maxEAR=max(EAR)) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/length(unique(site)),
+  summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits),
             aveMedian=mean(median)) 
 
-tempSamples <- select(chemicalSummary,date,site,chnm) %>%
+totalSamples <- select(chemicalSummary,date,site,chnm) %>%
   distinct()%>%
   group_by(chnm) %>%
-  summarise(nSamples=n())
+  summarise(nSamples=n()) %>%
+  mutate(chnm=as.character(chnm))
 
 chemSum2 <- chemicalSummary %>%
   group_by(chnm,  class) %>%  
@@ -114,7 +115,7 @@ chemSum2 <- chemicalSummary %>%
             nEndPoints=length(unique(endPoint[EAR > 0.1])),
             EAR90overall=quantile(EAR,probs = .9)) %>%
   left_join(chemSum1, by=c("chnm","class")) %>%
-  left_join(tempSamples, by=c("chnm")) %>%
+  left_join(totalSamples, by=c("chnm")) %>%
   data.frame %>%
   arrange(desc(freq)) %>%
   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
@@ -140,8 +141,8 @@ summ1 <- siteSummary %>%
   group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(site) %>%
-  summarize(freq=sum(hits)/length(unique(date)),
-            nSamples=length(unique(date))) 
+  summarize(freq=sum(hits)/n_distinct(date),
+            nSamples=n_distinct(date)) 
 
 summ2 <-  siteSummary %>%
   group_by(site) %>%
@@ -222,7 +223,7 @@ chemSum1_passive <- chemicalSummary_passive %>%
   group_by(chnm,  class, site) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/length(unique(site)),
+  summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits)) 
 
 chemSum2_passive <- chemicalSummary_passive %>%
@@ -302,7 +303,7 @@ chemSum1_BM <- chemicalSummary_BM %>%
   group_by(chnm,  class, site) %>%
   summarize(hits=as.numeric(any(hits > 0))) %>%
   group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/length(unique(site)),
+  summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits)) 
 
 chemSum2_BM <- chemicalSummary_BM %>%
@@ -335,8 +336,8 @@ summ1_BM <- siteSummary_BM %>%
   group_by(site, date) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
   group_by(site) %>%
-  summarize(freq=sum(hits)/length(unique(date)),
-            nSamples=length(unique(date))) 
+  summarize(freq=sum(hits)/n_distinct(date),
+            nSamples=n_distinct(date)) 
 
 summ2_BM <-  siteSummary_BM %>%
   group_by(site) %>%
@@ -407,7 +408,7 @@ chemSum3 <- chemicalSummary %>%
   summarize(hits=as.numeric(any(hits > 0)),
             maxEAR=max(EAR)) %>%
   group_by(chnm, class, endPoint) %>%
-  summarize(freq=sum(hits)/length(unique(site)),
+  summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits),
             maxEAR=max(maxEAR)) %>%
   mutate(endPoint=as.character(endPoint))%>%
@@ -420,23 +421,30 @@ chemSum3 <- chemicalSummary %>%
   data.frame %>%
   arrange(desc(freq)) 
 
-  datatable(unique(chemSum3[,-4]), rownames = FALSE, 
+  datatable(distinct(chemSum3[,-4]), rownames = FALSE, 
             options = list(pageLength = 10), 
             colnames=c("Chemical","Maximum EAR","Fraction of Sites with Hits","Endpoint","Class","Type","Type_sub","Family","Family_sub")) %>% 
     formatRound(c("maxEAR", "freq"), digits = 2)
   
   
+totalSamples_ep <- select(chemicalSummary,site,endPoint) %>%
+  distinct()%>%
+  group_by(endPoint) %>%
+  summarise(totalSites=n())%>%
+  mutate(endPoint=as.character(endPoint))
+  
 endpointSummary <- chemicalSummary %>%
   mutate(hits= as.numeric(EAR > 0.1)) %>%
-  group_by(site, date, endPoint) %>%
+  group_by(site, endPoint) %>%
   summarize(hits=as.numeric(any(hits > 0)),
             maxEAR=max(EAR)) %>%
   group_by(endPoint) %>%
-  summarize(freq=sum(hits)/length(unique(site)),
-            nSites=sum(hits),
+  summarize(nSites=sum(hits),
             maxEAR=max(maxEAR))  %>%
   mutate(endPoint=as.character(endPoint))%>%
   left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
+  left_join(totalSamples_ep, by=c("endPoint")) %>%
+  mutate(freq=nSites/totalSites)%>%
   select(endPoint, maxEAR, freq, nSites, 
          endPoint, contains("intended_target_")) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
@@ -445,7 +453,7 @@ endpointSummary <- chemicalSummary %>%
   data.frame %>%
   arrange(desc(freq)) 
 
-  datatable(unique(endpointSummary), rownames = FALSE, 
+  datatable(distinct(endpointSummary), rownames = FALSE, 
             options = list(pageLength = 10), 
             colnames=c("End Point","Maximum EAR","Fraction of Sites with Hits","nSites","Type","Type_sub","Family","Family_sub")) %>% 
     formatRound(c("maxEAR", "freq"), digits = 2)
@@ -571,7 +579,7 @@ chemSum3_passive <- chemicalSummary_passive %>%
   group_by(chnm,  class, site, endPoint) %>%
   summarize(hits= as.numeric(any(EAR > 0.1))) %>% 
   group_by(chnm, class, endPoint) %>%
-  summarize(freq=sum(hits)/length(unique(site)),
+  summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits)) 
 
 chemSum4_passive <- chemicalSummary_passive %>%
@@ -592,7 +600,7 @@ chemSum4_passive <- chemicalSummary_passive %>%
   filter(freq > 0)
 
 
-  datatable(unique(chemSum4_passive), rownames = FALSE, 
+  datatable(distinct(chemSum4_passive), rownames = FALSE, 
             options = list(pageLength = 10), 
             colnames=c("Chemical","Maximum EAR","Fraction of Sites with Hits","Endpoint","Class","Type","Type_sub","Family","Family_sub")) %>% 
     formatRound(c("maxEAR", "freq"), digits = 2)
