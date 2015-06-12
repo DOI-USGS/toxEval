@@ -1,8 +1,7 @@
-# Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
+language: c
 
-language: r
-warnings_are_errors: true
-sudo: required
+os:
+  - linux
 
 env:
    global:
@@ -12,11 +11,27 @@ env:
      - BOOTSTRAP_LATEX=""
      - NOT_CRAN="true" 
 
-r_github_packages:
- - rstudio/leaflet
- - renkun-ken/formattable
+script: "./travis-tool.sh run_tests"
+
+before_script:
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - "./travis-tool.sh bootstrap"
+  - "./travis-tool.sh install_deps - ./travis-tool.sh install_r dplyr tidyr "
+  - "./travis-tool.sh install_github rstudio/leaflet"
+  - "./travis-tool.sh install_github renkun-ken/formattable"
+  
+after_script:
+  - "./travis-tool.sh dump_logs"
 
 notifications:
   email:
     on_success: change
     on_failure: change
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+    
+warnings_are_errors: true
