@@ -4,34 +4,10 @@
 \alias{chemSumm}
 \title{Create chemical summary}
 \usage{
-chemSumm(wData, pCodeInfoDF, endPoint, date = "ActivityStartDateGiven",
-  station = "site", casrn_pCode = "casrn", class_pCode = "class",
-  code_pCode = "parameter_cd", casrn_ep = "casn")
+chemSumm(chemicalSummary)
 }
 \arguments{
-\item{wData}{data frame with a date column (can be NA)
-whose name is defined by the date argument, station column whose name is
-defined by the station argument, and the remaining columns are measurements that
-contain a chemKey (such as parameter code)}
-
-\item{pCodeInfoDF}{data frame}
-
-\item{endPoint}{data frame}
-
-\item{date}{character name of date column in wData}
-
-\item{station}{character name of station column in wData}
-
-\item{casrn_pCode}{character name of casrn column in pCodeInfo}
-
-\item{class_pCode}{character name of class column in pCodeInfo}
-
-\item{code_pCode}{character name of code column in pCodeInfo}
-
-\item{casrn_ep}{character name of class column in endPoint}
-}
-\value{
-chemicalSummary data frame
+\item{chemicalSummary}{data frame returned from \code{chemSummBasic}}
 }
 \description{
 Create chemical summary
@@ -41,6 +17,7 @@ library(dplyr)
 wData <- wData
 pCodeInfo <- pCodeInfo
 endPoint <- endPointToxCreate(pCodeInfo)
-chemSum1 <- chemSumm(wData,pCodeInfo,endPoint)
+chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+chemSum1 <- chemSumm(chemicalSummary)
 }
 

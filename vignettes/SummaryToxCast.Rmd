@@ -38,17 +38,6 @@ newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
 endPoint <- endPointToxCreate(pCodeInfo)
 
-
-#parameter info:
-# filePath <- file.path(packagePath, "pCodeInfo.RData")
-# load(file=filePath)
-# 
-# pCodeInfo$class <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(pCodeInfo$class), perl=TRUE)
-# pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
-# pCodeInfo$class[pCodeInfo$class == "Human Drug, Non Prescription"] <- "Pharmaceuticals"
-# 
-# pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
-
 # packagePath <- system.file("extdata", package="toxEval")
 # filePath <- file.path(packagePath, "waterSamples.RData")
 # load(file=filePath)
@@ -68,25 +57,6 @@ endPoint <- endPointToxCreate(pCodeInfo)
 #                                               names(waterSamples))]
 # waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
 # 
-# 
-# AC50 <- left_join(AC50gain, 
-#                   pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,
-#                             c("casrn", "parameter_units", "mlWt")],
-#                    by= c("casn"="casrn")) %>%
-#   filter(!is.na(parameter_units)) %>%
-#   rename(desiredUnits = parameter_units) %>%
-#   mutate(conversion = mlWt) %>%
-#   select(casn, chnm, desiredUnits, mlWt, conversion)
-# 
-# AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
-# infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
-# 
-# endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-# endPointData <- 10^endPointData
-# endPointData <- endPointData * AC50Converted$conversion
-# endPoint <- cbind(AC50, data.frame(endPointData))
-# endPoint <- rename(endPoint, Units=desiredUnits)
-# 
 # qualColumns <- grep("qualifier", names(waterSamples))
 # valColumns <- grep("valueToUse", names(waterSamples))
 # 
@@ -94,49 +64,8 @@ endPoint <- endPointToxCreate(pCodeInfo)
 # waterData[waterSamples[,qualColumns] == "<"] <- 0
 # 
 # wData <- cbind(waterSamples[,1:2],waterData)
-
-chemSum2 <- chemSumm(wData,pCodeInfo,endPoint)
-
-# chemicalSummary <- wData %>%
-#   gather(pCode, measuredValue, -ActivityStartDateGiven, -site)  %>%
-#   rename(date=ActivityStartDateGiven)%>%
-#   filter(!is.na(measuredValue)) %>%
-#   separate(pCode, into=c("colHeader","pCode"), "_")%>%
-#   left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd"))  %>%
-#   right_join(endPoint, by=c("casrn"="casn")) %>%
-#   select(-mlWt, -conversion, -casrn,  -Units, -pCode, -colHeader) %>%
-#   gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date)  %>% 
-#   filter(!is.na(endPointValue)) %>%
-#   mutate(EAR=measuredValue/endPointValue)
-# 
-# 
-# chemSum1 <- chemicalSummary %>%
-#   mutate(hits= as.numeric(EAR > 0.1)) %>%
-#   group_by(chnm,  class, site) %>%
-#   summarize(hits=as.numeric(any(hits > 0)), 
-#             median=median(EAR),
-#             maxEAR=max(EAR)) %>%
-#   group_by(chnm, class) %>%
-#   summarize(freq=sum(hits)/n_distinct(site),
-#             nSites=sum(hits),
-#             aveMedian=mean(median)) 
-# 
-# totalSamples <- select(chemicalSummary,date,site,chnm) %>%
-#   distinct()%>%
-#   group_by(chnm) %>%
-#   summarise(nSamples=n()) %>%
-#   mutate(chnm=as.character(chnm))
-# 
-# chemSum2 <- chemicalSummary %>%
-#   group_by(chnm,  class) %>%  
-#   summarize(maxEAR=max(EAR),
-#             nEndPoints=length(unique(endPoint[EAR > 0.1])),
-#             EAR90overall=quantile(EAR,probs = .9)) %>%
-#   left_join(chemSum1, by=c("chnm","class")) %>%
-#   left_join(totalSamples, by=c("chnm")) %>%
-#   data.frame %>%
-#   arrange(desc(freq)) %>%
-#   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+chemSum2 <- chemSumm(chemicalSummary)
 
 siteSummary <- wData %>%
   gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
@@ -398,14 +327,14 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 ## Matches of Screening Endpoints
 * Which chemicals are included in ToxCast and Water Quality Guideline assessments?
     + Water samples
-        * `r length(unique(chemSum2$chnm))` compounds of `r length(waterSamplePCodes)` total 
+        * `r length(unique(chemSum2$chnm))` compounds of `r nrow(pCodeInfo)` total 
         * `r paste(unique(chemSum2$class), collapse=", ")`
     + Passive samplers
         * `r length(unique(chemSum2_passive$chnm))`  compounds of `r length(unique(passiveData$Chemical))` total
         *  `r paste(unique(chemSum2_passive$class), collapse=", ")`
 * Water Quality Guidelines
     + Water samples
-        * `r length(unique(chemSum2_BM$chnm))` compounds of `r length(waterSamplePCodes)` total
+        * `r length(unique(chemSum2_BM$chnm))` compounds of `r nrow(pCodeInfo)` total
         * `r paste(unique(chemSum2_BM$class), collapse=", ")`
 
 
@@ -434,8 +363,14 @@ pander(df)
 As an initial exploration of limitations of using ToxCast with the water sample data, ToxCast endpoints were compared with detection levels for each analyzed compound. The exposure:activity ratio (EAR) for a concentration at the detection level for the endpoint with the minimum AC50 for that chemical is presented in this table.  Only compounds with detection levels great than 10% of the lowest AC50 are included.
 
 ```{r warning=FALSE, echo=FALSE}
-pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt) %>%
-  filter(pCodeInfo$parameter_cd %in% waterSamplePCodes)
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "waterSamples.RData")
+load(file=filePath)
+
+waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
+
+
+pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
 
 detectionLimits <- waterSamples[,grep("detectionLimit", names(waterSamples))]
 detectionLimits <- na.omit(detectionLimits)

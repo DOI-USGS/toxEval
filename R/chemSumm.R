@@ -2,6 +2,57 @@
 #'
 #' Create chemical summary
 #'
+#' @param chemicalSummary data frame returned from \code{chemSummBasic}
+#' @import dplyr
+#' @import tidyr
+#' @export
+#' @examples
+#' library(dplyr)
+#' wData <- wData
+#' pCodeInfo <- pCodeInfo
+#' endPoint <- endPointToxCreate(pCodeInfo)
+#' chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+#' chemSum1 <- chemSumm(chemicalSummary)
+chemSumm <- function(chemicalSummary){
+
+  chemSum1 <- chemicalSummary %>%
+    mutate(hits= as.numeric(EAR > 0.1)) %>%
+    group_by(chnm,  class, site) %>%
+    summarize(hits=as.numeric(any(hits > 0)), 
+              median=median(EAR),
+              maxEAR=max(EAR)) %>%
+    group_by(chnm, class) %>%
+    summarize(freq=sum(hits)/n_distinct(site),
+              nSites=sum(hits),
+              aveMedian=mean(median)) 
+  
+  totalSamples <- select(chemicalSummary,date,site,chnm) %>%
+    distinct()%>%
+    group_by(chnm) %>%
+    summarise(nSamples=n()) %>%
+    mutate(chnm=as.character(chnm))
+  
+  chemSum2 <- chemicalSummary %>%
+    group_by(chnm,  class) %>%  
+    summarize(maxEAR=max(EAR),
+              nEndPoints=length(unique(endPoint[EAR > 0.1])),
+              EAR90overall=quantile(EAR,probs = .9)) %>%
+    left_join(chemSum1, by=c("chnm","class")) %>%
+    left_join(totalSamples, by=c("chnm")) %>%
+    data.frame %>%
+    arrange(desc(freq)) %>%
+    select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+  
+  
+  return(chemSum2)
+  
+}
+
+
+#' Create basic chemical summary
+#'
+#' Create basic chemical summary
+#'
 #' @param wData data frame with a date column (can be NA) 
 #' whose name is defined by the date argument, station column whose name is
 #' defined by the station argument, and the remaining columns are measurements that
@@ -23,8 +74,8 @@
 #' wData <- wData
 #' pCodeInfo <- pCodeInfo
 #' endPoint <- endPointToxCreate(pCodeInfo)
-#' chemSum1 <- chemSumm(wData,pCodeInfo,endPoint)
-chemSumm <- function(wData, pCodeInfoDF,endPoint,
+#' chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
                      date="ActivityStartDateGiven", station="site",
                      casrn_pCode="casrn",class_pCode="class",code_pCode="parameter_cd",
                      casrn_ep="casn"){
@@ -41,39 +92,7 @@ chemSumm <- function(wData, pCodeInfoDF,endPoint,
     filter(!is.na(endPointValue)) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
     filter(!is.na(EAR))
-  
-  
-    chemSum1 <- chemicalSummary %>%
-      mutate(hits= as.numeric(EAR > 0.1)) %>%
-      group_by(chnm,  class, site) %>%
-      summarize(hits=as.numeric(any(hits > 0)), 
-                median=median(EAR),
-                maxEAR=max(EAR)) %>%
-      group_by(chnm, class) %>%
-      summarize(freq=sum(hits)/n_distinct(site),
-                nSites=sum(hits),
-                aveMedian=mean(median)) 
-    
-    totalSamples <- select(chemicalSummary,date,site,chnm) %>%
-      distinct()%>%
-      group_by(chnm) %>%
-      summarise(nSamples=n()) %>%
-      mutate(chnm=as.character(chnm))
-    
-    chemSum2 <- chemicalSummary %>%
-      group_by(chnm,  class) %>%  
-      summarize(maxEAR=max(EAR),
-                nEndPoints=length(unique(endPoint[EAR > 0.1])),
-                EAR90overall=quantile(EAR,probs = .9)) %>%
-      left_join(chemSum1, by=c("chnm","class")) %>%
-      left_join(totalSamples, by=c("chnm")) %>%
-      data.frame %>%
-      arrange(desc(freq)) %>%
-      select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
-  
-  
-  return(chemSum2)
-  
+  return(chemicalSummary)
 }
 
 #' Create chemical summary

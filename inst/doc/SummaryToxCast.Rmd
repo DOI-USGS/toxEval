@@ -14,6 +14,7 @@ vignette: >
 ---
 
 ```{r message=FALSE, echo=FALSE}
+library(grid)
 library(pander)
 library(dplyr)
 library(tidyr)
@@ -24,120 +25,47 @@ library(leaflet)
 library(formattable)
 library(ggplot2)
 library(gridExtra)
-library(grid)
 
+pCodeInfo <- pCodeInfo
+wData <- wData
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
 AC50gain <- AC50gain
 packagePath <- system.file("extdata", package="toxEval")
-#Site Info:
 filePath <- file.path(packagePath, "stationINFO.RData")
 load(file=filePath)
-#parameter info:
-# filePath <- file.path(packagePath, "pCodeInfo.RData")
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+endPoint <- endPointToxCreate(pCodeInfo)
+
+# packagePath <- system.file("extdata", package="toxEval")
+# filePath <- file.path(packagePath, "waterSamples.RData")
 # load(file=filePath)
-# 
-# pCodeInfo$class <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(pCodeInfo$class), perl=TRUE)
-# pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
-# pCodeInfo$class[pCodeInfo$class == "Human Drug, Non Prescription"] <- "Pharmaceuticals"
-# 
-# pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
-
-pCodeInfo <- pCodeInfo
-
-packagePath <- system.file("extdata", package="toxEval")
-filePath <- file.path(packagePath, "waterSamples.RData")
-load(file=filePath)
-
-#Correct DEET:
-# casDEET <- AC50gain$casn[AC50gain$chnm == "DEET"]
-# pCodeDEET <- pCodeInfo$parameter_cd[pCodeInfo$casrn == casDEET]
-# dlDEET <- min(waterSamples$valueToUse_61947, na.rm = TRUE)
-# waterSamples$qualifier_61947 <- ifelse(waterSamples$valueToUse_61947 <= dlDEET*4, "<", "")
+########################
+          #Correct DEET:
+          # casDEET <- AC50gain$casn[AC50gain$chnm == "DEET"]
+          # pCodeDEET <- pCodeInfo$parameter_cd[pCodeInfo$casrn == casDEET]
+          # dlDEET <- min(waterSamples$valueToUse_61947, na.rm = TRUE)
+          # waterSamples$qualifier_61947 <- ifelse(waterSamples$valueToUse_61947 <= dlDEET*4, "<", "")
+########################
 # Just removing DEET:
-waterSamples <- waterSamples[,-grep("61947",x = names(waterSamples))]
-
-waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
-
-waterSamplePCodes <- names(waterSamples)[grep("valueToUse", 
-                                              names(waterSamples))]
-waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
-
-
-AC50 <- left_join(AC50gain, 
-                  pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,
-                            c("casrn", "parameter_units", "mlWt")],
-                   by= c("casn"="casrn")) %>%
-  filter(!is.na(parameter_units)) %>%
-  rename(desiredUnits = parameter_units) %>%
-  mutate(conversion = mlWt) %>%
-  select(casn, chnm, desiredUnits, mlWt, conversion)
-
-AC50Converted <- left_join(AC50, AC50gain, by = c("casn", "chnm"))
-infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
-
-endPointData <- AC50Converted[,!(names(AC50Converted) %in% infoColumns)]
-endPointData <- 10^endPointData
-endPointData <- endPointData * AC50Converted$conversion
-endPoint <- cbind(AC50, data.frame(endPointData))
-endPoint <- rename(endPoint, Units=desiredUnits)
-
-qualColumns <- grep("qualifier", names(waterSamples))
-valColumns <- grep("valueToUse", names(waterSamples))
-
-waterData <- waterSamples[,valColumns]
-waterData[waterSamples[,qualColumns] == "<"] <- 0
-
-newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
-wData <- cbind(waterSamples[,1:2],waterData)
-
-valColumns <- grep("valueToUse",names(wData))
-
-newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
-
-wData <- cbind(waterSamples[,1:2],waterData)
-valColumns <- grep("valueToUse",names(wData))
-
-chemicalSummary <- wData %>%
-  gather(pCode, measuredValue, -ActivityStartDateGiven, -site)  %>%
-  rename(date=ActivityStartDateGiven)%>%
-  filter(!is.na(measuredValue)) %>%
-  separate(pCode, into=c("colHeader","pCode"), "_")%>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd"))  %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -pCode, -colHeader) %>%
-  gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date)  %>% 
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue)
-
-
-chemSum1 <- chemicalSummary %>%
-  mutate(hits= as.numeric(EAR > 0.1)) %>%
-  group_by(chnm,  class, site) %>%
-  summarize(hits=as.numeric(any(hits > 0)), 
-            median=median(EAR),
-            maxEAR=max(EAR)) %>%
-  group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n_distinct(site),
-            nSites=sum(hits),
-            aveMedian=mean(median)) 
-
-totalSamples <- select(chemicalSummary,date,site,chnm) %>%
-  distinct()%>%
-  group_by(chnm) %>%
-  summarise(nSamples=n()) %>%
-  mutate(chnm=as.character(chnm))
-
-chemSum2 <- chemicalSummary %>%
-  group_by(chnm,  class) %>%  
-  summarize(maxEAR=max(EAR),
-            nEndPoints=length(unique(endPoint[EAR > 0.1])),
-            EAR90overall=quantile(EAR,probs = .9)) %>%
-  left_join(chemSum1, by=c("chnm","class")) %>%
-  left_join(totalSamples, by=c("chnm")) %>%
-  data.frame %>%
-  arrange(desc(freq)) %>%
-  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
+# waterSamples <- waterSamples[,-grep("61947",x = names(waterSamples))]
+# pCodeInfo <- pCodeInfo[pCodeInfo$parameter_cd != "61947",]
+# waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
+# 
+# waterSamplePCodes <- names(waterSamples)[grep("valueToUse", 
+#                                               names(waterSamples))]
+# waterSamplePCodes <- sapply(strsplit(waterSamplePCodes, "_"), function(x) x[2])
+# 
+# qualColumns <- grep("qualifier", names(waterSamples))
+# valColumns <- grep("valueToUse", names(waterSamples))
+# 
+# waterData <- waterSamples[,valColumns]
+# waterData[waterSamples[,qualColumns] == "<"] <- 0
+# 
+# wData <- cbind(waterSamples[,1:2],waterData)
+chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+chemSum2 <- chemSumm(chemicalSummary)
 
 siteSummary <- wData %>%
   gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
@@ -178,26 +106,28 @@ summary <- left_join(summ1, summ2, by="site") %>%
 
 ```{r, echo=FALSE}
 
-packagePath <- system.file("extdata", package="toxEval")
-filePath <- file.path(packagePath, "passiveData.RData")
-load(file=filePath)
+# packagePath <- system.file("extdata", package="toxEval")
+# filePath <- file.path(packagePath, "passiveData.RData")
+# load(file=filePath)
+
+passiveData <- passiveData
 
 #passive class info:
 passiveCAS <- readRDS(file.path(packagePath, "passiveCAS.rds"))
 
-pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
+# pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
-# Some chemicals have 2 rows (different units)...
-# To simplify for now, we'll ignore the duplicate chemicals:
-
-
-passiveData <- left_join(passiveData, passiveCAS, by=c("CAS", "Chemical"))
-passiveData <- passiveData[!duplicated(passiveData$CAS),]
-passiveData$class[passiveData$Chemical == "Hexachlorobenzene (HCB)"] <-"OC Pesticides"
-passiveData$class[passiveData$Chemical == "Pentachloroanisole (PCA)"] <-"OC Pesticides"
-passiveData$class[is.na(passiveData$class)] <-"Pharmaceuticals"
-
-passiveData <- passiveData[,-which(names(passiveData) == "site04249000.1")]
+# # Some chemicals have 2 rows (different units)...
+# # To simplify for now, we'll ignore the duplicate chemicals:
+# 
+# 
+# passiveData <- left_join(passiveData, passiveCAS, by=c("CAS", "Chemical"))
+# passiveData <- passiveData[!duplicated(passiveData$CAS),]
+# passiveData$class[passiveData$Chemical == "Hexachlorobenzene (HCB)"] <-"OC Pesticides"
+# passiveData$class[passiveData$Chemical == "Pentachloroanisole (PCA)"] <-"OC Pesticides"
+# passiveData$class[is.na(passiveData$class)] <-"Pharmaceuticals"
+# 
+# passiveData <- passiveData[,-which(names(passiveData) == "site04249000.1")]
 
 
 unitConversion <- setNames(c(10^6, 10^3), c("pg/L", "ng/L") )
@@ -213,7 +143,7 @@ AC50_passive <- right_join(AC50gain[,c("casn"), drop=FALSE],
 AC50Converted_passive <- left_join(AC50_passive, AC50gain, by = c("casn", "chnm"))
 infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
 
-endPointData_passive <- AC50Converted_passive[,!(names(AC50Converted) %in% infoColumns)]
+endPointData_passive <- AC50Converted_passive[,!(names(AC50Converted_passive) %in% infoColumns)]
 endPointData_passive <- 10^endPointData_passive
 endPointData_passive <- endPointData_passive *  AC50Converted_passive$conversion
 endPoint_passive <- cbind(AC50_passive, data.frame(endPointData_passive))
@@ -283,11 +213,11 @@ summ1_passive <- siteSummary_passive %>%
 
 
 ```{r, eval=TRUE, echo=FALSE}
+
 AC50gain_bm <- select(pCodeInfo, srsname, casrn, AqT_EPA_acute, 
                    AqT_EPA_chronic, AqT_other_acute, AqT_other_chronic)
 
-AC50_bm <- left_join(AC50gain_bm, pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
-                   by= c("casrn"="casrn")) %>%
+AC50_bm <- left_join(AC50gain_bm, pCodeInfo[,c("casrn", "parameter_units", "mlWt")], by= c("casrn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
   rename(desiredUnits = parameter_units) %>%
   mutate(conversion = 1) %>%
@@ -397,14 +327,14 @@ summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
 ## Matches of Screening Endpoints
 * Which chemicals are included in ToxCast and Water Quality Guideline assessments?
     + Water samples
-        * `r length(unique(chemSum2$chnm))` compounds of `r length(waterSamplePCodes)` total 
+        * `r length(unique(chemSum2$chnm))` compounds of `r nrow(pCodeInfo)` total 
         * `r paste(unique(chemSum2$class), collapse=", ")`
     + Passive samplers
         * `r length(unique(chemSum2_passive$chnm))`  compounds of `r length(unique(passiveData$Chemical))` total
         *  `r paste(unique(chemSum2_passive$class), collapse=", ")`
 * Water Quality Guidelines
     + Water samples
-        * `r length(unique(chemSum2_BM$chnm))` compounds of `r length(waterSamplePCodes)` total
+        * `r length(unique(chemSum2_BM$chnm))` compounds of `r nrow(pCodeInfo)` total
         * `r paste(unique(chemSum2_BM$class), collapse=", ")`
 
 
@@ -433,8 +363,14 @@ pander(df)
 As an initial exploration of limitations of using ToxCast with the water sample data, ToxCast endpoints were compared with detection levels for each analyzed compound. The exposure:activity ratio (EAR) for a concentration at the detection level for the endpoint with the minimum AC50 for that chemical is presented in this table.  Only compounds with detection levels great than 10% of the lowest AC50 are included.
 
 ```{r warning=FALSE, echo=FALSE}
-pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt) %>%
-  filter(pCodeInfo$parameter_cd %in% waterSamplePCodes)
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "waterSamples.RData")
+load(file=filePath)
+
+waterSamples$site["USGS-04157005" == waterSamples$site] <- "USGS-04157000"
+
+
+pCodeSummary <- select(pCodeInfo, srsname, casrn, parameter_units, mlWt)
 
 detectionLimits <- waterSamples[,grep("detectionLimit", names(waterSamples))]
 detectionLimits <- na.omit(detectionLimits)
