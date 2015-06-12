@@ -1,8 +1,5 @@
 language: c
 
-os:
-  - linux
-
 env:
    global:
      - CRAN: http://cran.rstudio.com
@@ -33,5 +30,3 @@ notifications:
   email:
     on_success: change
     on_failure: change
-    
-warnings_are_errors: true
