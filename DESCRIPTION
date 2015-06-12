@@ -28,7 +28,8 @@ Suggests:
     leaflet,
     formattable,
     ggplot2,
-    gridExtra
+    gridExtra,
+    grid
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes

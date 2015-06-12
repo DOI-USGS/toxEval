@@ -3,4 +3,7 @@
 export(AC10)
 export(AC50gain)
 export(AC50loss)
+export(chemSumm)
 export(endPointInfo)
+import(dplyr)
+import(tidyr)

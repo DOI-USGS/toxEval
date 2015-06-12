@@ -56,3 +56,28 @@ NULL
 #'endPointInfo <- endPointInfo
 #'head(endPointInfo[,1:5])
 NULL
+
+#' passiveData
+#' 
+#'
+#'@aliases passiveData
+#'@name passiveData
+#'@docType data
+#'@keywords datasets
+NULL
+
+#' wData 
+#'
+#'@aliases wData
+#'@name wData
+#'@docType data
+#'@keywords datasets
+NULL
+
+#' pCodeInfo 
+#'
+#'@aliases pCodeInfo
+#'@name pCodeInfo
+#'@docType data
+#'@keywords datasets
+NULL

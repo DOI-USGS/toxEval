@@ -24,6 +24,7 @@ library(leaflet)
 library(formattable)
 library(ggplot2)
 library(gridExtra)
+library(grid)
 
 endPointInfo <- endPointInfo
 # AC50 data provided in the toxEval package:
