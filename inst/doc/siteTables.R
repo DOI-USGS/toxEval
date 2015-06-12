@@ -1,0 +1,72 @@
+## ----message=FALSE, echo=FALSE, results='asis'---------------------------
+library(dplyr)
+library(tidyr)
+library(DT)
+library(toxEval)
+library(knitr)
+
+
+pCodeInfo <- pCodeInfo
+wData <- wData
+endPointInfo <- endPointInfo
+# AC50 data provided in the toxEval package:
+AC50gain <- AC50gain
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "stationINFO.RData")
+load(file=filePath)
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+endPoint <- endPointToxCreate(pCodeInfo)
+
+siteSummary <- wData %>%
+  gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
+  filter(!is.na(measuredValue)) %>%
+  rename(date=ActivityStartDateGiven) %>%
+  separate(pCode, into=c("colName","pCode"),sep="_") %>%
+  select(-colName) %>%
+  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+  right_join(endPoint, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units, -pCode) %>%
+  gather(endPoint, endPointValue, -class, -site, -date,-measuredValue,-chnm) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(endPoint=as.character(endPoint),
+         EAR=measuredValue/endPointValue,
+         site=as.character(newSiteKey[site])) %>% 
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)
+  
+summ1 <- siteSummary %>%
+  group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
+  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+  group_by(site) %>%
+  summarize(freq=sum(hits)/n_distinct(date),
+            nSamples=n_distinct(date)) 
+
+summ2 <-  siteSummary %>%
+  group_by(site) %>%
+  summarize(nChem = length(unique(chnm[EAR > 0.1])),
+            nEndPoints = length(unique(endPoint[EAR > 0.1])),
+            maxEAR = max(EAR))
+
+summary <- left_join(summ1, summ2, by="site") %>%
+  arrange(desc(maxEAR))
+
+for(i in summary$site){
+  oneSite <- wData %>%
+    mutate(site = newSiteKey[site]) %>%
+    filter(site == i) 
+  
+  chemSummSite <- chemSummBasic(oneSite, pCodeInfo, endPoint)
+  chemSummSite1 <- chemSumm(chemSummSite) %>%
+    select(-nSites,-freq)%>%
+    filter(maxEAR > 0.1) %>%
+    arrange(desc(maxEAR))
+  
+  
+  if(nrow(chemSummSite1) > 0){
+    cat("\n\n###", i, "\n")
+    print(kable(chemSummSite1, digits=3,caption = i, row.names = FALSE))
+  }
+}
+
+
