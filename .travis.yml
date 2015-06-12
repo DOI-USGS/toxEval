@@ -14,7 +14,7 @@ env:
 
 r_github_packages:
  - rstudio/leaflet
- 
+ - renkun-ken/formattable
 
 notifications:
   email:
