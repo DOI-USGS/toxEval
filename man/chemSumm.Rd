@@ -14,6 +14,8 @@ whose name is defined by the date argument, station column whose name is
 defined by the station argument, and the remaining columns are measurements that
 contain a chemKey (such as parameter code)}
 
+\item{pCodeInfoDF}{data frame}
+
 \item{endPoint}{data frame}
 
 \item{date}{character name of date column in wData}
@@ -27,8 +29,6 @@ contain a chemKey (such as parameter code)}
 \item{code_pCode}{character name of code column in pCodeInfo}
 
 \item{casrn_ep}{character name of class column in endPoint}
-
-\item{pCodeInfo}{data frame}
 }
 \value{
 chemicalSummary data frame
@@ -40,7 +40,6 @@ Create chemical summary
 library(dplyr)
 wData <- wData
 pCodeInfo <- pCodeInfo
-pCodeInfo <- filter(pCodeInfo, parameter_cd != "61947")
 endPoint <- endPointToxCreate(pCodeInfo)
 chemSum1 <- chemSumm(wData,pCodeInfo,endPoint)
 }

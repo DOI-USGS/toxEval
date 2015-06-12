@@ -6,7 +6,7 @@
 #' whose name is defined by the date argument, station column whose name is
 #' defined by the station argument, and the remaining columns are measurements that
 #' contain a chemKey (such as parameter code)
-#' @param pCodeInfo data frame
+#' @param pCodeInfoDF data frame
 #' @param endPoint data frame 
 #' @param date character name of date column in wData
 #' @param station character name of station column in wData
@@ -22,7 +22,6 @@
 #' library(dplyr)
 #' wData <- wData
 #' pCodeInfo <- pCodeInfo
-#' pCodeInfo <- filter(pCodeInfo, parameter_cd != "61947")
 #' endPoint <- endPointToxCreate(pCodeInfo)
 #' chemSum1 <- chemSumm(wData,pCodeInfo,endPoint)
 chemSumm <- function(wData, pCodeInfoDF,endPoint,
