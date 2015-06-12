@@ -19,14 +19,17 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "stationINFO.RData")
 load(file=filePath)
 #parameter info:
-filePath <- file.path(packagePath, "pCodeInfo.RData")
-load(file=filePath)
+# filePath <- file.path(packagePath, "pCodeInfo.RData")
+# load(file=filePath)
+# 
+# pCodeInfo$class <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(pCodeInfo$class), perl=TRUE)
+# pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
+# pCodeInfo$class[pCodeInfo$class == "Human Drug, Non Prescription"] <- "Pharmaceuticals"
+# 
+# pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 
-pCodeInfo$class <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(pCodeInfo$class), perl=TRUE)
-pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
-pCodeInfo$class[pCodeInfo$class == "Human Drug, Non Prescription"] <- "Pharmaceuticals"
+pCodeInfo <- pCodeInfo
 
-pCodeInfo <- pCodeInfo[pCodeInfo$casrn != "", ]
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "waterSamples.RData")
 load(file=filePath)
