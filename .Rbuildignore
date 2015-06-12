@@ -1,8 +1,6 @@
+.travis.yml
 toxEval.Rproj
 passiveData.R
-passiveData.RData
 workflow.R
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
-.travis.yml
