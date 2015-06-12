@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="USGS: Steve Corsi, Laura DeCicco, Austin Baldwin, David Alvarez, Peter Lenaker USEPA: Anthony Schroeder, Dan Villeneuve, Brett Blackwell, Gerald Ankley" />
+
+
+<title>Site Tables</title>
+
+
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">Site Tables</h1>
+<h4 class="author"><em><b>USGS</b>: Steve Corsi, Laura DeCicco, Austin Baldwin, David Alvarez, Peter Lenaker <br /><b>USEPA</b>: Anthony Schroeder, Dan Villeneuve, Brett Blackwell, Gerald Ankley</em></h4>
+<h4 class="date"><em>12 June, 2015</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#site-tables"><span class="toc-section-number">1</span> Site Tables</a><ul>
+<li><a href="#water-samples-toxcast"><span class="toc-section-number">1.1</span> Water Samples, ToxCast</a><ul>
+<li><a href="#portage"><span class="toc-section-number">1.1.1</span> Portage</a></li>
+<li><a href="#maumee"><span class="toc-section-number">1.1.2</span> Maumee</a></li>
+<li><a href="#raisin"><span class="toc-section-number">1.1.3</span> Raisin</a></li>
+<li><a href="#manitowoc"><span class="toc-section-number">1.1.4</span> Manitowoc</a></li>
+<li><a href="#milwaukeemouth"><span class="toc-section-number">1.1.5</span> MilwaukeeMouth</a></li>
+<li><a href="#stjoseph"><span class="toc-section-number">1.1.6</span> StJoseph</a></li>
+<li><a href="#clinton"><span class="toc-section-number">1.1.7</span> Clinton</a></li>
+<li><a href="#genesee"><span class="toc-section-number">1.1.8</span> Genesee</a></li>
+<li><a href="#saginaw"><span class="toc-section-number">1.1.9</span> Saginaw</a></li>
+<li><a href="#huronoh"><span class="toc-section-number">1.1.10</span> HuronOH</a></li>
+<li><a href="#vermilion"><span class="toc-section-number">1.1.11</span> Vermilion</a></li>
+<li><a href="#blackoh"><span class="toc-section-number">1.1.12</span> BlackOH</a></li>
+<li><a href="#rouge"><span class="toc-section-number">1.1.13</span> Rouge</a></li>
+<li><a href="#sandusky"><span class="toc-section-number">1.1.14</span> Sandusky</a></li>
+<li><a href="#grandmi"><span class="toc-section-number">1.1.15</span> GrandMI</a></li>
+<li><a href="#burns"><span class="toc-section-number">1.1.16</span> Burns</a></li>
+<li><a href="#cuyahoga"><span class="toc-section-number">1.1.17</span> Cuyahoga</a></li>
+<li><a href="#grandoh"><span class="toc-section-number">1.1.18</span> GrandOH</a></li>
+<li><a href="#oswego"><span class="toc-section-number">1.1.19</span> Oswego</a></li>
+<li><a href="#blackmi"><span class="toc-section-number">1.1.20</span> BlackMI</a></li>
+<li><a href="#fox"><span class="toc-section-number">1.1.21</span> Fox</a></li>
+<li><a href="#stlouis"><span class="toc-section-number">1.1.22</span> StLouis</a></li>
+<li><a href="#kalamazoo2"><span class="toc-section-number">1.1.23</span> Kalamazoo2</a></li>
+<li><a href="#rocky"><span class="toc-section-number">1.1.24</span> Rocky</a></li>
+<li><a href="#indianahc"><span class="toc-section-number">1.1.25</span> IndianaHC</a></li>
+<li><a href="#pawpaw"><span class="toc-section-number">1.1.26</span> PawPaw</a></li>
+<li><a href="#tonawanda"><span class="toc-section-number">1.1.27</span> Tonawanda</a></li>
+<li><a href="#ausable"><span class="toc-section-number">1.1.28</span> AuSable</a></li>
+<li><a href="#indian"><span class="toc-section-number">1.1.29</span> Indian</a></li>
+<li><a href="#menominee"><span class="toc-section-number">1.1.30</span> Menominee</a></li>
+<li><a href="#cheboygan2"><span class="toc-section-number">1.1.31</span> Cheboygan2</a></li>
+<li><a href="#stregis"><span class="toc-section-number">1.1.32</span> StRegis</a></li>
+<li><a href="#ontonagon"><span class="toc-section-number">1.1.33</span> Ontonagon</a></li>
+<li><a href="#cattaraugus"><span class="toc-section-number">1.1.34</span> Cattaraugus</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="site-tables" class="section level1">
+<h1><span class="header-section-number">1</span> Site Tables</h1>
+<div id="water-samples-toxcast" class="section level2">
+<h2><span class="header-section-number">1.1</span> Water Samples, ToxCast</h2>
+<div id="portage" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Portage</h3>
+<table>
+<caption>Portage</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">2082.327</td>
+<td align="right">9</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">74.350</td>
+<td align="right">16</td>
+<td align="right">64</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">5.971</td>
+<td align="right">7</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">5.243</td>
+<td align="right">2</td>
+<td align="right">62</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">3.147</td>
+<td align="right">2</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.581</td>
+<td align="right">1</td>
+<td align="right">64</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Tris(2-butoxyethyl) phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.147</td>
+<td align="right">1</td>
+<td align="right">64</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="maumee" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> Maumee</h3>
+<table>
+<caption>Maumee</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">825.990</td>
+<td align="right">6</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">17.385</td>
+<td align="right">11</td>
+<td align="right">64</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">5.118</td>
+<td align="right">7</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">4.369</td>
+<td align="right">2</td>
+<td align="right">62</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.488</td>
+<td align="right">2</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">Other</td>
+<td align="right">0.868</td>
+<td align="right">1</td>
+<td align="right">64</td>
+</tr>
+<tr class="odd">
+<td align="left">Isophorone</td>
+<td align="left">Solvent</td>
+<td align="right">0.729</td>
+<td align="right">1</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.508</td>
+<td align="right">1</td>
+<td align="right">64</td>
+</tr>
+<tr class="odd">
+<td align="left">Tributyl phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.251</td>
+<td align="right">2</td>
+<td align="right">64</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">63</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="raisin" class="section level3">
+<h3><span class="header-section-number">1.1.3</span> Raisin</h3>
+<table>
+<caption>Raisin</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">607.345</td>
+<td align="right">5</td>
+<td align="right">44</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">5.918</td>
+<td align="right">7</td>
+<td align="right">44</td>
+</tr>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">3.495</td>
+<td align="right">2</td>
+<td align="right">44</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">3.412</td>
+<td align="right">2</td>
+<td align="right">44</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.087</td>
+<td align="right">2</td>
+<td align="right">44</td>
+</tr>
+<tr class="even">
+<td align="left">Isophorone</td>
+<td align="left">Solvent</td>
+<td align="right">0.849</td>
+<td align="right">2</td>
+<td align="right">44</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.581</td>
+<td align="right">1</td>
+<td align="right">44</td>
+</tr>
+<tr class="even">
+<td align="left">Bisphenol A</td>
+<td align="left">Antioxidant</td>
+<td align="right">0.254</td>
+<td align="right">6</td>
+<td align="right">44</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">44</td>
+</tr>
+<tr class="even">
+<td align="left">Tris(2-chloroethyl) phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.147</td>
+<td align="right">1</td>
+<td align="right">44</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="manitowoc" class="section level3">
+<h3><span class="header-section-number">1.1.4</span> Manitowoc</h3>
+<table>
+<caption>Manitowoc</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">534.464</td>
+<td align="right">5</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">2.559</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">1.554</td>
+<td align="right">5</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.581</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="milwaukeemouth" class="section level3">
+<h3><span class="header-section-number">1.1.5</span> MilwaukeeMouth</h3>
+<table>
+<caption>MilwaukeeMouth</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">513.641</td>
+<td align="right">5</td>
+<td align="right">44</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">17.385</td>
+<td align="right">11</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">3.412</td>
+<td align="right">2</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">dl-Menthol</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">2.070</td>
+<td align="right">3</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.087</td>
+<td align="right">2</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.670</td>
+<td align="right">2</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.654</td>
+<td align="right">1</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.201</td>
+<td align="right">1</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">Bromacil</td>
+<td align="left">Herbicide</td>
+<td align="right">0.191</td>
+<td align="right">2</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">0.163</td>
+<td align="right">1</td>
+<td align="right">45</td>
+</tr>
+<tr class="odd">
+<td align="left">Fluoranthene</td>
+<td align="left">PAH</td>
+<td align="right">0.107</td>
+<td align="right">2</td>
+<td align="right">45</td>
+</tr>
+<tr class="even">
+<td align="left">Phenanthrene</td>
+<td align="left">PAH</td>
+<td align="right">0.105</td>
+<td align="right">1</td>
+<td align="right">45</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="stjoseph" class="section level3">
+<h3><span class="header-section-number">1.1.6</span> StJoseph</h3>
+<table>
+<caption>StJoseph</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">395.642</td>
+<td align="right">5</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">7.398</td>
+<td align="right">9</td>
+<td align="right">25</td>
+</tr>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">4.369</td>
+<td align="right">2</td>
+<td align="right">25</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">1.706</td>
+<td align="right">1</td>
+<td align="right">25</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.687</td>
+<td align="right">2</td>
+<td align="right">25</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="clinton" class="section level3">
+<h3><span class="header-section-number">1.1.7</span> Clinton</h3>
+<table>
+<caption>Clinton</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">347.055</td>
+<td align="right">5</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Dichlorvos</td>
+<td align="left">Insecticide</td>
+<td align="right">132.167</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">11.942</td>
+<td align="right">10</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">6.991</td>
+<td align="right">3</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">3.699</td>
+<td align="right">7</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">3.547</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">1.501</td>
+<td align="right">3</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">dl-Menthol</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.104</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">Other</td>
+<td align="right">0.868</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.581</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Fluoranthene</td>
+<td align="left">PAH</td>
+<td align="right">0.405</td>
+<td align="right">6</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.352</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Phenanthrene</td>
+<td align="left">PAH</td>
+<td align="right">0.292</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Pyrene</td>
+<td align="left">PAH</td>
+<td align="right">0.267</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">42</td>
+</tr>
+<tr class="even">
+<td align="left">Prometon</td>
+<td align="left">Herbicide</td>
+<td align="right">0.216</td>
+<td align="right">3</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Tris(2-butoxyethyl) phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.173</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Bromacil</td>
+<td align="left">Herbicide</td>
+<td align="right">0.163</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="genesee" class="section level3">
+<h3><span class="header-section-number">1.1.8</span> Genesee</h3>
+<table>
+<caption>Genesee</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">249.879</td>
+<td align="right">5</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">1.849</td>
+<td align="right">5</td>
+<td align="right">14</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.687</td>
+<td align="right">2</td>
+<td align="right">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="saginaw" class="section level3">
+<h3><span class="header-section-number">1.1.9</span> Saginaw</h3>
+<table>
+<caption>Saginaw</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">152.704</td>
+<td align="right">5</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">3.412</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">2.219</td>
+<td align="right">5</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Methyl salicylate</td>
+<td align="left">Other</td>
+<td align="right">0.803</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">Other</td>
+<td align="right">0.744</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.687</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.453</td>
+<td align="right">2</td>
+<td align="right">29</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.446</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.363</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">0.326</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="huronoh" class="section level3">
+<h3><span class="header-section-number">1.1.10</span> HuronOH</h3>
+<table>
+<caption>HuronOH</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">124.940</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">1.091</td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.229</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Bromacil</td>
+<td align="left">Herbicide</td>
+<td align="right">0.144</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="vermilion" class="section level3">
+<h3><span class="header-section-number">1.1.11</span> Vermilion</h3>
+<table>
+<caption>Vermilion</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">121.469</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">1.849</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="blackoh" class="section level3">
+<h3><span class="header-section-number">1.1.12</span> BlackOH</h3>
+<table>
+<caption>BlackOH</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">90.234</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">1.813</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.801</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.335</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Tributyl phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.250</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="rouge" class="section level3">
+<h3><span class="header-section-number">1.1.13</span> Rouge</h3>
+<table>
+<caption>Rouge</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Dichlorvos</td>
+<td align="left">Insecticide</td>
+<td align="right">68.362</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">17.353</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">6.991</td>
+<td align="right">3</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">3.412</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">2.231</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">Other</td>
+<td align="right">1.612</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">1.452</td>
+<td align="right">4</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">1.004</td>
+<td align="right">3</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">0.457</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">4-(1,1,3,3-Tetramethylbutyl)phenol</td>
+<td align="left">Detergent Metabolites</td>
+<td align="right">0.360</td>
+<td align="right">1</td>
+<td align="right">41</td>
+</tr>
+<tr class="odd">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.352</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Fluoranthene</td>
+<td align="left">PAH</td>
+<td align="right">0.316</td>
+<td align="right">6</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.277</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Phenanthrene</td>
+<td align="left">PAH</td>
+<td align="right">0.274</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Tris(2-butoxyethyl) phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.265</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Pyrene</td>
+<td align="left">PAH</td>
+<td align="right">0.221</td>
+<td align="right">2</td>
+<td align="right">43</td>
+</tr>
+<tr class="odd">
+<td align="left">Tris(2-chloroethyl) phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.115</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+<tr class="even">
+<td align="left">Bromacil</td>
+<td align="left">Herbicide</td>
+<td align="right">0.115</td>
+<td align="right">1</td>
+<td align="right">43</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sandusky" class="section level3">
+<h3><span class="header-section-number">1.1.14</span> Sandusky</h3>
+<table>
+<caption>Sandusky</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">58.999</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.407</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="grandmi" class="section level3">
+<h3><span class="header-section-number">1.1.15</span> GrandMI</h3>
+<table>
+<caption>GrandMI</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">48.588</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.370</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="burns" class="section level3">
+<h3><span class="header-section-number">1.1.16</span> Burns</h3>
+<table>
+<caption>Burns</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">41.647</td>
+<td align="right">2</td>
+<td align="right">30</td>
+</tr>
+<tr class="even">
+<td align="left">Isophorone</td>
+<td align="left">Solvent</td>
+<td align="right">7.050</td>
+<td align="right">5</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">4.265</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">1.849</td>
+<td align="right">5</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.144</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.558</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.363</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.302</td>
+<td align="right">1</td>
+<td align="right">30</td>
+</tr>
+<tr class="odd">
+<td align="left">Methyl salicylate</td>
+<td align="left">Other</td>
+<td align="right">0.292</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">0.196</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Bromacil</td>
+<td align="left">Herbicide</td>
+<td align="right">0.163</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Tris(2-butoxyethyl) phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.133</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cuyahoga" class="section level3">
+<h3><span class="header-section-number">1.1.17</span> Cuyahoga</h3>
+<table>
+<caption>Cuyahoga</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">38.176</td>
+<td align="right">2</td>
+<td align="right">27</td>
+</tr>
+<tr class="even">
+<td align="left">Dichlorvos</td>
+<td align="left">Insecticide</td>
+<td align="right">36.460</td>
+<td align="right">1</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">6.991</td>
+<td align="right">3</td>
+<td align="right">28</td>
+</tr>
+<tr class="even">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">3.605</td>
+<td align="right">2</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">2.559</td>
+<td align="right">2</td>
+<td align="right">28</td>
+</tr>
+<tr class="even">
+<td align="left">dl-Menthol</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.242</td>
+<td align="right">2</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.799</td>
+<td align="right">2</td>
+<td align="right">28</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.425</td>
+<td align="right">3</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.335</td>
+<td align="right">2</td>
+<td align="right">28</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="grandoh" class="section level3">
+<h3><span class="header-section-number">1.1.18</span> GrandOH</h3>
+<table>
+<caption>GrandOH</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">27.764</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.351</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="oswego" class="section level3">
+<h3><span class="header-section-number">1.1.19</span> Oswego</h3>
+<table>
+<caption>Oswego</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">17.353</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">5.243</td>
+<td align="right">2</td>
+<td align="right">25</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.687</td>
+<td align="right">2</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.503</td>
+<td align="right">2</td>
+<td align="right">25</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.363</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">26</td>
+</tr>
+<tr class="odd">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">0.196</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.148</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="blackmi" class="section level3">
+<h3><span class="header-section-number">1.1.20</span> BlackMI</h3>
+<table>
+<caption>BlackMI</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">13.882</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="fox" class="section level3">
+<h3><span class="header-section-number">1.1.21</span> Fox</h3>
+<table>
+<caption>Fox</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">13.882</td>
+<td align="right">1</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">6.824</td>
+<td align="right">7</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">1.017</td>
+<td align="right">2</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.781</td>
+<td align="right">3</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.352</td>
+<td align="right">1</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.229</td>
+<td align="right">2</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.222</td>
+<td align="right">1</td>
+<td align="right">7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="stlouis" class="section level3">
+<h3><span class="header-section-number">1.1.22</span> StLouis</h3>
+<table>
+<caption>StLouis</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">11.360</td>
+<td align="right">3</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">10.412</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">3.412</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Pentachlorophenol</td>
+<td align="left">Herbicide</td>
+<td align="right">3.196</td>
+<td align="right">4</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Carbaryl</td>
+<td align="left">Insecticide</td>
+<td align="right">0.848</td>
+<td align="right">3</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.402</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.401</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Isophorone</td>
+<td align="left">Solvent</td>
+<td align="right">0.369</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Methyl salicylate</td>
+<td align="left">Other</td>
+<td align="right">0.365</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.363</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.335</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">Bromacil</td>
+<td align="left">Herbicide</td>
+<td align="right">0.249</td>
+<td align="right">2</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.185</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">2-tert-Butyl-4-methoxyphenol</td>
+<td align="left">Antioxidant</td>
+<td align="right">0.121</td>
+<td align="right">1</td>
+<td align="right">31</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="kalamazoo2" class="section level3">
+<h3><span class="header-section-number">1.1.23</span> Kalamazoo2</h3>
+<table>
+<caption>Kalamazoo2</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">10.412</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="rocky" class="section level3">
+<h3><span class="header-section-number">1.1.24</span> Rocky</h3>
+<table>
+<caption>Rocky</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">10.412</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">4.369</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">1.144</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.581</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.240</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="indianahc" class="section level3">
+<h3><span class="header-section-number">1.1.25</span> IndianaHC</h3>
+<table>
+<caption>IndianaHC</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">6.941</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">5.118</td>
+<td align="right">7</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.458</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Atrazine</td>
+<td align="left">Herbicide</td>
+<td align="right">0.277</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="pawpaw" class="section level3">
+<h3><span class="header-section-number">1.1.26</span> PawPaw</h3>
+<table>
+<caption>PawPaw</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">6.941</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tonawanda" class="section level3">
+<h3><span class="header-section-number">1.1.27</span> Tonawanda</h3>
+<table>
+<caption>Tonawanda</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Metolachlor</td>
+<td align="left">Herbicide</td>
+<td align="right">6.941</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ausable" class="section level3">
+<h3><span class="header-section-number">1.1.28</span> AuSable</h3>
+<table>
+<caption>AuSable</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">5.118</td>
+<td align="right">7</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">Methyl salicylate</td>
+<td align="left">Other</td>
+<td align="right">0.876</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.446</td>
+<td align="right">2</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.290</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="indian" class="section level3">
+<h3><span class="header-section-number">1.1.29</span> Indian</h3>
+<table>
+<caption>Indian</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">5.118</td>
+<td align="right">7</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="menominee" class="section level3">
+<h3><span class="header-section-number">1.1.30</span> Menominee</h3>
+<table>
+<caption>Menominee</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cotinine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">3.495</td>
+<td align="right">2</td>
+<td align="right">40</td>
+</tr>
+<tr class="even">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">2.033</td>
+<td align="right">4</td>
+<td align="right">40</td>
+</tr>
+<tr class="odd">
+<td align="left">1,4-Dichlorobenzene</td>
+<td align="left">Other</td>
+<td align="right">1.240</td>
+<td align="right">2</td>
+<td align="right">40</td>
+</tr>
+<tr class="even">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.286</td>
+<td align="right">2</td>
+<td align="right">40</td>
+</tr>
+<tr class="odd">
+<td align="left">Diethyl phthalate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.223</td>
+<td align="right">2</td>
+<td align="right">40</td>
+</tr>
+<tr class="even">
+<td align="left">Tributyl phosphate</td>
+<td align="left">Fire Retardant</td>
+<td align="right">0.209</td>
+<td align="right">2</td>
+<td align="right">40</td>
+</tr>
+<tr class="odd">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.201</td>
+<td align="right">1</td>
+<td align="right">40</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cheboygan2" class="section level3">
+<h3><span class="header-section-number">1.1.31</span> Cheboygan2</h3>
+<table>
+<caption>Cheboygan2</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Naphthalene</td>
+<td align="left">PAH</td>
+<td align="right">2.559</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.286</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="stregis" class="section level3">
+<h3><span class="header-section-number">1.1.32</span> StRegis</h3>
+<table>
+<caption>StRegis</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.604</td>
+<td align="right">2</td>
+<td align="right">16</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ontonagon" class="section level3">
+<h3><span class="header-section-number">1.1.33</span> Ontonagon</h3>
+<table>
+<caption>Ontonagon</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Benzophenone</td>
+<td align="left">Flavor/fragrance</td>
+<td align="right">0.363</td>
+<td align="right">1</td>
+<td align="right">30</td>
+</tr>
+<tr class="even">
+<td align="left">Triphenyl phosphate</td>
+<td align="left">Plasticizer</td>
+<td align="right">0.352</td>
+<td align="right">1</td>
+<td align="right">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cattaraugus" class="section level3">
+<h3><span class="header-section-number">1.1.34</span> Cattaraugus</h3>
+<table>
+<caption>Cattaraugus</caption>
+<thead>
+<tr class="header">
+<th align="left">chnm</th>
+<th align="left">class</th>
+<th align="right">maxEAR</th>
+<th align="right">nEndPoints</th>
+<th align="right">nSamples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Caffeine</td>
+<td align="left">Pharmaceuticals</td>
+<td align="right">0.229</td>
+<td align="right">2</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
