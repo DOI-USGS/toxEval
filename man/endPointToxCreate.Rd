@@ -2,7 +2,7 @@
 % Please edit documentation in R/chemSumm.R
 \name{endPointToxCreate}
 \alias{endPointToxCreate}
-\title{Create chemical summary}
+\title{Create endpoint dataframe}
 \usage{
 endPointToxCreate(pCodeInfoDF, casrn_pCode = "casrn",
   units_pCode = "parameter_units", mlWt_pCode = "mlWt")
@@ -12,28 +12,15 @@ endPointToxCreate(pCodeInfoDF, casrn_pCode = "casrn",
 
 \item{casrn_pCode}{character name of casrn column in pCodeInfo}
 
-\item{wData}{data frame with a date column (can be NA)
-whose name is defined by the date argument, station column whose name is
-defined by the station argument, and the remaining columns are measurements that
-contain a chemKey (such as parameter code)}
+\item{units_pCode}{character name of units column in pCodeInfo}
 
-\item{endPoint}{data frame}
-
-\item{date}{character name of date column in wData}
-
-\item{station}{character name of station column in wData}
-
-\item{class_pCode}{character name of class column in pCodeInfo}
-
-\item{code_pCode}{character name of code column in pCodeInfo}
-
-\item{casrn_ep}{character name of class column in endPoint}
+\item{mlWt_pCode}{character name of molecular weight column in pCodeInfo}
 }
 \value{
-chemicalSummary data frame
+endPoint data frame
 }
 \description{
-Create chemical summary
+Create endpoint dataframe
 }
 \examples{
 pCodeInfo <- pCodeInfo

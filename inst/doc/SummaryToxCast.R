@@ -89,7 +89,7 @@ summary <- left_join(summ1, summ2, by="site") %>%
 
 ## ---- echo=FALSE---------------------------------------------------------
 
-# packagePath <- system.file("extdata", package="toxEval")
+packagePath <- system.file("extdata", package="toxEval")
 # filePath <- file.path(packagePath, "passiveData.RData")
 # load(file=filePath)
 
@@ -215,40 +215,9 @@ AC50_bm <- rename(AC50_bm, casn=casrn, chnm=srsname)
 endPoint_bm <- cbind(AC50_bm, data.frame(endPointData_bm))
 endPoint_bm <- rename(endPoint_bm, Units=desiredUnits)
 
-chemicalSummary_BM <- wData %>%
-  gather(pCode,measuredValue,-ActivityStartDateGiven,-site) %>%
-  filter(!is.na(measuredValue)) %>%
-  rename(date=ActivityStartDateGiven) %>%
-  separate(pCode,c("colHeader","pCode"),"_") %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  right_join(endPoint_bm, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -colHeader, -pCode)%>%
-  gather(endPoint, endPointValue, -class, -site, -measuredValue,-chnm,-date) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) 
+chemicalSummary_BM <- chemSummBasic(wData,pCodeInfo,endPoint_bm)
+chemSum2_BM <- chemSumm(chemicalSummary_BM)
 
-tempSamples_bm <- select(chemicalSummary_BM,date,site,chnm) %>%
-    distinct()%>%
-    group_by(chnm) %>%
-    summarise(nSamples=n())
-
-chemSum1_BM <- chemicalSummary_BM %>%
-  mutate(hits= as.numeric(EAR > 0.1)) %>%
-  group_by(chnm,  class, site) %>%
-  summarize(hits=as.numeric(any(hits > 0))) %>%
-  group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n_distinct(site),
-            nSites=sum(hits)) 
-
-chemSum2_BM <- chemicalSummary_BM %>%
-  group_by(chnm,  class) %>%  
-  summarize(maxEAR=max(EAR), 
-            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
-  left_join(chemSum1_BM, by=c("chnm","class")) %>%
-  left_join(tempSamples_bm, by="chnm") %>%
-  data.frame %>%
-  arrange(desc(freq)) %>%
-  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples)
 
 siteSummary_BM <- wData %>%
   gather(pCode,measuredValue,-ActivityStartDateGiven,-site) %>%

@@ -1,6 +1,4 @@
 .travis.yml
 toxEval.Rproj
-passiveData.R
-workflow.R
 ^.*\.Rproj$
 ^\.Rproj\.user$
