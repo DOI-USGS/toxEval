@@ -81,7 +81,7 @@ chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
                      casrn_ep="casn"){
   
   chemicalSummary <- wData %>%
-    gather_("pCode", "measuredValue", gather_cols=names(wData)[!(names(wData) %in% c(date,station))])  %>%
+    gather_("pCode", "measuredValue", gather_cols=names(wData)[!(names(wData) %in% c(date,station))]) %>%
     rename_("date"=date) %>%
     filter(!is.na(measuredValue)) %>%
     separate(pCode, into=c("colHeader","pCode"), "_") %>% #totally not generalized

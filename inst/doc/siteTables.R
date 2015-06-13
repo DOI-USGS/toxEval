@@ -18,45 +18,12 @@ newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
 endPoint <- endPointToxCreate(pCodeInfo)
 
-siteSummary <- wData %>%
-  gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
-  filter(!is.na(measuredValue)) %>%
-  rename(date=ActivityStartDateGiven) %>%
-  separate(pCode, into=c("colName","pCode"),sep="_") %>%
-  select(-colName) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -pCode) %>%
-  gather(endPoint, endPointValue, -class, -site, -date,-measuredValue,-chnm) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(endPoint=as.character(endPoint),
-         EAR=measuredValue/endPointValue,
-         site=as.character(newSiteKey[site])) %>% 
-  select(site, chnm, EAR, endPoint, class, date) %>% 
-  arrange(site, chnm, EAR)
-  
-summ1 <- siteSummary %>%
-  group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-  group_by(site) %>%
-  summarize(freq=sum(hits)/n_distinct(date),
-            nSamples=n_distinct(date)) 
+chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+siteSummary <- siteSumm(chemicalSummary,newSiteKey)
 
-summ2 <-  siteSummary %>%
-  group_by(site) %>%
-  summarize(nChem = length(unique(chnm[EAR > 0.1])),
-            nEndPoints = length(unique(endPoint[EAR > 0.1])),
-            maxEAR = max(EAR))
+for(i in siteSummary$site){
 
-summary <- left_join(summ1, summ2, by="site") %>%
-  arrange(desc(maxEAR))
-
-for(i in summary$site){
-  oneSite <- wData %>%
-    mutate(site = newSiteKey[site]) %>%
-    filter(site == i) 
-  
-  chemSummSite <- chemSummBasic(oneSite, pCodeInfo, endPoint)
+  chemSummSite <- filter(chemicalSummary, site == names(newSiteKey)[i == newSiteKey])
   
   chemSummSite2 <- select(chemSummSite,-site, -endPoint, -endPointValue) %>%
     mutate(hits=as.numeric(EAR > 0.1))%>%

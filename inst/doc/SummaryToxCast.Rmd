@@ -67,39 +67,7 @@ endPoint <- endPointToxCreate(pCodeInfo)
 chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 chemSum2 <- chemSumm(chemicalSummary)
 
-siteSummary <- wData %>%
-  gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
-  filter(!is.na(measuredValue)) %>%
-  rename(date=ActivityStartDateGiven) %>%
-  separate(pCode, into=c("colName","pCode"),sep="_") %>%
-  select(-colName) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -pCode) %>%
-  gather(endPoint, endPointValue, -class, -site, -date,-measuredValue,-chnm) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(endPoint=as.character(endPoint),
-         EAR=measuredValue/endPointValue,
-         site=as.character(newSiteKey[site])) %>% 
-  select(site, chnm, EAR, endPoint, class, date) %>% 
-  arrange(site, chnm, EAR)
-  
-summ1 <- siteSummary %>%
-  group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-  group_by(site) %>%
-  summarize(freq=sum(hits)/n_distinct(date),
-            nSamples=n_distinct(date)) 
-
-summ2 <-  siteSummary %>%
-  group_by(site) %>%
-  summarize(nChem = length(unique(chnm[EAR > 0.1])),
-            nEndPoints = length(unique(endPoint[EAR > 0.1])),
-            maxEAR = max(EAR))
-
-summary <- left_join(summ1, summ2, by="site") %>%
-  arrange(desc(maxEAR))
-
+summary <- siteSumm(chemicalSummary,newSiteKey)
 
 ```
 
@@ -170,44 +138,55 @@ chemicalSummary_passive <- passiveData %>%
   filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
-chemSum1_passive <- chemicalSummary_passive %>%
-  group_by(chnm,  class, site) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-  group_by(chnm, class) %>%
-  summarize(freq=sum(hits)/n_distinct(site),
-            nSites=sum(hits)) 
+# chemSum1_passive <- chemicalSummary_passive %>%
+#   group_by(chnm,  class, site) %>%
+#   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+#   group_by(chnm, class) %>%
+#   summarize(freq=sum(hits)/n_distinct(site),
+#             nSites=sum(hits)) 
+# 
+# chemSum2_passive <- chemicalSummary_passive %>%
+#   group_by(chnm,  class) %>%  
+#   summarize(maxEAR=max(EAR), 
+#             nSamples=1,
+#             nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
+#   left_join(chemSum1_passive, by=c("chnm","class")) %>%
+#   data.frame %>%
+#   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples) %>%
+#   arrange(desc(freq)) 
 
-chemSum2_passive <- chemicalSummary_passive %>%
-  group_by(chnm,  class) %>%  
-  summarize(maxEAR=max(EAR), 
-            nSamples=1,
-            nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
-  left_join(chemSum1_passive, by=c("chnm","class")) %>%
-  data.frame %>%
-  select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples) %>%
-  arrange(desc(freq)) 
+# chemSum2_passive <- chemicalSummary_passive %>%
+#   mutate(date=as.POSIXct(NA)) %>%
+#   chemSumm()
+# 
+# siteSummary_passive <- passiveData %>%
+#   gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns))) %>%
+#   filter(!is.na(measuredValue)) %>%
+#   select(Chemical,CAS,class, measuredValue, site) %>%
+#   right_join(endPoint_passive, by=c("CAS"="casn")) %>%
+#   select(-mlWt, -conversion, -CAS,  -Units) %>%
+#   gather(endPoint,endPointValue,-Chemical,-class, -site, -measuredValue,-chnm) %>% 
+#   filter(!is.na(endPointValue)) %>%
+#   mutate(EAR=measuredValue/endPointValue) %>%
+#   mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
+#   select(site, chnm, EAR, endPoint, class) %>% 
+#   arrange(site, chnm, EAR)
+# 
+# summ1_passive <- siteSummary_passive %>%
+#   group_by(site) %>%
+#   summarize(hits= as.numeric(any(EAR > 0.1)),
+#             nChem = length(unique(chnm[EAR > 0.1])),
+#             nEndPoints = length(unique(endPoint[EAR > 0.1])),
+#             maxEAR = max(EAR))%>%
+#   arrange(desc(maxEAR))
 
-siteSummary_passive <- passiveData %>%
-  gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns))) %>%
-  filter(!is.na(measuredValue)) %>%
-  select(Chemical,CAS,class, measuredValue, site) %>%
-  right_join(endPoint_passive, by=c("CAS"="casn")) %>%
-  select(-mlWt, -conversion, -CAS,  -Units) %>%
-  gather(endPoint,endPointValue,-Chemical,-class, -site, -measuredValue,-chnm) %>% 
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
-  select(site, chnm, EAR, endPoint, class) %>% 
-  arrange(site, chnm, EAR)
+chemicalSummary_passive <- chemicalSummary_passive %>%
+  mutate(site=paste0("USGS-",gsub("[^0-9]", "", as.character(site))))%>%
+  mutate(date=as.POSIXct(NA))
 
-summ1_passive <- siteSummary_passive %>%
-  group_by(site) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1)),
-            nChem = length(unique(chnm[EAR > 0.1])),
-            nEndPoints = length(unique(endPoint[EAR > 0.1])),
-            maxEAR = max(EAR))%>%
-  arrange(desc(maxEAR))
+chemSum2_passive <- chemSumm(chemicalSummary_passive)
 
+summ1_passive <- siteSumm(chemicalSummary_passive, newSiteKey)
 
 ```
 
@@ -238,38 +217,9 @@ chemicalSummary_BM <- chemSummBasic(wData,pCodeInfo,endPoint_bm)
 chemSum2_BM <- chemSumm(chemicalSummary_BM)
 
 
-siteSummary_BM <- wData %>%
-  gather(pCode,measuredValue,-ActivityStartDateGiven,-site) %>%
-  filter(!is.na(measuredValue)) %>%
-  rename(date=ActivityStartDateGiven) %>%
-  separate(pCode, into=c("colHeader","pCode"),"_") %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  select(casrn, class, measuredValue, site, date) %>%
-  right_join(endPoint_bm, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units) %>%
-  gather(endPoint, endPointValue, -class, -site, -date, -measuredValue, -chnm) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  mutate(site=newSiteKey[site]) %>%
-  select(site, chnm, EAR, endPoint, class, date) %>% 
-  arrange(site, chnm, EAR)
-
-summ1_BM <- siteSummary_BM %>%
-  group_by(site, date) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-  group_by(site) %>%
-  summarize(freq=sum(hits)/n_distinct(date),
-            nSamples=n_distinct(date)) 
-
-summ2_BM <-  siteSummary_BM %>%
-  group_by(site) %>%
-  summarize(nChem = length(unique(chnm[EAR > 0.1])),
-            nEndPoints = length(unique(endPoint[EAR > 0.1])),
-            maxEAR = max(EAR))
+summary_BM <- siteSumm(chemicalSummary_BM,newSiteKey)
 
 
-summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
-  arrange(desc(maxEAR))
 
 ```
 
@@ -461,15 +411,16 @@ This figure displays ranges of EAR values for each site. Information on the numb
 
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
-# summary_display1 <- transform(summary_display, 
-#                              site = reorder(site, order(nChem,decreasing=TRUE)))
 
 siteLimits <- filter(summary_display, freq>0) %>%
   arrange(desc(nChem), desc(nEndPoints)) %>%
   select(site,nEndPoints,nChem, nSamples)
 
 
-summary_display2 <- siteSummary %>%
+summary_display2 <- chemicalSummary %>%
+  mutate(site=as.character(newSiteKey[site])) %>% 
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)%>%
   filter(EAR>0.1)
 
 sToxWS <- ggplot(summary_display2, aes(x=site, y=EAR)) +
@@ -633,7 +584,7 @@ This table focuses on the individual sites, and the prevalence of potential adve
 ```{r, echo=FALSE, results='asis'}
 summary_display_passive <- left_join(summ1_passive, stationINFO[,c("shortName","Ag.pct","Urban.pct")], by=c("site"="shortName")) 
   
-summary_display_passive <- summary_display_passive[,-2]
+summary_display_passive <- summary_display_passive[,c(-2,-3)]
 datatable(summary_display_passive, rownames = FALSE,
           colnames=c("Station Name", "Number of Chemicals with Hits", "Number of End Points with Hits", "Maximum EAR", "Ag [%]", "Urban [%]")) %>% 
 #           options = list(pageLength = 50)) %>% 
@@ -653,10 +604,11 @@ siteLimits_passive <- filter(summary_display_passive, nChem>0) %>%
   arrange(desc(nChem)) %>%
   select(site,nEndPoints,nChem)
 
-
-summary_display2_passive <- siteSummary_passive %>%
+summary_display2_passive <- chemicalSummary_passive %>%
+  mutate(site=as.character(newSiteKey[site])) %>% 
+  select(site, chnm, EAR, endPoint, class) %>% 
+  arrange(site, chnm, EAR)%>%
   filter(EAR>0.1)
-
 
 sp <- ggplot(summary_display2_passive, aes(x=site, y=EAR)) +
   geom_point() +
@@ -782,16 +734,16 @@ This figure displays ranges of EAR values for each site. Information on the numb
 
 ```{r fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE}
 
-# summary_display1_BM <- transform(summary_display_BM, 
-#                              site = reorder(site, order(nChem,decreasing=TRUE)))
-
 siteLimits_BM <- filter(summary_display_BM, freq>0) %>%
   arrange(desc(nChem)) %>%
   select(site,nEndPoints,nChem,nSamples)
 
-
-summary_display2_BM <- siteSummary_BM %>%
+summary_display2_BM <- chemicalSummary_BM %>%
+  mutate(site=as.character(newSiteKey[site])) %>% 
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)%>%
   filter(EAR>0.1)
+
 
 sBenchWS <- ggplot(summary_display2_BM, aes(x=site, y=EAR)) +
   geom_boxplot() +
