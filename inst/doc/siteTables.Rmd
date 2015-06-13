@@ -76,11 +76,23 @@ for(i in summary$site){
     filter(site == i) 
   
   chemSummSite <- chemSummBasic(oneSite, pCodeInfo, endPoint)
+  
+  chemSummSite2 <- select(chemSummSite,-site, -endPoint, -endPointValue) %>%
+    mutate(hits=as.numeric(EAR > 0.1))%>%
+    group_by(chnm,class,date)%>%
+    summarize(hits=as.numeric(any(hits>0)))%>%
+    group_by(chnm,class)%>%
+    summarize(freq=sum(hits)/n_distinct(date))
+    
+  
   chemSummSite1 <- chemSumm(chemSummSite) %>%
     select(-nSites,-freq)%>%
+    left_join(chemSummSite2, by=c("chnm","class"))%>%
+    data.frame()%>%
     filter(maxEAR > 0.1) %>%
     arrange(desc(maxEAR))
   
+  names(chemSummSite1) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
   
   if(nrow(chemSummSite1) > 0){
     cat("\n\n###", i, "\n")
