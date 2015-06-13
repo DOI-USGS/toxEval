@@ -2,18 +2,8 @@
 #'
 #' Create site summary
 #'
-#' @param wData data frame with a date column (can be NA) 
-#' whose name is defined by the date argument, station column whose name is
-#' defined by the station argument, and the remaining columns are measurements that
-#' contain a chemKey (such as parameter code)
-#' @param pCodeInfoDF data frame
-#' @param endPoint data frame 
-#' @param date character name of date column in wData
-#' @param station character name of station column in wData
-#' @param casrn_pCode character name of casrn column in pCodeInfo
-#' @param class_pCode character name of class column in pCodeInfo
-#' @param code_pCode character name of code column in pCodeInfo
-#' @param casrn_ep character name of class column in endPoint
+#' @param chemicalSummary data frame returned from \code{chemSummBasic}
+#' @param newSiteKey named vector 
 #' @import dplyr
 #' @import tidyr
 #' @export
