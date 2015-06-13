@@ -51,40 +51,41 @@ endPoint <- endPointToxCreate(pCodeInfo)
 # wData <- cbind(waterSamples[,1:2],waterData)
 chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 chemSum2 <- chemSumm(chemicalSummary)
+# 
+# siteSummary <- wData %>%
+#   gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
+#   filter(!is.na(measuredValue)) %>%
+#   rename(date=ActivityStartDateGiven) %>%
+#   separate(pCode, into=c("colName","pCode"),sep="_") %>%
+#   select(-colName) %>%
+#   left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
+#   right_join(endPoint, by=c("casrn"="casn")) %>%
+#   select(-mlWt, -conversion, -casrn,  -Units, -pCode) %>%
+#   gather(endPoint, endPointValue, -class, -site, -date,-measuredValue,-chnm) %>%
+#   filter(!is.na(endPointValue)) %>%
+#   mutate(endPoint=as.character(endPoint),
+#          EAR=measuredValue/endPointValue,
+#          site=as.character(newSiteKey[site])) %>% 
+#   select(site, chnm, EAR, endPoint, class, date) %>% 
+#   arrange(site, chnm, EAR)
+#   
+# summ1 <- siteSummary %>%
+#   group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
+#   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
+#   group_by(site) %>%
+#   summarize(freq=sum(hits)/n_distinct(date),
+#             nSamples=n_distinct(date)) 
+# 
+# summ2 <-  siteSummary %>%
+#   group_by(site) %>%
+#   summarize(nChem = length(unique(chnm[EAR > 0.1])),
+#             nEndPoints = length(unique(endPoint[EAR > 0.1])),
+#             maxEAR = max(EAR))
+# 
+# summary <- left_join(summ1, summ2, by="site") %>%
+#   arrange(desc(maxEAR))
 
-siteSummary <- wData %>%
-  gather(pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
-  filter(!is.na(measuredValue)) %>%
-  rename(date=ActivityStartDateGiven) %>%
-  separate(pCode, into=c("colName","pCode"),sep="_") %>%
-  select(-colName) %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  right_join(endPoint, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units, -pCode) %>%
-  gather(endPoint, endPointValue, -class, -site, -date,-measuredValue,-chnm) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(endPoint=as.character(endPoint),
-         EAR=measuredValue/endPointValue,
-         site=as.character(newSiteKey[site])) %>% 
-  select(site, chnm, EAR, endPoint, class, date) %>% 
-  arrange(site, chnm, EAR)
-  
-summ1 <- siteSummary %>%
-  group_by(site, date) %>%  #This ignore chemicals...needs to be here for freq
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-  group_by(site) %>%
-  summarize(freq=sum(hits)/n_distinct(date),
-            nSamples=n_distinct(date)) 
-
-summ2 <-  siteSummary %>%
-  group_by(site) %>%
-  summarize(nChem = length(unique(chnm[EAR > 0.1])),
-            nEndPoints = length(unique(endPoint[EAR > 0.1])),
-            maxEAR = max(EAR))
-
-summary <- left_join(summ1, summ2, by="site") %>%
-  arrange(desc(maxEAR))
-
+summary <- siteSumm(chemicalSummary,newSiteKey)
 
 
 ## ---- echo=FALSE---------------------------------------------------------
@@ -219,38 +220,9 @@ chemicalSummary_BM <- chemSummBasic(wData,pCodeInfo,endPoint_bm)
 chemSum2_BM <- chemSumm(chemicalSummary_BM)
 
 
-siteSummary_BM <- wData %>%
-  gather(pCode,measuredValue,-ActivityStartDateGiven,-site) %>%
-  filter(!is.na(measuredValue)) %>%
-  rename(date=ActivityStartDateGiven) %>%
-  separate(pCode, into=c("colHeader","pCode"),"_") %>%
-  left_join(pCodeInfo[c("parameter_cd","casrn","class")], by=c("pCode"="parameter_cd")) %>%
-  select(casrn, class, measuredValue, site, date) %>%
-  right_join(endPoint_bm, by=c("casrn"="casn")) %>%
-  select(-mlWt, -conversion, -casrn,  -Units) %>%
-  gather(endPoint, endPointValue, -class, -site, -date, -measuredValue, -chnm) %>%
-  filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) %>%
-  mutate(site=newSiteKey[site]) %>%
-  select(site, chnm, EAR, endPoint, class, date) %>% 
-  arrange(site, chnm, EAR)
-
-summ1_BM <- siteSummary_BM %>%
-  group_by(site, date) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-  group_by(site) %>%
-  summarize(freq=sum(hits)/n_distinct(date),
-            nSamples=n_distinct(date)) 
-
-summ2_BM <-  siteSummary_BM %>%
-  group_by(site) %>%
-  summarize(nChem = length(unique(chnm[EAR > 0.1])),
-            nEndPoints = length(unique(endPoint[EAR > 0.1])),
-            maxEAR = max(EAR))
+summary_BM <- siteSumm(chemicalSummary_BM,newSiteKey)
 
 
-summary_BM <- left_join(summ1_BM, summ2_BM, by="site") %>%
-  arrange(desc(maxEAR))
 
 
 ## ----echo=FALSE, eval=TRUE-----------------------------------------------
@@ -377,15 +349,16 @@ datatable(summary_display, rownames = FALSE,
   formatRound(c("freq","maxEAR","Ag.pct","Urban.pct"), digits = 2)
 
 ## ----fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE----
-# summary_display1 <- transform(summary_display, 
-#                              site = reorder(site, order(nChem,decreasing=TRUE)))
 
 siteLimits <- filter(summary_display, freq>0) %>%
   arrange(desc(nChem), desc(nEndPoints)) %>%
   select(site,nEndPoints,nChem, nSamples)
 
 
-summary_display2 <- siteSummary %>%
+summary_display2 <- chemicalSummary %>%
+  mutate(site=as.character(newSiteKey[site])) %>% 
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)%>%
   filter(EAR>0.1)
 
 sToxWS <- ggplot(summary_display2, aes(x=site, y=EAR)) +
@@ -627,16 +600,16 @@ datatable(summary_display_BM, rownames = FALSE,
 
 ## ----fig.width=7, fig.height=7, echo=FALSE,warning=FALSE, message=FALSE----
 
-# summary_display1_BM <- transform(summary_display_BM, 
-#                              site = reorder(site, order(nChem,decreasing=TRUE)))
-
 siteLimits_BM <- filter(summary_display_BM, freq>0) %>%
   arrange(desc(nChem)) %>%
   select(site,nEndPoints,nChem,nSamples)
 
-
-summary_display2_BM <- siteSummary_BM %>%
+summary_display2_BM <- chemicalSummary_BM %>%
+  mutate(site=as.character(newSiteKey[site])) %>% 
+  select(site, chnm, EAR, endPoint, class, date) %>% 
+  arrange(site, chnm, EAR)%>%
   filter(EAR>0.1)
+
 
 sBenchWS <- ggplot(summary_display2_BM, aes(x=site, y=EAR)) +
   geom_boxplot() +
