@@ -18,12 +18,79 @@ newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
 endPoint <- endPointToxCreate(pCodeInfo)
 
+AC50gain_bm <- select(pCodeInfo, srsname, casrn, AqT_EPA_acute, 
+                   AqT_EPA_chronic, AqT_other_acute, AqT_other_chronic)
+
+AC50_bm <- left_join(AC50gain_bm, pCodeInfo[,c("casrn", "parameter_units", "mlWt")], by= c("casrn"="casrn")) %>%
+  filter(!is.na(parameter_units)) %>%
+  rename(desiredUnits = parameter_units) %>%
+  mutate(conversion = 1) %>%
+  select(casrn, srsname, desiredUnits, mlWt, conversion)
+
+AC50Converted_bm <- left_join(AC50_bm, AC50gain_bm, by = c("casrn", "srsname")) %>%
+  rename(casn=casrn, chnm=srsname)
+
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion")
+
+endPointData_bm <- AC50Converted_bm[,!(names(AC50Converted_bm) %in% infoColumns)]
+endPointData_bm <- endPointData_bm * AC50Converted_bm$conversion
+AC50_bm <- rename(AC50_bm, casn=casrn, chnm=srsname)
+endPoint_bm <- cbind(AC50_bm, data.frame(endPointData_bm))
+endPoint_bm <- rename(endPoint_bm, Units=desiredUnits)
+
+unitConversion <- setNames(c(10^6, 10^3), c("pg/L", "ng/L") )
+
+AC50_passive <- right_join(AC50gain[,c("casn"), drop=FALSE], 
+                   passiveData[,c("CAS", "Units", "mlWt","Chemical")],
+                   by= c("casn" = "CAS")) %>%
+  rename(desiredUnits = Units, chnm=Chemical) %>%
+  filter(!is.na(mlWt)) %>%
+  mutate(conversion = unitConversion[desiredUnits] * mlWt) %>%
+  select(casn, chnm, desiredUnits, mlWt, conversion)
+
+AC50Converted_passive <- left_join(AC50_passive, AC50gain, by = c("casn", "chnm"))
+infoColumns <- c("casn", "chnm", "desiredUnits","mlWt", "conversion", "code","chid")
+
+endPointData_passive <- AC50Converted_passive[,!(names(AC50Converted_passive) %in% infoColumns)]
+endPointData_passive <- 10^endPointData_passive
+endPointData_passive <- endPointData_passive *  AC50Converted_passive$conversion
+endPoint_passive <- cbind(AC50_passive, data.frame(endPointData_passive))
+endPoint_passive <- rename(endPoint_passive, Units=desiredUnits)
+
+siteColumns <- grep("site",names(passiveData))
+passiveData[,siteColumns] <- suppressWarnings(
+  sapply(passiveData[,siteColumns], function(x) as.numeric(x)))
+#For this analysis, we'll consider NA's to be 0 (other options exist):
+passiveData[,siteColumns][is.na(passiveData[,siteColumns])] <- 0
+
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+infoColumns <- c("Chemical", "CAS", "Units", "MLD", "MQL", "mlWt","class")
+
+chemicalSummary_passive <- passiveData %>%
+  gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns) )) %>%
+  filter(!is.na(measuredValue)) %>%
+  select(casrn=CAS,class, measuredValue, site)%>%
+  right_join(endPoint_passive, by=c("casrn"="casn")) %>%
+  select(-mlWt, -conversion, -casrn,  -Units) %>%
+  gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm) %>%
+  filter(!is.na(endPointValue)) %>%
+  mutate(EAR=measuredValue/endPointValue) 
+
+chemicalSummary_passive <- chemicalSummary_passive %>%
+  mutate(site=paste0("USGS-",gsub("[^0-9]", "", as.character(site))))%>%
+  mutate(date=as.POSIXct(NA))
+
 chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
+chemicalSummary_BM <- chemSummBasic(wData,pCodeInfo,endPoint_bm)
+
 siteSummary <- siteSumm(chemicalSummary,newSiteKey)
 
 for(i in siteSummary$site){
 
   chemSummSite <- filter(chemicalSummary, site == names(newSiteKey)[i == newSiteKey])
+  chemSummSite_BM <- filter(chemicalSummary_BM, site == names(newSiteKey)[i == newSiteKey])
+  chemSummSite_passive <- filter(chemicalSummary_passive, site == names(newSiteKey)[i == newSiteKey])
   
   chemSummSite2 <- select(chemSummSite,-site, -endPoint, -endPointValue) %>%
     mutate(hits=as.numeric(EAR > 0.1))%>%
@@ -32,6 +99,19 @@ for(i in siteSummary$site){
     group_by(chnm,class)%>%
     summarize(freq=sum(hits)/n_distinct(date))
     
+  chemSummSite2_BM <- select(chemSummSite_BM,-site, -endPoint, -endPointValue) %>%
+      mutate(hits=as.numeric(EAR > 0.1))%>%
+      group_by(chnm,class,date)%>%
+      summarize(hits=as.numeric(any(hits>0)))%>%
+      group_by(chnm,class)%>%
+      summarize(freq=sum(hits)/n_distinct(date))
+
+  chemSummSite2_passive <- select(chemSummSite_passive,-site, -endPoint, -endPointValue) %>%
+      mutate(hits=as.numeric(EAR > 0.1))%>%
+      group_by(chnm,class,date)%>%
+      summarize(hits=as.numeric(any(hits>0)))%>%
+      group_by(chnm,class)%>%
+      summarize(freq=sum(hits)/n_distinct(date))
   
   chemSummSite1 <- chemSumm(chemSummSite) %>%
     select(-nSites,-freq)%>%
@@ -40,11 +120,34 @@ for(i in siteSummary$site){
     filter(maxEAR > 0.1) %>%
     arrange(desc(maxEAR))
   
-  names(chemSummSite1) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
+  chemSummSite1_BM <- chemSumm(chemSummSite_BM) %>%
+    select(-nSites,-freq)%>%
+    left_join(chemSummSite2_BM, by=c("chnm","class"))%>%
+    data.frame()%>%
+    filter(maxEAR > 0.1) %>%
+    arrange(desc(maxEAR))
   
+  chemSummSite1_passive <- chemSumm(chemSummSite_passive) %>%
+    select(-nSites,-freq)%>%
+    left_join(chemSummSite2_passive, by=c("chnm","class"))%>%
+    data.frame()%>%
+    filter(maxEAR > 0.1) %>%
+    arrange(desc(maxEAR))
+  
+  names(chemSummSite1) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
+
+  names(chemSummSite1_BM) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
+  
+  names(chemSummSite1_passive) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
+    
   if(nrow(chemSummSite1) > 0){
     cat("\n\n###", i, "\n")
+    cat("\n ToxCast, Water Samples\n")
     print(kable(chemSummSite1, digits=3,caption = i, row.names = FALSE))
+    cat("\n Water Quality Guidelines, Water Samples\n")
+    print(kable(chemSummSite1_BM, digits=3,caption = i, row.names = FALSE))
+    cat("\n ToxCast, Passive\n")
+    print(kable(chemSummSite1_passive, digits=3,caption = i, row.names = FALSE))
   }
 }
 

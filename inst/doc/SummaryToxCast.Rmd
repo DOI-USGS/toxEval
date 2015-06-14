@@ -138,48 +138,6 @@ chemicalSummary_passive <- passiveData %>%
   filter(!is.na(endPointValue)) %>%
   mutate(EAR=measuredValue/endPointValue) 
 
-# chemSum1_passive <- chemicalSummary_passive %>%
-#   group_by(chnm,  class, site) %>%
-#   summarize(hits= as.numeric(any(EAR > 0.1))) %>%
-#   group_by(chnm, class) %>%
-#   summarize(freq=sum(hits)/n_distinct(site),
-#             nSites=sum(hits)) 
-# 
-# chemSum2_passive <- chemicalSummary_passive %>%
-#   group_by(chnm,  class) %>%  
-#   summarize(maxEAR=max(EAR), 
-#             nSamples=1,
-#             nEndPoints=length(unique(endPoint[EAR > 0.1]))) %>%
-#   left_join(chemSum1_passive, by=c("chnm","class")) %>%
-#   data.frame %>%
-#   select(chnm, class, freq, maxEAR, nEndPoints, nSites, nSamples) %>%
-#   arrange(desc(freq)) 
-
-# chemSum2_passive <- chemicalSummary_passive %>%
-#   mutate(date=as.POSIXct(NA)) %>%
-#   chemSumm()
-# 
-# siteSummary_passive <- passiveData %>%
-#   gather(site, measuredValue, which(!(names(passiveData) %in% infoColumns))) %>%
-#   filter(!is.na(measuredValue)) %>%
-#   select(Chemical,CAS,class, measuredValue, site) %>%
-#   right_join(endPoint_passive, by=c("CAS"="casn")) %>%
-#   select(-mlWt, -conversion, -CAS,  -Units) %>%
-#   gather(endPoint,endPointValue,-Chemical,-class, -site, -measuredValue,-chnm) %>% 
-#   filter(!is.na(endPointValue)) %>%
-#   mutate(EAR=measuredValue/endPointValue) %>%
-#   mutate(site=newSiteKey[paste0("USGS-",gsub("[^0-9]", "", site))]) %>%
-#   select(site, chnm, EAR, endPoint, class) %>% 
-#   arrange(site, chnm, EAR)
-# 
-# summ1_passive <- siteSummary_passive %>%
-#   group_by(site) %>%
-#   summarize(hits= as.numeric(any(EAR > 0.1)),
-#             nChem = length(unique(chnm[EAR > 0.1])),
-#             nEndPoints = length(unique(endPoint[EAR > 0.1])),
-#             maxEAR = max(EAR))%>%
-#   arrange(desc(maxEAR))
-
 chemicalSummary_passive <- chemicalSummary_passive %>%
   mutate(site=paste0("USGS-",gsub("[^0-9]", "", as.character(site))))%>%
   mutate(date=as.POSIXct(NA))
