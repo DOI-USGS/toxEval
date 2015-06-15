@@ -139,14 +139,19 @@ for(i in siteSummary$site){
   names(chemSummSite1_BM) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
   
   names(chemSummSite1_passive) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
-    
+  
+  cat("\n\n###", i, "\n")
+  cat("\nToxCast, Water Samples\n")
+  
   if(nrow(chemSummSite1) > 0){
-    cat("\n\n###", i, "\n")
-    cat("\n ToxCast, Water Samples\n")
     print(kable(chemSummSite1, digits=3,caption = i, row.names = FALSE))
-    cat("\n Water Quality Guidelines, Water Samples\n")
+  }
+  cat("\nWater Quality Guidelines, Water Samples\n")
+  if(nrow(chemSummSite1_BM) > 0){
     print(kable(chemSummSite1_BM, digits=3,caption = i, row.names = FALSE))
-    cat("\n ToxCast, Passive\n")
+  }
+  cat("\nToxCast, Passive\n")
+  if(nrow(chemSummSite1_passive) > 0){
     print(kable(chemSummSite1_passive, digits=3,caption = i, row.names = FALSE))
   }
 }
