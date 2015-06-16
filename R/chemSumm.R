@@ -6,7 +6,6 @@
 #' @import dplyr
 #' @export
 #' @examples
-#' library(dplyr)
 #' wData <- wData
 #' pCodeInfo <- pCodeInfo
 #' endPoint <- endPointToxCreate(pCodeInfo)
@@ -67,6 +66,7 @@ chemSumm <- function(chemicalSummary){
 #' @return chemicalSummary data frame
 #' @import dplyr
 #' @importFrom tidyr gather_
+#' @importFrom tidyr gather
 #' @importFrom tidyr separate
 #' @export
 #' @examples

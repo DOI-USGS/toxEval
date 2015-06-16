@@ -13,7 +13,6 @@ chemSumm(chemicalSummary)
 Create chemical summary
 }
 \examples{
-library(dplyr)
 wData <- wData
 pCodeInfo <- pCodeInfo
 endPoint <- endPointToxCreate(pCodeInfo)
