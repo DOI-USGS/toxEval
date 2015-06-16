@@ -37,7 +37,6 @@ chemicalSummary data frame
 Create basic chemical summary
 }
 \examples{
-library(dplyr)
 wData <- wData
 pCodeInfo <- pCodeInfo
 endPoint <- endPointToxCreate(pCodeInfo)

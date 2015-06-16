@@ -4,7 +4,6 @@
 #'
 #' @param chemicalSummary data frame returned from \code{chemSummBasic}
 #' @import dplyr
-#' @import tidyr
 #' @export
 #' @examples
 #' library(dplyr)
@@ -67,10 +66,10 @@ chemSumm <- function(chemicalSummary){
 #' @param casrn_ep character name of class column in endPoint
 #' @return chemicalSummary data frame
 #' @import dplyr
-#' @import tidyr
+#' @importFrom tidyr gather_
+#' @importFrom tidyr separate
 #' @export
 #' @examples
-#' library(dplyr)
 #' wData <- wData
 #' pCodeInfo <- pCodeInfo
 #' endPoint <- endPointToxCreate(pCodeInfo)
