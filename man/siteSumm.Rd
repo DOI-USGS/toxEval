@@ -7,26 +7,9 @@
 siteSumm(chemicalSummary, newSiteKey)
 }
 \arguments{
-\item{wData}{data frame with a date column (can be NA)
-whose name is defined by the date argument, station column whose name is
-defined by the station argument, and the remaining columns are measurements that
-contain a chemKey (such as parameter code)}
+\item{chemicalSummary}{data frame returned from \code{chemSummBasic}}
 
-\item{pCodeInfoDF}{data frame}
-
-\item{endPoint}{data frame}
-
-\item{date}{character name of date column in wData}
-
-\item{station}{character name of station column in wData}
-
-\item{casrn_pCode}{character name of casrn column in pCodeInfo}
-
-\item{class_pCode}{character name of class column in pCodeInfo}
-
-\item{code_pCode}{character name of code column in pCodeInfo}
-
-\item{casrn_ep}{character name of class column in endPoint}
+\item{newSiteKey}{named vector}
 }
 \description{
 Create site summary

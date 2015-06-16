@@ -4,8 +4,7 @@
 #'
 #' @param chemicalSummary data frame returned from \code{chemSummBasic}
 #' @param newSiteKey named vector 
-#' @import dplyr
-#' @import tidyr
+#' @import  dplyr
 #' @export
 #' @examples
 #' wData <- wData

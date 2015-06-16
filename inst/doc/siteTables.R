@@ -92,6 +92,11 @@ for(i in siteSummary$site){
   chemSummSite_BM <- filter(chemicalSummary_BM, site == names(newSiteKey)[i == newSiteKey])
   chemSummSite_passive <- filter(chemicalSummary_passive, site == names(newSiteKey)[i == newSiteKey])
   
+  totalSamples <- select(chemSummSite,date,site) %>%
+    distinct()%>%
+    nrow()
+
+  
   chemSummSite2 <- select(chemSummSite,-site, -endPoint, -endPointValue) %>%
     mutate(hits=as.numeric(EAR > 0.1))%>%
     group_by(chnm,class,date)%>%
@@ -140,19 +145,25 @@ for(i in siteSummary$site){
   
   names(chemSummSite1_passive) <- c("Chemical", "Class","Maximum EAR", "Number of End Points", "Number of Samples","Frequency of Samples with Hits")
   
-  cat("\n\n###", i, "\n")
-  cat("\nToxCast, Water Samples\n")
+  cat("\n\n##", i, "\n")
+  cat("\n###ToxCast, Water Samples\n")
   
   if(nrow(chemSummSite1) > 0){
     print(kable(chemSummSite1, digits=3,caption = i, row.names = FALSE))
+  } else {
+    cat("\nNo ToxCast, Water Sample hits in ",totalSamples," samples\n")
   }
-  cat("\nWater Quality Guidelines, Water Samples\n")
+  cat("\n###Water Quality Guidelines, Water Samples\n")
   if(nrow(chemSummSite1_BM) > 0){
     print(kable(chemSummSite1_BM, digits=3,caption = i, row.names = FALSE))
+  } else {
+    cat("\nNo Water Quality Guidelines, Water Sample hits in ",totalSamples," samples\n")
   }
-  cat("\nToxCast, Passive\n")
+  cat("\n###ToxCast, Passive\n")
   if(nrow(chemSummSite1_passive) > 0){
     print(kable(chemSummSite1_passive, digits=3,caption = i, row.names = FALSE))
+  } else {
+    cat("\nNo ToxCast, Passive hits in ",totalSamples," samples\n")
   }
 }
 
