@@ -16,7 +16,7 @@ vignette: >
 
 # Site Tables
 
-```{r message=FALSE, echo=FALSE, results='asis'}
+```{r message=FALSE, echo=FALSE, results='asis',warning=FALSE}
 library(dplyr)
 library(tidyr)
 library(DT)
