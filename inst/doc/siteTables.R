@@ -1,4 +1,4 @@
-## ----message=FALSE, echo=FALSE, results='asis'---------------------------
+## ----message=FALSE, echo=FALSE, results='asis',warning=FALSE-------------
 library(dplyr)
 library(tidyr)
 library(DT)
@@ -163,7 +163,7 @@ for(i in siteSummary$site){
   if(nrow(chemSummSite1_passive) > 0){
     print(kable(chemSummSite1_passive, digits=3,caption = i, row.names = FALSE))
   } else {
-    cat("\nNo ToxCast, Passive hits in ",totalSamples," samples\n")
+    cat("\nNo ToxCast, Passive hits in 1 sample\n")
   }
 }
 
