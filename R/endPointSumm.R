@@ -3,7 +3,7 @@
 #' Create chemical summary
 #'
 #' @param chemicalSummary data frame returned from \code{chemSummBasic}
-#' @param chemicalSummary.key character column name for grouping by (default = "endPoint")
+#' @param chemicalSummary.Key character column name for grouping by (default = "endPoint")
 #' @param chemicalSummary.site character column name for group by site
 #' @param endPointInfo dataframe
 #' @param endPointInfo.Key column name of endpoint

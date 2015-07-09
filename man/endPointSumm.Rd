@@ -11,6 +11,8 @@ endPointSumm(chemicalSummary, chemicalSummary.Key = "endPoint",
 \arguments{
 \item{chemicalSummary}{data frame returned from \code{chemSummBasic}}
 
+\item{chemicalSummary.Key}{character column name for grouping by (default = "endPoint")}
+
 \item{chemicalSummary.site}{character column name for group by site}
 
 \item{endPointInfo}{dataframe}
@@ -18,8 +20,6 @@ endPointSumm(chemicalSummary, chemicalSummary.Key = "endPoint",
 \item{endPointInfo.Key}{column name of endpoint}
 
 \item{EAR.key}{column name in chemicalSummary of EAR}
-
-\item{chemicalSummary.key}{character column name for grouping by (default = "endPoint")}
 }
 \description{
 Create chemical summary
