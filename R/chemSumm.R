@@ -3,6 +3,11 @@
 #' Create chemical summary
 #'
 #' @param chemicalSummary data frame returned from \code{chemSummBasic}
+#' @param EAR.key column name of EAR
+#' @param chnmCol column name of chemical names
+#' @param classCol column name of chemical class
+#' @param siteCol column name of site
+#' @param dateCol column name of date
 #' @import dplyr
 #' @export
 #' @examples
@@ -11,12 +16,14 @@
 #' endPoint <- endPointToxCreate(pCodeInfo)
 #' chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 #' chemSum1 <- chemSumm(chemicalSummary)
-chemSumm <- function(chemicalSummary){
+chemSumm <- function(chemicalSummary,EAR.key="EAR",chnmCol="chnm",
+                     classCol="class",siteCol="site",dateCol="date"){
 
   chemSum1 <- chemicalSummary %>%
-    mutate(hits= as.numeric(EAR > 0.1)) %>%
+    mutate_("hits"= paste0("as.numeric(",EAR.key," > 0.1)")) %>%
+    rename_("EAR"=EAR.key, "site"=siteCol,"class"=classCol,"chnm"=chnmCol) %>%
     group_by(chnm,  class, site) %>%
-    summarize(hits=as.numeric(any(hits > 0)), 
+    summarize(hits=as.numeric(any(hits > 0)),
               median=median(EAR),
               maxEAR=max(EAR)) %>%
     group_by(chnm, class) %>%
@@ -24,13 +31,15 @@ chemSumm <- function(chemicalSummary){
               nSites=sum(hits),
               aveMedian=mean(median)) 
   
-  totalSamples <- select(chemicalSummary,date,site,chnm) %>%
+  totalSamples <- select_(chemicalSummary,dateCol,siteCol,chnmCol) %>%
+    rename_("chnm"=chnmCol) %>%
     distinct()%>%
     group_by(chnm) %>%
     summarise(nSamples=n()) %>%
     mutate(chnm=as.character(chnm))
   
   chemSum2 <- chemicalSummary %>%
+    rename_("chnm"=chnmCol, "class"=classCol, "EAR"=EAR.key) %>%
     group_by(chnm,  class) %>%  
     summarize(maxEAR=max(EAR),
               nEndPoints=length(unique(endPoint[EAR > 0.1])),
