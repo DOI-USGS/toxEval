@@ -25,12 +25,11 @@ shinyUI(fluidPage(
                   choices = names(endPointInfo),
                   selected = names(endPointInfo)[11], multiple = FALSE),
       uiOutput("groupControl")
-      # submitButton("Submit")
     ),
     mainPanel(
-#       dygraphOutput("dygraph1"),
-#       dygraphOutput("dygraph2"),
-#       dygraphOutput("dygraph3")
+      fluidRow(
+        dataTableOutput(outputId="table")
+      )
     )
   )
 ))
