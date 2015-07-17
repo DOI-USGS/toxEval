@@ -21,12 +21,8 @@ endPointSumm <- function(chemicalSummary, chemicalSummary.Key="endPoint",chemica
                          endPointInfo, endPointInfo.Key = "assay_component_endpoint_name",
                          EAR.key="EAR"){
   
-  totalSamples_ep <- select_(chemicalSummary,chemicalSummary.site,chemicalSummary.Key) %>%
-    distinct()%>%
-    group_by_(chemicalSummary.Key) %>%
-    summarise(totalSites=n())%>%
-    rename_("endPoint"=chemicalSummary.Key) %>%
-    mutate(endPoint=as.character(endPoint))
+  totalSamples_ep <- totalSamples(chemicalSummary = chemicalSummary, chemicalSummary.Key=chemicalSummary.Key,
+                                  chemicalSummary.site=chemicalSummary.site)
   
   
   endpointSummary <- chemicalSummary %>%
