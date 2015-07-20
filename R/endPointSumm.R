@@ -26,8 +26,6 @@ endPointSumm <- function(chemicalSummary, chemicalSummary.Key="endPoint",chemica
   
   
   endpointSummary <- chemicalSummary %>%
-    mutate_("hits"= paste0("as.numeric(",EAR.key," > 0.1)")) %>%
-    rename_("EAR"=EAR.key) %>%
     group_by_(chemicalSummary.site, chemicalSummary.Key) %>%
     summarize(hits=as.numeric(any(hits > 0)),
               maxEAR=max(EAR)) %>%
