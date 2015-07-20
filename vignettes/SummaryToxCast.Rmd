@@ -294,7 +294,6 @@ This table focuses on the individual endpoint/compound combinations and the prev
 
 
 chemSum3 <- chemicalSummary %>%
-  mutate(hits= as.numeric(EAR > 0.1)) %>%
   group_by(chnm,  class, site, endPoint) %>%
   summarize(hits=as.numeric(any(hits > 0)),
             maxEAR=max(EAR)) %>%
