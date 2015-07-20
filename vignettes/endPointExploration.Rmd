@@ -47,11 +47,11 @@ funcToSummerise <- "sumEAR"
 endPointInfoSub <- unique(filter_(endPointInfo, paste0(groupCol," == '", group, "'")))
 
 endpointSummary <- chemicalSummary %>%
-  filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
-  mutate(hits = as.numeric(EAR > 0.1),
-         endPoint=as.character(endPoint)) %>%
-  left_join(endPointInfoSub, by=c("endPoint"="assay_component_endpoint_name")) %>%
-  select_("hits","EAR","endPoint",chemicalSummary.site,chemicalSummary.Date,groupCol) %>%
+  filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>% 
+  left_join(endPointInfoSub,
+            by=c("endPoint"="assay_component_endpoint_name")) %>%
+  select_("hits","EAR","endPoint",
+          chemicalSummary.site,chemicalSummary.Date,groupCol) %>%
   group_by_(chemicalSummary.site, chemicalSummary.Date) %>%
   summarise(sumEAR = sum(EAR),
             nHits = sum(hits)) 
@@ -90,6 +90,8 @@ siteLimits <- stationINFO %>%
   arrange(lakeCat) 
 
 endPointSummBP <- endpointSummary %>%
+  data.frame()%>%
+  mutate(site = siteKey[site]) %>%
   mutate(site = factor(site, levels=siteLimits$Station.shortname))
 
 sToxWS <- ggplot(endPointSummBP, aes(x=site, y=sumEAR)) +
