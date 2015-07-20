@@ -8,12 +8,16 @@ shinyServer(function(input, output) {
     
     selectInput("group", label = "Group in column",
                 choices = unique(endPointInfo[,input$groupCol])[!is.na(unique(endPointInfo[,input$groupCol]))],
+                selected = unique(endPointInfo[,10])[5],
                 multiple = FALSE)
   })
   
   output$table <- renderDataTable({
-    
-    endPointInfoSub <- unique(filter_(endPointInfo, paste0(input$groupCol," == '", input$group, "'")))
+
+    endPointInfoSub <- unique(filter_(endPointInfo, 
+                                      paste0(input$groupCol," == '", 
+                                             ifelse(is.null(input$group),endPointInfo[1,11],input$group),
+                                             "'")))
     
     endpointSummary <- chemicalSummary %>%
       filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
@@ -24,15 +28,14 @@ shinyServer(function(input, output) {
                 nHits = sum(hits)) 
     
     statsOfSum <- endpointSummary%>%
-      group_by_(chemicalSummary.site) %>%
-      summarise_(meanEAR = paste0("mean(",funcToSummerise,")"),
-                 # medianEAR = paste0("median(",funcToSummerise,")"),
-                 maxEAR = paste0("max(",funcToSummerise,")"),
-                 sumHits = "sum(nHits)",
-                 nSamples = "n()") %>%
+      group_by(site) %>%
+      summarise(meanEAR = mean(sumEAR),
+                 maxEAR = max(sumEAR),
+                 sumHits = sum(nHits),
+                 nSamples = n()) %>%
       data.frame()%>%
       mutate(site = siteKey[site])
     
       statsOfSum
-  })
+  }, options = list(pageLength = 10)) 
 })

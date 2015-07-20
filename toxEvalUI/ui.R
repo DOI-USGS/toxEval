@@ -8,11 +8,16 @@ pCodeInfo <- pCodeInfo
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "stationINFO.RData")
 load(file=filePath)
+siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
 endPointInfo <- endPointInfo
-summary <- readRDS("data/summary.rds")
-endPoint <- readRDS("data/endPoint.rds")
-chemicalSummary <- readRDS("data/chemicalSummary.rds")
+
+# For debugging!
+pathToApp <- "D:/LADData/RCode/toxEval/toxEvalUI"
+
+summary <- readRDS(file.path(pathToApp,"data/summary.rds"))
+endPoint <- readRDS(file.path(pathToApp,"data/endPoint.rds"))
+chemicalSummary <- readRDS(file.path(pathToApp,"data/chemicalSummary.rds"))
 
 shinyUI(fluidPage(
   
@@ -23,13 +28,11 @@ shinyUI(fluidPage(
     sidebarPanel(
       selectInput("groupCol", label = "Column to group", 
                   choices = names(endPointInfo),
-                  selected = names(endPointInfo)[11], multiple = FALSE),
+                  selected = names(endPointInfo)[10], multiple = FALSE),
       uiOutput("groupControl")
     ),
     mainPanel(
-      fluidRow(
-        dataTableOutput(outputId="table")
-      )
+      dataTableOutput('table')
     )
   )
 ))
