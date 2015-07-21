@@ -99,6 +99,8 @@ chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
     gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date)  %>% 
     filter(!is.na(endPointValue)) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
+    mutate(hits = as.numeric(EAR > 0.1),
+           endPoint=as.character(endPoint)) %>%
     filter(!is.na(EAR))
   return(chemicalSummary)
 }

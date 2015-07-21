@@ -18,6 +18,11 @@ To install the `toxEval` package you need to be using R 3.0 or greater. Then use
 ```R
 library(devtools)
 install_github("USGS-R/toxEval")
+
+library(shiny)
+pathToApp <- system.file("shiny", package="toxEval")
+runApp(pathToApp)
+
 ```
 
 Linux: [![travis](https://api.travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval)
