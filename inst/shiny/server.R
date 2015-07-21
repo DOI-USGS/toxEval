@@ -1,21 +1,49 @@
-library(DT)
 library(dplyr)
-library(toxEval)
 library(magrittr)
 library(ggplot2)
+library(DT)
+library(toxEval)
+
+endPointInfo <- endPointInfo
+wData <- wData
+pCodeInfo <- pCodeInfo
+
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "stationINFO.RData")
+load(file=filePath)
+siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+endPointInfo <- endPointInfo
+
+pathToApp <- system.file("extdata", package="toxEval")
+
+summary <- readRDS(file.path(pathToApp,"summary.rds"))
+endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
+chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 
 shinyServer(function(input, output) {
   
   endpointSummary <- reactive({
+    
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[10]
+    } else {
+      groupCol <- input$groupCol
+    }
+    
+    if(is.null(input$group)){
+      group <- unique(endPointInfo[,10])[5]
+    } else {
+      group <- input$group
+    }
+    
     endPointInfoSub <- unique(filter_(endPointInfo, 
-                                      paste0(input$groupCol," == '", 
-                                             ifelse(is.null(input$group),endPointInfo[1,11],input$group),
-                                             "'")))
+                                      paste0(groupCol," == '",group,"'")))
     
     endpointSummary <- chemicalSummary %>%
       filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
       left_join(endPointInfoSub, by=c("endPoint"="assay_component_endpoint_name")) %>%
-      select_("hits","EAR","endPoint","site","date",input$groupCol) %>%
+      select_("hits","EAR","endPoint","site","date",groupCol) %>%
       group_by(site,date) %>%
       summarise(sumEAR = sum(EAR),
                 nHits = sum(hits))
@@ -47,6 +75,12 @@ shinyServer(function(input, output) {
   }, options = list(pageLength = 10))
   
   output$graph <- renderPlot({
+    
+    endpointSummary <- endpointSummary()
+    if(nrow(endpointSummary) == 0){
+      
+    }
+    
     siteLimits <- stationINFO %>%
       mutate(lakeCat = factor(Lake, 
                               levels=c("Lake Superior","Lake Michigan",
@@ -54,9 +88,10 @@ shinyServer(function(input, output) {
                                        "Detroit River and Lake St. Clair","Lake Erie","Lake Ontario"))) %>%
       arrange(lakeCat) %>%
       mutate(lakeColor = c("red","black","green","brown","brown","brown","blue")[as.numeric(lakeCat)] )%>%
-      filter(fullSiteID %in% unique(endpointSummary()$site))
+      filter(fullSiteID %in% unique(endpointSummary$site))
+
     
-    endPointSummBP <- endpointSummary() %>%
+    endPointSummBP <- endpointSummary %>%
       data.frame()%>%
       mutate(site = siteKey[site]) %>%
       mutate(site = factor(site, levels=siteLimits$Station.shortname))

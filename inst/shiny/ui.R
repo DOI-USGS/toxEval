@@ -1,23 +1,3 @@
-library(DT)
-library(dplyr)
-library(toxEval)
-endPointInfo <- endPointInfo
-wData <- wData
-pCodeInfo <- pCodeInfo
-
-packagePath <- system.file("extdata", package="toxEval")
-filePath <- file.path(packagePath, "stationINFO.RData")
-load(file=filePath)
-siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
-
-endPointInfo <- endPointInfo
-
-pathToApp <- system.file("extdata", package="toxEval")
-
-summary <- readRDS(file.path(pathToApp,"summary.rds"))
-endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
-chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
-
 shinyUI(fluidPage(
   
   titlePanel("toxEval"),
