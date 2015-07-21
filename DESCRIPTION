@@ -29,7 +29,8 @@ Suggests:
     formattable,
     ggplot2,
     gridExtra,
-    grid
+    grid,
+    shiny
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes

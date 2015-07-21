@@ -12,12 +12,11 @@ siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
 endPointInfo <- endPointInfo
 
-# For debugging!
-pathToApp <- "D:/LADData/RCode/toxEval/toxEvalUI"
+pathToApp <- system.file("extdata", package="toxEval")
 
-summary <- readRDS(file.path(pathToApp,"data/summary.rds"))
-endPoint <- readRDS(file.path(pathToApp,"data/endPoint.rds"))
-chemicalSummary <- readRDS(file.path(pathToApp,"data/chemicalSummary.rds"))
+summary <- readRDS(file.path(pathToApp,"summary.rds"))
+endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
+chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 
 shinyUI(fluidPage(
   
