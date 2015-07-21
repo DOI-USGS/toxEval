@@ -8,7 +8,8 @@ shinyUI(fluidPage(
 
     fluidRow(
       dataTableOutput('table'),
-      plotOutput("graph")
+      plotOutput("graph"),
+      leaflet::leafletOutput("mymap")
     )
   )
 )

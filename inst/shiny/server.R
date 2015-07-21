@@ -2,6 +2,7 @@ library(dplyr)
 library(magrittr)
 library(ggplot2)
 library(DT)
+library(leaflet)
 library(toxEval)
 
 endPointInfo <- endPointInfo
@@ -77,8 +78,9 @@ shinyServer(function(input, output) {
   output$graph <- renderPlot({
     
     endpointSummary <- endpointSummary()
+    
     if(nrow(endpointSummary) == 0){
-      
+      endpointSummary$site <- stationINFO$fullSiteID
     }
     
     siteLimits <- stationINFO %>%
@@ -108,5 +110,47 @@ shinyServer(function(input, output) {
                               levels=c("red","black","green","brown","blue")), size=3)
     print(sToxWS)
   })
+  
+  output$mymap <- leaflet::renderLeaflet({
+    
+    mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
+    mapData <- mapData[!is.na(mapData$dec.lat.va),]
+    mapData <- mapData[!is.na(mapData$nChem),]
+    
+    
+    col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
+    leg_vals <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR 
+    
+    cols <- colorNumeric(col_types, domain = leg_vals)
+    rad <- seq(5000,15000, 500)
+    mapData$sizes <- rad[as.numeric(cut(mapData$nChem, c(-1:19)))]
+    
+    pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+    
+    leaflet(mapData) %>%
+      addProviderTiles("Esri.WorldPhysical") %>%
+      setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+      addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
+                 popup=
+                   paste0('<b>',mapData$Station.Name,"</b><br/><table>",
+                          "<tr><td>Frequency</td><td>",sprintf("%1.1f",mapData$freq),'</td></tr>',
+                          "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
+                          "<tr><td>maxEAR</td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
+                          "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
+                          "<tr><td>nEndPoints</td><td>",mapData$nEndPoints,'</td></tr></table>')
+                 ,
+                 fillColor = ~pal(maxEAR), 
+                 weight = 1,
+                 color = "black",
+                 fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
+      addLegend(
+        position = 'bottomleft',
+        pal=pal,
+        values=~maxEAR,
+        opacity = 0.8,
+        title = 'Maximum EAR') 
+    
+  })
+  
 
 })
