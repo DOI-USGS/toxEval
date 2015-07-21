@@ -38,8 +38,9 @@ shinyServer(function(input, output) {
       group <- input$group
     }
     
-    endPointInfoSub <- unique(filter_(endPointInfo, 
-                                      paste0(groupCol," == '",group,"'")))
+    endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
+      filter_(paste0(groupCol," == '", group, "'")) %>%
+      unique()
     
     endpointSummary <- chemicalSummary %>%
       filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
@@ -88,7 +89,7 @@ shinyServer(function(input, output) {
                               levels=c("Lake Superior","Lake Michigan",
                                        "Lake Huron", "St. Lawrence River",
                                        "Detroit River and Lake St. Clair","Lake Erie","Lake Ontario"))) %>%
-      arrange(lakeCat) %>%
+      arrange(lakeCat, dec.long.va) %>%
       mutate(lakeColor = c("red","black","green","brown","brown","brown","blue")[as.numeric(lakeCat)] )%>%
       filter(fullSiteID %in% unique(endpointSummary$site))
 
