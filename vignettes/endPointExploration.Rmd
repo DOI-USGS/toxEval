@@ -87,20 +87,27 @@ siteLimits <- stationINFO %>%
             levels=c("Lake Superior","Lake Michigan",
                      "Lake Huron", "St. Lawrence River",
                      "Detroit River and Lake St. Clair","Lake Erie","Lake Ontario"))) %>%
-  arrange(lakeCat) 
+  arrange(lakeCat) %>%
+  mutate(lakeColor = c("red","black","green","brown","brown","brown","blue")[as.numeric(lakeCat)] ) %>%
+  filter(fullSiteID %in% unique(endpointSummary$site))
+  
 
 endPointSummBP <- endpointSummary %>%
   data.frame()%>%
   mutate(site = siteKey[site]) %>%
-  mutate(site = factor(site, levels=siteLimits$Station.shortname))
+  mutate(site = factor(site, levels=siteLimits$Station.shortname)) 
 
 sToxWS <- ggplot(endPointSummBP, aes(x=site, y=sumEAR)) +
   geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, colour=siteLimits$lakeColor), 
         legend.position = "none")+
   scale_x_discrete(limits=siteLimits$Station.shortname) +
   # scale_y_log10(limits=c(0.03,5000)) +
-  labs(x = "Site")  
+  # labs(x = "Site")  +
+  geom_text(data=data.frame(), aes(x=c(5, 18,31,45,56),
+                                   y=-.5, label=c("Superior","Michigan","Huron","Erie","Ontario")),
+                                   colour=factor(c("red","black","green","brown","blue"),
+                                                 levels=c("red","black","green","brown","blue")), size=3) 
 
 sToxWS
 ```
