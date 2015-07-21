@@ -1,19 +1,12 @@
 library(DT)
 library(dplyr)
 library(toxEval)
+library(magrittr)
+library(ggplot2)
 
 shinyServer(function(input, output) {
   
-  output$groupControl <- renderUI({
-    
-    selectInput("group", label = "Group in column",
-                choices = unique(endPointInfo[,input$groupCol])[!is.na(unique(endPointInfo[,input$groupCol]))],
-                selected = unique(endPointInfo[,10])[5],
-                multiple = FALSE)
-  })
-  
-  output$table <- renderDataTable({
-
+  endpointSummary <- reactive({
     endPointInfoSub <- unique(filter_(endPointInfo, 
                                       paste0(input$groupCol," == '", 
                                              ifelse(is.null(input$group),endPointInfo[1,11],input$group),
@@ -25,17 +18,55 @@ shinyServer(function(input, output) {
       select_("hits","EAR","endPoint","site","date",input$groupCol) %>%
       group_by(site,date) %>%
       summarise(sumEAR = sum(EAR),
-                nHits = sum(hits)) 
+                nHits = sum(hits))
+  })
+  
+  statsOfSum <- reactive({
+    endpointSummary() %>%
+    group_by(site) %>%
+    summarise(meanEAR = mean(sumEAR),
+              maxEAR = max(sumEAR),
+              sumHits = sum(nHits),
+              nSamples = n()) %>%
+    data.frame()%>%
+    mutate(site = siteKey[site]) %>%
+    arrange(desc(maxEAR))
     
-    statsOfSum <- endpointSummary%>%
-      group_by(site) %>%
-      summarise(meanEAR = mean(sumEAR),
-                 maxEAR = max(sumEAR),
-                 sumHits = sum(nHits),
-                 nSamples = n()) %>%
+  })
+  
+  output$groupControl <- renderUI({
+    
+    selectInput("group", label = "Group in column",
+                choices = unique(endPointInfo[,input$groupCol])[!is.na(unique(endPointInfo[,input$groupCol]))],
+                selected = unique(endPointInfo[,10])[5],
+                multiple = FALSE)
+  })
+  
+  output$table <- DT::renderDataTable({
+    statsOfSum()
+  }, options = list(pageLength = 10))
+  
+  output$graph <- renderPlot({
+    siteLimits <- stationINFO %>%
+      mutate(lakeCat = factor(Lake, 
+                              levels=c("Lake Superior","Lake Michigan",
+                                       "Lake Huron", "St. Lawrence River",
+                                       "Detroit River and Lake St. Clair","Lake Erie","Lake Ontario"))) %>%
+      arrange(lakeCat) 
+    
+    endPointSummBP <- endpointSummary() %>%
       data.frame()%>%
-      mutate(site = siteKey[site])
+      mutate(site = siteKey[site]) %>%
+      mutate(site = factor(site, levels=siteLimits$Station.shortname))
     
-      statsOfSum
-  }, options = list(pageLength = 10)) 
+    sToxWS <- ggplot(endPointSummBP, aes(x=site, y=sumEAR)) +
+      geom_boxplot() +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+            legend.position = "none")+
+      scale_x_discrete(limits=siteLimits$Station.shortname) +
+      # scale_y_log10(limits=c(0.03,5000)) +
+      labs(x = "Site") 
+    print(sToxWS)
+  })
+
 })

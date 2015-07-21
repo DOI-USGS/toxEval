@@ -32,7 +32,8 @@ shinyUI(fluidPage(
       uiOutput("groupControl")
     ),
     mainPanel(
-      dataTableOutput('table')
+      dataTableOutput('table'),
+      plotOutput("graph")
     )
   )
 ))
