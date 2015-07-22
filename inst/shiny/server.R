@@ -13,6 +13,14 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "stationINFO.RData")
 load(file=filePath)
 siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+stationINFO <- stationINFO %>%
+  mutate(lakeCat = factor(Lake, 
+                          levels=c("Lake Superior","Lake Michigan",
+                                   "Lake Huron",
+                                   "Detroit River and Lake St. Clair","Lake Erie",
+                                   "Lake Ontario", "St. Lawrence River"))) %>%
+  arrange(lakeCat, dec.long.va) %>%
+  mutate(lakeColor = c("red","black","green","brown","brown","blue","blue")[as.numeric(lakeCat)] )
 
 endPointInfo <- endPointInfo
 
@@ -23,6 +31,24 @@ endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
 chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 
 shinyServer(function(input, output) {
+  
+  chemicalSummaryFiltered <- reactive({
+    
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[10]
+    } else {
+      groupCol <- input$groupCol
+    }
+
+    endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
+      unique()
+    
+    chemicalSummaryFiltered <- chemicalSummary %>%
+      filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
+      left_join(endPointInfoSub,
+                by=c("endPoint"="assay_component_endpoint_name"))
+    
+  })
   
   endpointSummary <- reactive({
     
@@ -38,17 +64,13 @@ shinyServer(function(input, output) {
       group <- input$group
     }
     
-    endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
+    endpointSummary <- chemicalSummaryFiltered() %>%
       filter_(paste0(groupCol," == '", group, "'")) %>%
-      unique()
-    
-    endpointSummary <- chemicalSummary %>%
-      filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
-      left_join(endPointInfoSub, by=c("endPoint"="assay_component_endpoint_name")) %>%
-      select_("hits","EAR","endPoint","site","date",groupCol) %>%
-      group_by(site,date) %>%
+      select_("hits","EAR","endPoint",
+              chemicalSummary.site,chemicalSummary.Date,groupCol) %>%
+      group_by_(chemicalSummary.site, chemicalSummary.Date) %>%
       summarise(sumEAR = sum(EAR),
-                nHits = sum(hits))
+                nHits = sum(hits)) 
   })
   
   statsOfSum <- reactive({
@@ -72,6 +94,19 @@ shinyServer(function(input, output) {
                 multiple = FALSE)
   })
   
+  output$groupSumTable <- DT::renderDataTable({
+#     chemicalSummaryFiltered() %>%
+#       group_by(site) %>%
+#       summarise(nChem = length(unique(chnm)),
+#                 nEndPoints = length(unique(endPoint))) %>%
+#       select(nChem,nEndPoints) %>%
+#       mutate(nChem = median(nChem),
+#              nEndPoints = median(nEndPoints)) %>%
+#       unique()
+    data.frame(nChem=39, nEndPoints=538)
+      
+  }, options = list(searching = FALSE, paging = FALSE))
+  
   output$table <- DT::renderDataTable({
     statsOfSum()
   }, options = list(pageLength = 10))
@@ -83,14 +118,8 @@ shinyServer(function(input, output) {
     if(nrow(endpointSummary) == 0){
       endpointSummary$site <- stationINFO$fullSiteID
     }
-    
+      
     siteLimits <- stationINFO %>%
-      mutate(lakeCat = factor(Lake, 
-                              levels=c("Lake Superior","Lake Michigan",
-                                       "Lake Huron", "St. Lawrence River",
-                                       "Detroit River and Lake St. Clair","Lake Erie","Lake Ontario"))) %>%
-      arrange(lakeCat, dec.long.va) %>%
-      mutate(lakeColor = c("red","black","green","brown","brown","brown","blue")[as.numeric(lakeCat)] )%>%
       filter(fullSiteID %in% unique(endpointSummary$site))
 
     
@@ -105,7 +134,7 @@ shinyServer(function(input, output) {
             legend.position = "none")+
       scale_x_discrete(limits=siteLimits$Station.shortname) +
       # scale_y_log10(limits=c(0.03,5000)) +
-      geom_text(data=data.frame(), aes(x=c(5, 18,31,45,56),
+      geom_text(data=data.frame(), aes(x=c(5, 18,31,42,54),
                                        y=-.5, label=c("Superior","Michigan","Huron","Erie","Ontario")),
                 colour=factor(c("red","black","green","brown","blue"),
                               levels=c("red","black","green","brown","blue")), size=3)

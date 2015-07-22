@@ -1,10 +1,12 @@
 shinyUI(fluidPage(
   
   titlePanel("toxEval"),
-  fluidRow(column(6, selectInput("groupCol", label = "Column to group", 
+  fluidRow(column(width = 4, selectInput("groupCol", label = "Column to group", 
                                 choices = names(endPointInfo),
                                 selected = names(endPointInfo)[10], multiple = FALSE)),
-           column(6, uiOutput("groupControl"))),
+           column(width = 4, uiOutput("groupControl"))
+           # column(width = 4, dataTableOutput('groupSumTable'))
+           ),
 
     fluidRow(
       dataTableOutput('table'),
