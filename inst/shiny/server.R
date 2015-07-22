@@ -32,7 +32,7 @@ chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 
 shinyServer(function(input, output) {
   
-  chemicalSummaryFiltered <- reactive({
+  chemicalSummaryFiltered <- eventReactive(input$calculate, {
     
     if(is.null(input$groupCol)){
       groupCol <- names(endPointInfo)[10]
@@ -50,7 +50,7 @@ shinyServer(function(input, output) {
     
   })
   
-  endpointSummary <- reactive({
+  endpointSummary <- eventReactive(input$calculate, {
     
     if(is.null(input$groupCol)){
       groupCol <- names(endPointInfo)[10]
@@ -73,7 +73,7 @@ shinyServer(function(input, output) {
                 nHits = sum(hits)) 
   })
   
-  statsOfSum <- reactive({
+  statsOfSum <- eventReactive(input$calculate, {
     endpointSummary() %>%
     group_by(site) %>%
     summarise(meanEAR = mean(sumEAR),
