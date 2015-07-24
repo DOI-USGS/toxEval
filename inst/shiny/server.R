@@ -33,6 +33,9 @@ summary <- readRDS(file.path(pathToApp,"summary.rds"))
 endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
 chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 
+choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
+groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
+
 shinyServer(function(input, output) {
   
   # chemicalSummaryFiltered <- eventReactive(input$calculate, {
@@ -96,8 +99,14 @@ shinyServer(function(input, output) {
   
   output$groupControl <- renderUI({
     
-    selectInput("group", label = "Group in column",
-                choices = unique(endPointInfo[,input$groupCol])[!is.na(unique(endPointInfo[,input$groupCol]))],
+    ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
+
+    nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
+    
+    dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
+    
+    selectInput("group", label = "Group in column (# End Points)",
+                choices = setNames(ChoicesInGroup,dropDownHeader),
                 selected = unique(endPointInfo[,20])[3],
                 multiple = FALSE)
   })
@@ -146,25 +155,32 @@ shinyServer(function(input, output) {
       theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, colour=siteLimits$lakeColor), 
             legend.position = "none")+
       scale_x_discrete(limits=siteLimits$Station.shortname) +
-      scale_y_log10("sumEAR",limit=c(1,NA)) +
+      scale_y_log10("sumEAR") +
+      coord_cartesian(ylim = c(1, 1.1*max(endPointSummBP$sumEARnoZero))) +
       # ylab("sumEAR") + 
       xlab("") +
       annotation_custom(xmin=-1,xmax=-1,
                         ymin=log10(ndLevel), ymax=log10(ndLevel),
-                        grob=textGrob("ND", gp=gpar(fontsize=9), vjust = 0.25))
-    
-    for(i in 1:5){
-      sToxWS <- sToxWS +       
-        annotation_custom(xmin=c(5, 18,31,42,54)[i],xmax=c(5, 18,31,42,54)[i],
-                         ymin=log10(.98), ymax=log10(.98),
-                         grob=textGrob(c("Superior","Michigan","Huron","Erie","Ontario")[i],
-                                       gp=gpar(col=c("red","black","green","brown","blue")[i], fontsize=9)))
+                        grob=textGrob("ND", gp=gpar(fontsize=9), vjust = 0.25)) +
+      geom_text(data=data.frame(), 
+                aes(x=c(5, 18,31,42,54),y=rep(1.1,5),
+                    label=c("Superior","Michigan","Huron","Erie","Ontario")),                
+                colour=factor(c("red","black","green","brown","blue"),
+                              levels=c("red","black","green","brown","blue")), size=3)            
+                              
+    print(sToxWS)
+#     for(i in 1:5){
+#       sToxWS <- sToxWS +       
+#         annotation_custom(xmin=c(5, 18,31,42,54)[i],xmax=c(5, 18,31,42,54)[i],
+#                          ymin=log10(.98), ymax=log10(.98),
+#                          grob=textGrob(c("Superior","Michigan","Huron","Erie","Ontario")[i],
+#                                        gp=gpar(col=c("red","black","green","brown","blue")[i], fontsize=9)))
+# 
+#     }
 
-    }
-
-    g_sToxWS <- ggplotGrob(sToxWS)
-    g_sToxWS$layout$clip[g_sToxWS$layout$name=="panel"] <- "off"
-    grid.draw(g_sToxWS)
+#     g_sToxWS <- ggplotGrob(sToxWS)
+#     g_sToxWS$layout$clip[g_sToxWS$layout$name=="panel"] <- "off"
+#     grid.draw(g_sToxWS)
     
   })
   
@@ -177,8 +193,15 @@ shinyServer(function(input, output) {
   })
   
   observe({
+
+    sumStat <- statsOfSum()
     
-    mapData <- left_join(stationINFO, statsOfSum(), by=c("shortName"="site"))
+    if(nrow(sumStat) == 0){
+      sumStat <- summary
+      sumStat$sumHits <- sumStat$nChem
+    }
+    
+    mapData <- right_join(stationINFO, sumStat, by=c("shortName"="site"))
     mapData <- mapData[!is.na(mapData$dec.lat.va),]
     # mapData <- mapData[!is.na(mapData$nChem),]
     
@@ -186,13 +209,19 @@ shinyServer(function(input, output) {
       mapData <- mapData[mapData$shortName == input$sites,]
     }
     
-    col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
-    leg_vals <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR 
+    col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
+    leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+    #c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR 
     
     cols <- colorNumeric(col_types, domain = leg_vals)
     rad <- seq(5000,15000, 500)
     # mapData$sizes <- rad[as.numeric(cut(mapData$nChem, c(-1:19)))]
-    mapData$sizes <- rad[as.numeric(cut(mapData$sumHits, c(-1:19)))]
+    mapData$sizes <- rad[as.numeric(
+                              cut(mapData$sumHits, 
+                                  c(-1,unique(as.numeric(
+                                    quantile(mapData$sumHits, probs=c(0.01,0.1,0.25,0.5,0.75,0.9,.99), na.rm=TRUE)
+                                    )),(max(mapData$sumHits,na.rm=TRUE)+1))
+                                  ))]
     pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
     
     leafletProxy("mymap", data=mapData) %>%
