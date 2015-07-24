@@ -35,7 +35,7 @@ shinyServer(function(input, output) {
   chemicalSummaryFiltered <- eventReactive(input$calculate, {
     
     if(is.null(input$groupCol)){
-      groupCol <- names(endPointInfo)[10]
+      groupCol <- names(endPointInfo)[20]
     } else {
       groupCol <- input$groupCol
     }
@@ -53,13 +53,13 @@ shinyServer(function(input, output) {
   endpointSummary <- eventReactive(input$calculate, {
     
     if(is.null(input$groupCol)){
-      groupCol <- names(endPointInfo)[10]
+      groupCol <- names(endPointInfo)[20]
     } else {
       groupCol <- input$groupCol
     }
     
     if(is.null(input$group)){
-      group <- unique(endPointInfo[,10])[5]
+      group <- unique(endPointInfo[,20])[5]
     } else {
       group <- input$group
     }
@@ -143,10 +143,21 @@ shinyServer(function(input, output) {
   
   output$mymap <- leaflet::renderLeaflet({
     
+    leaflet() %>%
+      addProviderTiles("Esri.WorldPhysical") %>%
+      setView(lng = -83.5, lat = 44.5, zoom=6) 
+    
+  })
+  
+  observe({
+    
     mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
     mapData <- mapData[!is.na(mapData$dec.lat.va),]
     mapData <- mapData[!is.na(mapData$nChem),]
     
+    if(input$sites != "All"){
+      mapData <- mapData[mapData$shortName == input$sites,]
+    }
     
     col_types <- c("darkblue","dodgerblue","green","yellow","orange","red")
     leg_vals <- c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR 
@@ -157,9 +168,9 @@ shinyServer(function(input, output) {
     
     pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
     
-    leaflet(mapData) %>%
-      addProviderTiles("Esri.WorldPhysical") %>%
-      setView(lng = -83.5, lat = 44.5, zoom=6)%>%
+    leafletProxy("mymap", data=mapData) %>%
+      clearShapes() %>%
+      clearControls() %>%
       addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
                  popup=
                    paste0('<b>',mapData$Station.Name,"</b><br/><table>",
@@ -178,7 +189,7 @@ shinyServer(function(input, output) {
         pal=pal,
         values=~maxEAR,
         opacity = 0.8,
-        title = 'Maximum EAR') 
+        title = 'Maximum EAR')
     
   })
   
