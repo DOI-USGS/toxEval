@@ -74,9 +74,8 @@ shinyServer(function(input, output) {
     
     endpointSummary <- chemicalSummaryFiltered() %>%
       filter_(paste0(groupCol," == '", group, "'")) %>%
-      select_("hits","EAR","endPoint",
-              chemicalSummary.site,chemicalSummary.Date,groupCol) %>%
-      group_by_(chemicalSummary.site, chemicalSummary.Date) %>%
+      select_("hits","EAR","endPoint","site","date",groupCol) %>%
+      group_by(site, date) %>%
       summarise(sumEAR = sum(EAR),
                 nHits = sum(hits)) 
   })
@@ -179,9 +178,9 @@ shinyServer(function(input, output) {
   
   observe({
     
-    mapData <- left_join(stationINFO, summary, by=c("shortName"="site"))
+    mapData <- left_join(stationINFO, statsOfSum(), by=c("shortName"="site"))
     mapData <- mapData[!is.na(mapData$dec.lat.va),]
-    mapData <- mapData[!is.na(mapData$nChem),]
+    # mapData <- mapData[!is.na(mapData$nChem),]
     
     if(input$sites != "All"){
       mapData <- mapData[mapData$shortName == input$sites,]
@@ -192,21 +191,21 @@ shinyServer(function(input, output) {
     
     cols <- colorNumeric(col_types, domain = leg_vals)
     rad <- seq(5000,15000, 500)
-    mapData$sizes <- rad[as.numeric(cut(mapData$nChem, c(-1:19)))]
-    
+    # mapData$sizes <- rad[as.numeric(cut(mapData$nChem, c(-1:19)))]
+    mapData$sizes <- rad[as.numeric(cut(mapData$sumHits, c(-1:19)))]
     pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
     
     leafletProxy("mymap", data=mapData) %>%
       clearShapes() %>%
       clearControls() %>%
       addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-                 popup=
-                   paste0('<b>',mapData$Station.Name,"</b><br/><table>",
-                          "<tr><td>Frequency</td><td>",sprintf("%1.1f",mapData$freq),'</td></tr>',
-                          "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
-                          "<tr><td>maxEAR</td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
-                          "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
-                          "<tr><td>nEndPoints</td><td>",mapData$nEndPoints,'</td></tr></table>')
+                 popup=mapData$Station.Name
+#                    paste0('<b>',mapData$Station.Name,"</b><br/><table>",
+#                           "<tr><td>Frequency</td><td>",sprintf("%1.1f",mapData$freq),'</td></tr>',
+#                           "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
+#                           "<tr><td>maxEAR</td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
+#                           "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
+#                           "<tr><td>nEndPoints</td><td>",mapData$nEndPoints,'</td></tr></table>')
                  ,
                  fillColor = ~pal(maxEAR), 
                  weight = 1,

@@ -5,7 +5,7 @@ shinyUI(fluidPage(
                                          choices = c("All",summary$site),
                                          selected = "All", multiple = FALSE)),
            column(width = 4, selectInput("groupCol", label = "Column to group", 
-                                choices = names(endPointInfo),
+                                choices = names(endPointInfo)[-3],
                                 selected = names(endPointInfo)[20], multiple = FALSE)),
            column(width = 4, uiOutput("groupControl"))
            # column(width = 4, actionButton("calculate","Calculate"))
