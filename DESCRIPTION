@@ -30,7 +30,8 @@ Suggests:
     ggplot2,
     gridExtra,
     grid,
-    shiny
+    shiny,
+    data.table
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes

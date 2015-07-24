@@ -4,6 +4,7 @@ library(ggplot2)
 library(DT)
 library(leaflet)
 library(toxEval)
+library(data.table)
 
 endPointInfo <- endPointInfo
 wData <- wData
@@ -41,12 +42,15 @@ shinyServer(function(input, output) {
     }
 
     endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
-      unique()
+      distinct()
     
     chemicalSummaryFiltered <- chemicalSummary %>%
-      filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
-      left_join(endPointInfoSub,
-                by=c("endPoint"="assay_component_endpoint_name"))
+      rename(assay_component_endpoint_name=endPoint) %>%
+      filter(assay_component_endpoint_name %in% endPointInfoSub$assay_component_endpoint_name ) %>%
+      data.table()%>%
+      left_join(data.table(endPointInfoSub), by = "assay_component_endpoint_name") %>%
+      data.frame()%>%
+      rename(endPoint=assay_component_endpoint_name)
     
   })
   
@@ -59,7 +63,7 @@ shinyServer(function(input, output) {
     }
     
     if(is.null(input$group)){
-      group <- unique(endPointInfo[,20])[5]
+      group <- unique(endPointInfo[,20])[3]
     } else {
       group <- input$group
     }
@@ -90,7 +94,7 @@ shinyServer(function(input, output) {
     
     selectInput("group", label = "Group in column",
                 choices = unique(endPointInfo[,input$groupCol])[!is.na(unique(endPointInfo[,input$groupCol]))],
-                selected = unique(endPointInfo[,10])[5],
+                selected = unique(endPointInfo[,20])[3],
                 multiple = FALSE)
   })
   
@@ -102,7 +106,7 @@ shinyServer(function(input, output) {
 #       select(nChem,nEndPoints) %>%
 #       mutate(nChem = median(nChem),
 #              nEndPoints = median(nEndPoints)) %>%
-#       unique()
+#       distinct()
     data.frame(nChem=39, nEndPoints=538)
       
   }, options = list(searching = FALSE, paging = FALSE))
