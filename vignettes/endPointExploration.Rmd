@@ -17,6 +17,7 @@ vignette: >
 library(toxEval)
 library(DT)
 library(dplyr)
+library(tidyr)
 
 wData <- wData
 pCodeInfo <- pCodeInfo
@@ -44,12 +45,25 @@ chemicalSummary.Key <- "endPoint"
 chemicalSummary.Date <- "date"
 funcToSummerise <- "sumEAR"
 
-endPointInfoSub <- unique(filter_(endPointInfo, paste0(groupCol," == '", group, "'")))
+endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
+  unique()
+
+chemicalSummary <- chemicalSummary %>%
+  filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>%
+  left_join(endPointInfoSub,
+            by=c("endPoint"="assay_component_endpoint_name"))
+
+groupSumm <- chemicalSummary %>%
+  group_by(site) %>%
+  summarise(nChem = length(unique(chnm)),
+            nEndPoints = length(unique(endPoint))) %>%
+      select(nChem,nEndPoints) %>%
+      mutate(nChem = median(nChem),
+             nEndPoints = median(nEndPoints)) %>%
+      unique()
 
 endpointSummary <- chemicalSummary %>%
-  filter(endPoint %in% endPointInfoSub$assay_component_endpoint_name ) %>% 
-  left_join(endPointInfoSub,
-            by=c("endPoint"="assay_component_endpoint_name")) %>%
+  filter_(paste0(groupCol," == '", group, "'")) %>%
   select_("hits","EAR","endPoint",
           chemicalSummary.site,chemicalSummary.Date,groupCol) %>%
   group_by_(chemicalSummary.site, chemicalSummary.Date) %>%

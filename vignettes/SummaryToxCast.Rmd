@@ -25,6 +25,7 @@ library(leaflet)
 library(formattable)
 library(ggplot2)
 library(gridExtra)
+library(data.table)
 
 pCodeInfo <- pCodeInfo
 wData <- wData
@@ -304,9 +305,11 @@ chemSum3 <- chemicalSummary %>%
   summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits),
             maxEAR=max(maxEAR)) %>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
+  rename(assay_component_endpoint_name=endPoint) %>%
+  data.table() %>%
+  left_join(data.table(endPointInfo), by="assay_component_endpoint_name") %>% 
   select(chnm, maxEAR, freq, nSites, 
-         endPoint, class, contains("intended_target_")) %>%
+         endPoint=assay_component_endpoint_name, class, contains("intended_target_")) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
   select(-contains("intended_target_"))  %>%
