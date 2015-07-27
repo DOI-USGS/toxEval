@@ -7,6 +7,7 @@ library(toxEval)
 library(data.table)
 library(gridExtra)
 library(grid)
+library(tidyr)
 
 endPointInfo <- endPointInfo
 wData <- wData
@@ -23,7 +24,7 @@ stationINFO <- stationINFO %>%
                                    "Detroit River and Lake St. Clair","Lake Erie",
                                    "Lake Ontario", "St. Lawrence River"))) %>%
   arrange(lakeCat, dec.long.va) %>%
-  mutate(lakeColor = c("red","black","green","brown","brown","blue","blue")[as.numeric(lakeCat)] )
+  mutate(lakeColor = c("tomato3","black","springgreen3","brown","brown","blue","blue")[as.numeric(lakeCat)] )
 
 endPointInfo <- endPointInfo
 
@@ -96,6 +97,34 @@ shinyServer(function(input, output) {
     
   })
   
+  statsOfColumn <- reactive({
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[20]
+    } else {
+      groupCol <- input$groupCol
+    }
+    
+    statsOfColumn <- chemicalSummary %>%
+      rename(assay_component_endpoint_name=endPoint) %>%
+      filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
+      data.table()%>%
+      left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+      data.frame()%>%
+      rename(endPoint=assay_component_endpoint_name)%>%
+      select_("hits","EAR","endPoint","site","date","choices"=groupCol) %>%
+      group_by(site, date,choices) %>%
+      summarise(sumEAR = sum(EAR),
+                nHits = sum(hits)) %>%
+      group_by(site,choices) %>%
+      summarise(maxEAR = max(sumEAR),
+                sumHits = sum(nHits)) %>%
+      data.frame()%>%
+      mutate(site = siteKey[site]) %>%
+      gather(calc, value, -site, -choices) %>%
+      unite(choice_calc, choices, calc, sep=" ") %>%
+      spread(choice_calc, value)
+  })
+  
   output$groupControl <- renderUI({
     
     ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
@@ -116,8 +145,7 @@ shinyServer(function(input, output) {
                                 colnames = c('Maximum EAR' = 3, 'Sum of Hits' = 4),
                                 filter = 'top',
                                 options = list(pageLength = 10, 
-                                               order=list(list(2,'desc'))),
-                                caption = "Summary of EAR summations") %>%
+                                               order=list(list(2,'desc')))) %>%
         formatRound(c("Maximum EAR","meanEAR"), 1) %>%
         formatStyle("Maximum EAR", 
                     background = styleColorBar(statsOfSum()[,3], 'steelblue'),
@@ -131,7 +159,25 @@ shinyServer(function(input, output) {
                   backgroundRepeat = 'no-repeat',
                   backgroundPosition = 'center'
       )
-    # data.frame(statsOfSum)
+  })
+  
+  output$tableSumm <- DT::renderDataTable({
+    statCol <- statsOfColumn()
+    
+    maxEARS <- grep("maxEAR",names(statCol))
+    
+    orderList <- list()
+    for(i in 1:length(maxEARS)){
+      orderList <- append(orderList, list(maxEARS[i],'desc'))
+    }
+    
+    
+    DT::datatable(statCol, 
+                  rownames = FALSE,
+                  # filter = 'top',
+                  options = list(pageLength = 10, 
+                                 order=list(orderList)))%>%
+      formatRound(names(statCol)[maxEARS], 1) 
   })
   
   output$graph <- renderPlot({
@@ -171,8 +217,8 @@ shinyServer(function(input, output) {
       geom_text(data=data.frame(), 
                 aes(x=c(5, 18,31,42,54),y=rep(1.1,5),
                     label=c("Superior","Michigan","Huron","Erie","Ontario")),                
-                colour=factor(c("red","black","green","brown","blue"),
-                              levels=c("red","black","green","brown","blue")), size=3)            
+                colour=factor(c("tomato3","black","springgreen3","brown","blue"),
+                              levels=c("tomato3","black","springgreen3","brown","blue")), size=3)            
                               
     print(sToxWS)
 #     for(i in 1:5){
