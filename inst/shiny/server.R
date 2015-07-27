@@ -167,18 +167,31 @@ shinyServer(function(input, output) {
     
     maxEARS <- grep("maxEAR",names(statCol))
     
-    orderList <- list()
-    for(i in 1:length(maxEARS)){
-      orderList <- append(orderList, list(maxEARS[i],'desc'))
-    }
+    MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
     
-    colors <- brewer.pal(length(maxEARS),"RdYlBu")
+    
+    interl <- function (a,b) {
+      n <- min(length(a),length(b))
+      p1 <- as.vector(rbind(a[1:n],b[1:n]))
+      p2 <- c(a[-(1:n)],b[-(1:n)])
+      c(p1,p2)
+    }
+
+    statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]+1)))]
+    
+#     orderList <- list()
+#     for(i in 1:length(maxEARS)){
+#       orderList <- append(orderList, list(maxEARS[i],'desc'))
+#     }
+    
+    colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
     tableSumm <- DT::datatable(statCol, 
                   rownames = FALSE,
+                  options = list(order=list(list(1,'desc'))))
                   # filter = 'top',
-                  options = list(pageLength = 10, 
-                                 order=list(orderList)))%>%
-      formatRound(names(statCol)[maxEARS], 1) 
+#                   options = list(pageLength = 10, 
+#                                  order=list(orderList))) %>%
+    tableSumm <- formatRound(tableSumm, names(statCol)[maxEARS], 1) 
     
     for(i in 1:length(maxEARS)){
       tableSumm <- formatStyle(tableSumm, 
@@ -187,6 +200,18 @@ shinyServer(function(input, output) {
       tableSumm <- formatStyle(tableSumm, 
                                names(statCol)[maxEARS[i]+1], 
                                backgroundColor = colors[i])
+      
+      tableSumm <- formatStyle(tableSumm, names(statCol)[maxEARS[i]], 
+                    background = styleColorBar(statCol[,maxEARS[i]], 'goldenrod'),
+                    backgroundSize = '100% 90%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center' ) 
+      tableSumm <- formatStyle(tableSumm, names(statCol)[maxEARS[i]+1], 
+                               background = styleColorBar(statCol[,maxEARS[i]+1], 'wheat'),
+                               backgroundSize = '100% 90%',
+                               backgroundRepeat = 'no-repeat',
+                               backgroundPosition = 'center') 
+
     }
     
     tableSumm
