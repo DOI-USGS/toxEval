@@ -9,12 +9,22 @@ shinyUI(fluidPage(
                                 selected = names(endPointInfo)[20], multiple = FALSE)),
            column(width = 4, uiOutput("groupControl"))
            # column(width = 4, actionButton("calculate","Calculate"))
-           # column(width = 4, dataTableOutput('groupSumTable'))
            ),
 
+    tabsetPanel(
+      tabPanel("Group Summary",
+               fluidRow(
+                 htmlOutput("TableHeader"),
+                 # fluidRow(h4("Table of summations summaries:", style  = "text-align:center")),
+                 DT::dataTableOutput('table'),
+                 htmlOutput("BoxHeader"),
+                 # fluidRow(h4("Boxplot of summations:", style  = "text-align:center")),
+                 plotOutput("graph")
+               )
+      ),
+      tabPanel("Column Summary", DT::dataTableOutput('tableSumm'))
+    ),
     fluidRow(
-      dataTableOutput('table'),
-      plotOutput("graph"),
       leaflet::leafletOutput("mymap")
     )
   )

@@ -7,6 +7,8 @@ library(toxEval)
 library(data.table)
 library(gridExtra)
 library(grid)
+library(tidyr)
+library(RColorBrewer)
 
 endPointInfo <- endPointInfo
 wData <- wData
@@ -23,7 +25,7 @@ stationINFO <- stationINFO %>%
                                    "Detroit River and Lake St. Clair","Lake Erie",
                                    "Lake Ontario", "St. Lawrence River"))) %>%
   arrange(lakeCat, dec.long.va) %>%
-  mutate(lakeColor = c("red","black","green","brown","brown","blue","blue")[as.numeric(lakeCat)] )
+  mutate(lakeColor = c("tomato3","black","springgreen3","brown","brown","blue","blue")[as.numeric(lakeCat)] )
 
 endPointInfo <- endPointInfo
 
@@ -92,9 +94,36 @@ shinyServer(function(input, output) {
               sumHits = sum(nHits),
               nSamples = n()) %>%
     data.frame()%>%
-    mutate(site = siteKey[site]) %>%
-    arrange(desc(maxEAR))
+    mutate(site = siteKey[site]) 
     
+  })
+  
+  statsOfColumn <- reactive({
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[20]
+    } else {
+      groupCol <- input$groupCol
+    }
+    
+    statsOfColumn <- chemicalSummary %>%
+      rename(assay_component_endpoint_name=endPoint) %>%
+      filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
+      data.table()%>%
+      left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+      data.frame()%>%
+      rename(endPoint=assay_component_endpoint_name)%>%
+      select_("hits","EAR","endPoint","site","date","choices"=groupCol) %>%
+      group_by(site, date,choices) %>%
+      summarise(sumEAR = sum(EAR),
+                nHits = sum(hits)) %>%
+      group_by(site,choices) %>%
+      summarise(maxEAR = max(sumEAR),
+                sumHits = sum(nHits)) %>%
+      data.frame()%>%
+      mutate(site = siteKey[site]) %>%
+      gather(calc, value, -site, -choices) %>%
+      unite(choice_calc, choices, calc, sep=" ") %>%
+      spread(choice_calc, value)
   })
   
   output$groupControl <- renderUI({
@@ -110,23 +139,95 @@ shinyServer(function(input, output) {
                 selected = unique(endPointInfo[,20])[3],
                 multiple = FALSE)
   })
+
+  output$TableHeader <- renderUI({
+    
+    HTML(paste("<h3>Table of summations summaries:",input$group,"</h3>"))
+  })
   
-  output$groupSumTable <- DT::renderDataTable({
-#     chemicalSummaryFiltered() %>%
-#       group_by(site) %>%
-#       summarise(nChem = length(unique(chnm)),
-#                 nEndPoints = length(unique(endPoint))) %>%
-#       select(nChem,nEndPoints) %>%
-#       mutate(nChem = median(nChem),
-#              nEndPoints = median(nEndPoints)) %>%
-#       distinct()
-    data.frame(nChem=39, nEndPoints=538)
-      
-  }, options = list(searching = FALSE, paging = FALSE))
+  output$BoxHeader <- renderUI({
+    
+    HTML(paste("<h3>Boxplot summaries:",input$group,"</h3>"))
+  })
   
   output$table <- DT::renderDataTable({
-    statsOfSum()
-  }, options = list(pageLength = 10))
+    statsOfSumDF <- DT::datatable(statsOfSum(), 
+                                rownames = FALSE,
+                                colnames = c('Maximum EAR' = 3, 'Sum of Hits' = 4),
+                                filter = 'top',
+                                options = list(pageLength = 10, 
+                                               order=list(list(2,'desc')))) %>%
+        formatRound(c("Maximum EAR","meanEAR"), 1) %>%
+        formatStyle("Maximum EAR", 
+                    background = styleColorBar(statsOfSum()[,3], 'steelblue'),
+                    backgroundSize = '100% 90%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+        ) %>%
+      formatStyle("Sum of Hits", 
+                  background = styleColorBar(statsOfSum()[,4], 'wheat'),
+                  backgroundSize = '100% 90%',
+                  backgroundRepeat = 'no-repeat',
+                  backgroundPosition = 'center'
+      )
+  })
+  
+  output$tableSumm <- DT::renderDataTable({
+    statCol <- statsOfColumn()
+    
+    maxEARS <- grep("maxEAR",names(statCol))
+    
+    MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
+    
+    
+    interl <- function (a,b) {
+      n <- min(length(a),length(b))
+      p1 <- as.vector(rbind(a[1:n],b[1:n]))
+      p2 <- c(a[-(1:n)],b[-(1:n)])
+      c(p1,p2)
+    }
+
+    if(length(maxEARS) > 9){
+      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered[1:9]],(maxEARS[MaxEARSordered[1:9]]+1)))]
+      maxEARS <- maxEARS[1:9]
+    } else {
+      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]+1)))]
+    }
+    
+    
+
+    
+    colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
+    tableSumm <- DT::datatable(statCol, 
+                  rownames = FALSE,
+                  options = list(order=list(list(1,'desc'))))
+
+    tableSumm <- formatRound(tableSumm, names(statCol)[maxEARS], 1) 
+    
+    for(i in 1:length(maxEARS)){
+      tableSumm <- formatStyle(tableSumm, 
+                               names(statCol)[maxEARS[i]], 
+                               backgroundColor = colors[i])
+      tableSumm <- formatStyle(tableSumm, 
+                               names(statCol)[maxEARS[i]+1], 
+                               backgroundColor = colors[i])
+      
+      tableSumm <- formatStyle(tableSumm, names(statCol)[maxEARS[i]], 
+                    background = styleColorBar(statCol[,maxEARS[i]], 'goldenrod'),
+                    backgroundSize = '100% 90%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center' ) 
+      tableSumm <- formatStyle(tableSumm, names(statCol)[maxEARS[i]+1], 
+                               background = styleColorBar(statCol[,maxEARS[i]+1], 'wheat'),
+                               backgroundSize = '100% 90%',
+                               backgroundRepeat = 'no-repeat',
+                               backgroundPosition = 'center') 
+
+    }
+    
+    tableSumm
+      
+  })
   
   output$graph <- renderPlot({
     
@@ -165,8 +266,8 @@ shinyServer(function(input, output) {
       geom_text(data=data.frame(), 
                 aes(x=c(5, 18,31,42,54),y=rep(1.1,5),
                     label=c("Superior","Michigan","Huron","Erie","Ontario")),                
-                colour=factor(c("red","black","green","brown","blue"),
-                              levels=c("red","black","green","brown","blue")), size=3)            
+                colour=factor(c("tomato3","black","springgreen3","brown","blue"),
+                              levels=c("tomato3","black","springgreen3","brown","blue")), size=3)            
                               
     print(sToxWS)
 #     for(i in 1:5){
