@@ -8,6 +8,7 @@ library(data.table)
 library(gridExtra)
 library(grid)
 library(tidyr)
+library(RColorBrewer)
 
 endPointInfo <- endPointInfo
 wData <- wData
@@ -171,13 +172,25 @@ shinyServer(function(input, output) {
       orderList <- append(orderList, list(maxEARS[i],'desc'))
     }
     
-    
-    DT::datatable(statCol, 
+    colors <- brewer.pal(length(maxEARS),"RdYlBu")
+    tableSumm <- DT::datatable(statCol, 
                   rownames = FALSE,
                   # filter = 'top',
                   options = list(pageLength = 10, 
                                  order=list(orderList)))%>%
       formatRound(names(statCol)[maxEARS], 1) 
+    
+    for(i in 1:length(maxEARS)){
+      tableSumm <- formatStyle(tableSumm, 
+                               names(statCol)[maxEARS[i]], 
+                               backgroundColor = colors[i])
+      tableSumm <- formatStyle(tableSumm, 
+                               names(statCol)[maxEARS[i]+1], 
+                               backgroundColor = colors[i])
+    }
+    
+    tableSumm
+      
   })
   
   output$graph <- renderPlot({

@@ -31,7 +31,8 @@ Suggests:
     gridExtra,
     grid,
     shiny,
-    data.table
+    data.table,
+    RColorBrewer
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
