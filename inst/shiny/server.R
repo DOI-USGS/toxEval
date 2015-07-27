@@ -140,6 +140,16 @@ shinyServer(function(input, output) {
                 multiple = FALSE)
   })
 
+  output$TableHeader <- renderUI({
+    
+    HTML(paste("<h3>Table of summations summaries:",input$group,"</h3>"))
+  })
+  
+  output$BoxHeader <- renderUI({
+    
+    HTML(paste("<h3>Boxplot summaries:",input$group,"</h3>"))
+  })
+  
   output$table <- DT::renderDataTable({
     statsOfSumDF <- DT::datatable(statsOfSum(), 
                                 rownames = FALSE,
@@ -178,19 +188,13 @@ shinyServer(function(input, output) {
     }
 
     statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]+1)))]
-    
-#     orderList <- list()
-#     for(i in 1:length(maxEARS)){
-#       orderList <- append(orderList, list(maxEARS[i],'desc'))
-#     }
+
     
     colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
     tableSumm <- DT::datatable(statCol, 
                   rownames = FALSE,
                   options = list(order=list(list(1,'desc'))))
-                  # filter = 'top',
-#                   options = list(pageLength = 10, 
-#                                  order=list(orderList))) %>%
+
     tableSumm <- formatRound(tableSumm, names(statCol)[maxEARS], 1) 
     
     for(i in 1:length(maxEARS)){

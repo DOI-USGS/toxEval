@@ -14,9 +14,11 @@ shinyUI(fluidPage(
     tabsetPanel(
       tabPanel("Group Summary",
                fluidRow(
-                 fluidRow(h4("Table of summations summaries:", style  = "text-align:center")),
+                 htmlOutput("TableHeader"),
+                 # fluidRow(h4("Table of summations summaries:", style  = "text-align:center")),
                  DT::dataTableOutput('table'),
-                 fluidRow(h4("Boxplot of summations:", style  = "text-align:center")),
+                 htmlOutput("BoxHeader"),
+                 # fluidRow(h4("Boxplot of summations:", style  = "text-align:center")),
                  plotOutput("graph")
                )
       ),
