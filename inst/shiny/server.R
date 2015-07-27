@@ -187,7 +187,14 @@ shinyServer(function(input, output) {
       c(p1,p2)
     }
 
-    statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]+1)))]
+    if(length(maxEARS) > 9){
+      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered[1:9]],(maxEARS[MaxEARSordered[1:9]]+1)))]
+      maxEARS <- maxEARS[1:9]
+    } else {
+      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]+1)))]
+    }
+    
+    
 
     
     colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
