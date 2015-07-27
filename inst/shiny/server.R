@@ -111,14 +111,26 @@ shinyServer(function(input, output) {
   })
 
   output$table <- DT::renderDataTable({
-    statsOfSum <- DT::datatable(statsOfSum(), 
+    statsOfSumDF <- DT::datatable(statsOfSum(), 
                                 rownames = FALSE,
                                 colnames = c('Maximum EAR' = 3, 'Sum of Hits' = 4),
                                 filter = 'top',
                                 options = list(pageLength = 10, 
-                                               order=list(list(3,'desc'))),
+                                               order=list(list(2,'desc'))),
                                 caption = "Summary of EAR summations") %>%
-        formatRound(c("Maximum EAR","meanEAR"), 1)
+        formatRound(c("Maximum EAR","meanEAR"), 1) %>%
+        formatStyle("Maximum EAR", 
+                    background = styleColorBar(statsOfSum()[,3], 'steelblue'),
+                    backgroundSize = '100% 90%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+        ) %>%
+      formatStyle("Sum of Hits", 
+                  background = styleColorBar(statsOfSum()[,4], 'wheat'),
+                  backgroundSize = '100% 90%',
+                  backgroundRepeat = 'no-repeat',
+                  backgroundPosition = 'center'
+      )
     # data.frame(statsOfSum)
   })
   

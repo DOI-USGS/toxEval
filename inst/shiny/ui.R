@@ -6,15 +6,23 @@ shinyUI(fluidPage(
                                          selected = "All", multiple = FALSE)),
            column(width = 4, selectInput("groupCol", label = "Column to group (# choices)", 
                                 choices = setNames(names(endPointInfo)[-3],groupChoices),
-                                selected = names(endPointInfo)[20], multiple = FALSE)),
-           column(width = 4, uiOutput("groupControl"))
+                                selected = names(endPointInfo)[20], multiple = FALSE))
            # column(width = 4, actionButton("calculate","Calculate"))
            # column(width = 4, dataTableOutput('groupSumTable'))
            ),
 
+    tabsetPanel(
+      tabPanel("Column", verbatimTextOutput("summary")),
+      tabPanel("Group",
+               fluidRow(
+                  column(width = 4, uiOutput("groupControl")),
+                  DT::dataTableOutput('table'),
+                  plotOutput("graph")
+                  
+                        )
+              )
+    ),
     fluidRow(
-      DT::dataTableOutput('table'),
-      plotOutput("graph"),
       leaflet::leafletOutput("mymap")
     )
   )
