@@ -13,7 +13,7 @@ shinyUI(fluidPage(
            ),
 
     fluidRow(
-      dataTableOutput('table'),
+      DT::dataTableOutput('table'),
       plotOutput("graph"),
       leaflet::leafletOutput("mymap")
     )

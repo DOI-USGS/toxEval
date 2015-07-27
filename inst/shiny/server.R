@@ -92,8 +92,7 @@ shinyServer(function(input, output) {
               sumHits = sum(nHits),
               nSamples = n()) %>%
     data.frame()%>%
-    mutate(site = siteKey[site]) %>%
-    arrange(desc(maxEAR))
+    mutate(site = siteKey[site]) 
     
   })
   
@@ -110,23 +109,18 @@ shinyServer(function(input, output) {
                 selected = unique(endPointInfo[,20])[3],
                 multiple = FALSE)
   })
-  
-  output$groupSumTable <- DT::renderDataTable({
-#     chemicalSummaryFiltered() %>%
-#       group_by(site) %>%
-#       summarise(nChem = length(unique(chnm)),
-#                 nEndPoints = length(unique(endPoint))) %>%
-#       select(nChem,nEndPoints) %>%
-#       mutate(nChem = median(nChem),
-#              nEndPoints = median(nEndPoints)) %>%
-#       distinct()
-    data.frame(nChem=39, nEndPoints=538)
-      
-  }, options = list(searching = FALSE, paging = FALSE))
-  
+
   output$table <- DT::renderDataTable({
-    statsOfSum()
-  }, options = list(pageLength = 10))
+    statsOfSum <- DT::datatable(statsOfSum(), 
+                                rownames = FALSE,
+                                colnames = c('Maximum EAR' = 3, 'Sum of Hits' = 4),
+                                filter = 'top',
+                                options = list(pageLength = 10, 
+                                               order=list(list(3,'desc'))),
+                                caption = "Summary of EAR summations") %>%
+        formatRound(c("Maximum EAR","meanEAR"), 1)
+    # data.frame(statsOfSum)
+  })
   
   output$graph <- renderPlot({
     
