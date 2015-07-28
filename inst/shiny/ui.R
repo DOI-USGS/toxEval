@@ -23,22 +23,24 @@ shinyUI(
       fluidRow(
           tabsetPanel(
               tabPanel("Annotation Summary", 
-                       tabsetPanel(
-                         tabPanel("Table",
+#                        tabsetPanel(
+#                          tabPanel("Table",
                                   tabsetPanel(
-                                    tabPanel("Chemical Summary",
-                                             htmlOutput("TableHeaderColumns"),
-                                             DT::dataTableOutput('tableSumm')),
-                                    tabPanel("Group Summary",
-                                             htmlOutput("TableHeaderColumns2"),
-                                             DT::dataTableOutput('tableGroupSumm')))
-                                  ),
-                         tabPanel("Box Plot",
-                                  htmlOutput("BoxHeaderColumns")),
-                         tabPanel("Map",
-                                  h3("Hmm...")
-                                  )
-                       )
+                                      tabPanel("EAR Summary",
+                                               htmlOutput("TableHeaderColumns"),
+                                               DT::dataTableOutput('tableSumm')),
+                                      tabPanel("Chemical Summary",
+                                               htmlOutput("TableHeaderColumns2"),
+                                               DT::dataTableOutput('tableGroupSumm'))
+                                    )
+                                  # )
+#                          tabPanel("Box Plot",
+#                                   htmlOutput("BoxHeaderColumns"),
+#                                   h3("Maybe grid")),
+#                          tabPanel("Map",
+#                                   h3("Hmm...")
+#                                   )
+#                       )
               ),
               tabPanel("Group Summary",
                        uiOutput("groupControl"),
@@ -46,9 +48,11 @@ shinyUI(
                          tabPanel("Table",
                                   htmlOutput("TableHeader"),
                                   DT::dataTableOutput('table')),
-                         tabPanel("Box Plot",
+                         tabPanel("Box Plots",
                                     htmlOutput("BoxHeader"),
-                                    plotOutput("graph")),
+                                    plotOutput("stackBar"),
+                                    plotOutput("graph")
+                                  ),
                          tabPanel("Map",
                                   h3(""),
                                   leaflet::leafletOutput("mymap"))
