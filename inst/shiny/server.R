@@ -94,6 +94,39 @@ shinyServer(function(input, output) {
     chemSiteSumm
   })
   
+  groupSiteSumm <- reactive({
+    
+    chemicalSummaryFiltered <- chemicalSummaryFiltered()
+    
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[20]
+    } else {
+      groupCol <- input$groupCol
+    }
+    
+    if(is.null(input$group)){
+      group <- unique(endPointInfo[,20])[3]
+    } else {
+      group <- input$group
+    }
+    
+    if(is.null(input$sites) | input$sites == "All"){
+      siteToFind <- summary$site
+    } else {
+      siteToFind <- input$sites
+    }
+    
+    groupSiteSumm <- chemicalSummaryFiltered %>%
+      filter_(paste0(groupCol," == '", group, "'")) %>%
+      mutate(site = siteKey[site]) %>%
+      filter_(paste0("site == '", siteToFind, "'")) %>%
+      group_by(chnm, date) %>%
+      summarise(sumEAR = sum(EAR),
+                nHits = sum(hits)) 
+    
+    groupSiteSumm
+  })
+  
   endpointSummary <- reactive({
     
     if(is.null(input$groupCol)){
@@ -167,7 +200,7 @@ shinyServer(function(input, output) {
         spread(choice_calc, value)
     } else {
       
-      if(is.null(input$sites) | input$sites == "All"){
+      if(is.null(input$sites)){
         siteToFind <- summary$site
       } else {
         siteToFind <- input$sites
@@ -196,32 +229,83 @@ shinyServer(function(input, output) {
     
   })
   
+  statsOfGroup <- reactive({
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[20]
+    } else {
+      groupCol <- input$groupCol
+    }
+    
+    statsOfGroups <- chemicalSummary %>%
+      rename(assay_component_endpoint_name=endPoint) %>%
+      filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
+      data.table()%>%
+      left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+      data.frame()%>%
+      mutate(site = siteKey[site]) %>%
+      rename(endPoint=assay_component_endpoint_name) %>%
+      select_("hits","EAR","chnm","class","site","date","choices"=groupCol) 
+    
+    if(input$sites == "All"){
+      statsOfGroups <-  statsOfGroups %>%
+        group_by(site, date,choices) %>%
+        summarise(nChemWithHits = length(unique(chnm[EAR > 0.1]))) %>%
+        group_by(site,choices) %>%
+        summarise(maxChem = max(nChemWithHits),
+                  meanChem = mean(nChemWithHits),
+                  sumChemWithHits = sum(nChemWithHits)) %>%
+        data.frame()%>%
+        gather(calc, value, -site, -choices) %>%
+        unite(choice_calc, choices, calc, sep=" ") %>%
+        spread(choice_calc, value)
+    } else {
+      
+      if(is.null(input$sites)){
+        siteToFind <- summary$site
+      } else {
+        siteToFind <- input$sites
+      }
+      
+      statsOfGroups <-  statsOfGroups %>%
+        filter_(paste0("site == '", siteToFind, "'")) %>%
+        group_by(site, date,choices) %>%
+        summarise(nChemWithHits = length(unique(chnm[EAR > 0.1]))) %>%
+        group_by(site,choices) %>%
+        summarise(maxChem = max(nChemWithHits),
+                  meanChem = mean(nChemWithHits),
+                  sumChemWithHits = sum(nChemWithHits)) %>%
+        data.frame() %>%
+        select(-site)
+    }
+  })
+  
+  
   output$groupControl <- renderUI({
     
     ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
     nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
     dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
     
-    selectInput("group", label = "Group in column (# End Points)",
+    selectInput("group", label = "Group in annotation (# End Points)",
                 choices = setNames(ChoicesInGroup,dropDownHeader),
                 selected = unique(endPointInfo[,20])[3],
                 multiple = FALSE)
   })
 
   output$TableHeader <- renderUI({
-    HTML(paste("<h3>Table of summations summaries:",input$group,"</h3>"))
+    HTML(paste("<br/><br/><h3>Table of summations summaries:",input$group,"</h3>"))
   })
   
   output$BoxHeader <- renderUI({
-    HTML(paste("<h3>Boxplot summaries:",input$group,"</h3>"))
+    HTML(paste("<br/><h3>Boxplot summaries:",input$group,"</h3>"))
   })
   
   output$TableHeaderColumns <- renderUI({
-    HTML(paste("<h3>Table of summations summaries:",input$groupCol,"</h3>"))
+    HTML(paste("<br/><h3>Table of summations summaries:",input$groupCol,"</h3>"))
   })
   
   output$BoxHeaderColumns <- renderUI({
-    HTML(paste("<h3>Boxplot summaries:",input$groupCol,"</h3>"))
+    HTML(paste("<br/><h3>Boxplot summaries:",input$groupCol,"</h3>"))
   })
   
   output$table <- DT::renderDataTable({
