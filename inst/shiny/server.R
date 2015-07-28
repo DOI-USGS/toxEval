@@ -279,7 +279,10 @@ shinyServer(function(input, output) {
     }
   })
   
-  
+  output$tableGroupSumm <- DT::renderDataTable({
+    statsOfGroup()
+  })
+    
   output$groupControl <- renderUI({
     
     ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
@@ -302,6 +305,10 @@ shinyServer(function(input, output) {
   
   output$TableHeaderColumns <- renderUI({
     HTML(paste("<br/><h3>Table of summations summaries:",input$groupCol,"</h3>"))
+  })
+  
+  output$TableHeaderColumns2 <- renderUI({
+    HTML(paste("<br/><h3>Table of chemical summaries:",input$groupCol,"</h3>"))
   })
   
   output$BoxHeaderColumns <- renderUI({
