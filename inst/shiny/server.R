@@ -40,7 +40,6 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
 shinyServer(function(input, output) {
   
-  # chemicalSummaryFiltered <- eventReactive(input$calculate, {
   chemicalSummaryFiltered <- reactive({
     
     if(is.null(input$groupCol)){
@@ -62,7 +61,39 @@ shinyServer(function(input, output) {
     
   })
   
-  # endpointSummary <- eventReactive(input$calculate, {
+  chemSiteSumm <- reactive({
+    
+    chemicalSummaryFiltered <- chemicalSummaryFiltered()
+    
+    if(is.null(input$groupCol)){
+      groupCol <- names(endPointInfo)[20]
+    } else {
+      groupCol <- input$groupCol
+    }
+    
+    if(is.null(input$group)){
+      group <- unique(endPointInfo[,20])[3]
+    } else {
+      group <- input$group
+    }
+    
+    if(is.null(input$sites) | input$sites == "All"){
+      siteToFind <- summary$site
+    } else {
+      siteToFind <- input$sites
+    }
+    
+    chemSiteSumm <- chemicalSummaryFiltered %>%
+      filter_(paste0(groupCol," == '", group, "'")) %>%
+      mutate(site = siteKey[site]) %>%
+      filter_(paste0("site == '", siteToFind, "'")) %>%
+      group_by(chnm, date) %>%
+      summarise(sumEAR = sum(EAR),
+                nHits = sum(hits)) 
+    
+    chemSiteSumm
+  })
+  
   endpointSummary <- reactive({
     
     if(is.null(input$groupCol)){
@@ -79,13 +110,11 @@ shinyServer(function(input, output) {
     
     endpointSummary <- chemicalSummaryFiltered() %>%
       filter_(paste0(groupCol," == '", group, "'")) %>%
-      select_("hits","EAR","endPoint","site","date",groupCol) %>%
       group_by(site, date) %>%
       summarise(sumEAR = sum(EAR),
                 nHits = sum(hits)) 
   })
   
-  # statsOfSum <- eventReactive(input$calculate, {
   statsOfSum <- reactive({
     endpointSummary() %>%
     group_by(site) %>%
@@ -95,6 +124,16 @@ shinyServer(function(input, output) {
               nSamples = n()) %>%
     data.frame()%>%
     mutate(site = siteKey[site]) 
+    
+  })
+  
+  statsOfChem <- reactive({
+    chemSiteSumm() %>%
+      group_by(chnm) %>%
+      summarise(meanEAR = mean(sumEAR),
+                maxEAR = max(sumEAR),
+                sumHits = sum(nHits)) %>%
+      data.frame()
     
   })
   
@@ -151,25 +190,49 @@ shinyServer(function(input, output) {
   })
   
   output$table <- DT::renderDataTable({
-    statsOfSumDF <- DT::datatable(statsOfSum(), 
-                                rownames = FALSE,
-                                colnames = c('Maximum EAR' = 3, 'Sum of Hits' = 4),
-                                filter = 'top',
-                                options = list(pageLength = 10, 
-                                               order=list(list(2,'desc')))) %>%
-        formatRound(c("Maximum EAR","meanEAR"), 1) %>%
+    
+    if(input$sites == "All"){
+      statsOfSumDF <- DT::datatable(statsOfSum(), 
+                                  rownames = FALSE,
+                                  colnames = c('Maximum EAR' = 3, 'Sum of Hits' = 4),
+                                  filter = 'top',
+                                  options = list(pageLength = 10, 
+                                                 order=list(list(2,'desc')))) %>%
+          formatRound(c("Maximum EAR","meanEAR"), 1) %>%
+          formatStyle("Maximum EAR", 
+                      background = styleColorBar(statsOfSum()[,3], 'steelblue'),
+                      backgroundSize = '100% 90%',
+                      backgroundRepeat = 'no-repeat',
+                      backgroundPosition = 'center'
+          ) %>%
+        formatStyle("Sum of Hits", 
+                    background = styleColorBar(statsOfSum()[,4], 'wheat'),
+                    backgroundSize = '100% 90%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+        )
+    } else {
+      statsOfSumDF <- DT::datatable(statsOfChem(), 
+                                    rownames = FALSE,
+                                    colnames = c('Chemical Name' = 1, 'Mean EAR' = 2,
+                                                 'Maximum EAR' = 3, 'Sum of Hits' = 4),
+                                    filter = 'top',
+                                    options = list(pageLength = 10, 
+                                                   order=list(list(2,'desc')))) %>%
+        formatRound(c("Maximum EAR","Mean EAR"), 1) %>%
         formatStyle("Maximum EAR", 
-                    background = styleColorBar(statsOfSum()[,3], 'steelblue'),
+                    background = styleColorBar(statsOfChem()[,3], 'steelblue'),
                     backgroundSize = '100% 90%',
                     backgroundRepeat = 'no-repeat',
                     backgroundPosition = 'center'
         ) %>%
-      formatStyle("Sum of Hits", 
-                  background = styleColorBar(statsOfSum()[,4], 'wheat'),
-                  backgroundSize = '100% 90%',
-                  backgroundRepeat = 'no-repeat',
-                  backgroundPosition = 'center'
-      )
+        formatStyle("Sum of Hits", 
+                    background = styleColorBar(statsOfChem()[,4], 'wheat'),
+                    backgroundSize = '100% 90%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+        )
+    }
   })
   
   output$tableSumm <- DT::renderDataTable({
@@ -193,9 +256,6 @@ shinyServer(function(input, output) {
     } else {
       statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]+1)))]
     }
-    
-    
-
     
     colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
     tableSumm <- DT::datatable(statCol, 
@@ -231,57 +291,79 @@ shinyServer(function(input, output) {
   
   output$graph <- renderPlot({
     
-    endpointSummary <- endpointSummary()
-    
-    if(nrow(endpointSummary) == 0){
-      endpointSummary$site <- stationINFO$fullSiteID
-    }
+    if(input$sites == "All"){
       
-    siteLimits <- stationINFO %>%
-      filter(fullSiteID %in% unique(endpointSummary$site))
-
-    
-    endPointSummBP <- endpointSummary %>%
-      data.frame()%>%
-      mutate(site = siteKey[site]) %>%
-      mutate(site = factor(site, levels=siteLimits$Station.shortname)) %>%
-      mutate(sumEARnoZero = sumEAR) 
-    
-    ndLevel <- 0.1*min(endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero != 0])
-    
-    endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero == 0] <- ndLevel
-    
-    sToxWS <- ggplot(endPointSummBP, aes(x=site, y=sumEARnoZero)) +
-      geom_boxplot() +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, colour=siteLimits$lakeColor), 
-            legend.position = "none")+
-      scale_x_discrete(limits=siteLimits$Station.shortname) +
-      scale_y_log10("sumEAR") +
-      coord_cartesian(ylim = c(1, 1.1*max(endPointSummBP$sumEARnoZero))) +
-      # ylab("sumEAR") + 
-      xlab("") +
-      annotation_custom(xmin=-1,xmax=-1,
-                        ymin=log10(ndLevel), ymax=log10(ndLevel),
-                        grob=textGrob("ND", gp=gpar(fontsize=9), vjust = 0.25)) +
-      geom_text(data=data.frame(), 
-                aes(x=c(5, 18,31,42,54),y=rep(1.1,5),
-                    label=c("Superior","Michigan","Huron","Erie","Ontario")),                
-                colour=factor(c("tomato3","black","springgreen3","brown","blue"),
-                              levels=c("tomato3","black","springgreen3","brown","blue")), size=3)            
-                              
-    print(sToxWS)
-#     for(i in 1:5){
-#       sToxWS <- sToxWS +       
-#         annotation_custom(xmin=c(5, 18,31,42,54)[i],xmax=c(5, 18,31,42,54)[i],
-#                          ymin=log10(.98), ymax=log10(.98),
-#                          grob=textGrob(c("Superior","Michigan","Huron","Erie","Ontario")[i],
-#                                        gp=gpar(col=c("red","black","green","brown","blue")[i], fontsize=9)))
-# 
-#     }
-
-#     g_sToxWS <- ggplotGrob(sToxWS)
-#     g_sToxWS$layout$clip[g_sToxWS$layout$name=="panel"] <- "off"
-#     grid.draw(g_sToxWS)
+      endpointSummary <- endpointSummary()
+      
+      if(nrow(endpointSummary) == 0){
+        endpointSummary$site <- stationINFO$fullSiteID
+      }
+        
+      siteLimits <- stationINFO %>%
+        filter(fullSiteID %in% unique(endpointSummary$site))
+      
+      endPointSummBP <- endpointSummary %>%
+        data.frame()%>%
+        mutate(site = siteKey[site]) %>%
+        mutate(site = factor(site, levels=siteLimits$Station.shortname)) %>%
+        mutate(sumEARnoZero = sumEAR) 
+      
+      ndLevel <- 0.1*min(endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero != 0])
+      
+      endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero == 0] <- ndLevel
+      
+      sToxWS <- ggplot(endPointSummBP, aes(x=site, y=sumEARnoZero)) +
+        geom_boxplot() +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, colour=siteLimits$lakeColor), 
+              legend.position = "none")+
+        scale_x_discrete(limits=siteLimits$Station.shortname) +
+        scale_y_log10("sumEAR") +
+        coord_cartesian(ylim = c(1, 1.1*max(endPointSummBP$sumEARnoZero))) +
+        # ylab("sumEAR") + 
+        xlab("") +
+        annotation_custom(xmin=-1,xmax=-1,
+                          ymin=log10(ndLevel), ymax=log10(ndLevel),
+                          grob=textGrob("ND", gp=gpar(fontsize=9), vjust = 0.25)) +
+        geom_text(data=data.frame(), 
+                  aes(x=c(5, 18,31,42,54),y=rep(1.1,5),
+                      label=c("Superior","Michigan","Huron","Erie","Ontario")),                
+                  colour=factor(c("tomato3","black","springgreen3","brown","blue"),
+                                levels=c("tomato3","black","springgreen3","brown","blue")), size=3)            
+                                
+      print(sToxWS)
+  #     for(i in 1:5){
+  #       sToxWS <- sToxWS +       
+  #         annotation_custom(xmin=c(5, 18,31,42,54)[i],xmax=c(5, 18,31,42,54)[i],
+  #                          ymin=log10(.98), ymax=log10(.98),
+  #                          grob=textGrob(c("Superior","Michigan","Huron","Erie","Ontario")[i],
+  #                                        gp=gpar(col=c("red","black","green","brown","blue")[i], fontsize=9)))
+  # 
+  #     }
+  
+  #     g_sToxWS <- ggplotGrob(sToxWS)
+  #     g_sToxWS$layout$clip[g_sToxWS$layout$name=="panel"] <- "off"
+  #     grid.draw(g_sToxWS)
+    } else {
+      chemSiteSumm <- chemSiteSumm() %>%
+        mutate(sumEARnoZero = sumEAR) 
+      
+      ndLevel <- 0.1*min(chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero != 0])
+      
+      if(is.finite(ndLevel)){
+        chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero == 0] <- ndLevel
+  
+        sToxWS <- ggplot(chemSiteSumm, aes(x=chnm, y=sumEAR)) +
+          geom_boxplot() +
+          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+                legend.position = "none")+
+          # scale_y_log10("sumEAR") +
+          # coord_cartesian(ylim = c(1, 1.1*max(endPointSummBP$sumEARnoZero))) +
+          # ylab("sumEAR") + 
+          xlab("") 
+  
+        print(sToxWS)
+      }
+    }
     
   })
   
