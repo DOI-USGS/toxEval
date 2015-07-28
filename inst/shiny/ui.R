@@ -22,7 +22,12 @@ shinyUI(fluidPage(
                  plotOutput("graph")
                )
       ),
-      tabPanel("Column Summary", DT::dataTableOutput('tableSumm'))
+      tabPanel("Column Summary", 
+               fluidRow(
+                 htmlOutput("TableHeaderColumns"),
+                 DT::dataTableOutput('tableSumm'),
+                 htmlOutput("BoxHeaderColumns"))
+      )
     ),
     fluidRow(
       leaflet::leafletOutput("mymap")

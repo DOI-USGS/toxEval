@@ -144,33 +144,62 @@ shinyServer(function(input, output) {
       groupCol <- input$groupCol
     }
     
-    statsOfColumn <- chemicalSummary %>%
-      rename(assay_component_endpoint_name=endPoint) %>%
-      filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
-      data.table()%>%
-      left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
-      data.frame()%>%
-      rename(endPoint=assay_component_endpoint_name)%>%
-      select_("hits","EAR","endPoint","site","date","choices"=groupCol) %>%
-      group_by(site, date,choices) %>%
-      summarise(sumEAR = sum(EAR),
-                nHits = sum(hits)) %>%
-      group_by(site,choices) %>%
-      summarise(maxEAR = max(sumEAR),
-                sumHits = sum(nHits)) %>%
-      data.frame()%>%
-      mutate(site = siteKey[site]) %>%
-      gather(calc, value, -site, -choices) %>%
-      unite(choice_calc, choices, calc, sep=" ") %>%
-      spread(choice_calc, value)
+    if(input$sites == "All"){
+    
+      statsOfColumn <- chemicalSummary %>%
+        rename(assay_component_endpoint_name=endPoint) %>%
+        filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
+        data.table()%>%
+        left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+        data.frame()%>%
+        rename(endPoint=assay_component_endpoint_name)%>%
+        select_("hits","EAR","endPoint","site","date","choices"=groupCol) %>%
+        group_by(site, date,choices) %>%
+        summarise(sumEAR = sum(EAR),
+                  nHits = sum(hits)) %>%
+        group_by(site,choices) %>%
+        summarise(maxEAR = max(sumEAR),
+                  sumHits = sum(nHits)) %>%
+        data.frame()%>%
+        mutate(site = siteKey[site]) %>%
+        gather(calc, value, -site, -choices) %>%
+        unite(choice_calc, choices, calc, sep=" ") %>%
+        spread(choice_calc, value)
+    } else {
+      
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summary$site
+      } else {
+        siteToFind <- input$sites
+      }
+      
+      statsOfColumn <- chemicalSummary %>%
+        rename(assay_component_endpoint_name=endPoint) %>%
+        filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
+        data.table()%>%
+        left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+        data.frame() %>%
+        mutate(site = siteKey[site]) %>%
+        filter_(paste0("site == '", siteToFind, "'")) %>%
+        select_("hits","EAR","chnm","class","date","choices"=groupCol) %>%
+        group_by(chnm, date,choices) %>%
+        summarise(sumEAR = sum(EAR),
+                  nHits = sum(hits)) %>%
+        group_by(chnm,choices) %>%
+        summarise(maxEAR = max(sumEAR),
+                  sumHits = sum(nHits)) %>%
+        data.frame()%>%
+        gather(calc, value, -chnm, -choices) %>%
+        unite(choice_calc, choices, calc, sep=" ") %>%
+        spread(choice_calc, value)
+    }
+    
   })
   
   output$groupControl <- renderUI({
     
     ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
-
     nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
-    
     dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
     
     selectInput("group", label = "Group in column (# End Points)",
@@ -180,13 +209,19 @@ shinyServer(function(input, output) {
   })
 
   output$TableHeader <- renderUI({
-    
     HTML(paste("<h3>Table of summations summaries:",input$group,"</h3>"))
   })
   
   output$BoxHeader <- renderUI({
-    
     HTML(paste("<h3>Boxplot summaries:",input$group,"</h3>"))
+  })
+  
+  output$TableHeaderColumns <- renderUI({
+    HTML(paste("<h3>Table of summations summaries:",input$groupCol,"</h3>"))
+  })
+  
+  output$BoxHeaderColumns <- renderUI({
+    HTML(paste("<h3>Boxplot summaries:",input$groupCol,"</h3>"))
   })
   
   output$table <- DT::renderDataTable({
@@ -356,9 +391,6 @@ shinyServer(function(input, output) {
           geom_boxplot() +
           theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
                 legend.position = "none")+
-          # scale_y_log10("sumEAR") +
-          # coord_cartesian(ylim = c(1, 1.1*max(endPointSummBP$sumEARnoZero))) +
-          # ylab("sumEAR") + 
           xlab("") 
   
         print(sToxWS)
