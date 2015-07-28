@@ -1,3 +1,8 @@
+library(toxEval)
+endPointInfo <- endPointInfo
+choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
+groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
+
 shinyUI(
   
   navbarPage("toxEval",

@@ -11,8 +11,8 @@ library(tidyr)
 library(RColorBrewer)
 
 endPointInfo <- endPointInfo
-wData <- wData
-pCodeInfo <- pCodeInfo
+# wData <- wData
+# pCodeInfo <- pCodeInfo
 
 packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "stationINFO.RData")
@@ -38,7 +38,11 @@ chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
+
 shinyServer(function(input, output) {
+  
+  
+
   
   chemicalSummaryFiltered <- reactive({
     
