@@ -558,8 +558,15 @@ shinyServer(function(input, output) {
       
     })
     
-    output$stackBar <- renderPlot({
-      
+    output$stackBar <- renderPlot({ 
+      print(topPlots())
+    })
+    
+    output$graph <- renderPlot({ 
+      print(bottomPlots())
+    })
+    
+    topPlots <- reactive({
       chemGroup <- chemGroup()
       
       if(is.null(input$sites)){
@@ -593,10 +600,9 @@ shinyServer(function(input, output) {
       
       uniqueChms <- as.character(unique(chemGroupBP$chnm))
       
-      if(input$sites == "All"){
-        chemGroupBP <- 
-          
-          sToxWS <- ggplot(chemGroupBP, aes(x=site, y=EAR, fill = chnm)) +
+      if(siteToFind == "All"){
+        
+        sToxWS <- ggplot(chemGroupBP, aes(x=site, y=EAR, fill = chnm)) +
           geom_bar(stat="identity") +
           theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
                                            colour=siteLimits$lakeColor)) +
@@ -620,11 +626,16 @@ shinyServer(function(input, output) {
         
       }
       
-      print(sToxWS)
-      
+      sToxWS
     })
     
-    output$graph <- renderPlot({
+    bottomPlots <- reactive({
+      
+      g <- ggplot_build(topPlots())
+      fillColors <- c(unique(g$data[[1]]["fill"]))[[1]]
+      chnms <- unique(g$plot$data$chnm)
+      
+      fillColorsKey <- setNames(fillColors, as.character(chnms))
       
       if(input$sites == "All"){
         
@@ -652,62 +663,56 @@ shinyServer(function(input, output) {
         endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero == 0] <- ndLevel
         
         
-        sToxWS <- ggplot(endPointSummBP, aes(x=site, y=sumEARnoZero, fill = lake)) +
-          geom_boxplot() +
-          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
-                                           colour=siteLimits$lakeColor))+
+        sToxWS <- ggplot(endPointSummBP)
+        
+        if(!is.null(input$data) && input$data != "Passive Samples"){
+          sToxWS <- sToxWS + geom_boxplot(aes(x=site, y=sumEARnoZero, fill = lake)) +
+            scale_fill_manual(values=c("tomato3",
+                                       "black",
+                                       "springgreen3",
+                                       "brown",
+                                       "blue"))
+        } else {
+          sToxWS <- sToxWS + geom_point(aes(x=site, y=sumEARnoZero, 
+                                            colour = lake))+
+            scale_colour_manual(values=c("tomato3",
+                                         "black",
+                                         "springgreen3",
+                                         "brown",
+                                         "blue"))
+        }
+        
+        sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.25, 
+                                                            colour=siteLimits$lakeColor))+
           scale_x_discrete(limits=siteLimits$Station.shortname) +
           scale_y_log10("Summation of EAR per sample") +
           coord_cartesian(ylim = c(0.1, 1.1*max(endPointSummBP$sumEARnoZero))) +
-          xlab("") +
-          scale_fill_manual(values=c("tomato3",
-                                     "black",
-                                     "springgreen3",
-                                     "brown",
-                                     "blue"))
-        #         annotation_custom(xmin=-1,xmax=-1,
-        #                           ymin=log10(ndLevel), ymax=log10(ndLevel),
-        #                           grob=textGrob("ND", gp=gpar(fontsize=9), vjust = 0.25)) +
-        #         geom_text(data=data.frame(), 
-        #                   aes(x=c(5, 18,31,42,54),y=rep(1.1,5),
-        #                       label=c("Superior","Michigan","Huron","Erie","Ontario")),                
-        #                   colour=factor(c("tomato3","black","springgreen3","brown","blue"),
-        #                                 levels=c("tomato3","black","springgreen3","brown","blue")), size=3) + 
-        
-        
-        print(sToxWS)
-        #     for(i in 1:5){
-        #       sToxWS <- sToxWS +       
-        #         annotation_custom(xmin=c(5, 18,31,42,54)[i],xmax=c(5, 18,31,42,54)[i],
-        #                          ymin=log10(.98), ymax=log10(.98),
-        #                          grob=textGrob(c("Superior","Michigan","Huron","Erie","Ontario")[i],
-        #                                        gp=gpar(col=c("red","black","green","brown","blue")[i], fontsize=9)))
-        # 
-        #     }
-        
-        #     g_sToxWS <- ggplotGrob(sToxWS)
-        #     g_sToxWS$layout$clip[g_sToxWS$layout$name=="panel"] <- "off"
-        #     grid.draw(g_sToxWS)
+          xlab("") 
       } else {
         chemSiteSumm <- chemSiteSumm() %>%
-          mutate(sumEARnoZero = sumEAR) 
+          mutate(sumEARnoZero = sumEAR) %>%
+          mutate(chemColor = fillColorsKey[chnm])
         
         ndLevel <- 0.1*min(chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero != 0])
         
         if(is.finite(ndLevel)){
           chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero == 0] <- ndLevel
           
-          sToxWS <- ggplot(chemSiteSumm, aes(x=chnm, y=sumEAR)) +
-            geom_boxplot() +
-            theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
-                  legend.position = "none")+
-            xlab("") +
-            scale_y_log10("Summation of EAR per sample") 
+          sToxWS <- ggplot(chemSiteSumm, aes(x=chnm, y=sumEAR)) 
           
-          print(sToxWS)
+          if(!is.null(input$data) && input$data != "Passive Samples"){
+            sToxWS <- sToxWS + geom_boxplot() 
+          } else {
+            sToxWS <- sToxWS + geom_point() 
+          }
+          sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
+                                   legend.position = "none")+
+            xlab("") +
+            scale_y_log10("Summation of EAR per sample")
         }
       }
       
+      sToxWS
     })
     
     output$mymap <- leaflet::renderLeaflet({
