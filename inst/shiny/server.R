@@ -76,6 +76,19 @@ shinyServer(function(input, output) {
         data.frame()%>%
         rename(endPoint=assay_component_endpoint_name)
       
+#       if(nrow(chemicalSummaryFiltered) == 0){
+#         chemicalSummaryFiltered <- data.frame(date=as.POSIXct(NA),
+#                                               site="",
+#                                               measuredValue=NA,
+#                                               class="",
+#                                               chnm="",
+#                                               endPoint="",
+#                                               endPointValue=NA,
+#                                               EAR=NA,
+#                                               hits=NA)
+#       }
+      
+      
     })
     
     chemSiteSumm <- reactive({
@@ -689,7 +702,7 @@ shinyServer(function(input, output) {
       
       leaflet() %>%
         addProviderTiles("Esri.WorldPhysical") %>%
-        setView(lng = -83.5, lat = 44.5, zoom=6) 
+        setView(lng = -83.5, lat = 44.5, zoom=5) 
       
     })
     
@@ -712,15 +725,13 @@ shinyServer(function(input, output) {
       
       col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
       leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-      #c(0,1,5,10,100,1000,2500)#seq(0,2500, 500) # This is maxEAR 
       
       cols <- colorNumeric(col_types, domain = leg_vals)
-      rad <- seq(5000,15000, 500)
-      # mapData$sizes <- rad[as.numeric(cut(mapData$nChem, c(-1:19)))]
+      rad <- seq(5000,25000, 500)
       mapData$sizes <- rad[as.numeric(
         cut(mapData$sumHits, 
             c(-1,unique(as.numeric(
-              quantile(mapData$sumHits, probs=c(0.01,0.1,0.25,0.5,0.75,0.9,.99), na.rm=TRUE)
+              quantile(mapData$sumHits, probs=seq(.01,.99,length=length(rad)), na.rm=TRUE)
             )),(max(mapData$sumHits,na.rm=TRUE)+1))
         ))]
       pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)

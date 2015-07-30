@@ -5,10 +5,10 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
 shinyUI(
   fluidPage(
-    titlePanel("toxEval"),
   
     fluidRow(
       column(4,
+        h1("toxEval"),
         selectInput("data", label = "Data", 
                          choices = c("Water Sample",
                                      "Passive Samples",
@@ -25,8 +25,8 @@ shinyUI(
                  tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", "ToxCast"),
                  tags$p("for annotation information") )),
       column(8, 
-             leaflet::leafletOutput("mymap"))
-      ),
+             leaflet::leafletOutput("mymap")
+      )),
         
     fluidRow(
         tabsetPanel(
