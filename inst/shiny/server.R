@@ -36,7 +36,7 @@ endPointInfo <- endPointInfo
 
 pathToApp <- system.file("extdata", package="toxEval")
 
-summary <- readRDS(file.path(pathToApp,"summary.rds"))
+summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
 chemicalSummaryWS <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 chemicalSummaryPS <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
@@ -119,7 +119,7 @@ shinyServer(function(input, output) {
       }
       
       if(is.null(input$sites) | input$sites == "All"){
-        siteToFind <- summary$site
+        siteToFind <- summaryFile$site
       } else {
         siteToFind <- input$sites
       }
@@ -152,7 +152,7 @@ shinyServer(function(input, output) {
       }
       
       if(is.null(input$sites) | input$sites == "All"){
-        siteToFind <- summary$site
+        siteToFind <- summaryFile$site
       } else {
         siteToFind <- input$sites
       }
@@ -242,7 +242,7 @@ shinyServer(function(input, output) {
       } else {
         
         if(is.null(input$sites)){
-          siteToFind <- summary$site
+          siteToFind <- summaryFile$site
         } else {
           siteToFind <- input$sites
         }
@@ -313,7 +313,7 @@ shinyServer(function(input, output) {
       } else {
         
         if(is.null(input$sites)){
-          siteToFind <- summary$site
+          siteToFind <- summaryFile$site
         } else {
           siteToFind <- input$sites
         }
@@ -570,7 +570,7 @@ shinyServer(function(input, output) {
       chemGroup <- chemGroup()
       
       if(is.null(input$sites)){
-        siteToFind <- summary$site
+        siteToFind <- summaryFile$site
       } else {
         siteToFind <- input$sites
       }
@@ -632,11 +632,16 @@ shinyServer(function(input, output) {
     bottomPlots <- reactive({
       
       g <- ggplot_build(topPlots())
-      fillColors <- c(unique(g$data[[1]]["fill"]))[[1]]
-      chnms <- unique(g$plot$data$chnm)
+      fillColors <- g$data[[1]]["fill"][[1]]
+      chnms <- g$plot$data$chnm
       
-      fillColorsKey <- setNames(fillColors, as.character(chnms))
+      dfNames <- data.frame(chnm = names(table(chnms)[table(chnms) != 0]),
+                            freq = as.numeric(table(chnms)[table(chnms) != 0]),stringsAsFactors = FALSE)
+      dfCol <- data.frame(colors = names(table(fillColors)), 
+                 freq = as.numeric(table(fillColors)),stringsAsFactors = FALSE)
       
+      colorKey <- left_join(dfNames, dfCol, by="freq")
+
       if(input$sites == "All"){
         
         endpointSummary <- endpointSummary()
@@ -690,20 +695,26 @@ shinyServer(function(input, output) {
           xlab("") 
       } else {
         chemSiteSumm <- chemSiteSumm() %>%
-          mutate(sumEARnoZero = sumEAR) %>%
-          mutate(chemColor = fillColorsKey[chnm])
+          mutate(sumEARnoZero = sumEAR) 
         
         ndLevel <- 0.1*min(chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero != 0])
         
         if(is.finite(ndLevel)){
           chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero == 0] <- ndLevel
+    
+          noFill <- data.frame(chnm=unique(chemSiteSumm$chnm)[!(unique(chemSiteSumm$chnm) %in% colorKey$chnm)],
+                               colors=rep("#FFFFFF",length(unique(chemSiteSumm$chnm))-nrow(colorKey)),
+                               stringsAsFactors = FALSE)
+          fillTotal <- rbind(colorKey[,c('colors','chnm')], noFill)
           
-          sToxWS <- ggplot(chemSiteSumm, aes(x=chnm, y=sumEAR)) 
+          sToxWS <- ggplot(chemSiteSumm) 
           
           if(!is.null(input$data) && input$data != "Passive Samples"){
-            sToxWS <- sToxWS + geom_boxplot() 
+            sToxWS <- sToxWS + geom_boxplot(aes(x=chnm, y=sumEAR, 
+                                                fill=chnm)) +
+              scale_fill_manual(values=setNames(fillTotal$colors,fillTotal$chnm))
           } else {
-            sToxWS <- sToxWS + geom_point() 
+            sToxWS <- sToxWS + geom_point(aes(x=chnm, y=sumEAR)) 
           }
           sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
                                    legend.position = "none")+
@@ -728,7 +739,7 @@ shinyServer(function(input, output) {
       sumStat <- statsOfSum()
       
       if(nrow(sumStat) == 0){
-        sumStat <- summary
+        sumStat <- summaryFile
         sumStat$sumHits <- sumStat$nChem
       }
       
