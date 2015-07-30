@@ -2,6 +2,8 @@ library(toxEval)
 endPointInfo <- endPointInfo
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
+pathToApp <- system.file("extdata", package="toxEval")
+summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 
 shinyUI(
   fluidPage(
@@ -15,7 +17,7 @@ shinyUI(
                                      "Water Samples + Passive"),
                          selected = "Water Sample + ToxCast", multiple = FALSE),
         selectInput("sites", label = "Site", 
-                                      choices = c("All",summary$site),
+                                      choices = c("All",summaryFile$site),
                                       selected = "All", multiple = FALSE),
         selectInput("groupCol", label = "Annotation (# choices)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
