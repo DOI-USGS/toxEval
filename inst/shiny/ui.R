@@ -21,9 +21,10 @@ shinyUI(
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
                                       selected = names(endPointInfo)[20], multiple = FALSE),
         tags$div(class="header", checked=NA,
-                 tags$p("See: "),
-                 tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", "ToxCast"),
-                 tags$p("for annotation information") )),
+                 tags$p("For annotation information, see: "),
+                 tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", "ToxCast")),
+        
+        uiOutput("groupControl")),
       column(8, 
              leaflet::leafletOutput("mymap")
       )),
@@ -42,7 +43,6 @@ shinyUI(
   
             ),
             tabPanel("Group Summary",
-                 uiOutput("groupControl"),
                  tabsetPanel(
                    tabPanel("Table",
                             htmlOutput("TableHeader"),

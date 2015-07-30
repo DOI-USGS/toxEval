@@ -690,7 +690,8 @@ shinyServer(function(input, output) {
             geom_boxplot() +
             theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
                   legend.position = "none")+
-            xlab("") 
+            xlab("") +
+            scale_y_log10("Summation of EAR per sample") 
           
           print(sToxWS)
         }
@@ -719,15 +720,11 @@ shinyServer(function(input, output) {
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
       # mapData <- mapData[!is.na(mapData$nChem),]
       
-      if(input$sites != "All"){
-        mapData <- mapData[mapData$shortName == input$sites,]
-      }
-      
       col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
       leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
       
       cols <- colorNumeric(col_types, domain = leg_vals)
-      rad <- seq(5000,25000, 500)
+      rad <- 1.5*seq(5000,25000, 500)
       mapData$sizes <- rad[as.numeric(
         cut(mapData$sumHits, 
             c(-1,unique(as.numeric(
@@ -735,6 +732,10 @@ shinyServer(function(input, output) {
             )),(max(mapData$sumHits,na.rm=TRUE)+1))
         ))]
       pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+      
+      if(input$sites != "All"){
+        mapData <- mapData[mapData$shortName == input$sites,]
+      }
       
       leafletProxy("mymap", data=mapData) %>%
         clearShapes() %>%
