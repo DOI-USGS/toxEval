@@ -32,24 +32,29 @@ shinyUI(
     fluidRow(
         tabsetPanel(
             tabPanel("Annotation Summary",
+                h2("Information about Annotations"),
                 tabsetPanel(
-                    tabPanel("EAR Summary",
+                    tabPanel("EAR Tally Summary",
                              htmlOutput("TableHeaderColumns"),
                              DT::dataTableOutput('tableSumm')),
-                    tabPanel("Chemical Summary",
+                    tabPanel("Chemical Tally Summary",
                              htmlOutput("TableHeaderColumns2"),
                              DT::dataTableOutput('tableGroupSumm'))
                   )
   
             ),
+            
             tabPanel("Group Summary",
+                 h2("Information about Groups"),
                  tabsetPanel(
                    tabPanel("Table",
                             htmlOutput("TableHeader"),
                             DT::dataTableOutput('table')),
                    tabPanel("Box Plots",
                               htmlOutput("BoxHeader"),
+                              h3("Only shading EARs with hits (> 0.1)"),
                               plotOutput("stackBar"),
+                              h3("All EARs"),
                               plotOutput("graph")
                             )
                  )
