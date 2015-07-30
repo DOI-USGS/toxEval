@@ -49,6 +49,22 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 shinyServer(function(input, output) {
   
     
+    chemicalSummary <- reactive({
+      
+      if(is.null(input$data)){
+        chemicalSummary <- rbind(chemicalSummaryWS, chemicalSummaryPS)
+      } else if (input$data == "Passive Samples"){
+        chemicalSummary <- chemicalSummaryPS
+      } else if (input$data == "Water Sample"){
+        chemicalSummary <- chemicalSummaryWS
+      } else {
+        chemicalSummary <- rbind(chemicalSummaryWS, chemicalSummaryPS)
+      }
+      
+      chemicalSummary
+      
+    })
+  
     chemicalSummaryFiltered <- reactive({
       
       if(is.null(input$groupCol)){
@@ -60,15 +76,7 @@ shinyServer(function(input, output) {
       endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
         distinct()
       
-      if(input$data == "Passive Samples"){
-        chemicalSummary <- chemicalSummaryPS
-      } else if (input$data == "Water Sample"){
-        chemicalSummary <- chemicalSummaryWS
-      } else {
-        chemicalSummary <- rbind(chemicalSummaryWS, chemicalSummaryPS)
-      }
-      
-      chemicalSummaryFiltered <- chemicalSummary %>%
+      chemicalSummaryFiltered <- chemicalSummary() %>%
         rename(assay_component_endpoint_name=endPoint) %>%
         filter(assay_component_endpoint_name %in% endPointInfoSub$assay_component_endpoint_name ) %>%
         data.table()%>%
@@ -76,18 +84,21 @@ shinyServer(function(input, output) {
         data.frame()%>%
         rename(endPoint=assay_component_endpoint_name)
       
-#       if(nrow(chemicalSummaryFiltered) == 0){
-#         chemicalSummaryFiltered <- data.frame(date=as.POSIXct(NA),
-#                                               site="",
-#                                               measuredValue=NA,
-#                                               class="",
-#                                               chnm="",
-#                                               endPoint="",
-#                                               endPointValue=NA,
-#                                               EAR=NA,
-#                                               hits=NA)
-#       }
+      if(nrow(chemicalSummaryFiltered) == 0){
+        endPointInfoSub <- select_(endPointInfo, 
+                                   "assay_component_endpoint_name", names(endPointInfo)[20]) %>%
+          distinct()
+        chemicalSummaryFiltered <- chemicalSummary() %>%
+          rename(assay_component_endpoint_name=endPoint) %>%
+          filter(assay_component_endpoint_name %in% endPointInfoSub$assay_component_endpoint_name ) %>%
+          data.table()%>%
+          left_join(data.table(endPointInfoSub), by = "assay_component_endpoint_name") %>%
+          data.frame()%>%
+          rename(endPoint=assay_component_endpoint_name)
+        
+      }
       
+      chemicalSummaryFiltered
       
     })
     
@@ -209,7 +220,7 @@ shinyServer(function(input, output) {
       
       if(input$sites == "All"){
         
-        statsOfColumn <- chemicalSummary %>%
+        statsOfColumn <- chemicalSummary() %>%
           rename(assay_component_endpoint_name=endPoint) %>%
           filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
           data.table()%>%
@@ -236,7 +247,7 @@ shinyServer(function(input, output) {
           siteToFind <- input$sites
         }
         
-        statsOfColumn <- chemicalSummary %>%
+        statsOfColumn <- chemicalSummary() %>%
           rename(assay_component_endpoint_name=endPoint) %>%
           filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
           data.table()%>%
@@ -267,7 +278,7 @@ shinyServer(function(input, output) {
         groupCol <- input$groupCol
       }
       
-      chemGroup <- chemicalSummary %>%
+      chemGroup <- chemicalSummary() %>%
         rename(assay_component_endpoint_name=endPoint) %>%
         filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
         data.table()%>%
