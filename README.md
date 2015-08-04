@@ -17,7 +17,7 @@ To install the `toxEval` package you need to be using R 3.0 or greater. Then use
 
 ```R
 install.packages(c("devtools","shiny","dplyr","ggplot2","RColorBrewer",
-                   "tidyr","stringi","data.table","grid","gridExtra"))
+                   "tidyr","stringi","data.table","grid","gridExtra","Rcpp"))
 library(devtools)
 install_github("USGS-R/toxEval")
 install_github("rstudio/DT")

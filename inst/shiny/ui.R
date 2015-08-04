@@ -13,8 +13,7 @@ shinyUI(
         h1("toxEval"),
         selectInput("data", label = "Data", 
                          choices = c("Water Sample",
-                                     "Passive Samples",
-                                     "Water Samples + Passive"),
+                                     "Passive Samples"),
                          selected = "Water Sample + ToxCast", multiple = FALSE),
         selectInput("sites", label = "Site", 
                                       choices = c("All",summaryFile$site),
@@ -24,9 +23,9 @@ shinyUI(
                                       selected = names(endPointInfo)[20], multiple = FALSE),
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
-                 tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", "ToxCast")),
-        
-        uiOutput("groupControl")),
+                 tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
+                        "ToxCast"))
+        ),
       column(8, 
              leaflet::leafletOutput("mymap")
       )),
@@ -38,21 +37,29 @@ shinyUI(
                 tabsetPanel(
                     tabPanel("EAR Tally Summary",
                              htmlOutput("TableHeaderColumns"),
+                             h4("maxEAR = Maximum (summation of EARs per sample)"),
+                             h4("freq = Fraction of samples with hits"),
                              DT::dataTableOutput('tableSumm')),
                     tabPanel("Chemical Tally Summary",
                              htmlOutput("TableHeaderColumns2"),
-                             DT::dataTableOutput('tableGroupSumm'))
+                             h4("maxChem = Maximum (chemicals with hits per sample)"),
+                             h4("meanChem = Mean (chemicals with hits per sample)"),
+                             h4("nChem = Number of individual chemicals that have >= 1 hit"),
+                             DT::dataTableOutput('tableGroupSumm')),
+                    tabPanel("Visualizations",
+                             h3("To Do"))
                   )
   
             ),
             
             tabPanel("Group Summary",
                  h2("Information about Groups"),
+                 uiOutput("groupControl"),
                  tabsetPanel(
                    tabPanel("Table",
                             htmlOutput("TableHeader"),
                             DT::dataTableOutput('table')),
-                   tabPanel("Box Plots",
+                   tabPanel("Visualizations",
                               htmlOutput("BoxHeader"),
                               h3("Only shading EARs with hits (> 0.1)"),
                               plotOutput("stackBar"),
