@@ -5,7 +5,6 @@
 #' @param chemicalSummary data frame returned from \code{chemSummBasic}
 #' @param chemicalSummary.Key character column name for grouping by (default = "endPoint")
 #' @param chemicalSummary.site character column name for group by site
-#' @import dplyr
 #' @export
 #' @examples
 #' wData <- wData

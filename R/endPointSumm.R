@@ -8,15 +8,16 @@
 #' @param endPointInfo dataframe
 #' @param endPointInfo.Key column name of endpoint
 #' @param EAR.key column name in chemicalSummary of EAR
-#' @import dplyr
 #' @export
 #' @examples
+#' \dontrun{
 #' wData <- wData
 #' pCodeInfo <- pCodeInfo
 #' endPoint <- endPointToxCreate(pCodeInfo)
 #' chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 #' endPointInfo <- endPointInfo
 #' epSumm <- endPointSumm(chemicalSummary, endPointInfo=endPointInfo)
+#' }
 endPointSumm <- function(chemicalSummary, chemicalSummary.Key="endPoint",chemicalSummary.site="site",
                          endPointInfo, endPointInfo.Key = "assay_component_endpoint_name",
                          EAR.key="EAR"){

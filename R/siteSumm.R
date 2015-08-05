@@ -4,9 +4,9 @@
 #'
 #' @param chemicalSummary data frame returned from \code{chemSummBasic}
 #' @param newSiteKey named vector 
-#' @import  dplyr
 #' @export
 #' @examples
+#' \dontrun{
 #' wData <- wData
 #' pCodeInfo <- pCodeInfo
 #' packagePath <- system.file("extdata", package="toxEval")
@@ -16,6 +16,7 @@
 #' endPoint <- endPointToxCreate(pCodeInfo)
 #' chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 #' siteSummary <- siteSumm(chemicalSummary,newSiteKey)
+#' }
 siteSumm <- function(chemicalSummary,newSiteKey){
 
   siteSummary <- chemicalSummary %>%

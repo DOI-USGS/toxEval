@@ -25,11 +25,13 @@ endPointSumm(chemicalSummary, chemicalSummary.Key = "endPoint",
 Create chemical summary
 }
 \examples{
+\dontrun{
 wData <- wData
 pCodeInfo <- pCodeInfo
 endPoint <- endPointToxCreate(pCodeInfo)
 chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 endPointInfo <- endPointInfo
 epSumm <- endPointSumm(chemicalSummary, endPointInfo=endPointInfo)
+}
 }
 

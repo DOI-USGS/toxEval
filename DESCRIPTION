@@ -18,21 +18,21 @@ Depends:
     R (>= 3.0)
 Imports:
     dplyr,
-    tidyr
-Suggests:
-    rmarkdown,
-    knitr,
-    testthat,
-    pander,
+    tidyr,
     DT,
     leaflet,
-    formattable,
     ggplot2,
     gridExtra,
     grid,
     shiny,
     data.table,
     RColorBrewer
+Suggests:
+    rmarkdown,
+    testthat,
+    pander,
+    formattable,
+    knitr
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
