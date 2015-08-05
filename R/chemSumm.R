@@ -8,7 +8,6 @@
 #' @param classCol column name of chemical class
 #' @param siteCol column name of site
 #' @param dateCol column name of date
-#' @import dplyr
 #' @export
 #' @examples
 #' wData <- wData
@@ -73,10 +72,7 @@ chemSumm <- function(chemicalSummary,EAR.key="EAR",chnmCol="chnm",
 #' @param code_pCode character name of code column in pCodeInfo
 #' @param casrn_ep character name of class column in endPoint
 #' @return chemicalSummary data frame
-#' @import dplyr
-#' @importFrom tidyr gather_
-#' @importFrom tidyr gather
-#' @importFrom tidyr separate
+#' @import tidyr 
 #' @export
 #' @examples
 #' wData <- wData
@@ -114,7 +110,6 @@ chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
 #' @param units_pCode character name of units column in pCodeInfo
 #' @param mlWt_pCode character name of molecular weight column in pCodeInfo
 #' @return endPoint data frame
-#' @import dplyr
 #' @export
 #' @examples
 #' pCodeInfo <- pCodeInfo

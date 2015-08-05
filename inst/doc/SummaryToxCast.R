@@ -10,6 +10,7 @@ library(leaflet)
 library(formattable)
 library(ggplot2)
 library(gridExtra)
+library(data.table)
 
 pCodeInfo <- pCodeInfo
 wData <- wData
@@ -119,7 +120,10 @@ chemicalSummary_passive <- passiveData %>%
   select(-mlWt, -conversion, -casrn,  -Units) %>%
   gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm) %>%
   filter(!is.na(endPointValue)) %>%
-  mutate(EAR=measuredValue/endPointValue) 
+  mutate(EAR=measuredValue/endPointValue) %>%
+  mutate(hits = as.numeric(EAR > 0.1),
+         endPoint=as.character(endPoint)) %>%
+  filter(!is.na(EAR))
 
 chemicalSummary_passive <- chemicalSummary_passive %>%
   mutate(site=paste0("USGS-",gsub("[^0-9]", "", as.character(site))))%>%
@@ -220,7 +224,6 @@ datatable(chemSum2[,-6], rownames = FALSE,
 
 
 chemSum3 <- chemicalSummary %>%
-  mutate(hits= as.numeric(EAR > 0.1)) %>%
   group_by(chnm,  class, site, endPoint) %>%
   summarize(hits=as.numeric(any(hits > 0)),
             maxEAR=max(EAR)) %>%
@@ -228,10 +231,11 @@ chemSum3 <- chemicalSummary %>%
   summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits),
             maxEAR=max(maxEAR)) %>%
-  mutate(endPoint=as.character(endPoint))%>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
+  rename(assay_component_endpoint_name=endPoint) %>%
+  data.table() %>%
+  left_join(data.table(endPointInfo), by="assay_component_endpoint_name") %>% 
   select(chnm, maxEAR, freq, nSites, 
-         endPoint, class, contains("intended_target_")) %>%
+         endPoint=assay_component_endpoint_name, class, contains("intended_target_")) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
          family=intended_target_family, family_sub=intended_target_family_sub) %>%
   select(-contains("intended_target_"))  %>%
@@ -244,24 +248,9 @@ chemSum3 <- chemicalSummary %>%
     formatRound(c("maxEAR", "freq"), digits = 2)
   
   
-totalSamples_ep <- select(chemicalSummary,site,endPoint) %>%
-  distinct()%>%
-  group_by(endPoint) %>%
-  summarise(totalSites=n())%>%
-  mutate(endPoint=as.character(endPoint))
+endpointSummary <- endPointSumm(chemicalSummary, endPointInfo=endPointInfo)
   
-endpointSummary <- chemicalSummary %>%
-  mutate(hits= as.numeric(EAR > 0.1)) %>%
-  group_by(site, endPoint) %>%
-  summarize(hits=as.numeric(any(hits > 0)),
-            maxEAR=max(EAR)) %>%
-  group_by(endPoint) %>%
-  summarize(nSites=sum(hits),
-            maxEAR=max(maxEAR))  %>%
-  mutate(endPoint=as.character(endPoint))%>%
-  left_join(endPointInfo, by=c("endPoint"="assay_component_endpoint_name")) %>% 
-  left_join(totalSamples_ep, by=c("endPoint")) %>%
-  mutate(freq=nSites/totalSites)%>%
+endpointSummary <- endpointSummary %>%
   select(endPoint, maxEAR, freq, nSites, 
          endPoint, contains("intended_target_")) %>%
   rename(type=intended_target_type, type_sub=intended_target_type_sub,
@@ -394,8 +383,8 @@ datatable(chemSum2_passive_dt, rownames = FALSE,
 
 
 chemSum3_passive <- chemicalSummary_passive %>%
-  group_by(chnm,  class, site, endPoint) %>%
-  summarize(hits= as.numeric(any(EAR > 0.1))) %>% 
+#   group_by(chnm,  class, site, endPoint) %>%
+#   summarize(hits= as.numeric(any(EAR > 0.1))) %>% 
   group_by(chnm, class, endPoint) %>%
   summarize(freq=sum(hits)/n_distinct(site),
             nSites=sum(hits)) 

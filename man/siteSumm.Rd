@@ -15,6 +15,7 @@ siteSumm(chemicalSummary, newSiteKey)
 Create site summary
 }
 \examples{
+\dontrun{
 wData <- wData
 pCodeInfo <- pCodeInfo
 packagePath <- system.file("extdata", package="toxEval")
@@ -24,5 +25,6 @@ newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 endPoint <- endPointToxCreate(pCodeInfo)
 chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 siteSummary <- siteSumm(chemicalSummary,newSiteKey)
+}
 }
 
