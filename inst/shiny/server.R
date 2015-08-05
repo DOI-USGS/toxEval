@@ -352,23 +352,33 @@ shinyServer(function(input, output) {
     })
     
     output$TableHeader <- renderUI({
-      HTML(paste("<br/><br/><h3>Table of summations summaries:",input$group,"-",input$data,"</h3>"))
+      HTML(paste("<br/><br/><h3>Table of summations summaries:",
+                 input$group,"-",input$data,": ",input$sites,
+                 "</h3>"))
     })
     
     output$BoxHeader <- renderUI({
-      HTML(paste("<br/><h3>Boxplot summaries:",input$group,"-",input$data,"</h3>"))
+      HTML(paste("<br/><h3>Boxplot summaries:",
+                 input$group,"-",input$data,": ",input$sites,
+                 "</h3>"))
     })
     
     output$TableHeaderColumns <- renderUI({
-      HTML(paste("<br/><h3>Table of summations summaries:",input$groupCol,"-",input$data,"</h3>"))
+      HTML(paste("<br/><h3>Table of summations summaries:",
+                 input$groupCol,"-",input$data,": ",input$sites,
+                 "</h3>"))
     })
     
     output$TableHeaderColumns2 <- renderUI({
-      HTML(paste("<br/><h3>Table of chemical summaries:",input$groupCol,"-",input$data,"</h3>"))
+      HTML(paste("<br/><h3>Table of chemical summaries:",
+                 input$groupCol,"-",input$data,": ",input$sites,
+                 "</h3>"))
     })
     
     output$BoxHeaderColumns <- renderUI({
-      HTML(paste("<br/><h3>Boxplot summaries:",input$groupCol,"-",input$data,"</h3>"))
+      HTML(paste("<br/><h3>Boxplot summaries:",
+                 input$groupCol,"-",input$data,": ",input$sites,
+                 "</h3>"))
     })
     
     output$table <- DT::renderDataTable({
