@@ -95,19 +95,19 @@ shinyServer(function(input, output) {
         data.frame()%>%
         rename(endPoint=assay_component_endpoint_name)
       
-      if(nrow(chemicalSummaryFiltered) == 0){
-        endPointInfoSub <- select_(endPointInfo, 
-                                   "assay_component_endpoint_name", names(endPointInfo)[20]) %>%
-          distinct()
-        chemicalSummaryFiltered <- chemicalSummary() %>%
-          rename(assay_component_endpoint_name=endPoint) %>%
-          filter(assay_component_endpoint_name %in% endPointInfoSub$assay_component_endpoint_name ) %>%
-          data.table()%>%
-          left_join(data.table(endPointInfoSub), by = "assay_component_endpoint_name") %>%
-          data.frame()%>%
-          rename(endPoint=assay_component_endpoint_name)
-        
-      }
+#       if(nrow(chemicalSummaryFiltered) == 0){
+#         endPointInfoSub <- select_(endPointInfo, 
+#                                    "assay_component_endpoint_name", names(endPointInfo)[20]) %>%
+#           distinct()
+#         chemicalSummaryFiltered <- chemicalSummary() %>%
+#           rename(assay_component_endpoint_name=endPoint) %>%
+#           filter(assay_component_endpoint_name %in% endPointInfoSub$assay_component_endpoint_name ) %>%
+#           data.table()%>%
+#           left_join(data.table(endPointInfoSub), by = "assay_component_endpoint_name") %>%
+#           data.frame()%>%
+#           rename(endPoint=assay_component_endpoint_name)
+#         
+#       }
       
       chemicalSummaryFiltered
       
@@ -181,6 +181,8 @@ shinyServer(function(input, output) {
     
     endpointSummary <- reactive({
       
+      chemicalSummaryFiltered <- chemicalSummaryFiltered()
+      
       if(is.null(input$groupCol)){
         groupCol <- names(endPointInfo)[20]
       } else {
@@ -193,7 +195,7 @@ shinyServer(function(input, output) {
         group <- input$group
       }
       
-      endpointSummary <- chemicalSummaryFiltered() %>%
+      endpointSummary <- chemicalSummaryFiltered %>%
         filter_(paste0(groupCol," == '", group, "'")) %>%
         group_by(site, date) %>%
         summarise(sumEAR = sum(EAR),
@@ -201,7 +203,10 @@ shinyServer(function(input, output) {
     })
     
     statsOfSum <- reactive({
-      endpointSummary() %>%
+      
+      endpointSummary <- endpointSummary()
+      
+      statsOfSum <- endpointSummary %>%
         group_by(site) %>%
         summarise(meanEAR = mean(sumEAR),
                   maxEAR = max(sumEAR),
@@ -209,12 +214,17 @@ shinyServer(function(input, output) {
                   sumHits = sum(nHits),
                   nSamples = n()) %>%
         data.frame()%>%
-        mutate(site = siteKey[site]) 
+        mutate(site = siteKey[site])
+      
+      statsOfSum
       
     })
     
     statsOfChem <- reactive({
-      chemSiteSumm() %>%
+      
+      chemSiteSumm <- chemSiteSumm()
+      
+      statsOfChem <- chemSiteSumm %>%
         group_by(chnm) %>%
         summarise(meanEAR = mean(sumEAR),
                   maxEAR = max(sumEAR),
@@ -222,78 +232,69 @@ shinyServer(function(input, output) {
                   freq = sum(nHits > 0)/n()) %>%
         data.frame()
       
+      statsOfChem
+      
     })
     
     statsOfColumn <- reactive({
+      
+      chemicalSummary <- chemicalSummary()
+      
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else {
+        siteToFind <- input$sites
+      }
+      
       if(is.null(input$groupCol)){
         groupCol <- names(endPointInfo)[20]
       } else {
         groupCol <- input$groupCol
       }
       
-      if(input$sites == "All"){
+      statsOfColumn <- chemicalSummary %>%
+        rename(assay_component_endpoint_name=endPoint) %>%
+        filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
+        data.table()%>%
+        left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+        data.frame() %>%
+        mutate(site = siteKey[site]) %>%
+        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site")
+      
+      if(length(siteToFind) == 1){
         
-        statsOfColumn <- chemicalSummary() %>%
-          rename(assay_component_endpoint_name=endPoint) %>%
-          filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
-          data.table()%>%
-          left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
-          data.frame()%>%
-          rename(endPoint=assay_component_endpoint_name)%>%
-          select_("hits","EAR","endPoint","site","date","choices"=groupCol) %>%
-          group_by(site, date,choices) %>%
-          summarise(sumEAR = sum(EAR),
-                    nHits = sum(hits)) %>%
-          group_by(site,choices) %>%
-          summarise(maxEAR = max(sumEAR),
-                    sumHits = sum(nHits),
-                    freq = sum(nHits > 0)/n()) %>%
-          data.frame()%>%
-          mutate(site = siteKey[site]) %>%
-          gather(calc, value, -site, -choices) %>%
-          unite(choice_calc, choices, calc, sep=" ") %>%
-          spread(choice_calc, value)
-      } else {
+        # statsOfColumn <- filter_(statsOfColumn, paste0("site == '", siteToFind, "'")) 
+        statsOfColumn <- filter(statsOfColumn, site %in% siteToFind) %>%
+          mutate(site = chnm) 
         
-        if(is.null(input$sites)){
-          siteToFind <- summaryFile$site
-        } else {
-          siteToFind <- input$sites
-        }
-        
-        statsOfColumn <- chemicalSummary() %>%
-          rename(assay_component_endpoint_name=endPoint) %>%
-          filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
-          data.table()%>%
-          left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
-          data.frame() %>%
-          mutate(site = siteKey[site]) %>%
-          filter_(paste0("site == '", siteToFind, "'")) %>%
-          select_("hits","EAR","chnm","class","date","choices"=groupCol) %>%
-          group_by(chnm, date,choices) %>%
-          summarise(sumEAR = sum(EAR),
-                    nHits = sum(hits)) %>%
-          group_by(chnm,choices) %>%
-          summarise(maxEAR = max(sumEAR),
-                    sumHits = sum(nHits),
-                    freq = sum(nHits > 0)/n()) %>%
-          data.frame() %>%
-          gather(calc, value, -chnm, -choices) %>%
-          unite(choice_calc, choices, calc, sep=" ") %>%
-          spread(choice_calc, value)
-      }
+      } 
+      
+      statsOfColumn <- statsOfColumn %>%
+        group_by(site, date,choices) %>%
+        summarise(sumEAR = sum(EAR),
+                  nHits = sum(hits)) %>%
+        group_by(site,choices) %>%
+        summarise(maxEAR = max(sumEAR),
+                  sumHits = sum(nHits),
+                  freq = sum(nHits > 0)/n()) %>%
+        data.frame()%>%
+        gather(calc, value, -site, -choices) %>%
+        unite(choice_calc, choices, calc, sep=" ") %>%
+        spread(choice_calc, value)
       
     })
     
     chemGroup <- reactive({
       
+      chemicalSummary <- chemicalSummary()
+      
       if(is.null(input$groupCol)){
         groupCol <- names(endPointInfo)[20]
       } else {
         groupCol <- input$groupCol
       }
       
-      chemGroup <- chemicalSummary() %>%
+      chemGroup <- chemicalSummary %>%
         rename(assay_component_endpoint_name=endPoint) %>%
         filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
         data.table()%>%
@@ -305,10 +306,17 @@ shinyServer(function(input, output) {
     })
     
     statsOfGroup <- reactive({
+      
       if(is.null(input$groupCol)){
         groupCol <- names(endPointInfo)[20]
       } else {
         groupCol <- input$groupCol
+      }
+      
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else {
+        siteToFind <- input$sites
       }
       
       chemGroup <- chemGroup()
@@ -317,41 +325,18 @@ shinyServer(function(input, output) {
         filter(site %in% siteToFind) %>%
         group_by(site,choices) %>%
         summarise(nChem = length(unique(chnm[EAR > 0.1])))
-      
-      if(input$sites == "All"){
+
+      statsOfGroup <-  chemGroup %>%
+        filter(site %in% siteToFind) %>%
+        group_by(site, date,choices) %>%
+        summarise(nChemWithHits = length(unique(chnm[EAR > 0.1]))) %>%
+        group_by(site,choices) %>%
+        summarise(maxChem = max(nChemWithHits),
+                  meanChem = mean(nChemWithHits)) %>%
+        data.frame()%>%
+        left_join(stats2, by=c("site","choices")) 
         
-        statsOfGroup <-  chemGroup %>%
-          group_by(site, date,choices) %>%
-          summarise(nChemWithHits = length(unique(chnm[EAR > 0.1]))) %>%
-          group_by(site,choices) %>%
-          summarise(maxChem = max(nChemWithHits),
-                    meanChem = mean(nChemWithHits)) %>%
-          data.frame()%>%
-          left_join(stats2, by=c("site","choices")) %>%
-          gather(calc, value, -site, -choices) %>%
-          unite(choice_calc, choices, calc, sep=" ") %>%
-          spread(choice_calc, value)
-        
-      } else {
-        
-        if(is.null(input$sites)){
-          siteToFind <- summaryFile$site
-        } else {
-          siteToFind <- input$sites
-        }
-        
-        statsOfGroup <-  chemGroup %>%
-          filter_(paste0("site == '", siteToFind, "'")) %>%
-          group_by(site, date,choices) %>%
-          summarise(nChemWithHits = length(unique(chnm[EAR > 0.1]))) %>%
-          group_by(site,choices) %>%
-          summarise(maxChem = max(nChemWithHits),
-                    meanChem = mean(nChemWithHits)) %>%
-          data.frame() %>%
-          left_join(stats2, by=c("site","choices")) %>%
-          select(-site)
-        
-      }
+
     })
     
     output$groupControl <- renderUI({
@@ -388,9 +373,9 @@ shinyServer(function(input, output) {
     
     output$table <- DT::renderDataTable({
       
-      if(input$sites == "All"){
-        statTable <- statsOfChem()
-        statsOfSumDF <- DT::datatable(statTable[,-4], 
+        statsOfChem <- statsOfChem()
+        statTable <- statsOfChem[,-4]
+        statsOfSumDF <- DT::datatable(statTable, 
                                       rownames = FALSE,
                                       colnames = c('Maximum EAR' = 3, 'Frequency of Hits' = 4,
                                                    'Mean EAR' = 2),
@@ -405,7 +390,7 @@ shinyServer(function(input, output) {
                       backgroundPosition = 'center'
           ) %>%
           formatStyle("Frequency of Hits", 
-                      background = styleColorBar(range(statTable[,5], na.rm=TRUE), 'wheat'),
+                      background = styleColorBar(range(statTable[,4], na.rm=TRUE), 'wheat'),
                       backgroundSize = '100% 90%',
                       backgroundRepeat = 'no-repeat',
                       backgroundPosition = 'center'
@@ -416,43 +401,25 @@ shinyServer(function(input, output) {
                       backgroundRepeat = 'no-repeat',
                       backgroundPosition = 'center'
           )
-      } else {
-        statTable <- statsOfChem()
-        statToPrint <- statTable[,-4]
-        statsOfSumDF <- DT::datatable(statToPrint, 
-                                      rownames = FALSE,
-                                      colnames = c('Chemical Name' = 1, 'Mean EAR' = 2,
-                                                   'Maximum EAR' = 3, 'Frequency of Hits' = 4),
-                                      filter = 'top',
-                                      options = list(pageLength = 10, 
-                                                     order=list(list(2,'desc')))) %>%
-          formatRound(c("Maximum EAR","Mean EAR","Frequency of Hits"), 2) %>%
-          formatStyle("Mean EAR", 
-                      background = styleColorBar(range(statToPrint[,2],na.rm=TRUE), 'goldenrod'),
-                      backgroundSize = '100% 90%',
-                      backgroundRepeat = 'no-repeat',
-                      backgroundPosition = 'center'
-          ) %>%
-          formatStyle("Maximum EAR", 
-                      background = styleColorBar(range(statToPrint[,3],na.rm=TRUE), 'wheat'),
-                      backgroundSize = '100% 90%',
-                      backgroundRepeat = 'no-repeat',
-                      backgroundPosition = 'center'
-          ) %>%
-          formatStyle("Frequency of Hits", 
-                      background = styleColorBar(range(statToPrint[,4],na.rm=TRUE), 'seashell'),
-                      backgroundSize = '100% 90%',
-                      backgroundRepeat = 'no-repeat',
-                      backgroundPosition = 'center'
-          )
-      }
+
     })
     
     output$tableGroupSumm <- DT::renderDataTable({
       
       statsOfGroup <- statsOfGroup() 
       
-      if(input$sites == "All"){
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else {
+        siteToFind <- input$sites
+      }
+      
+      if(length(siteToFind) > 1){
+        
+        statsOfGroup <- statsOfGroup %>%
+          gather(calc, value, -site, -choices) %>%
+          unite(choice_calc, choices, calc, sep=" ") %>%
+          spread(choice_calc, value)
         
         maxChem <- grep("maxChem",names(statsOfGroup))
         
@@ -508,7 +475,11 @@ shinyServer(function(input, output) {
                                     backgroundRepeat = 'no-repeat',
                                     backgroundPosition = 'center') 
         }
+        
       } else {
+        
+        statsOfGroup <- select(statsOfGroup, -site)
+        
         tableGroup <- DT::datatable(statsOfGroup, 
                                     rownames = FALSE,
                                     filter = 'top',
@@ -530,7 +501,7 @@ shinyServer(function(input, output) {
                                   backgroundPosition = 'center') 
         
         tableGroup <- formatStyle(tableGroup, 'Total Number of Chemicals with Hits', 
-                                  background = styleColorBar(range(statsOfGroup[,grep("sumChemWithHits",names(statsOfGroup))],na.rm=TRUE), 'seashell'),
+                                  background = styleColorBar(range(statsOfGroup[,grep("nChem",names(statsOfGroup))],na.rm=TRUE), 'seashell'),
                                   backgroundSize = '100% 90%',
                                   backgroundRepeat = 'no-repeat',
                                   backgroundPosition = 'center')
@@ -541,6 +512,7 @@ shinyServer(function(input, output) {
     })
     
     output$tableSumm <- DT::renderDataTable({
+      
       statCol <- statsOfColumn()
       
       freqCol <- grep("freq",names(statCol))
@@ -605,7 +577,7 @@ shinyServer(function(input, output) {
     topPlots <- reactive({
       chemGroup <- chemGroup()
       
-      if(is.null(input$sites)){
+      if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
       } else {
         siteToFind <- input$sites
@@ -636,7 +608,7 @@ shinyServer(function(input, output) {
       
       uniqueChms <- as.character(unique(chemGroupBP$chnm))
       
-      if(siteToFind == "All"){
+      if(length(siteToFind) > 1){
         
         sToxWS <- ggplot(chemGroupBP, aes(x=site, y=EAR, fill = chnm)) +
           geom_bar(stat="identity") +
