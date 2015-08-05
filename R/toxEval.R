@@ -25,6 +25,7 @@
 #' @importFrom dplyr rename
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
+#' @importFrom dplyr summarise
 #' @importFrom dplyr select
 #' @importFrom dplyr arrange
 #' @importFrom dplyr distinct
