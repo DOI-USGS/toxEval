@@ -24,7 +24,10 @@ shinyUI(
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
                  tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
-                        "ToxCast"))
+                        "ToxCast")),
+        radioButtons("radio", label = "",
+                     choices = list("Chemical" = 1, "Class" = 2), 
+                     selected = 1)
         ),
       column(8, 
              leaflet::leafletOutput("mymap")
@@ -42,9 +45,9 @@ shinyUI(
                              DT::dataTableOutput('tableSumm')),
                     tabPanel("Chemical Tally Summary",
                              htmlOutput("TableHeaderColumns2"),
-                             h4("maxChem = Maximum (chemicals with hits per sample)"),
-                             h4("meanChem = Mean (chemicals with hits per sample)"),
-                             h4("nChem = Number of individual chemicals that have >= 1 hit"),
+                             h4("maxChem = Maximum (chemicals/class with hits per sample)"),
+                             h4("meanChem = Mean (chemicals/class with hits per sample)"),
+                             h4("nChem = Number of individual chemicals/classes that have >= 1 hit"),
                              DT::dataTableOutput('tableGroupSumm')),
                     tabPanel("Visualizations",
                              h3("To Do"))
@@ -65,9 +68,11 @@ shinyUI(
                               plotOutput("stackBar"),
                               h3("All EARs"),
                               plotOutput("graph")
+                              
                             )
+                   )
                  )
-            )
+            
           )
         )
   )
