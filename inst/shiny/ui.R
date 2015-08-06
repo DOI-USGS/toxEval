@@ -43,9 +43,10 @@ shinyUI(
                 h2("Information about Annotations"),
                 tabsetPanel(
                   tabPanel("Visualizations",
-                           h3("Only shading EARs with hits (> 0.1)"),
+                           htmlOutput("BoxHeader2"),
+                           h4("Only shading EARs with hits (> 0.1)"),
                            plotOutput("stackBarGroup"),
-                           h3("All EARs"),
+                           h4("All EARs"),
                            plotOutput("graphGroup")),
                   tabPanel("EAR Tally Summary",
                              htmlOutput("TableHeaderColumns"),
@@ -68,9 +69,9 @@ shinyUI(
                  tabsetPanel(
                    tabPanel("Visualizations",
                             htmlOutput("BoxHeader"),
-                            h3("Only shading EARs with hits (> 0.1)"),
+                            h4("Only shading EARs with hits (> 0.1)"),
                             plotOutput("stackBar"),
-                            h3("All EARs"),
+                            h4("All EARs"),
                             plotOutput("graph")
                             
                    ),
