@@ -378,9 +378,9 @@ shinyServer(function(input, output) {
         
     output$table <- DT::renderDataTable({
 
-        chemSiteSumm <- groupSiteSumm()
+      statTable <- groupSiteSumm()
         
-        statTable <- chemSiteSumm %>%
+        statTable <- statTable %>%
           group_by(grouping) %>%
           summarise(meanEAR = mean(sumEAR),
                     maxEAR = max(sumEAR),
@@ -589,82 +589,17 @@ shinyServer(function(input, output) {
     output$stackBarGroup <- renderPlot({ 
       print(topPlotsGroup())
     })
-    
+
     output$stackBar <- renderPlot({ 
       print(topPlots())
     })
-    
+
     output$graph <- renderPlot({ 
       print(bottomPlots())
     })
     
     output$graphGroup <- renderPlot({ 
       print(bottomPlotsGroups())
-    })
-    
-    topPlots <- reactive({
-      
-      chemGroup <- chemGroup()
-      
-      if(is.null(input$sites) | input$sites == "All"){
-        siteToFind <- summaryFile$site
-      } else {
-        siteToFind <- input$sites
-      }
-      
-      if(is.null(input$group)){
-        group <- unique(endPointInfo[,20])[3]
-      } else {
-        group <- input$group
-      }
-
-      if(nrow(chemGroup) == 0){
-        chemGroup$site <- stationINFO$fullSiteID
-      }
-      
-      siteLimits <- stationINFO %>%
-        filter(shortName %in% unique(chemGroup$site))
-
-      chemGroupBP <- chemGroup %>%
-        filter(EAR >= 0.1) %>%
-        select(EAR, grouping, site, choices, date) %>%
-        data.frame() %>%
-        filter_(paste0("choices == '", group, "'")) %>%
-        select(-choices) %>%
-        mutate(grouping=factor(grouping, levels=unique(grouping))) %>%
-        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))%>%
-        arrange(grouping)
-      
-      uniqueChms <- as.character(unique(chemGroupBP$grouping))
-      
-      if(length(siteToFind) > 1){
-        
-        sToxWS <- ggplot(chemGroupBP, aes(x=site, y=EAR, fill = grouping)) +
-          geom_bar(stat="identity") +
-          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
-                                           colour=siteLimits$lakeColor)) +
-          scale_x_discrete(limits=siteLimits$Station.shortname) +
-          xlab("") +
-          scale_fill_discrete("")          
-        
-      } else {
-        
-        chemGroupBPOneSite <- chemGroupBP %>%
-          filter_(paste0("site == '", inputReturn$siteToFind, "'")) %>%
-          select(-site)  
-        
-        levels(chemGroupBPOneSite$grouping) <- uniqueChms
-        
-        sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = grouping)) +
-          geom_bar(stat="identity") +
-          theme(axis.text.x=element_blank(),
-                axis.ticks=element_blank())+
-          xlab("Individual Samples") + 
-          scale_fill_discrete(drop=FALSE) +
-          labs(fill="")
-      }
-      
-      sToxWS
     })
     
     bottomPlots <- reactive({
@@ -777,50 +712,80 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
-      chemGroupBP_group <- chemGroupBP_group()
+      if(is.null(input$radioMaxGroup)){
+        radioMaxGroup <- TRUE
+      } else {
+        radioMaxGroup <- input$radioMaxGroup
+      }
       
-      uniqueChoices <- as.character(unique(chemGroupBP_group$choices))
+      chemGroupBP_group <- chemGroupBP_group() 
+      
+      chemGroupBP_groupMax <- chemGroupBP_group %>%
+        group_by(site, choices) %>%
+        summarise(maxEAR = max(EAR),
+                  meanEAR = mean(EAR))
+      
+      uniqueChoices <- as.character(unique(chemGroupBP_groupMax$choices))
       
       siteLimits <- stationINFO %>%
         filter(shortName %in% unique(chemGroupBP_group$site)) 
-      
-#       if(input$data == "Water Sample"){
-#         siteLimits <- right_join(nSamplesWS, siteLimits, by=c("site" = "Station.shortname")) %>%
-#           mutate(site = paste0(site, " (",count,")"))
-#       }
-        
-      
+
       if(length(siteToFind) > 1){
         
-        sToxWS <- ggplot(chemGroupBP_group, aes(x=site, y=EAR, fill = choices)) +
-          geom_bar(stat="identity") +
-          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
-                                           colour=siteLimits$lakeColor)) +
-          scale_x_discrete(limits=siteLimits$Station.shortname) +
-          xlab("") +
-          scale_fill_discrete("")          
+        if(radioMaxGroup){
+          sToxWS <- ggplot(chemGroupBP_groupMax, aes(x=site, y=maxEAR, fill = choices)) +
+            geom_bar(stat="identity") +
+            theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
+                                             colour=siteLimits$lakeColor)) +
+            scale_x_discrete(limits=siteLimits$Station.shortname) +
+            xlab("") +
+            scale_fill_discrete("")             
+        } else {
+          sToxWS <- ggplot(chemGroupBP_groupMax, aes(x=site, y=meanEAR, fill = choices)) +
+            geom_bar(stat="identity") +
+            theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
+                                             colour=siteLimits$lakeColor)) +
+            scale_x_discrete(limits=siteLimits$Station.shortname) +
+            xlab("") +
+            scale_fill_discrete("")   
+        }
+       
         
       } else {
         
         chemGroupBPOneSite <- chemGroupBP_group %>%
+          group_by(site, date, choices) %>%
+          summarise(maxEAR = max(EAR),
+                    meanEAR = mean(EAR)) %>%
           filter_(paste0("site == '", siteToFind, "'")) %>%
           select(-site)  
         
         levels(chemGroupBPOneSite$choices) <- uniqueChoices
         
-        sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = choices)) +
-          geom_bar(stat="identity") +
-          theme(axis.text.x=element_blank(),
-                axis.ticks=element_blank())+
-          xlab("Individual Samples") + 
-          scale_fill_discrete(drop=FALSE) +
-          labs(fill="")
+        if(radioMaxGroup){
+          sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=maxEAR, fill = choices)) +
+            geom_bar(stat="identity") +
+            theme(axis.text.x=element_blank(),
+                  axis.ticks=element_blank())+
+            xlab("Individual Samples") + 
+            scale_fill_discrete(drop=FALSE) +
+            labs(fill="")
+        } else {
+          sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=meanEAR, fill = choices)) +
+            geom_bar(stat="identity") +
+            theme(axis.text.x=element_blank(),
+                  axis.ticks=element_blank())+
+            xlab("Individual Samples") + 
+            scale_fill_discrete(drop=FALSE) +
+            labs(fill="")          
+        }
       }
       
       sToxWS
     })
     
     topPlots <- reactive({
+      
       chemGroup <- chemGroup()
       
       if(is.null(input$sites) | input$sites == "All"){
@@ -839,46 +804,83 @@ shinyServer(function(input, output) {
         chemGroup$site <- stationINFO$fullSiteID
       }
       
+      if(is.null(input$radioMax)){
+        radioMax <- TRUE
+      } else {
+        radioMax <- input$radioMax
+      }
+      
       siteLimits <- stationINFO %>%
         filter(shortName %in% unique(chemGroup$site))
       
       chemGroupBP <- chemGroup %>%
-        filter(EAR >= 0.1) %>%
-        select(EAR, grouping, site, choices, date) %>%
-        data.frame() %>%
-        filter_(paste0("choices == '", group, "'")) %>%
-        select(-choices) %>%
-        mutate(grouping=factor(grouping, levels=unique(grouping))) %>%
-        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))%>%
-        arrange(grouping)
-      
-      uniqueChms <- as.character(unique(chemGroupBP$grouping))
+        filter_(paste0("choices == '", group, "'"))
       
       if(length(siteToFind) > 1){
         
-        sToxWS <- ggplot(chemGroupBP, aes(x=site, y=EAR, fill = grouping)) +
-          geom_bar(stat="identity") +
-          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
-                                           colour=siteLimits$lakeColor)) +
-          scale_x_discrete(limits=siteLimits$Station.shortname) +
-          xlab("") +
-          scale_fill_discrete("")          
+        filteredData <- chemGroupBP %>%
+          group_by(site,grouping) %>%
+          summarise(maxEAR=max(EAR),
+                    meanEAR=mean(EAR)) %>%
+          mutate(grouping=factor(grouping, levels=unique(grouping))) %>%
+          filter(maxEAR > 0.1) %>%
+          filter(site %in% siteToFind) 
+        
+        # uniqueChms <- as.character(unique(filteredData$grouping))
+
+        if(radioMax){
+          sToxWS <- ggplot(filteredData, aes(x=site, y=maxEAR, meanEAR, fill = grouping)) +
+                      geom_bar(stat="identity") +
+                      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
+                                                       colour=siteLimits$lakeColor)) +
+                      scale_x_discrete(limits=siteLimits$Station.shortname) +
+                      xlab("") +
+                      scale_fill_discrete("")          
+        } else {
+          sToxWS <- ggplot(filteredData, aes(x=site, y=meanEAR, meanEAR, fill = grouping)) +
+                      geom_bar(stat="identity") +
+                      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
+                                                       colour=siteLimits$lakeColor)) +
+                      scale_x_discrete(limits=siteLimits$Station.shortname) +
+                      xlab("") +
+                      scale_fill_discrete("")           
+        } 
         
       } else {
         
         chemGroupBPOneSite <- chemGroupBP %>%
-          filter_(paste0("site == '", siteToFind, "'")) %>%
-          select(-site)  
+          filter(site %in% siteToFind) %>%
+          data.frame() %>%
+          select(-site) %>%
+          group_by(date,grouping) %>%
+          summarise(maxEAR=max(EAR),
+                    meanEAR=mean(EAR)) %>%
+          data.frame() %>%
+          filter(maxEAR > 0.1) %>%
+          mutate(date = factor(as.numeric(date) - min(as.numeric(date))))%>%
+          arrange(grouping)
         
         levels(chemGroupBPOneSite$grouping) <- uniqueChms
         
-        sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = grouping)) +
-          geom_bar(stat="identity") +
-          theme(axis.text.x=element_blank(),
-                axis.ticks=element_blank())+
-          xlab("Individual Samples") + 
-          scale_fill_discrete(drop=FALSE) +
-          labs(fill="")
+        if(radioMax){
+          sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=maxEAR, fill = grouping)) +
+            geom_bar(stat="identity") +
+            theme(axis.text.x=element_blank(),
+                  axis.ticks=element_blank())+
+            xlab("Individual Samples") + 
+            scale_fill_discrete(drop=FALSE) +
+            labs(fill="")          
+        } else {
+          sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=meanEAR, fill = grouping)) +
+            geom_bar(stat="identity") +
+            theme(axis.text.x=element_blank(),
+                  axis.ticks=element_blank())+
+            xlab("Individual Samples") + 
+            scale_fill_discrete(drop=FALSE) +
+            labs(fill="")            
+        }
+        
+
       }
       
       sToxWS
@@ -1076,41 +1078,42 @@ shinyServer(function(input, output) {
     
     output$groupControl <- renderUI({
 
-      if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
-      } else {
-        groupCol <- input$groupCol
-      }
-      
-      statCol <- statsOfColumn()
-      
-      freqCol <- grep("freq",names(statCol))
-      maxEARS <- grep("maxEAR",names(statCol))
-      
-      statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-      
-      maxEARS <- grep("maxEAR",names(statCol))
-      
-      MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
-      
-      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-
-      
-      freqCol <- grep("freq",names(statCol))
-      maxEARS <- grep("maxEAR",names(statCol))
-      
-      namesToUse <- gsub("maxEAR","",names(statCol)[-1])
-      namesToUse <- gsub("freq","",namesToUse)
-      namesToUse <- unique(namesToUse)
-      namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
-
-
-      nEndPointsInChoice <- as.character(table(endPointInfo[,groupCol])[namesToUse])
-      dropDownHeader <- paste0(namesToUse," (",nEndPointsInChoice,")")
+#       if(is.null(input$groupCol)){
+#         groupCol <- names(endPointInfo)[20]
+#       } else {
+#         groupCol <- input$groupCol
+#       }
+#       
+#       statCol <- statsOfColumn()
+#       
+#       freqCol <- grep("freq",names(statCol))
+#       maxEARS <- grep("maxEAR",names(statCol))
+#       
+#       statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
+#       
+#       maxEARS <- grep("maxEAR",names(statCol))
+#       
+#       MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
+#       
+#       statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
+# 
+#       
+#       freqCol <- grep("freq",names(statCol))
+#       maxEARS <- grep("maxEAR",names(statCol))
+#       
+#       namesToUse <- gsub("maxEAR","",names(statCol)[-1])
+#       namesToUse <- gsub("freq","",namesToUse)
+#       namesToUse <- unique(namesToUse)
+#       namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
+# 
+# 
+      ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
+      nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
+      dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
       
       selectInput("group", label = "Group in annotation (# End Points)",
-                  choices = setNames(namesToUse,dropDownHeader),
-                  selected = unique(endPointInfo[,20])[3],
+                  choices = setNames(ChoicesInGroup,dropDownHeader),
+                  # selected = unique(endPointInfo[,20])[3],
                   multiple = FALSE)
     })
     
