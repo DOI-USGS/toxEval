@@ -351,12 +351,29 @@ shinyServer(function(input, output) {
     
     output$groupControl <- renderUI({
       
-      ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
-      nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
-      dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
+      if(is.null(input$groupCol)){
+        groupCol <- names(endPointInfo)[20]
+      } else {
+        groupCol <- input$groupCol
+      }
+      
+      statsOfGroup <- statsOfGroupOrdered()
+      
+      namesToUse <- gsub("maxChem","",names(statsOfGroup)[-1])
+      namesToUse <- gsub("meanChem","",namesToUse)
+      namesToUse <- gsub("nChem","",namesToUse)
+      namesToUse <- gsub("meanClass","",namesToUse)
+      namesToUse <- gsub("nClass","",namesToUse)
+      namesToUse <- gsub("maxClass","",namesToUse)
+      namesToUse <- unique(namesToUse)
+      namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
+      
+      # ChoicesInGroup <- names(table(endPointInfo[,groupCol]))
+      nEndPointsInChoice <- as.character(table(endPointInfo[,groupCol])[namesToUse])
+      dropDownHeader <- paste0(namesToUse," (",nEndPointsInChoice,")")
       
       selectInput("group", label = "Group in annotation (# End Points)",
-                  choices = setNames(ChoicesInGroup,dropDownHeader),
+                  choices = setNames(namesToUse,dropDownHeader),
                   selected = unique(endPointInfo[,20])[3],
                   multiple = FALSE)
     })
@@ -503,9 +520,7 @@ shinyServer(function(input, output) {
         } else {
           statsOfGroup <- statsOfGroup[,c(1,interl3(maxChem[MaxChemordered],(maxChem[MaxChemordered]+1),(maxChem[MaxChemordered]+2)))]
         }
-        
       }
-        
       statsOfGroup
         
     })       
