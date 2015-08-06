@@ -16,7 +16,7 @@ Package Installation
 To install the `toxEval` package you need to be using R 3.0 or greater. Then use the following command:
 
 ```R
-install.packages("toxEval", reposc("http://owi.usgs.gov/R",
+install.packages("toxEval", repos=c("http://owi.usgs.gov/R",
         "http://cran.us.r-project.org"))
 
 library(toxEval)
