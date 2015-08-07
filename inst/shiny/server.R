@@ -145,7 +145,7 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
-      if(radio == 2){
+      if(radio == "2"){
         chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
           mutate(grouping=class)
       } else {
@@ -220,9 +220,11 @@ shinyServer(function(input, output) {
       
       if(length(siteToFind) == 1){
  
-        statsOfColumn <- filter(statsOfColumn, site %in% siteToFind) 
+        statsOfColumn <- statsOfColumn %>%
+          # mutate(site=siteKey[site]) %>%
+          filter(site %in% siteToFind) 
         
-        if(radio == 2){
+        if(radio == "2"){
           statsOfColumn <- mutate(statsOfColumn, site = class) 
         } else {
           statsOfColumn <- mutate(statsOfColumn, site = chnm) 
@@ -247,6 +249,8 @@ shinyServer(function(input, output) {
           statsOfColumn <- left_join(summaryFile[,c("site","nSamples")], statsOfColumn, by="site")
         }
       }
+      
+      statsOfColumn
       
     })
     
@@ -276,7 +280,7 @@ shinyServer(function(input, output) {
         rename(endPoint=assay_component_endpoint_name) %>%
         select_("hits","EAR","chnm","class","site","date","choices"=groupCol)
       
-      if(radio == 2){
+      if(radio == "2"){
         chemGroup <- chemGroup %>%
           mutate(grouping=class)
       } else {
@@ -347,7 +351,10 @@ shinyServer(function(input, output) {
         } else {
           statsOfGroupOrdered <- statsOfGroupOrdered[,c(1,interl3(maxChem[MaxChemordered],(maxChem[MaxChemordered]+1),(maxChem[MaxChemordered]+2)))]
         }
+      } else {
+        statsOfGroupOrdered <- statsOfGroup
       }
+      
       statsOfGroupOrdered
         
     }) 
@@ -418,113 +425,113 @@ shinyServer(function(input, output) {
 
     output$tableGroupSumm <- DT::renderDataTable({        
 
-    statsOfGroupOrdered <- statsOfGroupOrdered()
-
-    if(is.null(input$sites) | input$sites == "All"){
-      siteToFind <- summaryFile$site
-    } else {
-      siteToFind <- input$sites
-    }
-    
-    if(is.null(input$radio)){
-      radio <- 1
-    } else {
-      radio <- input$radio
-    }
-    
-    if(length(siteToFind) > 1){
-      
-      if (input$data == "Water Sample"){
-        statsOfGroupOrdered <- left_join(summaryFile[,c("site","nSamples")], statsOfGroupOrdered, by="site")
+      statsOfGroupOrdered <- statsOfGroupOrdered()
+  
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else {
+        siteToFind <- input$sites
       }
       
-      meanChem <- grep("meanChem",names(statsOfGroupOrdered))
-      maxChem <- grep("maxChem",names(statsOfGroupOrdered))
-      nChem <- grep(" nChem",names(statsOfGroupOrdered))
-      
-      colors <- brewer.pal(length(maxChem),"Blues") #"RdYlBu"
-      
-      if(radio == 2){
-        names(statsOfGroupOrdered) <- gsub("Chem","Class",names(statsOfGroup))
+      if(is.null(input$radio)){
+        radio <- 1
+      } else {
+        radio <- input$radio
       }
       
-      tableGroup <- DT::datatable(statsOfGroupOrdered, 
-                                    rownames = FALSE,
-                                    filter = 'top',
-                                    options = list(pageLength = nrow(statsOfGroupOrdered), 
-                                                   order=list(list(2,'desc'))))
-        tableGroup <- formatRound(tableGroup, names(statsOfGroupOrdered)[grep("mean",names(statsOfGroupOrdered))], 2)
+      if(length(siteToFind) > 1){
         
+        if (input$data == "Water Sample"){
+          statsOfGroupOrdered <- left_join(summaryFile[,c("site","nSamples")], statsOfGroupOrdered, by="site")
+        }
         
-        for(i in 1:length(maxChem)){
-          tableGroup <- formatStyle(tableGroup, 
-                                    names(statsOfGroupOrdered)[maxChem[i]], 
-                                    backgroundColor = colors[i])
-          tableGroup <- formatStyle(tableGroup, 
-                                    names(statsOfGroupOrdered)[meanChem[i]], 
-                                    backgroundColor = colors[i])
-          tableGroup <- formatStyle(tableGroup, 
-                                    names(statsOfGroupOrdered)[nChem[i]], 
-                                    backgroundColor = colors[i])
+        meanChem <- grep("meanChem",names(statsOfGroupOrdered))
+        maxChem <- grep("maxChem",names(statsOfGroupOrdered))
+        nChem <- grep(" nChem",names(statsOfGroupOrdered))
+        
+        colors <- brewer.pal(length(maxChem),"Blues") #"RdYlBu"
+        
+        if(radio == "2"){
+          names(statsOfGroupOrdered) <- gsub("Chem","Class",names(statsOfGroup))
+        }
+        
+        tableGroup <- DT::datatable(statsOfGroupOrdered, 
+                                      rownames = FALSE,
+                                      filter = 'top',
+                                      options = list(pageLength = nrow(statsOfGroupOrdered), 
+                                                     order=list(list(2,'desc'))))
+          tableGroup <- formatRound(tableGroup, names(statsOfGroupOrdered)[grep("mean",names(statsOfGroupOrdered))], 2)
           
-          tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem[i]], 
-                                    background = styleColorBar(range(statsOfGroupOrdered[,maxChem[i]],na.rm=TRUE), 'goldenrod'),
+          
+          for(i in 1:length(maxChem)){
+            tableGroup <- formatStyle(tableGroup, 
+                                      names(statsOfGroupOrdered)[maxChem[i]], 
+                                      backgroundColor = colors[i])
+            tableGroup <- formatStyle(tableGroup, 
+                                      names(statsOfGroupOrdered)[meanChem[i]], 
+                                      backgroundColor = colors[i])
+            tableGroup <- formatStyle(tableGroup, 
+                                      names(statsOfGroupOrdered)[nChem[i]], 
+                                      backgroundColor = colors[i])
+            
+            tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem[i]], 
+                                      background = styleColorBar(range(statsOfGroupOrdered[,maxChem[i]],na.rm=TRUE), 'goldenrod'),
+                                      backgroundSize = '100% 90%',
+                                      backgroundRepeat = 'no-repeat',
+                                      backgroundPosition = 'center' ) 
+            
+            tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[meanChem[i]], 
+                                      background = styleColorBar(range(statsOfGroupOrdered[,meanChem[i]],na.rm=TRUE), 'wheat'),
+                                      backgroundSize = '100% 90%',
+                                      backgroundRepeat = 'no-repeat',
+                                      backgroundPosition = 'center') 
+            
+            tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[nChem[i]], 
+                                      background = styleColorBar(range(statsOfGroupOrdered[,nChem[i]],na.rm=TRUE), 'seashell'),
+                                      backgroundSize = '100% 90%',
+                                      backgroundRepeat = 'no-repeat',
+                                      backgroundPosition = 'center') 
+          }
+          
+        } else {
+          
+          statsOfGroupOrdered <- select(statsOfGroupOrdered, -site)
+          
+          if(radio == 1){
+            colNamesToUse <- c('Annotation' = 1, 'Maximum Number of Chemicals per Sample with Hits' = 2,
+                               'Mean Number of Chemicals per Sample with Hits' = 3, 'Total Number of Chemicals with Hits' = 4)
+          } else {
+            colNamesToUse <- c('Annotation' = 1, 'Maximum Number of Classes per Sample with Hits' = 2,
+                               'Mean Number of Classes per Sample with Hits' = 3, 'Total Number of Classes with Hits' = 4)
+          }
+          
+          tableGroup <- DT::datatable(statsOfGroupOrdered, 
+                                      rownames = FALSE,
+                                      filter = 'top',
+                                      colnames = colNamesToUse,
+                                      options = list(pageLength = nrow(statsOfGroupOrdered), 
+                                                     order=list(list(1,'desc'))))
+          tableGroup <- formatRound(tableGroup, names(colNamesToUse[3]), 2)
+          tableGroup <- formatStyle(tableGroup, names(colNamesToUse[2]), 
+                                    background = styleColorBar(range(statsOfGroupOrdered[,grep("maxChem",names(statsOfGroupOrdered))],na.rm=TRUE), 'goldenrod'),
                                     backgroundSize = '100% 90%',
                                     backgroundRepeat = 'no-repeat',
                                     backgroundPosition = 'center' ) 
           
-          tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[meanChem[i]], 
-                                    background = styleColorBar(range(statsOfGroupOrdered[,meanChem[i]],na.rm=TRUE), 'wheat'),
+          tableGroup <- formatStyle(tableGroup, names(colNamesToUse[3]), 
+                                    background = styleColorBar(range(statsOfGroupOrdered[,grep("meanChem",names(statsOfGroupOrdered))],na.rm=TRUE), 'wheat'),
                                     backgroundSize = '100% 90%',
                                     backgroundRepeat = 'no-repeat',
                                     backgroundPosition = 'center') 
           
-          tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[nChem[i]], 
-                                    background = styleColorBar(range(statsOfGroupOrdered[,nChem[i]],na.rm=TRUE), 'seashell'),
+          tableGroup <- formatStyle(tableGroup, names(colNamesToUse[4]), 
+                                    background = styleColorBar(range(statsOfGroupOrdered[,grep("nChem",names(statsOfGroupOrdered))],na.rm=TRUE), 'seashell'),
                                     backgroundSize = '100% 90%',
                                     backgroundRepeat = 'no-repeat',
-                                    backgroundPosition = 'center') 
+                                    backgroundPosition = 'center')
         }
         
-      } else {
-        
-        statsOfGroupOrdered <- select(statsOfGroupOrdered, -site, -nSamples)
-        
-        if(radio == 1){
-          colNamesToUse <- c('Annotation' = 1, 'Maximum Number of Chemicals per Sample with Hits' = 2,
-                             'Mean Number of Chemicals per Sample with Hits' = 3, 'Total Number of Chemicals with Hits' = 4)
-        } else {
-          colNamesToUse <- c('Annotation' = 1, 'Maximum Number of Classes per Sample with Hits' = 2,
-                             'Mean Number of Classes per Sample with Hits' = 3, 'Total Number of Classes with Hits' = 4)
-        }
-        
-        tableGroup <- DT::datatable(statsOfGroupOrdered, 
-                                    rownames = FALSE,
-                                    filter = 'top',
-                                    colnames = colNamesToUse,
-                                    options = list(pageLength = nrow(statsOfGroupOrdered), 
-                                                   order=list(list(1,'desc'))))
-        tableGroup <- formatRound(tableGroup, names(colNamesToUse[3]), 2)
-        tableGroup <- formatStyle(tableGroup, names(colNamesToUse[2]), 
-                                  background = styleColorBar(range(statsOfGroup[,grep("maxChem",names(statsOfGroup))],na.rm=TRUE), 'goldenrod'),
-                                  backgroundSize = '100% 90%',
-                                  backgroundRepeat = 'no-repeat',
-                                  backgroundPosition = 'center' ) 
-        
-        tableGroup <- formatStyle(tableGroup, names(colNamesToUse[3]), 
-                                  background = styleColorBar(range(statsOfGroup[,grep("meanChem",names(statsOfGroup))],na.rm=TRUE), 'wheat'),
-                                  backgroundSize = '100% 90%',
-                                  backgroundRepeat = 'no-repeat',
-                                  backgroundPosition = 'center') 
-        
-        tableGroup <- formatStyle(tableGroup, names(colNamesToUse[4]), 
-                                  background = styleColorBar(range(statsOfGroup[,grep("nChem",names(statsOfGroup))],na.rm=TRUE), 'seashell'),
-                                  backgroundSize = '100% 90%',
-                                  backgroundRepeat = 'no-repeat',
-                                  backgroundPosition = 'center')
-      }
-      
-      tableGroup
+        tableGroup
       
     })
     
@@ -535,17 +542,19 @@ shinyServer(function(input, output) {
       freqCol <- grep("freq",names(statCol))
       maxEARS <- grep("maxEAR",names(statCol))
       
-      statCol <- statCol[,c(1,2,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
+      ignoreIndex <- which(names(statCol) %in% c("site","nSamples"))
+      
+      statCol <- statCol[,c(ignoreIndex,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
       
       maxEARS <- grep("maxEAR",names(statCol))
       
-      MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
+      MaxEARSordered <- order(apply(statCol[,maxEARS, drop = FALSE], 2, max),decreasing = TRUE)
       
       if(length(maxEARS) > 9){
-        statCol <- statCol[,c(1,2,interl(maxEARS[MaxEARSordered[1:9]],(maxEARS[MaxEARSordered[1:9]]-1)))]
+        statCol <- statCol[,c(ignoreIndex,interl(maxEARS[MaxEARSordered[1:9]],(maxEARS[MaxEARSordered[1:9]]-1)))]
         maxEARS <- maxEARS[1:9]
       } else {
-        statCol <- statCol[,c(1,2,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
+        statCol <- statCol[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
       }
       
       freqCol <- grep("freq",names(statCol))
@@ -556,8 +565,9 @@ shinyServer(function(input, output) {
                                  rownames = FALSE,
                                  options = list(pageLength = nrow(statCol),
                                    order=list(list(2,'desc'))))
+
       
-      tableSumm <- formatRound(tableSumm, names(statCol)[-1:-2], 2) 
+      tableSumm <- formatRound(tableSumm, names(statCol)[-ignoreIndex], 2) 
       
       for(i in 1:length(maxEARS)){
         tableSumm <- formatStyle(tableSumm, 
@@ -609,17 +619,6 @@ shinyServer(function(input, output) {
       siteLimits <- stationINFO %>%
         filter(fullSiteID %in% unique(endpointSummary$site))
       
-      g <- ggplot_build(topPlots())
-      fillColors <- g$data[[1]]["fill"][[1]]
-      groupings <- g$plot$data$grouping
-      
-      dfNames <- data.frame(grouping = names(table(groupings)[table(groupings) != 0]),
-                            freq = as.numeric(table(groupings)[table(groupings) != 0]),stringsAsFactors = FALSE)
-      dfCol <- data.frame(colors = names(table(fillColors)), 
-                 freq = as.numeric(table(fillColors)),stringsAsFactors = FALSE)
-      
-      colorKey <- left_join(dfNames, dfCol, by="freq")
-
       if(input$sites == "All"){
         
         if(nrow(endpointSummary) == 0){
@@ -668,6 +667,17 @@ shinyServer(function(input, output) {
           xlab("") 
         
       } else {
+        
+        g <- ggplot_build(topPlots())
+        fillColors <- g$data[[1]]["fill"][[1]]
+        groupings <- g$plot$data$grouping
+        
+        dfNames <- data.frame(grouping = names(table(groupings)[table(groupings) != 0]),
+                              freq = as.numeric(table(groupings)[table(groupings) != 0]),stringsAsFactors = FALSE)
+        dfCol <- data.frame(colors = names(table(fillColors)), 
+                            freq = as.numeric(table(fillColors)),stringsAsFactors = FALSE)
+        
+        colorKey <- left_join(dfNames, dfCol, by="freq")
         
         chemSiteSumm <- groupSiteSumm() %>%
           mutate(sumEARnoZero = sumEAR) 
@@ -825,8 +835,6 @@ shinyServer(function(input, output) {
           mutate(grouping=factor(grouping, levels=unique(grouping))) %>%
           filter(maxEAR > 0.1) %>%
           filter(site %in% siteToFind) 
-        
-        # uniqueChms <- as.character(unique(filteredData$grouping))
 
         if(radioMax){
           sToxWS <- ggplot(filteredData, aes(x=site, y=maxEAR, meanEAR, fill = grouping)) +
@@ -859,6 +867,8 @@ shinyServer(function(input, output) {
           filter(maxEAR > 0.1) %>%
           mutate(date = factor(as.numeric(date) - min(as.numeric(date))))%>%
           arrange(grouping)
+        
+        uniqueChms <- as.character(unique(chemGroupBPOneSite$grouping))
         
         levels(chemGroupBPOneSite$grouping) <- uniqueChms
         
@@ -893,17 +903,6 @@ shinyServer(function(input, output) {
       } else {
         siteToFind <- input$sites
       }
-      
-      g <- ggplot_build(topPlotsGroup())
-      fillColors <- g$data[[1]]["fill"][[1]]
-      groupings <- g$plot$data$choices
-      
-      dfNames <- data.frame(grouping = names(table(groupings)[table(groupings) != 0]),
-                            freq = as.numeric(table(groupings)[table(groupings) != 0]),stringsAsFactors = FALSE)
-      dfCol <- data.frame(colors = names(table(fillColors)), 
-                          freq = as.numeric(table(fillColors)),stringsAsFactors = FALSE)
-      
-      colorKey <- left_join(dfNames, dfCol, by="freq")
       
       if(length(siteToFind) > 1){
         
@@ -958,6 +957,17 @@ shinyServer(function(input, output) {
           xlab("") 
         
       } else {
+        
+        g <- ggplot_build(topPlotsGroup())
+        fillColors <- g$data[[1]]["fill"][[1]]
+        groupings <- g$plot$data$choices
+        
+        dfNames <- data.frame(grouping = names(table(groupings)[table(groupings) != 0]),
+                              freq = as.numeric(table(groupings)[table(groupings) != 0]),stringsAsFactors = FALSE)
+        dfCol <- data.frame(colors = names(table(fillColors)), 
+                            freq = as.numeric(table(fillColors)),stringsAsFactors = FALSE)
+        
+        colorKey <- left_join(dfNames, dfCol, by="freq")
         
         chemGroupBP_group <- chemGroupBP_group()
         
@@ -1161,7 +1171,7 @@ shinyServer(function(input, output) {
         radio <- input$radio
       }
       
-      if(radio == 2){
+      if(radio == "2"){
         textUI <- "<h4>maxClass = Maximum (class with hits per sample)</h4>"         
       } else {
         textUI <- "<h4>maxChem = Maximum (chemicals with hits per sample)</h4>"     
@@ -1178,7 +1188,7 @@ shinyServer(function(input, output) {
         radio <- input$radio
       }
       
-      if(radio == 2){
+      if(radio == "2"){
         textUI <- "<h4>meanClass = Maximum (class with hits per sample)</h4>"         
       } else {
         textUI <- "<h4>meanChem = Maximum (chemicals with hits per sample)</h4>"     
@@ -1195,7 +1205,7 @@ shinyServer(function(input, output) {
         radio <- input$radio
       }
       
-      if(radio == 2){
+      if(radio == "2"){
         textUI <- "<h4>nClass = Maximum (class with hits per sample)</h4>"         
       } else {
         textUI <- "<h4>nChem = Maximum (chemicals with hits per sample)</h4>"     
