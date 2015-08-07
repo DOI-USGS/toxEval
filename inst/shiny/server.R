@@ -1088,43 +1088,50 @@ shinyServer(function(input, output) {
     
     output$groupControl <- renderUI({
 
-#       if(is.null(input$groupCol)){
-#         groupCol <- names(endPointInfo)[20]
-#       } else {
-#         groupCol <- input$groupCol
-#       }
-#       
-#       statCol <- statsOfColumn()
-#       
-#       freqCol <- grep("freq",names(statCol))
-#       maxEARS <- grep("maxEAR",names(statCol))
-#       
-#       statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-#       
-#       maxEARS <- grep("maxEAR",names(statCol))
-#       
-#       MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
-#       
-#       statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-# 
-#       
-#       freqCol <- grep("freq",names(statCol))
-#       maxEARS <- grep("maxEAR",names(statCol))
-#       
-#       namesToUse <- gsub("maxEAR","",names(statCol)[-1])
-#       namesToUse <- gsub("freq","",namesToUse)
-#       namesToUse <- unique(namesToUse)
-#       namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
-# 
-# 
-      ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
-      nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
-      dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
+      if(is.null(input$groupCol)){
+        groupCol <- names(endPointInfo)[20]
+      } else {
+        groupCol <- input$groupCol
+      }
+      
+      statCol <- statsOfColumn()
+      
+      freqCol <- grep("freq",names(statCol))
+      maxEARS <- grep("maxEAR",names(statCol))
+      
+      statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
+      
+      maxEARS <- grep("maxEAR",names(statCol))
+      
+      MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
+      
+      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
+
+      
+      freqCol <- grep("freq",names(statCol))
+      maxEARS <- grep("maxEAR",names(statCol))
+      
+      namesToUse <- gsub("maxEAR","",names(statCol)[-1])
+      namesToUse <- gsub("freq","",namesToUse)
+      namesToUse <- unique(namesToUse)
+      namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
+
+      nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol])[namesToUse])
+      dropDownHeader <- paste0(namesToUse," (",nEndPointsInChoice,")")
       
       selectInput("group", label = "Group in annotation (# End Points)",
-                  choices = setNames(ChoicesInGroup,dropDownHeader),
+                  choices = setNames(namesToUse,dropDownHeader),
                   # selected = unique(endPointInfo[,20])[3],
                   multiple = FALSE)
+      
+#       ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
+#       nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
+#       dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
+#       
+#       selectInput("group", label = "Group in annotation (# End Points)",
+#                   choices = setNames(ChoicesInGroup,dropDownHeader),
+#                   # selected = unique(endPointInfo[,20])[3],
+#                   multiple = FALSE)
     })
     
     output$TableHeader <- renderUI({
