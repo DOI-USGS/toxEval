@@ -9,6 +9,7 @@ shinyUI(
   fluidPage(
   
     fluidRow(
+      column(1),
       column(4,
         h1("toxEval"),
         selectInput("data", label = "Data", 
@@ -29,28 +30,38 @@ shinyUI(
                      choices = list("Chemical" = 1, "Class" = 2), 
                      selected = 1)
         ),
-      column(8, 
+      column(6, 
              leaflet::leafletOutput("mymap")
-      )),
+      ),
+      column(1)),
         
     fluidRow(
+      column(1),
+      column(10,
         tabsetPanel(
             tabPanel("Annotation Summary",
                 h2("Information about Annotations"),
                 tabsetPanel(
-                    tabPanel("EAR Tally Summary",
+                  tabPanel("Visualizations",
+                           htmlOutput("BoxHeader2"),
+                           h4("Only shading EARs with hits (> 0.1)"),
+                           radioButtons("radioMaxGroup", label = "",
+                                        choices = list("Max" = TRUE, "Mean" = FALSE), 
+                                        selected = 1),
+                           plotOutput("stackBarGroup"),
+                           h4("All EARs"),
+                           plotOutput("graphGroup")),
+                  tabPanel("EAR Tally Summary",
                              htmlOutput("TableHeaderColumns"),
                              h4("maxEAR = Maximum (summation of EARs per sample)"),
                              h4("freq = Fraction of samples with hits"),
                              DT::dataTableOutput('tableSumm')),
                     tabPanel("Chemical Tally Summary",
                              htmlOutput("TableHeaderColumns2"),
-                             h4("maxChem = Maximum (chemicals/class with hits per sample)"),
-                             h4("meanChem = Mean (chemicals/class with hits per sample)"),
-                             h4("nChem = Number of individual chemicals/classes that have >= 1 hit"),
-                             DT::dataTableOutput('tableGroupSumm')),
-                    tabPanel("Visualizations",
-                             h3("To Do"))
+                             htmlOutput("maxGroup"),
+                             htmlOutput("meanGroup"),
+                             htmlOutput("nGroup"),
+                             DT::dataTableOutput('tableGroupSumm'))
                   )
   
             ),
@@ -59,21 +70,28 @@ shinyUI(
                  h2("Information about Groups"),
                  uiOutput("groupControl"),
                  tabsetPanel(
+                   tabPanel("Visualizations",
+                            htmlOutput("BoxHeader"),
+                            h4("Only shading EARs with hits (> 0.1)"),
+                            radioButtons("radioMax", label = "",
+                                         choices = list("Max" = TRUE, "Mean" = FALSE), 
+                                         selected = 1),
+                            plotOutput("stackBar"),
+                            h4("All EARs"),
+                            plotOutput("graph")
+                            
+                   ),
                    tabPanel("Table",
                             htmlOutput("TableHeader"),
-                            DT::dataTableOutput('table')),
-                   tabPanel("Visualizations",
-                              htmlOutput("BoxHeader"),
-                              h3("Only shading EARs with hits (> 0.1)"),
-                              plotOutput("stackBar"),
-                              h3("All EARs"),
-                              plotOutput("graph")
-                              
-                            )
+                            DT::dataTableOutput('table'))
+
                    )
                  )
             
           )
-        )
+        ),
+      column(1)
+    )
+    
   )
 )
