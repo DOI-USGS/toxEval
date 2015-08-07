@@ -1038,7 +1038,7 @@ shinyServer(function(input, output) {
         sumStat$sumHits <- sumStat$nChem
       }
       
-      mapData <- right_join(stationINFO, sumStat, by=c("shortName"="site"))
+      mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
       # mapData <- mapData[!is.na(mapData$nChem),]
       
@@ -1046,13 +1046,8 @@ shinyServer(function(input, output) {
       leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
       
       cols <- colorNumeric(col_types, domain = leg_vals)
-      rad <- 1.5*seq(5000,25000, 500)
-      mapData$sizes <- rad[as.numeric(
-        cut(mapData$sumHits, 
-            c(-1,unique(as.numeric(
-              quantile(mapData$sumHits, probs=seq(.01,.99,length=length(rad)), na.rm=TRUE)
-            )),(max(mapData$sumHits,na.rm=TRUE)+1))
-        ))]
+      rad <- 1.5*seq(5000,20000, 1000)
+      mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
       pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
       
       if(input$sites != "All"){
@@ -1063,14 +1058,9 @@ shinyServer(function(input, output) {
         clearShapes() %>%
         clearControls() %>%
         addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
-                   popup=mapData$Station.Name
-                   #                    paste0('<b>',mapData$Station.Name,"</b><br/><table>",
-                   #                           "<tr><td>Frequency</td><td>",sprintf("%1.1f",mapData$freq),'</td></tr>',
-                   #                           "<tr><td>nSample</td><td>",mapData$nSamples,'</td></tr>',
-                   #                           "<tr><td>maxEAR</td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
-                   #                           "<tr><td>nChem</td><td>",mapData$nChem,'</td></tr>',
-                   #                           "<tr><td>nEndPoints</td><td>",mapData$nEndPoints,'</td></tr></table>')
-                   ,
+                   popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
+                                "<tr><td>maxEAR: </td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
+                                "<tr><td>nSamples: </td><td>",mapData$nSamples,'</td></tr></table>') ,
                    fillColor = ~pal(maxEAR), 
                    weight = 1,
                    color = "black",
@@ -1106,7 +1096,6 @@ shinyServer(function(input, output) {
       MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
       
       statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-
       
       freqCol <- grep("freq",names(statCol))
       maxEARS <- grep("maxEAR",names(statCol))
@@ -1121,17 +1110,8 @@ shinyServer(function(input, output) {
       
       selectInput("group", label = "Group in annotation (# End Points)",
                   choices = setNames(namesToUse,dropDownHeader),
-                  # selected = unique(endPointInfo[,20])[3],
                   multiple = FALSE)
-      
-#       ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
-#       nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
-#       dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
-#       
-#       selectInput("group", label = "Group in annotation (# End Points)",
-#                   choices = setNames(ChoicesInGroup,dropDownHeader),
-#                   # selected = unique(endPointInfo[,20])[3],
-#                   multiple = FALSE)
+
     })
     
     output$TableHeader <- renderUI({

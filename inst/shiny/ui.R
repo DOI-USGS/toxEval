@@ -31,7 +31,8 @@ shinyUI(
                      selected = 1)
         ),
       column(6, 
-             leaflet::leafletOutput("mymap")
+             leaflet::leafletOutput("mymap"),
+             h5("Size range represents number of collected samples from 1-64")
       ),
       column(1)),
         
