@@ -26,12 +26,13 @@ shinyUI(
                  tags$p("For annotation information, see: "),
                  tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
                         "ToxCast")),
-        radioButtons("radio", label = "",
+        radioButtons("radio", label = "", inline = TRUE,
                      choices = list("Chemical" = 1, "Class" = 2), 
                      selected = 1)
         ),
       column(6, 
-             leaflet::leafletOutput("mymap")
+             leaflet::leafletOutput("mymap"),
+             h5("Size range represents number of collected samples from 1-64")
       ),
       column(1)),
         
@@ -45,7 +46,7 @@ shinyUI(
                   tabPanel("Visualizations",
                            htmlOutput("BoxHeader2"),
                            h4("Only shading EARs with hits (> 0.1)"),
-                           radioButtons("radioMaxGroup", label = "",
+                           radioButtons("radioMaxGroup", label = "",inline = TRUE,
                                         choices = list("Max" = TRUE, "Mean" = FALSE), 
                                         selected = 1),
                            plotOutput("stackBarGroup"),
@@ -73,7 +74,7 @@ shinyUI(
                    tabPanel("Visualizations",
                             htmlOutput("BoxHeader"),
                             h4("Only shading EARs with hits (> 0.1)"),
-                            radioButtons("radioMax", label = "",
+                            radioButtons("radioMax", label = "",inline = TRUE,
                                          choices = list("Max" = TRUE, "Mean" = FALSE), 
                                          selected = 1),
                             plotOutput("stackBar"),
