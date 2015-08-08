@@ -215,6 +215,8 @@ shinyServer(function(input, output) {
       
       if(length(siteToFind) > 1){
         if (input$data == "Water Sample"){
+          summaryFile <- filter(summaryFile, site %in% siteToFind)
+          
           statsOfColumn <- left_join(summaryFile[,c("site","nSamples")], statsOfColumn, by="site")
         }
       }
@@ -310,6 +312,9 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
+      statsOfGroup <- statsOfGroup %>%
+        filter(site %in% siteToFind)
+      
       if(length(siteToFind) > 1){
         
         statsOfGroupOrdered <- statsOfGroup %>%
@@ -340,16 +345,8 @@ shinyServer(function(input, output) {
     
     chemGroupBP_group <- reactive({
       
-      if(is.null(input$sites) | input$sites == "All"){
-        siteToFind <- summaryFile$site
-      } else if (input$sites == "Potential 2016"){
-        siteToFind <- df2016$Site
-      } else {
-        siteToFind <- input$sites
-      }
-      
       if(is.null(input$radioMaxGroup)){
-        radioMaxGroup <- 1
+        radioMaxGroup <- "1"
       } else {
         radioMaxGroup <- input$radioMaxGroup
       }
@@ -360,9 +357,9 @@ shinyServer(function(input, output) {
         # data.frame() %>%
         mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
       
-      if(radioMaxGroup == 1){
+      if(radioMaxGroup == "1"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=choices)
-      } else if (radioMaxGroup == 2){
+      } else if (radioMaxGroup == "2"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=chnm)
       } else {
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
@@ -373,14 +370,6 @@ shinyServer(function(input, output) {
     })
     
     chemGroupBP <- reactive({
-      
-      if(is.null(input$sites) | input$sites == "All"){
-        siteToFind <- summaryFile$site
-      } else if (input$sites == "Potential 2016"){
-        siteToFind <- df2016$Site
-      } else {
-        siteToFind <- input$sites
-      }
       
       if(is.null(input$radio)){
         radioMaxGroup <- "1"
@@ -445,8 +434,7 @@ shinyServer(function(input, output) {
       }
       
       statTable <- chemicalSummaryFiltered %>%
-        filter_(paste0(groupCol," == '", group, "'")) %>%
-        filter(site %in% siteToFind) %>%
+        filter_(paste0(groupCol," == '", group, "'")) 
         mutate(site = siteKey[site]) %>%
         filter(site %in% siteToFind) %>%
         group_by(grouping, date) %>%
@@ -499,10 +487,15 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
 
+      statsOfGroupOrdered <- statsOfGroupOrdered %>%
+        filter(site %in% siteToFind)
       
       if(length(siteToFind) > 1){
         
         if (input$data == "Water Sample"){
+          
+          summaryFile <- filter(summaryFile, site %in% siteToFind)
+          
           statsOfGroupOrdered <- left_join(summaryFile[,c("site","nSamples")], statsOfGroupOrdered, by="site")
         }
         
@@ -799,6 +792,12 @@ shinyServer(function(input, output) {
       } else {
         siteToFind <- input$sites
       }
+      
+      if(is.null(input$radioMaxGroup)){
+        radio <- "2"
+      } else {
+        radio <- input$radioMaxGroup
+      }
 
       chemGroupBP_group <- chemGroupBP_group()
       
@@ -825,7 +824,11 @@ shinyServer(function(input, output) {
                                              colour=siteLimits$lakeColor)) +
             scale_x_discrete(limits=siteLimits$Station.shortname) +
             xlab("") +
-            scale_fill_discrete("")             
+            scale_fill_discrete("")  
+          
+          if(radio == "2"){
+            sToxWS <- sToxWS + guides(fill=FALSE) 
+          }
         
       } else {
         
@@ -842,6 +845,10 @@ shinyServer(function(input, output) {
           xlab("Individual Samples") + 
           scale_fill_discrete(drop=FALSE) +
           labs(fill="")
+        
+        if(radio == "2"){
+          sToxWS <- sToxWS + guides(fill=FALSE) 
+        }
 
       }
       
@@ -857,12 +864,19 @@ shinyServer(function(input, output) {
       } else {
         group <- input$group
       }
+      
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
+      }
+      
+      if(is.null(input$radio)){
+        radio <- "2"
+      } else {
+        radio <- input$radio
       }
       
       chemGroupBP <- chemGroupBP()
@@ -893,6 +907,9 @@ shinyServer(function(input, output) {
           scale_x_discrete(limits=siteLimits$Station.shortname) +
           xlab("") +
           scale_fill_discrete("")             
+          if(radio == "1"){
+            sToxWS <- sToxWS + guides(fill=FALSE) 
+          }
         
       } else {
         
@@ -910,6 +927,9 @@ shinyServer(function(input, output) {
           scale_fill_discrete(drop=FALSE) +
           labs(fill="")
         
+          if(radio == "1"){
+            sToxWS <- sToxWS + guides(fill=FALSE) 
+          }       
       }
       
       sToxWS
@@ -997,10 +1017,6 @@ shinyServer(function(input, output) {
       rad <- 1.5*seq(5000,20000, 1000)
       mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
       pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
-      
-#       if(input$sites != "All" | ){
-#         mapData <- mapData[mapData$shortName == input$sites,]
-#       }
       
       leafletProxy("mymap", data=mapData) %>%
         clearShapes() %>%
