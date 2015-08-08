@@ -17,7 +17,7 @@ shinyUI(
                                      "Passive Samples"),
                          selected = "Water Sample + ToxCast", multiple = FALSE),
         selectInput("sites", label = "Site", 
-                                      choices = c("All",summaryFile$site),
+                                      choices = c("All","Potential 2016",summaryFile$site),
                                       selected = "All", multiple = FALSE),
         selectInput("groupCol", label = "Annotation (# choices)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
@@ -25,10 +25,7 @@ shinyUI(
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
                  tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
-                        "ToxCast")),
-        radioButtons("radio", label = "", inline = TRUE,
-                     choices = list("Chemical" = 1, "Class" = 2), 
-                     selected = 1)
+                        "ToxCast"))
         ),
       column(6, 
              leaflet::leafletOutput("mymap"),
@@ -41,44 +38,37 @@ shinyUI(
       column(10,
         tabsetPanel(
             tabPanel("Annotation Summary",
-                h2("Information about Annotations"),
+                htmlOutput("TableHeaderColumns"),
+                radioButtons("radioMaxGroup", label = "",inline = TRUE,
+                                  choices = list("Choice" = 1, "Chemical" = 2, "Class" = 3), 
+                                  selected = 1),
                 tabsetPanel(
                   tabPanel("Visualizations",
-                           htmlOutput("BoxHeader2"),
-                           h4("Only shading EARs with hits (> 0.1)"),
-                           radioButtons("radioMaxGroup", label = "",inline = TRUE,
-                                        choices = list("Max" = TRUE, "Mean" = FALSE), 
-                                        selected = 1),
                            plotOutput("stackBarGroup"),
                            h4("All EARs"),
                            plotOutput("graphGroup")),
-                  tabPanel("EAR Tally Summary",
-                             htmlOutput("TableHeaderColumns"),
-                             h4("maxEAR = Maximum (summation of EARs per sample)"),
-                             h4("freq = Fraction of samples with hits"),
-                             DT::dataTableOutput('tableSumm')),
-                    tabPanel("Chemical Tally Summary",
-                             htmlOutput("TableHeaderColumns2"),
-                             htmlOutput("maxGroup"),
-                             htmlOutput("meanGroup"),
-                             htmlOutput("nGroup"),
-                             DT::dataTableOutput('tableGroupSumm'))
+                  tabPanel("EAR Summary",
+                           h5("maxEAR = Maximum summation of EARs per sample"),
+                           h5("freq = Fraction of samples with hits"),
+                          DT::dataTableOutput('tableSumm')),
+                  tabPanel("Chemical Summary",
+                           htmlOutput("nGroup"),
+                           DT::dataTableOutput('tableGroupSumm'))
                   )
-  
             ),
-            
             tabPanel("Group Summary",
-                 h2("Information about Groups"),
-                 uiOutput("groupControl"),
+                 fluidRow(
+                   column(5,uiOutput("groupControl")),
+                   column(5,radioButtons("radio", label = "", inline = TRUE,
+                                       choices = list("Chemical" = 1, "Class" = 2), 
+                                       selected = 1))
+                 ),
                  tabsetPanel(
                    tabPanel("Visualizations",
                             htmlOutput("BoxHeader"),
-                            h4("Only shading EARs with hits (> 0.1)"),
-                            radioButtons("radioMax", label = "",inline = TRUE,
-                                         choices = list("Max" = TRUE, "Mean" = FALSE), 
-                                         selected = 1),
+                            h5("Only shading EARs with hits (> 0.1)"),
                             plotOutput("stackBar"),
-                            h4("All EARs"),
+                            h5("All EARs"),
                             plotOutput("graph")
                             
                    ),
