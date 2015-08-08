@@ -39,6 +39,7 @@ endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
 chemicalSummaryWS <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
 chemicalSummaryPS <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
 chemicalSummaryPS$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummaryPS))
+df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
@@ -72,9 +73,15 @@ shinyServer(function(input, output) {
         chemicalSummary <- rbind(chemicalSummaryWS, chemicalSummaryPS)
       }
       
-      chemicalSummary$grouping <- chemicalSummary$chnm
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
+      } else {
+        siteToFind <- input$sites
+      }
       
-      chemicalSummary
+      chemicalSummary 
       
     })
   
@@ -146,6 +153,8 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -169,7 +178,8 @@ shinyServer(function(input, output) {
         left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
         data.frame() %>%
         mutate(site = siteKey[site]) %>%
-        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site")
+        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site") %>%
+        filter(site %in% siteToFind)
       
       if(length(siteToFind) == 1){
  
@@ -245,12 +255,14 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+          siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
       
       if(is.null(input$radioMaxGroup)){
-        radioMaxGroup <- 1
+        radioMaxGroup <- "1"
       } else {
         radioMaxGroup <- input$radioMaxGroup
       }
@@ -292,6 +304,8 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -328,6 +342,8 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -356,6 +372,38 @@ shinyServer(function(input, output) {
       
     })
     
+    chemGroupBP <- reactive({
+      
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
+      } else {
+        siteToFind <- input$sites
+      }
+      
+      if(is.null(input$radio)){
+        radioMaxGroup <- "1"
+      } else {
+        radioMaxGroup <- input$radio
+      }
+      
+      chemGroup <- chemGroup()
+      
+      chemGroupBP <- chemGroup %>%
+        # data.frame() %>%
+        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
+      
+      if(radioMaxGroup == "2"){
+        chemGroupBP <- mutate(chemGroupBP, cat=class)
+      } else {
+        chemGroupBP <- mutate(chemGroupBP, cat=chnm)
+      } 
+      
+      chemGroupBP     
+      
+    })
+    
 ############################################################# 
         
     output$table <- DT::renderDataTable({
@@ -380,6 +428,8 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -396,6 +446,7 @@ shinyServer(function(input, output) {
       
       statTable <- chemicalSummaryFiltered %>%
         filter_(paste0(groupCol," == '", group, "'")) %>%
+        filter(site %in% siteToFind) %>%
         mutate(site = siteKey[site]) %>%
         filter(site %in% siteToFind) %>%
         group_by(grouping, date) %>%
@@ -442,6 +493,8 @@ shinyServer(function(input, output) {
   
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -607,6 +660,8 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -620,7 +675,9 @@ shinyServer(function(input, output) {
       if(length(siteToFind) > 1){
         
         endpointSummary <- endpointSummary()
+        
         siteLimits <- stationINFO %>%
+          filter(shortName %in% siteToFind) %>%
           filter(fullSiteID %in% unique(endpointSummary$site))
         
         if(nrow(endpointSummary) == 0){
@@ -628,6 +685,7 @@ shinyServer(function(input, output) {
         }
         
         endPointSummBP <- endpointSummary %>%
+          filter(site %in% siteToFind) %>%
           data.frame()%>%
           mutate(lake = as.character(lakeKey[site])) %>%
           mutate(lake = factor(lake, levels=c("Lake Superior","Lake Michigan",
@@ -736,16 +794,19 @@ shinyServer(function(input, output) {
   
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
-      
+
       chemGroupBP_group <- chemGroupBP_group()
       
       chemGroupBP_group <- chemGroupBP_group %>%
         group_by(site, date, cat) %>%
         summarise(sumEAR = sum(EAR)) %>%
-        mutate(grouping=factor(cat, levels=unique(cat)))   
+        mutate(grouping=factor(cat, levels=unique(cat))) %>%  
+        filter(site %in% siteToFind) 
       
       uniqueChoices <- as.character(unique(chemGroupBP_group$cat))
       
@@ -769,7 +830,6 @@ shinyServer(function(input, output) {
       } else {
         
         chemGroupBPOneSite <- chemGroupBP_group %>%
-          filter_(paste0("site == '", siteToFind, "'")) %>%
           select(-site)  
         
         levels(chemGroupBPOneSite$cat) <- uniqueChoices
@@ -791,100 +851,65 @@ shinyServer(function(input, output) {
     topPlots <- reactive({
       
       chemGroup <- chemGroup()
-      
-      if(is.null(input$sites) | input$sites == "All"){
-        siteToFind <- summaryFile$site
-      } else {
-        siteToFind <- input$sites
-      }
-      
+
       if(is.null(input$group)){
         group <- unique(endPointInfo[,20])[3]
       } else {
         group <- input$group
       }
-      
-      if(nrow(chemGroup) == 0){
-        chemGroup$site <- stationINFO$fullSiteID
-      }
-      
-      if(is.null(input$radioMax)){
-        radioMax <- TRUE
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
-        radioMax <- input$radioMax
+        siteToFind <- input$sites
       }
+      
+      chemGroupBP <- chemGroupBP()
+      
+      chemGroupBP_group <- chemGroupBP %>%
+        filter(choices %in% group) %>%
+        group_by(site, date, cat) %>%
+        summarise(sumEAR = sum(EAR)) %>%
+        mutate(grouping=factor(cat, levels=unique(cat))) %>%
+        filter(site %in% siteToFind)
+      
+      uniqueChoices <- as.character(unique(chemGroupBP_group$cat))
       
       siteLimits <- stationINFO %>%
-        filter(shortName %in% unique(chemGroup$site))
-      
-      chemGroupBP <- chemGroup %>%
-        filter_(paste0("choices == '", group, "'"))
+        filter(shortName %in% unique(chemGroupBP_group$site))
       
       if(length(siteToFind) > 1){
         
-        filteredData <- chemGroupBP %>%
-          group_by(site,grouping) %>%
-          summarise(maxEAR=max(EAR),
-                    meanEAR=mean(EAR)) %>%
-          mutate(grouping=factor(grouping, levels=unique(grouping))) %>%
-          filter(maxEAR > 0.1) %>%
-          filter(site %in% siteToFind) 
-
-        if(radioMax){
-          sToxWS <- ggplot(filteredData, aes(x=site, y=maxEAR, meanEAR, fill = grouping)) +
-                      geom_bar(stat="identity") +
-                      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
-                                                       colour=siteLimits$lakeColor)) +
-                      scale_x_discrete(limits=siteLimits$Station.shortname) +
-                      xlab("") +
-                      scale_fill_discrete("")          
-        } else {
-          sToxWS <- ggplot(filteredData, aes(x=site, y=meanEAR, meanEAR, fill = grouping)) +
-                      geom_bar(stat="identity") +
-                      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
-                                                       colour=siteLimits$lakeColor)) +
-                      scale_x_discrete(limits=siteLimits$Station.shortname) +
-                      xlab("") +
-                      scale_fill_discrete("")           
-        } 
+        chemGroupBPAllSite <- chemGroupBP_group %>%
+          group_by(site, cat) %>%
+          summarise(maxEAR=max(sumEAR)) %>%
+          filter(site %in% siteToFind)
+        
+        sToxWS <- ggplot(chemGroupBPAllSite, aes(x=site, y=maxEAR, fill = cat)) +
+          geom_bar(stat="identity") +
+          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
+                                           colour=siteLimits$lakeColor)) +
+          scale_x_discrete(limits=siteLimits$Station.shortname) +
+          xlab("") +
+          scale_fill_discrete("")             
         
       } else {
         
-        chemGroupBPOneSite <- chemGroupBP %>%
-          filter(site %in% siteToFind) %>%
-          data.frame() %>%
-          select(-site) %>%
-          group_by(date,grouping) %>%
-          summarise(maxEAR=max(EAR),
-                    meanEAR=mean(EAR)) %>%
-          data.frame() %>%
-          filter(maxEAR > 0.1) %>%
-          mutate(date = factor(as.numeric(date) - min(as.numeric(date))))%>%
-          arrange(grouping)
+        chemGroupBPOneSite <- chemGroupBP_group %>%
+          select(-site)  
         
-        uniqueChms <- as.character(unique(chemGroupBPOneSite$grouping))
+        levels(chemGroupBPOneSite$cat) <- uniqueChoices
         
-        levels(chemGroupBPOneSite$grouping) <- uniqueChms
         
-        if(radioMax){
-          sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=maxEAR, fill = grouping)) +
-            geom_bar(stat="identity") +
-            theme(axis.text.x=element_blank(),
-                  axis.ticks=element_blank())+
-            xlab("Individual Samples") + 
-            scale_fill_discrete(drop=FALSE) +
-            labs(fill="")          
-        } else {
-          sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=meanEAR, fill = grouping)) +
-            geom_bar(stat="identity") +
-            theme(axis.text.x=element_blank(),
-                  axis.ticks=element_blank())+
-            xlab("Individual Samples") + 
-            scale_fill_discrete(drop=FALSE) +
-            labs(fill="")            
-        }
+        sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=sumEAR, fill = cat)) +
+          geom_bar(stat="identity") +
+          theme(axis.text.x=element_blank(),
+                axis.ticks=element_blank())+
+          xlab("Individual Samples") + 
+          scale_fill_discrete(drop=FALSE) +
+          labs(fill="")
         
-
       }
       
       sToxWS
@@ -894,6 +919,8 @@ shinyServer(function(input, output) {
       
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
       } else {
         siteToFind <- input$sites
       }
@@ -933,6 +960,14 @@ shinyServer(function(input, output) {
     
     observe({
       
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
+      } else {
+        siteToFind <- input$sites
+      }
+      
       endpointSummary <- endpointSummary()
       
       sumStat <- endpointSummary %>%
@@ -943,7 +978,8 @@ shinyServer(function(input, output) {
                   sumHits = sum(nHits),
                   nSamples = n()) %>%
         data.frame()%>%
-        mutate(site = siteKey[site])
+        mutate(site = siteKey[site]) %>%
+        filter(site %in% siteToFind)
 
       if(nrow(sumStat) == 0){
         sumStat <- summaryFile
@@ -962,9 +998,9 @@ shinyServer(function(input, output) {
       mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
       pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
       
-      if(input$sites != "All"){
-        mapData <- mapData[mapData$shortName == input$sites,]
-      }
+#       if(input$sites != "All" | ){
+#         mapData <- mapData[mapData$shortName == input$sites,]
+#       }
       
       leafletProxy("mymap", data=mapData) %>%
         clearShapes() %>%
@@ -990,38 +1026,42 @@ shinyServer(function(input, output) {
     
     output$groupControl <- renderUI({
 
-      if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
-      } else {
-        groupCol <- input$groupCol
-      }
+#       if(is.null(input$groupCol)){
+#         groupCol <- names(endPointInfo)[20]
+#       } else {
+#         groupCol <- input$groupCol
+#       }
+#       
+#       statCol <- statsOfColumn()
+#       
+#       freqCol <- grep("freq",names(statCol))
+#       maxEARS <- grep("maxEAR",names(statCol))
+#       
+#       statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
+#       
+#       maxEARS <- grep("maxEAR",names(statCol))
+#       
+#       MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
+#       
+#       statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
+#       
+#       freqCol <- grep("freq",names(statCol))
+#       maxEARS <- grep("maxEAR",names(statCol))
+#       
+#       namesToUse <- gsub("maxEAR","",names(statCol)[-1])
+#       namesToUse <- gsub("freq","",namesToUse)
+#       namesToUse <- unique(namesToUse)
+#       namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
+# 
+#       nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol])[namesToUse])
+#       dropDownHeader <- paste0(namesToUse," (",nEndPointsInChoice,")")
       
-      statCol <- statsOfColumn()
-      
-      freqCol <- grep("freq",names(statCol))
-      maxEARS <- grep("maxEAR",names(statCol))
-      
-      statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-      
-      maxEARS <- grep("maxEAR",names(statCol))
-      
-      MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
-      
-      statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-      
-      freqCol <- grep("freq",names(statCol))
-      maxEARS <- grep("maxEAR",names(statCol))
-      
-      namesToUse <- gsub("maxEAR","",names(statCol)[-1])
-      namesToUse <- gsub("freq","",namesToUse)
-      namesToUse <- unique(namesToUse)
-      namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
-
-      nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol])[namesToUse])
-      dropDownHeader <- paste0(namesToUse," (",nEndPointsInChoice,")")
+      ChoicesInGroup <- names(table(endPointInfo[,input$groupCol]))
+      nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol]))
+      dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
       
       selectInput("group", label = "Group in annotation (# End Points)",
-                  choices = setNames(namesToUse,dropDownHeader),
+                  choices = setNames(ChoicesInGroup,dropDownHeader),
                   multiple = FALSE)
 
     })

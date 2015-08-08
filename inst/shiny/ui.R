@@ -17,7 +17,7 @@ shinyUI(
                                      "Passive Samples"),
                          selected = "Water Sample + ToxCast", multiple = FALSE),
         selectInput("sites", label = "Site", 
-                                      choices = c("All",summaryFile$site),
+                                      choices = c("All","Potential 2016",summaryFile$site),
                                       selected = "All", multiple = FALSE),
         selectInput("groupCol", label = "Annotation (# choices)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
