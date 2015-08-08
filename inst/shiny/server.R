@@ -1058,8 +1058,7 @@ shinyServer(function(input, output) {
                   sumHits = sum(nHits),
                   nSamples = n()) %>%
         data.frame()%>%
-        mutate(site = siteKey[site]) %>%
-        filter(site %in% siteToFind)
+        mutate(site = siteKey[site]) 
 
       if(nrow(sumStat) == 0){
         sumStat <- summaryFile
@@ -1077,6 +1076,9 @@ shinyServer(function(input, output) {
       rad <- 1.5*seq(5000,20000, 1000)
       mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
       pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+      
+      mapData <- mapData %>%
+        filter(shortName %in% siteToFind)
       
       leafletProxy("mymap", data=mapData) %>%
         clearShapes() %>%
