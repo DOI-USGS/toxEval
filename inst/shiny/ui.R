@@ -29,7 +29,7 @@ shinyUI(
         ),
       column(6, 
              leaflet::leafletOutput("mymap"),
-             h5("Size range represents number of collected samples from 1-64")
+             htmlOutput("mapFooter")
       ),
       column(1)),
         
@@ -66,7 +66,6 @@ shinyUI(
                  tabsetPanel(
                    tabPanel("Visualizations",
                             htmlOutput("BoxHeader"),
-                            h5("Only shading EARs with hits (> 0.1)"),
                             plotOutput("stackBar"),
                             h5("All EARs"),
                             plotOutput("graph")
