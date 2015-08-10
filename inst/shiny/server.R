@@ -647,10 +647,10 @@ shinyServer(function(input, output) {
       
       sToxWS <- ggplot(boxData) 
       
-      if(!is.null(input$data) && input$data != "Passive Samples"){
-        sToxWS <- sToxWS + geom_boxplot(aes(x=cat, y=EAR, fill=cat))
-      } else {
+      if(!is.null(input$data) && (input$data == "Passive Samples" & length(siteToFind) == 1)){
         sToxWS <- sToxWS + geom_point(aes(x=cat, y=EAR, color=cat))
+      } else {
+        sToxWS <- sToxWS + geom_boxplot(aes(x=cat, y=EAR, fill=cat))
       }
       
       sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
@@ -759,7 +759,6 @@ shinyServer(function(input, output) {
         radio <- input$radio
       }
       
-      
       chemGroupBP <- chemGroup %>%
         mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
       
@@ -806,7 +805,6 @@ shinyServer(function(input, output) {
         
         levels(chemGroupBPOneSite$cat) <- uniqueChoices
         
-        
         sToxWS <- ggplot(chemGroupBPOneSite, aes(x=date, y=sumEAR, fill = cat)) +
           geom_bar(stat="identity") +
           theme(axis.text.x=element_blank(),
@@ -841,11 +839,7 @@ shinyServer(function(input, output) {
       
       sToxWS <- ggplot(boxData) 
       
-      if(!is.null(input$data) && input$data != "Passive Samples"){
-        sToxWS <- sToxWS + geom_boxplot(aes(x=cat, y=EAR, fill=cat))
-      } else {
-        sToxWS <- sToxWS + geom_point(aes(x=cat, y=EAR, color=cat))
-      }
+      sToxWS <- sToxWS + geom_boxplot(aes(x=cat, y=EAR, fill=cat))
       
       sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
                                               legend.position = "none")+
@@ -990,6 +984,15 @@ shinyServer(function(input, output) {
     
     output$TableHeader <- renderUI({
       HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
+    })
+    
+    output$mapFooter <- renderUI({
+      if(input$data == "Water Sample"){
+        HTML("<h5>Size range represents number of collected samples from 1-64</h5>")
+      } else {
+        HTML("<h5>One sample per site</h5>")
+      }
+      
     })
     
     output$BoxHeader <- renderUI({
