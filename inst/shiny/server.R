@@ -63,12 +63,10 @@ shinyServer(function(input, output) {
 #############################################################   
     chemicalSummary <- reactive({
       
-      if(is.null(input$data)){
-        chemicalSummary <- rbind(chemicalSummaryWS, chemicalSummaryPS)
+      if(is.null(input$data) | input$data == "Water Sample"){
+        chemicalSummary <- chemicalSummaryWS
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- chemicalSummaryPS
-      } else if (input$data == "Water Sample"){
-        chemicalSummary <- chemicalSummaryWS
       } else {
         chemicalSummary <- rbind(chemicalSummaryWS, chemicalSummaryPS)
       }
@@ -122,29 +120,6 @@ shinyServer(function(input, output) {
       
       chemicalSummaryFiltered
       
-    })
-
-    endpointSummary <- reactive({
-      
-      chemicalSummaryFiltered <- chemicalSummaryFiltered()
-      
-      if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
-      } else {
-        groupCol <- input$groupCol
-      }
-      
-      if(is.null(input$group)){
-        group <- unique(endPointInfo[,20])[3]
-      } else {
-        group <- input$group
-      }
-      
-      endpointSummary <- chemicalSummaryFiltered %>%
-        filter_(paste0(groupCol," == '", group, "'")) %>%
-        group_by(site, date) %>%
-        summarise(sumEAR = sum(EAR),
-                  nHits = sum(hits)) 
     })
     
     statsOfColumn <- reactive({
@@ -366,30 +341,6 @@ shinyServer(function(input, output) {
       }
       
       chemGroupBP_group     
-      
-    })
-    
-    chemGroupBP <- reactive({
-      
-      if(is.null(input$radio)){
-        radioMaxGroup <- "1"
-      } else {
-        radioMaxGroup <- input$radio
-      }
-      
-      chemGroup <- chemGroup()
-      
-      chemGroupBP <- chemGroup %>%
-        # data.frame() %>%
-        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
-      
-      if(radioMaxGroup == "2"){
-        chemGroupBP <- mutate(chemGroupBP, cat=class)
-      } else {
-        chemGroupBP <- mutate(chemGroupBP, cat=chnm)
-      } 
-      
-      chemGroupBP     
       
     })
     
@@ -651,137 +602,6 @@ shinyServer(function(input, output) {
     
     bottomPlots <- reactive({
       
-#       if(is.null(input$sites) | input$sites == "All"){
-#         siteToFind <- summaryFile$site
-#       } else if (input$sites == "Potential 2016"){
-#         siteToFind <- df2016$Site
-#       } else {
-#         siteToFind <- input$sites
-#       }
-#       
-#       if(is.null(input$radioMaxGroup)){
-#         radio <- 2
-#       } else {
-#         radio <- input$radio
-#       }
-#       
-#       if(length(siteToFind) > 1){
-#         
-#         endpointSummary <- endpointSummary()
-#         
-#         siteLimits <- stationINFO %>%
-#           filter(shortName %in% siteToFind) %>%
-#           filter(fullSiteID %in% unique(endpointSummary$site))
-#         
-#         if(nrow(endpointSummary) == 0){
-#           endpointSummary$site <- stationINFO$fullSiteID
-#         }
-#         
-#         endPointSummBP <- endpointSummary %>%
-#           filter(site %in% siteToFind) %>%
-#           data.frame()%>%
-#           mutate(lake = as.character(lakeKey[site])) %>%
-#           mutate(lake = factor(lake, levels=c("Lake Superior","Lake Michigan",
-#                                               "Lake Huron","Lake Erie","Lake Ontario"))) %>%
-#           mutate(site = siteKey[site]) %>%
-#           mutate(site = factor(site, levels=siteLimits$Station.shortname)) %>%
-#           mutate(sumEARnoZero = sumEAR) 
-#         
-#         
-#         ndLevel <- 0.1*min(endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero != 0])
-#         
-#         endPointSummBP$sumEARnoZero[endPointSummBP$sumEARnoZero == 0] <- ndLevel
-#         
-#         
-#         sToxWS <- ggplot(endPointSummBP)
-#         
-#         if(!is.null(input$data) && input$data != "Passive Samples"){
-#           sToxWS <- sToxWS + geom_boxplot(aes(x=site, y=sumEARnoZero, fill = lake)) +
-#             scale_fill_manual(values=c("tomato3",
-#                                        "black",
-#                                        "springgreen3",
-#                                        "brown",
-#                                        "blue"))
-#         } else {
-#           sToxWS <- sToxWS + geom_point(aes(x=site, y=sumEARnoZero, 
-#                                             colour = lake))+
-#             scale_colour_manual(values=c("tomato3",
-#                                          "black",
-#                                          "springgreen3",
-#                                          "brown",
-#                                          "blue"))
-#         }
-#         
-#         sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.25, 
-#                                                             colour=siteLimits$lakeColor))+
-#           scale_x_discrete(limits=siteLimits$Station.shortname) +
-#           scale_y_log10("Summation of EAR per sample") +
-#           coord_cartesian(ylim = c(0.1, 1.1*max(endPointSummBP$sumEARnoZero))) +
-#           xlab("") 
-#         
-#       } else {
-#         
-#         chemicalSummaryFiltered <- chemicalSummaryFiltered()
-#         
-#         g <- ggplot_build(topPlots())
-#         fillColors <- g$data[[1]]["fill"][[1]]
-#         groupings <- g$plot$data$grouping
-#         
-#         dfNames <- data.frame(grouping = names(table(groupings)[table(groupings) != 0]),
-#                               freq = as.numeric(table(groupings)[table(groupings) != 0]),stringsAsFactors = FALSE)
-#         dfCol <- data.frame(colors = names(table(fillColors)), 
-#                             freq = as.numeric(table(fillColors)),stringsAsFactors = FALSE)
-#         
-#         colorKey <- left_join(dfNames, dfCol, by="freq")
-#         
-#         if(radio == "3"){
-#           chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
-#             mutate(grouping=class)
-#         } else {
-#           chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
-#             mutate(grouping=chnm)        
-#         }
-#         
-#         chemSiteSumm <- chemicalSummaryFiltered %>%
-#           filter_(paste0(groupCol," == '", group, "'")) %>%
-#           mutate(site = siteKey[site]) %>%
-#           filter(site %in% siteToFind) %>%
-#           group_by(grouping, date) %>%
-#           summarise(sumEAR = sum(EAR),
-#                     nHits = sum(hits))%>%
-#           mutate(sumEARnoZero = sumEAR) 
-#         
-#         ndLevel <- 0.1*min(chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero != 0])
-#         
-#         if(is.finite(ndLevel)){
-#           chemSiteSumm$sumEARnoZero[chemSiteSumm$sumEARnoZero == 0] <- ndLevel
-#           
-#           chemicals <- unique(chemSiteSumm$grouping)[!(unique(chemSiteSumm$grouping) %in% colorKey$grouping)]
-#           
-#           noFill <- data.frame(grouping=chemicals,
-#                                colors=rep("#FFFFFF",length(chemicals)),
-#                                stringsAsFactors = FALSE)
-#           fillTotal <- rbind(colorKey[,c('colors','grouping')], noFill)
-#           
-#           sToxWS <- ggplot(chemSiteSumm) 
-#           
-#           if(!is.null(input$data) && input$data != "Passive Samples"){
-#             sToxWS <- sToxWS + geom_boxplot(aes(x=grouping, y=sumEAR, 
-#                                                 fill=grouping)) +
-#               scale_fill_manual(values=setNames(fillTotal$colors,fillTotal$grouping))
-#           } else {
-#             sToxWS <- sToxWS + geom_point(aes(x=grouping, y=sumEAR)) 
-#           }
-#           sToxWS <- sToxWS + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
-#                                    legend.position = "none")+
-#             xlab("") +
-#             scale_y_log10("Summation of EAR per sample") +
-#             geom_hline(yintercept=0.1)
-#         }
-#       }
-#       
-#       sToxWS
-      
       if(is.null(input$radio)){
         radio <- "1"
       } else {
@@ -939,7 +759,15 @@ shinyServer(function(input, output) {
         radio <- input$radio
       }
       
-      chemGroupBP <- chemGroupBP()
+      
+      chemGroupBP <- chemGroup %>%
+        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
+      
+      if(radio == "2"){
+        chemGroupBP <- mutate(chemGroupBP, cat=class)
+      } else {
+        chemGroupBP <- mutate(chemGroupBP, cat=chnm)
+      } 
       
       chemGroupBP_group <- chemGroupBP %>%
         filter(choices %in% group) %>%
@@ -1048,9 +876,25 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
-      endpointSummary <- endpointSummary()
+      if(is.null(input$groupCol)){
+        groupCol <- names(endPointInfo)[20]
+      } else {
+        groupCol <- input$groupCol
+      }
       
-      sumStat <- endpointSummary %>%
+      if(is.null(input$group)){
+        group <- unique(endPointInfo[,20])[3]
+      } else {
+        group <- input$group
+      }
+      
+      chemicalSummaryFiltered <- chemicalSummaryFiltered()
+      
+      sumStat <- chemicalSummaryFiltered %>%
+        filter_(paste0(groupCol," == '", group, "'")) %>%
+        group_by(site, date) %>%
+        summarise(sumEAR = sum(EAR),
+                  nHits = sum(hits)) %>%
         group_by(site) %>%
         summarise(meanEAR = mean(sumEAR),
                   maxEAR = max(sumEAR),
