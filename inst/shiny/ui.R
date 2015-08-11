@@ -44,7 +44,7 @@ shinyUI(
                                   selected = 1),
                 tabsetPanel(
                   tabPanel("Visualizations",
-                           uiOutput("numControl1"),
+                           # uiOutput("numControl1"),
                            plotOutput("stackBarGroup"),
                            h4("All EARs"),
                            plotOutput("graphGroup")),
@@ -67,7 +67,7 @@ shinyUI(
                  tabsetPanel(
                    tabPanel("Visualizations",
                             htmlOutput("BoxHeader"),
-                            uiOutput("numControl2"),
+                            # uiOutput("numControl2"),
                             plotOutput("stackBar"),
                             h5("All EARs"),
                             plotOutput("graph")
