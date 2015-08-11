@@ -58,12 +58,10 @@ interl <- function (a,b) {
   c(p1,p2)
 }
 
-makePlots <- function(boxData, noLegend, boxPlot, yRange){
+makePlots <- function(boxData, noLegend, boxPlot){
   
   siteToFind <- unique(boxData$site)
 
-  if(yRange == 0) yRange <- 100
-  
   boxData <- boxData %>%
     group_by(site,date,cat) %>%
     summarise(sumEAR=sum(EAR)) %>%
@@ -103,8 +101,7 @@ makePlots <- function(boxData, noLegend, boxPlot, yRange){
                                        colour=siteLimits$lakeColor)) +
       scale_x_discrete(limits=siteLimits$Station.shortname) +
       xlab("") +
-      scale_fill_discrete("") +  
-      coord_cartesian(ylim = c(0,yRange)) 
+      scale_fill_discrete("") 
     
     if(noLegend){
       upperPlot <- upperPlot + guides(fill=FALSE) 
@@ -123,8 +120,7 @@ makePlots <- function(boxData, noLegend, boxPlot, yRange){
             axis.ticks=element_blank())+
       xlab("Individual Samples") + 
       scale_fill_discrete(drop=FALSE) +
-      labs(fill="") +
-      coord_cartesian(ylim = c(0,yRange)) 
+      labs(fill="") 
     
     if(noLegend){
       upperPlot <- upperPlot + guides(fill=FALSE) 
@@ -636,19 +632,13 @@ shinyServer(function(input, output) {
         noLegend <- input$radio == "1"
       }
       
-      if(is.null(input$yRange2)){
-        yRange <- 1000
-      } else {
-        yRange <- input$yRange2
-      }
-      
       if(is.null(input$data)){
         boxPlot <- TRUE
       } else {
         boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
       }
       
-      return(makePlots(boxData, noLegend, boxPlot, yRange))
+      return(makePlots(boxData, noLegend, boxPlot))
       
     })
 
@@ -693,12 +683,6 @@ shinyServer(function(input, output) {
       
       boxData <- boxData()
       
-      if(is.null(input$yRange)){
-        yRange <- 1000
-      } else {
-        yRange <- input$yRange
-      }
-      
       if(is.null(input$radioMaxGroup)){
         noLegend <- FALSE
         radioMaxGroup <- "1"
@@ -707,7 +691,7 @@ shinyServer(function(input, output) {
         radioMaxGroup <- input$radioMaxGroup
       }
       
-      return(makePlots(boxData, noLegend, TRUE, yRange))
+      return(makePlots(boxData, noLegend, TRUE))
     })
 
 #############################################################    
@@ -807,60 +791,56 @@ shinyServer(function(input, output) {
       } else {
         groupCol <- input$groupCol
       }
-#       
-#       statCol <- statsOfColumn()
-#       
-#       freqCol <- grep("freq",names(statCol))
-#       maxEARS <- grep("maxEAR",names(statCol))
-#       
-#       statCol <- statCol[,c(1,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-#       
-#       maxEARS <- grep("maxEAR",names(statCol))
-#       
-#       MaxEARSordered <- order(apply(statCol[,maxEARS], 2, max),decreasing = TRUE)
-#       
-#       statCol <- statCol[,c(1,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-#       
-#       freqCol <- grep("freq",names(statCol))
-#       maxEARS <- grep("maxEAR",names(statCol))
-#       
-#       namesToUse <- gsub("maxEAR","",names(statCol)[-1])
-#       namesToUse <- gsub("freq","",namesToUse)
-#       namesToUse <- unique(namesToUse)
-#       namesToUse <- gsub("^\\s+|\\s+$", "", namesToUse)
-# 
-#       nEndPointsInChoice <- as.character(table(endPointInfo[,input$groupCol])[namesToUse])
-#       dropDownHeader <- paste0(namesToUse," (",nEndPointsInChoice,")")
       
+      siteToFind <- summaryFile$site
+
+      chemGroup <- chemGroup()
+      
+      statsOfGroup <-  chemGroup %>%
+        filter(site %in% siteToFind) %>%
+        mutate(category = choices) %>%
+        group_by(site, date,category) %>%
+        summarise(sumEAR = sum(EAR)) %>%
+        group_by(site,category) %>%
+        summarise(max = sum(sumEAR > 0.1)) %>%
+        data.frame() %>% 
+        group_by(category) %>%
+        summarise(max=max(max)) %>%
+        arrange(desc(max))
+
+     
       ChoicesInGroup <- names(table(endPointInfo[,groupCol]))
       nEndPointsInChoice <- as.character(table(endPointInfo[,groupCol]))
-      dropDownHeader <- paste0(ChoicesInGroup," (",nEndPointsInChoice,")")
+      
+      reorderChoices <- setNames(nEndPointsInChoice, ChoicesInGroup)
+      
+      dropDownHeader <- paste0(statsOfGroup$category," (",reorderChoices[statsOfGroup$category],")")
       
       selectInput("group", label = "Group in annotation (# End Points)",
-                  choices = setNames(ChoicesInGroup,dropDownHeader),
+                  choices = setNames(statsOfGroup$category,dropDownHeader),
                   multiple = FALSE)
 
     })
     
-    output$numControl2 <- renderUI({
-      
-      boxData <- boxData2()
-      
-      maxOut <- ifelse(round(max(boxData$EAR)) < 10, 10, round(max(boxData$EAR)))
-      
-      numericInput("yRange2", "Y Max:", 
-                   min=10, max=maxOut, value=maxOut)
-    })
-    
-    output$numControl1 <- renderUI({
-      
-      boxData <- boxData() 
-      
-      maxOut <- ifelse(round(max(boxData$EAR)) < 10, 10, round(max(boxData$EAR)))
-      
-      numericInput("yRange", "Y Max:", 
-                   min=10, max=maxOut, value=maxOut)
-    })
+#     output$numControl2 <- renderUI({
+#       
+#       boxData <- boxData2()
+#       
+#       maxOut <- 100*(max(boxData$EAR)%/%100 + as.logical(max(boxData$EAR) %% 100))
+#       
+#       numericInput("yRange2", "Y Max:", 
+#                    min=10, max=maxOut, value=maxOut)
+#     })
+#     
+#     output$numControl1 <- renderUI({
+#       
+#       boxData <- boxData() 
+#       
+#       maxOut <- 100*(max(boxData$EAR)%/%100 + as.logical(max(boxData$EAR) %% 100))
+#       
+#       numericInput("yRange", "Y Max:", 
+#                    min=10, max=maxOut, value=maxOut)
+#     })
     
     output$TableHeader <- renderUI({
       HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
