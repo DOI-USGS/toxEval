@@ -58,7 +58,7 @@ interl <- function (a,b) {
   c(p1,p2)
 }
 
-makePlots <- function(boxData, noLegend, boxPlot){
+makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
   
   siteToFind <- unique(boxData$site)
 
@@ -626,6 +626,14 @@ shinyServer(function(input, output) {
       
       boxData <- boxData2()
       
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
+      } else {
+        siteToFind <- input$sites
+      }
+      
       if(is.null(input$radio)){
         noLegend <- TRUE
       } else {
@@ -638,7 +646,7 @@ shinyServer(function(input, output) {
         boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
       }
       
-      return(makePlots(boxData, noLegend, boxPlot))
+      return(makePlots(boxData, noLegend, boxPlot, siteToFind))
       
     })
 
@@ -683,6 +691,14 @@ shinyServer(function(input, output) {
       
       boxData <- boxData()
       
+      if(is.null(input$sites) | input$sites == "All"){
+        siteToFind <- summaryFile$site
+      } else if (input$sites == "Potential 2016"){
+        siteToFind <- df2016$Site
+      } else {
+        siteToFind <- input$sites
+      }
+      
       if(is.null(input$radioMaxGroup)){
         noLegend <- FALSE
         radioMaxGroup <- "1"
@@ -691,7 +707,7 @@ shinyServer(function(input, output) {
         radioMaxGroup <- input$radioMaxGroup
       }
       
-      return(makePlots(boxData, noLegend, TRUE))
+      return(makePlots(boxData, noLegend, TRUE, siteToFind))
     })
 
 #############################################################    
