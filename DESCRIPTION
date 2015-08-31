@@ -19,8 +19,8 @@ Depends:
 Imports:
     dplyr,
     tidyr,
-    DT,
-    leaflet,
+    DT (>= 0.1.24),
+    leaflet  (>= 1.0.0),
     ggplot2,
     gridExtra,
     grid,
