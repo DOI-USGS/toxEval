@@ -615,8 +615,8 @@ shinyServer(function(input, output) {
       
       boxData <- chemGroupBP_group %>%
         filter(site %in% siteToFind) %>%
-        filter(choices %in% group) %>%
-        filter(EAR > 0)
+        filter(choices %in% group) 
+        # filter(EAR > 0)
       
       return(boxData)
       
@@ -680,8 +680,8 @@ shinyServer(function(input, output) {
       }
       
       boxData <- chemGroupBP_group %>%
-        filter(site %in% siteToFind) %>%
-        filter(EAR > 0)
+        filter(site %in% siteToFind)
+        # filter(EAR > 0)
       
       return(boxData)
       
@@ -742,30 +742,24 @@ shinyServer(function(input, output) {
         group <- input$group
       }
       
-      chemicalSummaryFiltered <- chemicalSummaryFiltered()
-      
-      sumStat <- chemicalSummaryFiltered %>%
-        filter_(paste0(groupCol," == '", group, "'")) %>%
-        group_by(site, date) %>%
-        summarise(sumEAR = sum(EAR),
-                  nHits = sum(hits)) %>%
-        group_by(site) %>%
-        summarise(meanEAR = mean(sumEAR),
-                  maxEAR = max(sumEAR),
-                  freq = sum(nHits > 0)/n(),
-                  sumHits = sum(nHits),
-                  nSamples = n()) %>%
+      sumStat <- boxData() %>%
+        group_by(site,date,cat) %>%
+        summarise(sumEAR=sum(EAR),
+                  nHits=sum(EAR > 0.1)) %>%
         data.frame()%>%
-        mutate(site = siteKey[site]) 
+        mutate(grouping=factor(cat, levels=unique(cat))) %>%
+        group_by(site) %>%
+        summarise(maxEAR = round(max(sumEAR),2),
+                  freq = round(sum((nHits > 0))/n(),2)) %>%
+        left_join(summaryFile[c("site","nSamples")], by="site")
 
       if(nrow(sumStat) == 0){
         sumStat <- summaryFile
-        sumStat$sumHits <- sumStat$nChem
+        # sumStat$sumHits <- sumStat$nChem
       }
       
       mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
-      # mapData <- mapData[!is.na(mapData$nChem),]
       
       col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
       leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
@@ -783,8 +777,9 @@ shinyServer(function(input, output) {
         clearControls() %>%
         addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
                    popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
-                                "<tr><td>maxEAR: </td><td>",sprintf("%1.1f",mapData$maxEAR),'</td></tr>',
-                                "<tr><td>nSamples: </td><td>",mapData$nSamples,'</td></tr></table>') ,
+                                "<tr><td>maxEAR: </td><td>",mapData$maxEAR,'</td></tr>',
+                                "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
+                                "<tr><td>Frequency: </td><td>",mapData$freq,'</td></tr></table>') ,
                    fillColor = ~pal(maxEAR), 
                    weight = 1,
                    color = "black",
@@ -794,6 +789,7 @@ shinyServer(function(input, output) {
           pal=pal,
           values=~maxEAR,
           opacity = 0.8,
+          labFormat = labelFormat(transform = function(x) as.integer(x)),
           title = 'Maximum EAR')
       
     })
@@ -837,26 +833,6 @@ shinyServer(function(input, output) {
                   multiple = FALSE)
 
     })
-    
-#     output$numControl2 <- renderUI({
-#       
-#       boxData <- boxData2()
-#       
-#       maxOut <- 100*(max(boxData$EAR)%/%100 + as.logical(max(boxData$EAR) %% 100))
-#       
-#       numericInput("yRange2", "Y Max:", 
-#                    min=10, max=maxOut, value=maxOut)
-#     })
-#     
-#     output$numControl1 <- renderUI({
-#       
-#       boxData <- boxData() 
-#       
-#       maxOut <- 100*(max(boxData$EAR)%/%100 + as.logical(max(boxData$EAR) %% 100))
-#       
-#       numericInput("yRange", "Y Max:", 
-#                    min=10, max=maxOut, value=maxOut)
-#     })
     
     output$TableHeader <- renderUI({
       HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
