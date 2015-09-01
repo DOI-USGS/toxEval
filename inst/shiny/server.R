@@ -722,58 +722,51 @@ shinyServer(function(input, output) {
     
     observe({
       
+      sumStat <- summaryFile 
+      
+      if(is.null(input$data)){
+        sumStat <- sumStat
+      } else if (input$data == "Passive Samples"){
+        sumStat <- chemGroup() %>%
+          group_by(site) %>%
+          summarise(maxEAR = max(EAR)) %>%
+          mutate(nSamples = 1) %>%
+          mutate(freq = NA)
+      }
+      
       if(is.null(input$sites) | input$sites == "All"){
         siteToFind <- summaryFile$site
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
+        sumStat <- sumStat %>%
+          filter(site %in% siteToFind)
+        
       } else {
         siteToFind <- input$sites
+        sumStat <- sumStat %>%
+          filter_(paste0("site == '", siteToFind, "'")) %>%
+          data.frame()
       }
-      
-#       if(is.null(input$groupCol)){
-#         groupCol <- names(endPointInfo)[20]
-#       } else {
-#         groupCol <- input$groupCol
-#       }
-#       
-#       if(is.null(input$group)){
-#         group <- unique(endPointInfo[,20])[3]
-#       } else {
-#         group <- input$group
-#       }
-      
-#       sumStat <- boxData() %>%
-#         group_by(site,date,cat) %>%
-#         summarise(sumEAR=sum(EAR),
-#                   nHits=sum(EAR > 0.1)) %>%
-#         data.frame()%>%
-#         mutate(grouping=factor(cat, levels=unique(cat))) %>%
-#         group_by(site) %>%
-#         summarise(maxEAR = round(max(sumEAR),2),
-#                   freq = round(sum((nHits > 0))/n(),2)) %>%
-#         left_join(summaryFile[c("site","nSamples")], by="site")
-# 
-#       if(nrow(sumStat) == 0){
-#         sumStat <- summaryFile
-#         # sumStat$sumHits <- sumStat$nChem
-#       }
-      
-      sumStat <- summaryFile %>%
-        filter(site %in% siteToFind)
       
       mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
       
       col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
-      leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
       
-      cols <- colorNumeric(col_types, domain = leg_vals)
-      rad <- 1.5*seq(5000,20000, 1000)
-      mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
-      pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+      # cols <- colorNumeric(col_types, domain = leg_vals)
+
       
-      mapData <- mapData %>%
-        filter(shortName %in% siteToFind)
+      if(nrow(mapData) > 1){
+        leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+        pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+        rad <- 1.5*seq(5000,20000, 1000)
+        mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
+      } else {
+        leg_vals <- unique(as.numeric(quantile(c(0,mapData$maxEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+        pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
+        mapData$sizes <- 1.5*12000
+      }
+      
       
       map <- leafletProxy("mymap", data=mapData) %>%
         clearShapes() %>%
