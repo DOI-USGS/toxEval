@@ -730,33 +730,36 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
-      if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
-      } else {
-        groupCol <- input$groupCol
-      }
+#       if(is.null(input$groupCol)){
+#         groupCol <- names(endPointInfo)[20]
+#       } else {
+#         groupCol <- input$groupCol
+#       }
+#       
+#       if(is.null(input$group)){
+#         group <- unique(endPointInfo[,20])[3]
+#       } else {
+#         group <- input$group
+#       }
       
-      if(is.null(input$group)){
-        group <- unique(endPointInfo[,20])[3]
-      } else {
-        group <- input$group
-      }
+#       sumStat <- boxData() %>%
+#         group_by(site,date,cat) %>%
+#         summarise(sumEAR=sum(EAR),
+#                   nHits=sum(EAR > 0.1)) %>%
+#         data.frame()%>%
+#         mutate(grouping=factor(cat, levels=unique(cat))) %>%
+#         group_by(site) %>%
+#         summarise(maxEAR = round(max(sumEAR),2),
+#                   freq = round(sum((nHits > 0))/n(),2)) %>%
+#         left_join(summaryFile[c("site","nSamples")], by="site")
+# 
+#       if(nrow(sumStat) == 0){
+#         sumStat <- summaryFile
+#         # sumStat$sumHits <- sumStat$nChem
+#       }
       
-      sumStat <- boxData() %>%
-        group_by(site,date,cat) %>%
-        summarise(sumEAR=sum(EAR),
-                  nHits=sum(EAR > 0.1)) %>%
-        data.frame()%>%
-        mutate(grouping=factor(cat, levels=unique(cat))) %>%
-        group_by(site) %>%
-        summarise(maxEAR = round(max(sumEAR),2),
-                  freq = round(sum((nHits > 0))/n(),2)) %>%
-        left_join(summaryFile[c("site","nSamples")], by="site")
-
-      if(nrow(sumStat) == 0){
-        sumStat <- summaryFile
-        # sumStat$sumHits <- sumStat$nChem
-      }
+      sumStat <- summaryFile %>%
+        filter(site %in% siteToFind)
       
       mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
@@ -772,7 +775,7 @@ shinyServer(function(input, output) {
       mapData <- mapData %>%
         filter(shortName %in% siteToFind)
       
-      leafletProxy("mymap", data=mapData) %>%
+      map <- leafletProxy("mymap", data=mapData) %>%
         clearShapes() %>%
         clearControls() %>%
         addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
@@ -783,14 +786,20 @@ shinyServer(function(input, output) {
                    fillColor = ~pal(maxEAR), 
                    weight = 1,
                    color = "black",
-                   fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) %>%
-        addLegend(
+                   fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) 
+      
+      if(length(siteToFind) > 1){
+        map <- addLegend(map,
           position = 'bottomleft',
           pal=pal,
           values=~maxEAR,
           opacity = 0.8,
           labFormat = labelFormat(transform = function(x) as.integer(x)),
           title = 'Maximum EAR')
+        
+      }
+      
+      map
       
     })
     
