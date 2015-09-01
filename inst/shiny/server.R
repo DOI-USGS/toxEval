@@ -62,46 +62,60 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
   
   siteToFind <- unique(boxData$site)
 
-  boxData <- boxData %>%
+  graphData <- boxData %>%
     group_by(site,date,cat) %>%
     summarise(sumEAR=sum(EAR)) %>%
-    data.frame( )%>%
-    mutate(grouping=factor(cat, levels=unique(cat))) 
+    data.frame() %>%
+    mutate(grouping=factor(cat, levels=unique(cat)))  %>%
+    group_by(site, cat) %>%
+    summarise(maxEAR=max(sumEAR),
+              meanEAR=mean(sumEAR)) %>%
+    gather(stat, value, -site, -cat)
 
-  lowerPlot <- ggplot(boxData) 
+  if(length(siteToFind) > 1){
+    lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
+      scale_y_log10("Mean Per Site")
+  } else {
+    siteData <- boxData %>%
+      group_by(site,date,cat) %>%
+      summarise(sumEAR=sum(EAR)) %>%
+      data.frame() %>%
+      mutate(grouping=factor(cat, levels=unique(cat))) %>%
+      rename(value=sumEAR)
+      
+    lowerPlot <- ggplot(siteData)+
+      scale_y_log10("sumEAR")
+  }
+   
   
   if(!boxPlot){
-    lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=sumEAR, color=cat))
+    lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=value, color=cat))
   } else {
-    lowerPlot <- lowerPlot + geom_boxplot(aes(x=cat, y=sumEAR, fill=cat))
+    lowerPlot <- lowerPlot + geom_boxplot(aes(x=cat, y=value, fill=cat))
   }
   
   lowerPlot <- lowerPlot + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
                                  legend.position = "none") +
     xlab("") +
-    geom_hline(yintercept=0.1) +
-    scale_y_log10("sumEAR") 
+    geom_hline(yintercept=0.1)  
 
-  chemGroupBP_group <- boxData 
-  
-  uniqueChoices <- as.character(unique(chemGroupBP_group$cat))
+  uniqueChoices <- as.character(unique(boxData$cat))
   
   siteLimits <- stationINFO %>%
-    filter(shortName %in% unique(chemGroupBP_group$site))
+    filter(shortName %in% unique(boxData$site))
   
   if(length(siteToFind) > 1){
-    
-    chemGroupBPAllSite <- chemGroupBP_group %>%
-      group_by(site, cat) %>%
-      summarise(maxEAR=max(sumEAR))
-    
-    upperPlot <- ggplot(chemGroupBPAllSite, aes(x=site, y=maxEAR, fill = cat)) +
+
+    upperPlot <- ggplot(graphData, aes(x=site, y=value, fill = cat)) +
       geom_bar(stat="identity") +
+      facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
                                        colour=siteLimits$lakeColor)) +
       scale_x_discrete(limits=siteLimits$Station.shortname) +
       xlab("") +
+      ylab("")
       scale_fill_discrete("") 
+      
     
     if(noLegend){
       upperPlot <- upperPlot + guides(fill=FALSE) 
@@ -109,13 +123,13 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
 
   } else {
     
-    chemGroupBPOneSite <- chemGroupBP_group %>%
+    chemGroupBPOneSite <- boxData %>%
       select(-site)  
     
     levels(chemGroupBPOneSite$cat) <- uniqueChoices
     
-    upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=sumEAR, fill = cat)) +
-      geom_bar(stat="identity") +
+    upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = cat)) +
+      geom_bar(stat="identity")+
       theme(axis.text.x=element_blank(),
             axis.ticks=element_blank())+
       xlab("Individual Samples") + 
@@ -241,6 +255,7 @@ shinyServer(function(input, output) {
                   nHits = sum(hits)) %>%
         group_by(site, choices) %>%
         summarise(maxEAR = max(sumEAR),
+                  meanEAR = mean(sumEAR),
                   sumHits = sum(nHits),
                   freq = sum(nHits > 0)/n()) %>%
         data.frame()
