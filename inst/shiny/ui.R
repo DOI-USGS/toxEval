@@ -40,7 +40,7 @@ shinyUI(
             tabPanel("Annotation Summary",
                 htmlOutput("TableHeaderColumns"),
                 radioButtons("radioMaxGroup", label = "",inline = TRUE,
-                                  choices = list("Choice" = 1, "Chemical" = 2, "Class" = 3), 
+                                  choices = list("Choice" = 1, "Chemical" = 2, "Class" = 3, "Endpoint" = 4), 
                                   selected = 1),
                 tabsetPanel(
                   tabPanel("Visualizations",
@@ -61,7 +61,7 @@ shinyUI(
                  fluidRow(
                    column(5,uiOutput("groupControl")),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
-                                       choices = list("Chemical" = 1, "Class" = 2), 
+                                       choices = list("Chemical" = 1, "Class" = 2, "EndPoint" = 3), 
                                        selected = 1))
                  ),
                  tabsetPanel(
