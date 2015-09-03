@@ -231,7 +231,8 @@ shinyServer(function(input, output) {
         left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
         data.frame() %>%
         mutate(site = siteKey[site]) %>%
-        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site") %>%
+        rename(endPoint = assay_component_endpoint_name) %>%
+        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint") %>%
         filter(site %in% siteToFind)
       
       if(length(siteToFind) == 1){
@@ -244,6 +245,8 @@ shinyServer(function(input, output) {
           statsOfColumn <- mutate(statsOfColumn, site = chnm) 
         } else if (radio == "3"){
           statsOfColumn <- mutate(statsOfColumn, site = class) 
+        } else if (radio == "4"){
+          statsOfColumn <- mutate(statsOfColumn, site = endPoint)
         } else {
           statsOfColumn <- mutate(statsOfColumn, site = choices) 
         }
@@ -297,7 +300,7 @@ shinyServer(function(input, output) {
         data.frame()%>%
         mutate(site = siteKey[site]) %>%
         rename(endPoint=assay_component_endpoint_name) %>%
-        select_("hits","EAR","chnm","class","site","date","choices"=groupCol)
+        select_("hits","EAR","chnm","class","site","date","choices"=groupCol,"endPoint")
       
     })
     
@@ -334,7 +337,11 @@ shinyServer(function(input, output) {
           mutate(category=chnm)
       } else if(radioMaxGroup == "3"){
         statsOfGroup <- statsOfGroup %>%
-          mutate(category=class)        
+          mutate(category=class)
+      } else if(radioMaxGroup == "4"){
+        statsOfGroup <- statsOfGroup %>%
+          mutate(category=endPoint) %>%
+          filter(EAR > 0.1)
       } else {
         statsOfGroup <- statsOfGroup %>%
           mutate(category = choices)         
@@ -400,6 +407,9 @@ shinyServer(function(input, output) {
       if(radio == "2"){
         chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
           mutate(grouping=class)
+      } else if(radio == "3"){
+        chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
+          mutate(grouping=endPoint)        
       } else {
         chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
           mutate(grouping=chnm)        
@@ -593,8 +603,10 @@ shinyServer(function(input, output) {
       
       if(is.null(input$radio)){
         noLegend <- TRUE
+        radio <- "1"
       } else {
-        noLegend <- input$radio == "1"
+        noLegend <- input$radio %in% c("1","3")
+        radio <- input$radio
       }
       
       if(is.null(input$groupCol)){
@@ -622,10 +634,12 @@ shinyServer(function(input, output) {
       chemGroupBP_group <- chemGroup %>%
         mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
       
-      if(noLegend){
+      if(radio == "1"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=chnm)
-      } else {
+      } else if (radio == "2"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
+      } else if (radio == "3"){
+        chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint)
       }
       
       boxData <- chemGroupBP_group %>%
@@ -652,7 +666,7 @@ shinyServer(function(input, output) {
       if(is.null(input$radio)){
         noLegend <- TRUE
       } else {
-        noLegend <- input$radio == "1"
+        noLegend <- input$radio %in% c("1","3")
       }
       
       if(is.null(input$data)){
@@ -690,13 +704,15 @@ shinyServer(function(input, output) {
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=choices)
       } else if (radioMaxGroup == "2"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=chnm)
+      } else if (radioMaxGroup == "4"){
+        chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint) %>%
+          filter(EAR > 0.1)
       } else {
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
       }
       
       boxData <- chemGroupBP_group %>%
         filter(site %in% siteToFind)
-        # filter(EAR > 0)
       
       return(boxData)
       
@@ -718,7 +734,7 @@ shinyServer(function(input, output) {
         noLegend <- FALSE
         radioMaxGroup <- "1"
       } else {
-        noLegend <- input$radioMaxGroup == "2"
+        noLegend <- input$radioMaxGroup %in% c("2","4")
         radioMaxGroup <- input$radioMaxGroup
       }
       
@@ -892,6 +908,8 @@ shinyServer(function(input, output) {
         word <- "chemicals"
       } else if (radio == "3") {
         word <- "classes"
+      } else if(radio == "4"){
+        word <- "endPoints"
       } else {
         word <- "choices"
       }
