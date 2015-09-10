@@ -58,7 +58,8 @@ interl <- function (a,b) {
   c(p1,p2)
 }
 
-makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
+makePlots <- function(boxData, noLegend, boxPlot, siteToFind, 
+                      ylabel.lower="EAR",ylabel.upper="EAR"){
   
   siteToFind <- unique(boxData$site)
 
@@ -74,7 +75,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
 
   if(length(siteToFind) > 1){
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
-      scale_y_log10("Mean Per Site")
+      scale_y_log10(paste("Mean",ylabel.lower,"Per Site"))
   } else {
     siteData <- boxData %>%
       group_by(site,date,cat) %>%
@@ -84,12 +85,12 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
       rename(value=sumEAR)
       
     lowerPlot <- ggplot(siteData)+
-      scale_y_log10("sumEAR")
+      scale_y_log10(paste("Sum of",ylabel.lower))
   }
    
   
   if(!boxPlot){
-    lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=value, color=cat))
+    lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=value, color=cat, size=3))
   } else {
     lowerPlot <- lowerPlot + geom_boxplot(aes(x=cat, y=value, fill=cat))
   }
@@ -113,7 +114,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
                                        colour=siteLimits$lakeColor)) +
       scale_x_discrete(limits=siteLimits$Station.shortname) +
       xlab("") +
-      ylab("")
+      ylab(ylabel.upper) +
       scale_fill_discrete("") 
       
     
@@ -133,6 +134,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
       theme(axis.text.x=element_blank(),
             axis.ticks=element_blank())+
       xlab("Individual Samples") + 
+      ylab(ylabel.upper) +
       scale_fill_discrete(drop=FALSE) +
       labs(fill="") 
     
@@ -232,7 +234,7 @@ shinyServer(function(input, output) {
         data.frame() %>%
         mutate(site = siteKey[site]) %>%
         rename(endPoint = assay_component_endpoint_name) %>%
-        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint") %>%
+        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue") %>%
         filter(site %in% siteToFind)
       
       if(length(siteToFind) == 1){
@@ -247,6 +249,8 @@ shinyServer(function(input, output) {
           statsOfColumn <- mutate(statsOfColumn, site = class) 
         } else if (radio == "4"){
           statsOfColumn <- mutate(statsOfColumn, site = endPoint)
+          statsOfColumn <- rename(statsOfColumn, actualEAR = EAR)
+          statsOfColumn <- mutate(statsOfColumn, EAR = endPointValue)
         } else {
           statsOfColumn <- mutate(statsOfColumn, site = choices) 
         }
@@ -300,7 +304,7 @@ shinyServer(function(input, output) {
         data.frame()%>%
         mutate(site = siteKey[site]) %>%
         rename(endPoint=assay_component_endpoint_name) %>%
-        select_("hits","EAR","chnm","class","site","date","choices"=groupCol,"endPoint")
+        select_("hits","EAR","chnm","class","site","date","choices"=groupCol,"endPoint", "endPointValue")
       
     })
     
@@ -341,7 +345,9 @@ shinyServer(function(input, output) {
       } else if(radioMaxGroup == "4"){
         statsOfGroup <- statsOfGroup %>%
           mutate(category=endPoint) %>%
-          filter(EAR > 0.1)
+          filter(EAR > 0.1) %>%
+          rename(actualEAR=EAR) %>%
+          rename(EAR=endPointValue)
       } else {
         statsOfGroup <- statsOfGroup %>%
           mutate(category = choices)         
@@ -409,7 +415,7 @@ shinyServer(function(input, output) {
           mutate(grouping=class)
       } else if(radio == "3"){
         chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
-          mutate(grouping=endPoint)        
+          mutate(grouping=endPoint)  
       } else {
         chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
           mutate(grouping=chnm)        
@@ -639,7 +645,10 @@ shinyServer(function(input, output) {
       } else if (radio == "2"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
       } else if (radio == "3"){
-        chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint)
+        chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint) %>%
+          filter(EAR > 0.1) %>%
+          rename(actualEAR=EAR) %>%
+          rename(EAR=endPointValue)
       }
       
       boxData <- chemGroupBP_group %>%
@@ -663,19 +672,27 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
+      ylabel.lower <- "EAR"
+      ylabel.upper <- "EAR"
+      
       if(is.null(input$radio)){
         noLegend <- TRUE
       } else {
         noLegend <- input$radio %in% c("1","3")
+        if(input$radio == "3"){
+          ylabel.lower <- "AC50gain"
+          ylabel.upper <- "AC50gain"          
+        }
       }
       
       if(is.null(input$data)){
         boxPlot <- TRUE
       } else {
-        boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
+        boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1) & !(input$radio == "3")
       }
       
-      return(makePlots(boxData, noLegend, boxPlot, siteToFind))
+      return(makePlots(boxData, noLegend, boxPlot, siteToFind, 
+                       ylabel.lower , ylabel.upper ))
       
     })
 
@@ -706,7 +723,9 @@ shinyServer(function(input, output) {
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=chnm)
       } else if (radioMaxGroup == "4"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint) %>%
-          filter(EAR > 0.1)
+          filter(EAR > 0.1) %>%
+          rename(actualEAR=EAR) %>%
+          rename(EAR=endPointValue)
       } else {
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
       }
@@ -729,16 +748,23 @@ shinyServer(function(input, output) {
       } else {
         siteToFind <- input$sites
       }
+      ylabel.lower <- "EAR"
+      ylabel.upper <- "EAR"
+      noLegend <- FALSE
+      radioMaxGroup <- "1"
+      boxGraph <- TRUE
       
-      if(is.null(input$radioMaxGroup)){
-        noLegend <- FALSE
-        radioMaxGroup <- "1"
-      } else {
+      if(!is.null(input$radioMaxGroup)){
         noLegend <- input$radioMaxGroup %in% c("2","4")
         radioMaxGroup <- input$radioMaxGroup
+        boxGraph <- input$radioMaxGroup != "4"
+        if(input$radioMaxGroup == "4"){
+          ylabel.lower <- "AC50gain"
+          ylabel.upper <- "AC50gain"
+        }
       }
       
-      return(makePlots(boxData, noLegend, TRUE, siteToFind))
+      return(makePlots(boxData, noLegend, boxGraph, siteToFind,ylabel.lower,ylabel.upper))
     })
 
 #############################################################    
