@@ -680,8 +680,8 @@ shinyServer(function(input, output) {
       } else {
         noLegend <- input$radio %in% c("1","3")
         if(input$radio == "3"){
-          ylabel.lower <- "AC50gain"
-          ylabel.upper <- "AC50gain"          
+          ylabel.lower <- "Conc [mg/L]"
+          ylabel.upper <- "Conc [mg/L]"          
         }
       }
       
@@ -759,8 +759,8 @@ shinyServer(function(input, output) {
         radioMaxGroup <- input$radioMaxGroup
         boxGraph <- input$radioMaxGroup != "4"
         if(input$radioMaxGroup == "4"){
-          ylabel.lower <- "AC50gain"
-          ylabel.upper <- "AC50gain"
+          ylabel.lower <- "Conc [mg/L]"
+          ylabel.upper <- "Conc [mg/L]"
         }
       }
       
