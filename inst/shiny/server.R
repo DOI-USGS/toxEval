@@ -115,7 +115,6 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
       xlab("") +
       ylab("EAR") +
       scale_fill_discrete("") 
-      
     
     if(noLegend){
       upperPlot <- upperPlot + guides(fill=FALSE) 
@@ -992,9 +991,23 @@ shinyServer(function(input, output) {
       boxData4 <- boxData2 %>%
         filter(cat == filterCat2) %>%
         # filter(endPoint %in% unique(endPoint[EAR > 0.1])) %>%
-        group_by(endPoint) %>%
-        summarise(nHits = sum(hits)) %>%
+      group_by(site, date, endPoint) %>%
+        summarise(sumEAR = sum(EAR),
+                  nHits = sum(hits)) %>%
+        group_by(site, endPoint) %>%
+        summarise(maxEAR = max(sumEAR),
+                  meanEAR = mean(sumEAR),
+                  sumHits = sum(nHits),
+                  freq = sum(nHits > 0)/n()) %>%
         data.frame()
+      
+      if(length(unique(boxData4$site)) > 1){
+        boxData4 <- group_by(boxData4, endPoint) %>%
+          summarise(nHits = sum(sumHits > 0)) 
+      } else {
+        boxData4 <- boxData4 %>%
+          select(endPoint,freq,maxEAR)
+      }
       
       tableGroup <- DT::datatable(boxData4, 
                                   rownames = FALSE,
