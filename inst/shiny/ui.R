@@ -81,7 +81,8 @@ shinyUI(
                             DT::dataTableOutput('table')),
                    tabPanel("Endpoint",
                             uiOutput("dropDownEP2"),
-                            plotOutput("endpointGraph2"))
+                            plotOutput("endpointGraph2"),
+                            DT::dataTableOutput("endpointTable2"))
 
                    )
                  )
