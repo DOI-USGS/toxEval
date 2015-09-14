@@ -91,7 +91,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
   if(!boxPlot){
     lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=value, color=cat, size=3))
   } else {
-    lowerPlot <- lowerPlot + geom_boxplot(aes(x=cat, y=value, fill=cat))
+    lowerPlot <- lowerPlot + geom_boxplot(aes(x=cat, y=value, fill=cat)) 
   }
   
   lowerPlot <- lowerPlot + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
@@ -115,7 +115,6 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
       xlab("") +
       ylab("EAR") +
       scale_fill_discrete("") 
-      
     
     if(noLegend){
       upperPlot <- upperPlot + guides(fill=FALSE) 
@@ -274,7 +273,6 @@ shinyServer(function(input, output) {
       if(length(siteToFind) > 1){
         if (input$data == "Water Sample"){
           summaryFile <- filter(summaryFile, site %in% siteToFind)
-          
           statsOfColumn <- left_join(summaryFile[,c("site","nSamples")], statsOfColumn, by="site")
         }
       }
@@ -643,12 +641,12 @@ shinyServer(function(input, output) {
           filter(EAR > 0.1) 
       }
       
-      boxData <- chemGroupBP_group %>%
+      boxData2 <- chemGroupBP_group %>%
         filter(site %in% siteToFind) %>%
         filter(choices %in% group) 
         # filter(EAR > 0)
       
-      return(boxData)
+      return(boxData2)
       
     })
     
@@ -786,10 +784,7 @@ shinyServer(function(input, output) {
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
       
       col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
-      
-      # cols <- colorNumeric(col_types, domain = leg_vals)
 
-      
       if(nrow(mapData) > 1){
         leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
         pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
@@ -807,9 +802,9 @@ shinyServer(function(input, output) {
         clearControls() %>%
         addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
                    popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
-                                "<tr><td>maxEAR: </td><td>",mapData$maxEAR,'</td></tr>',
+                                "<tr><td>maxEAR: </td><td>",sprintf("%.1f",mapData$maxEAR),'</td></tr>',
                                 "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
-                                "<tr><td>Frequency: </td><td>",mapData$freq,'</td></tr></table>') ,
+                                "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr></table>') ,
                    fillColor = ~pal(maxEAR), 
                    weight = 1,
                    color = "black",
@@ -934,5 +929,117 @@ shinyServer(function(input, output) {
       HTML(textUI)
       
     })
+    
+    output$endpointGraph <- renderPlot({ 
 
+      boxData <- boxData()
+            
+      if(is.null(input$filterCat)){
+        filterCat <- unique(boxData$cat)[1]
+      } else {
+        filterCat <- input$filterCat
+      }
+      
+      boxData3 <- boxData %>%
+        filter(cat == filterCat) %>%
+        filter(endPoint %in% unique(endPoint[EAR > 0.1]))
+
+      stackedPlot <- ggplot(boxData3, aes(x = cat, y = EAR))+
+        scale_y_log10("Mean EAR Per Site") +
+        geom_boxplot(aes(x=endPoint, y=EAR)) +
+        coord_flip() +
+        theme(axis.text.y = element_text(vjust = .25,hjust=1)) 
+      
+      print(stackedPlot)
+
+      
+    })
+    
+    output$endpointGraph2 <- renderPlot({ 
+      
+      boxData2 <- boxData2()
+      
+      if(is.null(input$filterCat2)){
+        filterCat2 <- unique(boxData2$cat)[1]
+      } else {
+        filterCat2 <- input$filterCat2
+      }
+      
+      boxData4 <- boxData2 %>%
+        filter(cat == filterCat2) 
+        # filter(endPoint %in% unique(endPoint[EAR > 0.1]))
+      
+      stackedPlot <- ggplot(boxData4)+
+        scale_y_log10("Mean EAR Per Site") +
+        geom_boxplot(aes(x=endPoint, y=EAR)) + 
+        coord_flip() +
+        theme(axis.text.y = element_text(vjust = .25,hjust=1))
+      
+      print(stackedPlot)
+      
+    })
+    
+    output$endpointTable2 <- DT::renderDataTable({    
+      boxData2 <- boxData2()
+      
+      if(is.null(input$filterCat2)){
+        filterCat2 <- unique(boxData2$cat)[1]
+      } else {
+        filterCat2 <- input$filterCat2
+      }
+      
+      boxData4 <- boxData2 %>%
+        filter(cat == filterCat2) %>%
+        # filter(endPoint %in% unique(endPoint[EAR > 0.1])) %>%
+      group_by(site, date, endPoint) %>%
+        summarise(sumEAR = sum(EAR),
+                  nHits = sum(hits)) %>%
+        group_by(site, endPoint) %>%
+        summarise(maxEAR = max(sumEAR),
+                  meanEAR = mean(sumEAR),
+                  sumHits = sum(nHits),
+                  freq = sum(nHits > 0)/n()) %>%
+        data.frame()
+      
+      if(length(unique(boxData4$site)) > 1){
+        boxData4 <- group_by(boxData4, endPoint) %>%
+          summarise(nHits = sum(sumHits > 0)) 
+      } else {
+        boxData4 <- boxData4 %>%
+          select(endPoint,freq,maxEAR)
+      }
+      
+      tableGroup <- DT::datatable(boxData4, 
+                                  rownames = FALSE,
+                                  filter = 'top',
+                                  options = list(pageLength = nrow(boxData4), 
+                                                 order=list(list(1,'desc'))))
+      
+      tableGroup <- formatStyle(tableGroup, names(boxData4)[2], 
+                                background = styleColorBar(range(boxData4[,2],na.rm=TRUE), 'goldenrod'),
+                                backgroundSize = '100% 90%',
+                                backgroundRepeat = 'no-repeat',
+                                backgroundPosition = 'center' ) 
+      tableGroup
+      
+    })
+
+    output$dropDownEP <- renderUI({
+      boxData <- boxData()%>%
+        filter(EAR >= 0.1)
+      
+      selectInput("filterCat", label = "Select:",
+                  choices = unique(boxData$cat),
+                  multiple = FALSE) 
+    })
+    
+    output$dropDownEP2 <- renderUI({
+      boxData2 <- boxData2() %>%
+        filter(EAR >= 0.1)
+      
+      selectInput("filterCat2", label = "Select:",
+                  choices = unique(boxData2$cat),
+                  multiple = FALSE)
+    })
+    
 })

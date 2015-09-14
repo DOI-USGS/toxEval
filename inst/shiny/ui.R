@@ -54,8 +54,12 @@ shinyUI(
                           DT::dataTableOutput('tableSumm')),
                   tabPanel("Chemical Summary",
                            htmlOutput("nGroup"),
-                           DT::dataTableOutput('tableGroupSumm'))
-                  )
+                           DT::dataTableOutput('tableGroupSumm')),
+                  tabPanel("Endpoint Summary",
+                           uiOutput("dropDownEP"),
+                           plotOutput("endpointGraph"))
+
+            )
             ),
             tabPanel("Group Summary",
                  fluidRow(
@@ -74,7 +78,11 @@ shinyUI(
                    ),
                    tabPanel("Table",
                             htmlOutput("TableHeader"),
-                            DT::dataTableOutput('table'))
+                            DT::dataTableOutput('table')),
+                   tabPanel("Endpoint",
+                            uiOutput("dropDownEP2"),
+                            plotOutput("endpointGraph2"),
+                            DT::dataTableOutput("endpointTable2"))
 
                    )
                  )
