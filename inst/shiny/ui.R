@@ -22,7 +22,6 @@ shinyUI(
         selectInput("groupCol", label = "Annotation (# Groups)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
                                       selected = names(endPointInfo)[20], multiple = FALSE),
-        
         uiOutput("groupControl"),
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
@@ -65,6 +64,7 @@ shinyUI(
             ),
             tabPanel("Group Summary",
                  fluidRow(
+                   column(2),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
                                        choices = list("Chemical" = 1, "Class" = 2), 
                                        selected = 1))
