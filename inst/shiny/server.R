@@ -600,10 +600,8 @@ shinyServer(function(input, output) {
     boxData2 <- reactive({
       
       if(is.null(input$radio)){
-        noLegend <- TRUE
         radio <- "1"
       } else {
-        noLegend <- input$radio %in% c("1","3")
         radio <- input$radio
       }
       
@@ -834,33 +832,23 @@ shinyServer(function(input, output) {
       } else {
         groupCol <- input$groupCol
       }
-      
-      siteToFind <- summaryFile$site
 
-      chemGroup <- chemGroup()
-      
-      statsOfGroup <-  chemGroup %>%
-        filter(site %in% siteToFind) %>%
-        mutate(category = choices) %>%
-        group_by(site, date,category) %>%
-        summarise(sumEAR = sum(EAR)) %>%
-        group_by(site,category) %>%
-        summarise(max = sum(sumEAR > 0.1)) %>%
-        data.frame() %>% 
-        group_by(category) %>%
-        summarise(max=max(max)) %>%
-        arrange(desc(max))
-
+     statsOfColumn <- statsOfColumn()
      
-      ChoicesInGroup <- names(table(endPointInfo[,groupCol]))
-      nEndPointsInChoice <- as.character(table(endPointInfo[,groupCol]))
+     maxEARcols <- grep("maxEAR",names(statsOfColumn))
+     statsOfGroup <- colSums(statsOfColumn[maxEARcols])
+     names(statsOfGroup) <- gsub(" maxEAR","", names(statsOfGroup))
+     statsOfGroup <- statsOfGroup[order(statsOfGroup,decreasing = TRUE)]
       
-      reorderChoices <- setNames(nEndPointsInChoice, ChoicesInGroup)
+     ChoicesInGroup <- names(table(endPointInfo[,groupCol]))
+     nEndPointsInChoice <- as.character(table(endPointInfo[,groupCol]))
       
-      dropDownHeader <- paste0(statsOfGroup$category," (",reorderChoices[statsOfGroup$category],")")
+     reorderChoices <- setNames(nEndPointsInChoice, ChoicesInGroup)
       
-      selectInput("group", label = "Group in annotation (# End Points)",
-                  choices = setNames(statsOfGroup$category,dropDownHeader),
+     dropDownHeader <- paste0(names(statsOfGroup)," (",reorderChoices[names(statsOfGroup)],")")
+      
+     selectInput("group", label = "Groups (# End Points)",
+                  choices = setNames(names(statsOfGroup),dropDownHeader),
                   multiple = FALSE)
 
     })
