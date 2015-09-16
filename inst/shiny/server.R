@@ -847,7 +847,7 @@ shinyServer(function(input, output) {
       
      dropDownHeader <- paste0(names(statsOfGroup)," (",reorderChoices[names(statsOfGroup)],")")
       
-     selectInput("group", label = "Group in annotation (# End Points)",
+     selectInput("group", label = "Groups (# End Points)",
                   choices = setNames(names(statsOfGroup),dropDownHeader),
                   multiple = FALSE)
 
