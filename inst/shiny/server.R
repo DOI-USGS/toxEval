@@ -1,14 +1,10 @@
 library(dplyr)
-library(magrittr)
 library(ggplot2)
 library(DT)
 library(leaflet)
-library(toxEval)
 library(data.table)
-library(gridExtra)
-library(grid)
 library(tidyr)
-library(RColorBrewer)
+library(toxEval)
 
 endPointInfo <- endPointInfo
 
@@ -44,6 +40,8 @@ df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
+uniqueClasses <- unique(c(unique(chemicalSummaryPS$class),unique(chemicalSummaryWS$class)))
+
 interl3 <- function (a,b,cv) {
   n <- min(length(a),length(b),length(cv))
   p1 <- as.vector(rbind(a[1:n],b[1:n],cv[1:n]))
@@ -58,7 +56,7 @@ interl <- function (a,b) {
   c(p1,p2)
 }
 
-makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
+makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniqueClasses){
   
   siteToFind <- unique(boxData$site)
 
@@ -66,11 +64,12 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
     group_by(site,date,cat) %>%
     summarise(sumEAR=sum(EAR)) %>%
     data.frame() %>%
-    mutate(grouping=factor(cat, levels=unique(cat)))  %>%
     group_by(site, cat) %>%
     summarise(maxEAR=max(sumEAR),
               meanEAR=mean(sumEAR)) %>%
-    gather(stat, value, -site, -cat)
+    mutate(cat=as.character(cat)) %>%
+    gather(stat, value, -site, -cat) %>%
+    mutate(cat=factor(cat, levels=uniqueClasses))
 
   if(length(siteToFind) > 1){
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
@@ -80,13 +79,12 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
       group_by(site,date,cat) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
-      mutate(grouping=factor(cat, levels=unique(cat))) %>%
+      mutate(cat=factor(cat, levels=uniqueClasses)) %>%
       rename(value=sumEAR)
       
     lowerPlot <- ggplot(siteData)+
       scale_y_log10("Sum of EAR")
   }
-   
   
   if(!boxPlot){
     lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=value, color=cat, size=3))
@@ -97,10 +95,9 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
   lowerPlot <- lowerPlot + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
                                  legend.position = "none") +
     xlab("") +
-    geom_hline(yintercept=0.1)  
+    geom_hline(yintercept=0.1)  +
+    scale_x_discrete(drop=FALSE)
 
-  uniqueChoices <- as.character(unique(boxData$cat))
-  
   siteLimits <- stationINFO %>%
     filter(shortName %in% unique(boxData$site))
   
@@ -111,7 +108,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
       facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
                                        colour=siteLimits$lakeColor)) +
-      scale_x_discrete(limits=siteLimits$Station.shortname) +
+      scale_x_discrete(limits=siteLimits$Station.shortname,drop=FALSE) +
       xlab("") +
       ylab("EAR") +
       scale_fill_discrete("") 
@@ -125,7 +122,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
     chemGroupBPOneSite <- boxData %>%
       select(-site)  
     
-    levels(chemGroupBPOneSite$cat) <- uniqueChoices
+    chemGroupBPOneSite$cat <- factor(chemGroupBPOneSite$cat, levels=uniqueClasses)
     
     upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = cat)) +
       geom_bar(stat="identity")+
@@ -133,7 +130,8 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind){
             axis.ticks=element_blank())+
       xlab("Individual Samples") + 
       ylab("EAR") +
-      scale_fill_discrete(drop=FALSE) +
+      # scale_x_discrete(drop=FALSE) +
+      scale_fill_discrete("") +
       labs(fill="") 
     
     if(noLegend){
@@ -634,6 +632,7 @@ shinyServer(function(input, output) {
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=chnm)
       } else if (radio == "2"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
+        
       } else if (radio == "3"){
         chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint) %>%
           filter(EAR > 0.1) 
@@ -664,15 +663,20 @@ shinyServer(function(input, output) {
         noLegend <- TRUE
       } else {
         noLegend <- input$radio %in% c("1","3")
+        if(input$radio == "2"){
+          levelsToGraph <- uniqueClasses 
+        } else {
+          levelsToGraph <- unique(boxData$cat)
+        }
       }
       
       if(is.null(input$data)){
         boxPlot <- TRUE
       } else {
-        boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1) & !(input$radio == "3")
+        boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
       }
       
-      return(makePlots(boxData, noLegend, boxPlot, siteToFind))
+      return(makePlots(boxData, noLegend, boxPlot, siteToFind, levelsToGraph))
       
     })
 
@@ -726,18 +730,22 @@ shinyServer(function(input, output) {
       } else {
         siteToFind <- input$sites
       }
-
+      
       noLegend <- FALSE
       radioMaxGroup <- "1"
       boxGraph <- TRUE
+      levelsToGraph <- unique(boxData$cat)
       
       if(!is.null(input$radioMaxGroup)){
         noLegend <- input$radioMaxGroup %in% c("2","4")
         radioMaxGroup <- input$radioMaxGroup
-        boxGraph <- input$radioMaxGroup != "4"
+        boxGraph <-  !(input$data == "Passive Samples" & length(siteToFind) == 1) 
+        if(input$radioMaxGroup == "3"){
+          levelsToGraph <- uniqueClasses
+        }
       }
       
-      return(makePlots(boxData, noLegend, boxGraph, siteToFind))
+      return(makePlots(boxData, noLegend, boxGraph, siteToFind, levelsToGraph))
     })
 
 #############################################################    
