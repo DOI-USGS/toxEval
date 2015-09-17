@@ -72,7 +72,9 @@ chemSumm <- function(chemicalSummary,EAR.key="EAR",chnmCol="chnm",
 #' @param code_pCode character name of code column in pCodeInfo
 #' @param casrn_ep character name of class column in endPoint
 #' @return chemicalSummary data frame
-#' @import tidyr 
+#' @importFrom tidyr gather_ 
+#' @importFrom tidyr gather
+#' @importFrom tidyr separate
 #' @export
 #' @examples
 #' wData <- wData
