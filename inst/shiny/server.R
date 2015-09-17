@@ -944,7 +944,8 @@ shinyServer(function(input, output) {
         scale_y_log10("Mean EAR Per Site") +
         geom_boxplot(aes(x=endPoint, y=EAR)) +
         coord_flip() +
-        theme(axis.text.y = element_text(vjust = .25,hjust=1)) 
+        theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
+        geom_hline(yintercept = 0.1)
       
       print(stackedPlot)
 
@@ -969,7 +970,8 @@ shinyServer(function(input, output) {
         scale_y_log10("Mean EAR Per Site") +
         geom_boxplot(aes(x=endPoint, y=EAR)) + 
         coord_flip() +
-        theme(axis.text.y = element_text(vjust = .25,hjust=1))
+        theme(axis.text.y = element_text(vjust = .25,hjust=1))+
+        geom_hline(yintercept = 0.1)
       
       print(stackedPlot)
       
