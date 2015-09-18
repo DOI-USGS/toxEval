@@ -64,7 +64,7 @@ shinyUI(
             ),
             tabPanel("Group Summary",
                  fluidRow(
-                   column(2),
+                   # column(5, uiOutput("groupControl")),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
                                        choices = list("Chemical" = 1, "Class" = 2), 
                                        selected = 1))
