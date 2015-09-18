@@ -57,7 +57,7 @@ interl <- function (a,b) {
   c(p1,p2)
 }
 
-makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniqueClasses){
+makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
   
   siteToFind <- unique(boxData$site)
 
@@ -72,9 +72,12 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
     gather(stat, value, -site, -cat) %>%
     mutate(cat=factor(cat, levels=uniqueClasses))
 
+  nlabels <- table(graphData$cat[graphData$stat == "meanEAR"])
+  
   if(length(siteToFind) > 1){
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
       scale_y_log10("Mean EAR Per Site")
+    
   } else {
     siteData <- boxData %>%
       group_by(site,date,cat) %>%
@@ -85,6 +88,8 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
       
     lowerPlot <- ggplot(siteData)+
       scale_y_log10("Sum of EAR")
+    
+    nlabels <- table(siteData$cat)
   }
   
   if(!boxPlot){
@@ -98,7 +103,15 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
     xlab("") +
     geom_hline(yintercept=0.1)  +
     scale_x_discrete(drop=FALSE) +
-    scale_fill_discrete(drop=FALSE)
+    scale_fill_discrete(drop=FALSE) 
+
+  ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
+  
+  namesToPlot <<- names(nlabels)
+  nSamples <<- as.character(nlabels)
+  
+  lowerPlot <- lowerPlot + 
+    geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=3) 
 
   siteLimits <- stationINFO %>%
     filter(shortName %in% unique(boxData$site))
@@ -613,7 +626,7 @@ shinyServer(function(input, output) {
       }
       
       if(is.null(input$group)){
-        group <- unique(endPointInfo[,20])[3]
+        group <- unique(endPointInfo[,20])[7]
       } else {
         group <- input$group
       }
@@ -947,6 +960,7 @@ shinyServer(function(input, output) {
         scale_y_log10("Mean EAR Per Site") +
         geom_boxplot(aes(x=endPoint, y=EAR)) +
         coord_flip() +
+        xlab("") +
         theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
         geom_hline(yintercept = 0.1, linetype="dashed", color="red")
       
@@ -973,6 +987,7 @@ shinyServer(function(input, output) {
         scale_y_log10("Mean EAR Per Site") +
         geom_boxplot(aes(x=endPoint, y=EAR)) + 
         coord_flip() +
+        xlab("") +
         theme(axis.text.y = element_text(vjust = .25,hjust=1))+
         geom_hline(yintercept = 0.1, linetype="dashed", color="red")
       

@@ -22,6 +22,7 @@ shinyUI(
         selectInput("groupCol", label = "Annotation (# Groups)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
                                       selected = names(endPointInfo)[20], multiple = FALSE),
+        uiOutput("groupControl"),
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
                  tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
@@ -63,7 +64,7 @@ shinyUI(
             ),
             tabPanel("Group Summary",
                  fluidRow(
-                   column(5, uiOutput("groupControl")),
+                   # column(5, uiOutput("groupControl")),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
                                        choices = list("Chemical" = 1, "Class" = 2), 
                                        selected = 1))
