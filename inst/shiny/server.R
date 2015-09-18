@@ -116,8 +116,8 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
       scale_fill_discrete("", drop=FALSE) 
     
     if(noLegend){
-      upperPlot <- upperPlot 
-      # + guides(fill=FALSE) 
+      upperPlot <- upperPlot + 
+      guides(fill=FALSE) 
     }
 
   } else {
@@ -137,8 +137,8 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
       labs(fill="") 
     
     if(noLegend){
-      upperPlot <- upperPlot 
-      # + guides(fill=FALSE) 
+      upperPlot <- upperPlot +
+      guides(fill=FALSE) 
     } 
   }
   
