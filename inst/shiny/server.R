@@ -5,6 +5,7 @@ library(leaflet)
 library(data.table)
 library(tidyr)
 library(toxEval)
+library(RColorBrewer)
 
 endPointInfo <- endPointInfo
 
@@ -947,7 +948,7 @@ shinyServer(function(input, output) {
         geom_boxplot(aes(x=endPoint, y=EAR)) +
         coord_flip() +
         theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-        geom_hline(yintercept = 0.1)
+        geom_hline(yintercept = 0.1, linetype="dashed", color="red")
       
       print(stackedPlot)
 
@@ -965,15 +966,15 @@ shinyServer(function(input, output) {
       }
       
       boxData4 <- boxData2 %>%
-        filter(cat == filterCat2) 
-        # filter(endPoint %in% unique(endPoint[EAR > 0.1]))
+        filter(cat == filterCat2) %>%
+        filter(endPoint %in% unique(endPoint[EAR > 0.1]))
       
       stackedPlot <- ggplot(boxData4)+
         scale_y_log10("Mean EAR Per Site") +
         geom_boxplot(aes(x=endPoint, y=EAR)) + 
         coord_flip() +
         theme(axis.text.y = element_text(vjust = .25,hjust=1))+
-        geom_hline(yintercept = 0.1)
+        geom_hline(yintercept = 0.1, linetype="dashed", color="red")
       
       print(stackedPlot)
       
