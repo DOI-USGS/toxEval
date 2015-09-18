@@ -96,7 +96,8 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
                                  legend.position = "none") +
     xlab("") +
     geom_hline(yintercept=0.1)  +
-    scale_x_discrete(drop=FALSE)
+    scale_x_discrete(drop=FALSE) +
+    scale_fill_discrete(drop=FALSE)
 
   siteLimits <- stationINFO %>%
     filter(shortName %in% unique(boxData$site))
@@ -111,10 +112,11 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
       scale_x_discrete(limits=siteLimits$Station.shortname,drop=FALSE) +
       xlab("") +
       ylab("EAR") +
-      scale_fill_discrete("") 
+      scale_fill_discrete("", drop=FALSE) 
     
     if(noLegend){
-      upperPlot <- upperPlot + guides(fill=FALSE) 
+      upperPlot <- upperPlot 
+      # + guides(fill=FALSE) 
     }
 
   } else {
@@ -130,12 +132,12 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses=uniq
             axis.ticks=element_blank())+
       xlab("Individual Samples") + 
       ylab("EAR") +
-      # scale_x_discrete(drop=FALSE) +
-      scale_fill_discrete("") +
+      scale_fill_discrete("", drop=FALSE) +
       labs(fill="") 
     
     if(noLegend){
-      upperPlot <- upperPlot + guides(fill=FALSE) 
+      upperPlot <- upperPlot 
+      # + guides(fill=FALSE) 
     } 
   }
   
