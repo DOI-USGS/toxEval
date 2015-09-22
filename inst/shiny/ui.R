@@ -21,7 +21,7 @@ shinyUI(
                                       selected = "All", multiple = FALSE),
         selectInput("groupCol", label = "Annotation (# Groups)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
-                                      selected = names(endPointInfo)[20], multiple = FALSE),
+                                      selected = names(endPointInfo)[4], multiple = FALSE),
         uiOutput("groupControl"),
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
@@ -48,7 +48,7 @@ shinyUI(
                            # uiOutput("numControl1"),
                            plotOutput("stackBarGroup"),
                            h4("All EARs"),
-                           plotOutput("graphGroup")),
+                           plotOutput("graphGroup",  height = "600px")),
                   tabPanel("EAR Summary",
                            h5("maxEAR = Maximum summation of EARs per sample"),
                            h5("freq = Fraction of samples with hits"),
@@ -58,7 +58,10 @@ shinyUI(
                            DT::dataTableOutput('tableGroupSumm')),
                   tabPanel("Endpoint Summary",
                            uiOutput("dropDownEP"),
-                           plotOutput("endpointGraph"))
+                           plotOutput("endpointGraph")),
+                  tabPanel("Hits Table",
+                           h4("Number of sites with hits:"),
+                           DT::dataTableOutput("hitsTable"))
 
             )
             ),
