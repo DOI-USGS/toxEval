@@ -6,6 +6,7 @@ library(data.table)
 library(tidyr)
 library(toxEval)
 library(RColorBrewer)
+library(grid)
 
 endPointInfo <- endPointInfo
 
@@ -71,39 +72,57 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
     mutate(cat=as.character(cat)) %>%
     gather(stat, value, -site, -cat) %>%
     mutate(cat=factor(cat, levels=uniqueClasses))
+  
+  orderColsBy <- graphData %>%
+    mutate(cat = as.character(cat)) %>%
+    group_by(cat) %>%
+    summarise(max = max(value))
+  
+  orderedLevels <- orderColsBy$cat[order(orderColsBy$max,decreasing = FALSE)]
+  orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
+  
+  graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
 
+  graphData <- filter(graphData, !is.na(cat))
+  
   nlabels <- table(graphData$cat[graphData$stat == "meanEAR"])
   
   if(length(siteToFind) > 1){
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
       scale_y_log10("Mean EAR Per Site")
     
+    labelsText <<- "nSites"
+    
   } else {
     siteData <- boxData %>%
       group_by(site,date,cat) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
+      mutate(reorderedCat=factor(cat, levels=orderedLevels)) %>%
       mutate(cat=factor(cat, levels=uniqueClasses)) %>%
-      rename(value=sumEAR)
+      rename(value=sumEAR)%>%
+      filter(!is.na(cat))
       
     lowerPlot <- ggplot(siteData)+
       scale_y_log10("Sum of EAR")
     
     nlabels <- table(siteData$cat)
+    labelsText <<- "nSamples"
   }
   
   if(!boxPlot){
-    lowerPlot <- lowerPlot + geom_point(aes(x=cat, y=value, color=cat, size=3))
+    lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=value, color=cat, size=3))
   } else {
-    lowerPlot <- lowerPlot + geom_boxplot(aes(x=cat, y=value, fill=cat)) 
+    lowerPlot <- lowerPlot + geom_boxplot(aes(x=reorderedCat, y=value, fill=cat)) 
   }
   
-  lowerPlot <- lowerPlot + theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25), 
-                                 legend.position = "none") +
+  lowerPlot <- lowerPlot + 
+    # theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25),
+    theme(legend.position = "none") +
     xlab("") +
-    geom_hline(yintercept=0.1)  +
+    geom_hline(yintercept = 0.1, linetype="dashed", color="red")  +
     scale_x_discrete(drop=FALSE) +
-    scale_fill_discrete(drop=FALSE) 
+    scale_fill_discrete(drop=FALSE)
 
   ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
   
@@ -111,13 +130,23 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
   nSamples <<- as.character(nlabels)
   
   lowerPlot <- lowerPlot + 
-    geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=3) 
+    geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=3)  +
+    geom_text(data=data.frame(), aes(label = c(labelsText,"Hit Threshold"), 
+                                     y = c(ymin,0.1), x = c(Inf,Inf),size=3, vjust = -1)) + 
+    coord_flip() 
+  
+  # Code to override clipping
+  lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
+  lowerPlot$layout$clip[lowerPlot$layout$name == "panel"] <- "off"
 
   siteLimits <- stationINFO %>%
     filter(shortName %in% unique(boxData$site))
   
   if(length(siteToFind) > 1){
 
+    graphData <- graphData %>%
+      arrange(as.character(cat))
+    
     upperPlot <- ggplot(graphData, aes(x=site, y=value, fill = cat)) +
       geom_bar(stat="identity") +
       facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
@@ -136,9 +165,9 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
   } else {
     
     chemGroupBPOneSite <- boxData %>%
-      select(-site)  
-    
-    chemGroupBPOneSite$cat <- factor(chemGroupBPOneSite$cat, levels=uniqueClasses)
+      select(-site)  %>%
+      mutate(cat=factor(cat, levels=uniqueClasses)) %>%
+      arrange(as.character(cat)) 
     
     upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = cat)) +
       geom_bar(stat="identity")+
@@ -180,7 +209,7 @@ shinyServer(function(input, output) {
       chemicalSummary <- chemicalSummary()
       
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
@@ -198,7 +227,7 @@ shinyServer(function(input, output) {
 
       if(nrow(chemicalSummaryFiltered) == 0){
         endPointInfoSub <- select_(endPointInfo, 
-                                   "assay_component_endpoint_name", names(endPointInfo)[20]) %>%
+                                   "assay_component_endpoint_name", names(endPointInfo)[4]) %>%
           distinct()
         chemicalSummaryFiltered <- chemicalSummary() %>%
           rename(assay_component_endpoint_name=endPoint) %>%
@@ -227,7 +256,7 @@ shinyServer(function(input, output) {
       }
       
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
@@ -300,7 +329,7 @@ shinyServer(function(input, output) {
       chemicalSummary <- chemicalSummary()
       
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
@@ -320,7 +349,7 @@ shinyServer(function(input, output) {
     statsOfGroupOrdered <- reactive({
       
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
@@ -395,13 +424,13 @@ shinyServer(function(input, output) {
       }
       
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
       
       if(is.null(input$group)){
-        group <- unique(endPointInfo[,20])[3]
+        group <- unique(endPointInfo[,4])[7]
       } else {
         group <- input$group
       }
@@ -604,11 +633,11 @@ shinyServer(function(input, output) {
     })
 
     output$graph <- renderPlot({ 
-      print(plots()$lowerPlot)
+      print(grid.draw(plots()$lowerPlot))
     })
     
     output$graphGroup <- renderPlot({ 
-      print(groupPlots()$lowerPlot)
+      print(grid.draw(groupPlots()$lowerPlot))
     })
     
     boxData2 <- reactive({
@@ -620,13 +649,13 @@ shinyServer(function(input, output) {
       }
       
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
       
       if(is.null(input$group)){
-        group <- unique(endPointInfo[,20])[7]
+        group <- unique(endPointInfo[,4])[7]
       } else {
         group <- input$group
       }
@@ -675,10 +704,9 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
 
-      if(is.null(input$radio)){
-        noLegend <- TRUE
-      } else {
-        noLegend <- input$radio %in% c("1","3")
+      noLegend <- TRUE
+      if(!is.null(input$radio)){
+        # noLegend <- input$radio %in% c("1","3")
         if(input$radio == "2"){
           levelsToGraph <- uniqueClasses 
         } else {
@@ -714,22 +742,18 @@ shinyServer(function(input, output) {
       
       chemGroup <- chemGroup()
       
-      chemGroupBP_group <- chemGroup %>%
-        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
+      boxData <- chemGroup %>%
+        mutate(date = factor(as.numeric(date) - min(as.numeric(date)))) %>%
+        filter(site %in% siteToFind)
       
       if(radioMaxGroup == "1"){
-        chemGroupBP_group <- mutate(chemGroupBP_group, cat=choices)
+        boxData <- mutate(boxData, cat=choices)
       } else if (radioMaxGroup == "2"){
-        chemGroupBP_group <- mutate(chemGroupBP_group, cat=chnm)
-      } else if (radioMaxGroup == "4"){
-        chemGroupBP_group <- mutate(chemGroupBP_group, cat=endPoint) %>%
-          filter(EAR > 0.1) 
+        boxData <- mutate(boxData, cat=chnm)
       } else {
-        chemGroupBP_group <- mutate(chemGroupBP_group, cat=class)
+        boxData <- mutate(boxData, cat=class)
       }
-      
-      boxData <- chemGroupBP_group %>%
-        filter(site %in% siteToFind)
+
       
       return(boxData)
       
@@ -747,13 +771,13 @@ shinyServer(function(input, output) {
         siteToFind <- input$sites
       }
       
-      noLegend <- FALSE
+      noLegend <- TRUE
       radioMaxGroup <- "1"
       boxGraph <- TRUE
       levelsToGraph <- unique(boxData$cat)
       
       if(!is.null(input$radioMaxGroup)){
-        noLegend <- input$radioMaxGroup %in% c("2","4")
+        # noLegend <- input$radioMaxGroup %in% c("2","4")
         radioMaxGroup <- input$radioMaxGroup
         boxGraph <-  !(input$data == "Passive Samples" & length(siteToFind) == 1) 
         if(input$radioMaxGroup == "3"){
@@ -852,27 +876,25 @@ shinyServer(function(input, output) {
     output$groupControl <- renderUI({
 
       if(is.null(input$groupCol)){
-        groupCol <- names(endPointInfo)[20]
+        groupCol <- names(endPointInfo)[4]
       } else {
         groupCol <- input$groupCol
       }
 
-     statsOfColumn <- statsOfColumn()
-     
-     maxEARcols <- grep("maxEAR",names(statsOfColumn))
-     statsOfGroup <- colSums(statsOfColumn[maxEARcols])
-     names(statsOfGroup) <- gsub(" maxEAR","", names(statsOfGroup))
-     statsOfGroup <- statsOfGroup[order(statsOfGroup,decreasing = TRUE)]
+     chemGroup <- chemGroup()
       
-     ChoicesInGroup <- names(table(endPointInfo[,groupCol]))
-     nEndPointsInChoice <- as.character(table(endPointInfo[,groupCol]))
+     orderBy <- chemGroup %>%
+        group_by(choices) %>%
+        summarise(max = max(EAR),
+                  nEndPoint = length(unique(endPoint))) %>%
+        arrange(desc(max)) %>%
+        filter(!is.na(choices))
       
-     reorderChoices <- setNames(nEndPointsInChoice, ChoicesInGroup)
       
-     dropDownHeader <- paste0(names(statsOfGroup)," (",reorderChoices[names(statsOfGroup)],")")
+     dropDownHeader <- paste0(orderBy$choices," (",orderBy$nEndPoint,")")
       
      selectInput("group", label = "Groups (# End Points)",
-                  choices = setNames(names(statsOfGroup),dropDownHeader),
+                  choices = setNames(orderBy$choices,dropDownHeader),
                   multiple = FALSE)
 
     })
@@ -1037,6 +1059,34 @@ shinyServer(function(input, output) {
                                 backgroundRepeat = 'no-repeat',
                                 backgroundPosition = 'center' ) 
       tableGroup
+      
+    })
+    
+    output$hitsTable <- DT::renderDataTable({    
+      
+      boxData <- boxData()
+      
+      tableData <- boxData %>%
+        group_by(site, choices, class) %>%
+        summarize(hits = any(hits > 0)) %>%
+        group_by(choices, class) %>%
+        summarize(nSites = sum(hits)) %>%
+        data.frame() %>%
+        reshape(idvar="choices",timevar="class", direction="wide") 
+      
+      names(tableData) <- gsub("nSites.","",names(tableData))
+      names(tableData)[1] <- "Groups"
+      
+      sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
+      orderData <- order(sumOfColumns,decreasing = TRUE) 
+      orderData <- orderData[sumOfColumns[orderData] != 0] + 1
+      
+      tableData1 <- DT::datatable(tableData[,c(1,orderData)], 
+                                  rownames = FALSE,
+                                  options = list(pageLength = nrow(tableData), 
+                                                 order=list(list(1,'desc'))))
+
+      tableData1
       
     })
 
