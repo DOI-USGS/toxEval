@@ -63,6 +63,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
   siteToFind <- unique(boxData$site)
 
   graphData <- boxData %>%
+    filter(!is.na(cat)) %>%
     group_by(site,date,cat) %>%
     summarise(sumEAR=sum(EAR)) %>%
     data.frame() %>%
@@ -74,13 +75,16 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
     mutate(cat=factor(cat, levels=uniqueClasses))
   
   orderColsBy <- graphData %>%
+    filter(stat == "meanEAR") %>%
     mutate(cat = as.character(cat)) %>%
     group_by(cat) %>%
-    summarise(max = max(value))
+    summarise(median = quantile(value[value != 0],0.5)) %>%
+    filter(!is.na(cat)) %>%
+    arrange(median)
   
-  orderedLevels <- orderColsBy$cat[order(orderColsBy$max,decreasing = FALSE)]
+  orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
   orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
-  
+
   graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
 
   graphData <- filter(graphData, !is.na(cat))
@@ -102,6 +106,18 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
       mutate(cat=factor(cat, levels=uniqueClasses)) %>%
       rename(value=sumEAR)%>%
       filter(!is.na(cat))
+    
+    orderColsBy <- siteData %>%
+      mutate(cat = as.character(cat)) %>%
+      group_by(cat) %>%
+      summarise(median = median(value[value != 0])) %>%
+      filter(!is.na(cat)) %>%
+      arrange(median)
+    
+    orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
+    orderedLevels <- c(levels(siteData$cat)[!(levels(siteData$cat) %in% orderedLevels)],orderedLevels)
+    
+    siteData$reorderedCat <- factor(as.character(siteData$cat), levels=orderedLevels)
       
     lowerPlot <- ggplot(siteData)+
       scale_y_log10("Sum of EAR")
@@ -117,8 +133,8 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
   }
   
   lowerPlot <- lowerPlot + 
-    # theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25),
     theme(legend.position = "none") +
+    theme(axis.text.y = element_text(size=10)) +
     xlab("") +
     geom_hline(yintercept = 0.1, linetype="dashed", color="red")  +
     scale_x_discrete(drop=FALSE) +
@@ -155,6 +171,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
       scale_x_discrete(limits=siteLimits$Station.shortname,drop=FALSE) +
       xlab("") +
       ylab("EAR") +
+      # scale_y_log10("EAR") +
       scale_fill_discrete("", drop=FALSE) 
     
     if(noLegend){
@@ -177,6 +194,7 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
       ylab("EAR") +
       scale_fill_discrete("", drop=FALSE) +
       labs(fill="") 
+      # scale_y_log10("EAR")
     
     if(noLegend){
       upperPlot <- upperPlot +
