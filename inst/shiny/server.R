@@ -62,36 +62,38 @@ makePlots <- function(boxData, noLegend, boxPlot, siteToFind, uniqueClasses){
   
   siteToFind <- unique(boxData$site)
 
-  graphData <- boxData %>%
-    filter(!is.na(cat)) %>%
-    group_by(site,date,cat) %>%
-    summarise(sumEAR=sum(EAR)) %>%
-    data.frame() %>%
-    group_by(site, cat) %>%
-    summarise(maxEAR=max(sumEAR),
-              meanEAR=mean(sumEAR)) %>%
-    mutate(cat=as.character(cat)) %>%
-    gather(stat, value, -site, -cat) %>%
-    mutate(cat=factor(cat, levels=uniqueClasses))
-  
-  orderColsBy <- graphData %>%
-    filter(stat == "meanEAR") %>%
-    mutate(cat = as.character(cat)) %>%
-    group_by(cat) %>%
-    summarise(median = quantile(value[value != 0],0.5)) %>%
-    filter(!is.na(cat)) %>%
-    arrange(median)
-  
-  orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-  orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
 
-  graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
-
-  graphData <- filter(graphData, !is.na(cat))
-  
-  nlabels <- table(graphData$cat[graphData$stat == "meanEAR"])
   
   if(length(siteToFind) > 1){
+    graphData <- boxData %>%
+      filter(!is.na(cat)) %>%
+      group_by(site,date,cat) %>%
+      summarise(sumEAR=sum(EAR)) %>%
+      data.frame() %>%
+      group_by(site, cat) %>%
+      summarise(maxEAR=max(sumEAR),
+                meanEAR=mean(sumEAR)) %>%
+      mutate(cat=as.character(cat)) %>%
+      gather(stat, value, -site, -cat) %>%
+      mutate(cat=factor(cat, levels=uniqueClasses))
+    
+    orderColsBy <- graphData %>%
+      filter(stat == "meanEAR") %>%
+      mutate(cat = as.character(cat)) %>%
+      group_by(cat) %>%
+      summarise(median = quantile(value[value != 0],0.5)) %>%
+      filter(!is.na(cat)) %>%
+      arrange(median)
+    
+    orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
+    orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
+    
+    graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
+    
+    graphData <- filter(graphData, !is.na(cat))
+    
+    nlabels <- table(graphData$cat[graphData$stat == "meanEAR"])
+    
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
       scale_y_log10("Mean EAR Per Site")
     
