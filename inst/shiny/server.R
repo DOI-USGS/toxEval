@@ -104,8 +104,6 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
     
   } else {
     
-    
-    
     siteData <- boxData %>%
       group_by(site,date,cat) %>%
       summarise(sumEAR=sum(EAR)) %>%
@@ -217,9 +215,7 @@ shinyServer(function(input, output,session) {
 #############################################################   
     chemicalSummary <- reactive({
       
-      if(is.null(input$data)){
-        chemicalSummary <- chemicalSummaryWS
-      } else if (input$data == "Water Sample"){
+      if (input$data == "Water Sample"){
         chemicalSummary <- chemicalSummaryWS
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- chemicalSummaryPS
@@ -270,7 +266,7 @@ shinyServer(function(input, output,session) {
       
       chemicalSummary <- chemicalSummary()
 
-      groupCol <- names(endPointInfo)[4]
+      groupCol <- input$groupCol
 
       radio <- input$radioMaxGroup
       
@@ -352,9 +348,9 @@ shinyServer(function(input, output,session) {
       chemGroup <- chemicalSummary %>%
         rename(assay_component_endpoint_name=endPoint) %>%
         filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
-        data.table()%>%
+        data.table() %>%
         left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
-        data.frame()%>%
+        data.frame() %>%
         mutate(site = siteKey[site]) %>%
         rename(endPoint=assay_component_endpoint_name) %>%
         select_("hits","EAR","chnm","class","site","date","choices"=groupCol,"endPoint", "endPointValue")
@@ -837,9 +833,9 @@ shinyServer(function(input, output,session) {
     
 ############################################################# 
     
-    output$groupControl <- renderUI({
+    observe({
 
-      groupCol <- input$groupCol
+     groupCol <- input$groupCol
 
      chemGroup <- chemGroup()
       
@@ -850,12 +846,11 @@ shinyServer(function(input, output,session) {
         arrange(desc(max)) %>%
         filter(!is.na(choices))
       
-      
      dropDownHeader <- paste0(orderBy$choices," (",orderBy$nEndPoint,")")
       
-     selectInput("group", label = "Groups (# End Points)",
-                  choices = setNames(orderBy$choices,dropDownHeader),
-                  multiple = FALSE)
+     updateSelectInput(session, "group",
+      choices = setNames(orderBy$choices,dropDownHeader)
+     )
 
     })
     

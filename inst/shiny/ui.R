@@ -5,6 +5,32 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 pathToApp <- system.file("extdata", package="toxEval")
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 
+# Help set up data:
+groupCol <- "biological_process_target"
+initialChoices <- c( "regulation of transcription factor activity",
+                     "receptor binding",
+                     "cell proliferation",
+                     "regulation of gene expression",              
+                     "cell cycle",                       
+                     "cell death",                                 
+                     "regulation of catalytic activity",           
+                     "mitochondrial depolarization",                
+                     "oxidative phosphorylation",                
+                     "protein stabilization",                   
+                     "cell morphology")
+
+dropDownChoices <- c("regulation of transcription factor activity (103)",
+                     "receptor binding (86)",
+                     "cell proliferation (26)",
+                     "regulation of gene expression (108)",              
+                     "cell cycle (21)",                       
+                     "cell death (20)",                                 
+                     "regulation of catalytic activity (105)",           
+                     "mitochondrial depolarization (7)",                
+                     "oxidative phosphorylation (8)",                
+                     "protein stabilization (19)",                   
+                     "cell morphology (1)")
+
 shinyUI(
   fluidPage(
   
@@ -23,19 +49,18 @@ shinyUI(
         selectInput("groupCol", label = "Annotation (# Groups)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
                                       selected = names(endPointInfo)[4], multiple = FALSE),
-        uiOutput("groupControl"),
         tags$div(class="header", checked=NA,
                  tags$p("For annotation information, see: "),
                  tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
-                        "ToxCast"))
+                        "ToxCast")),
+        wellPanel(
+          helpText(a("Get Shiny App Code", href="https://github.com/USGS-R/toxEval/tree/master/inst/shiny",target="_blank")
+          ), style = "padding: 2px; width:150px"
+        )
         ),
       column(6, 
              leaflet::leafletOutput("mymap"),
-             htmlOutput("mapFooter"),
-             wellPanel(
-               helpText(a("Get Shiny App Code", href="https://github.com/USGS-R/toxEval/tree/master/inst/shiny",target="_blank")
-               ), style = "padding: 2px; width:150px"
-             )
+             htmlOutput("mapFooter")
       ),
       column(1)),
         
@@ -50,7 +75,6 @@ shinyUI(
                                   selected = 1),
                 tabsetPanel(
                   tabPanel("Visualizations",
-                           # uiOutput("numControl1"),
                            plotOutput("stackBarGroup"),
                            h4("All EARs"),
                            plotOutput("graphGroup",  height = "600px")),
@@ -72,6 +96,11 @@ shinyUI(
             ),
             tabPanel("Group Summary",
                  fluidRow(
+                   column(7,
+                          selectInput("group", label = "Groups (# End Points)",
+                                      choices = setNames(initialChoices,dropDownChoices),
+                                      multiple = FALSE,
+                                      selected = unique(endPointInfo[,4])[7])),
                    # column(5, uiOutput("groupControl")),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
                                        choices = list("Chemical" = 1, "Class" = 2), 
