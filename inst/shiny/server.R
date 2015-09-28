@@ -637,11 +637,7 @@ shinyServer(function(input, output,session) {
 
       groupCol <- input$groupCol
       
-      if(is.null(input$group)){
-        group <- unique(endPointInfo[,4])[7]
-      } else {
-        group <- input$group
-      }
+      group <- input$group
       
       chemGroup <- chemGroup()
       
@@ -689,11 +685,7 @@ shinyServer(function(input, output,session) {
         levelsToGraph <- unique(boxData$cat)
       }
       
-      if(is.null(input$data)){
-        boxPlot <- TRUE
-      } else {
-        boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
-      }
+      boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
       
       return(makePlots(boxData, noLegend, boxPlot, levelsToGraph))
       
@@ -762,14 +754,14 @@ shinyServer(function(input, output,session) {
       
       sumStat <- summaryFile 
       
-      if(is.null(input$data)){
-        sumStat <- sumStat
-      } else if (input$data == "Passive Samples" | input$data == "Duluth"){
+      if (input$data == "Passive Samples" | input$data == "Duluth"){
         sumStat <- chemGroup() %>%
           group_by(site) %>%
           summarise(maxEAR = max(EAR)) %>%
           mutate(nSamples = 1) %>%
           mutate(freq = NA)
+      } else {
+        sumStat <- sumStat
       }
       
       if (input$sites == "All"){
@@ -1041,13 +1033,12 @@ shinyServer(function(input, output,session) {
       
     })
 
-    output$dropDownEP <- renderUI({
+    observe({
       boxData <- boxData()%>%
         filter(EAR >= 0.1)
       
-      selectInput("filterCat", label = "Select:",
-                  choices = unique(boxData$cat),
-                  multiple = FALSE) 
+      updateSelectInput(session, "filterCat",
+            choices = unique(boxData$cat)) 
     })
     
     output$dropDownEP2 <- renderUI({

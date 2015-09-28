@@ -7,6 +7,7 @@ summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 
 # Help set up data:
 groupCol <- "biological_process_target"
+group <- "regulation of transcription factor activity"
 initialChoices <- c( "regulation of transcription factor activity",
                      "receptor binding",
                      "cell proliferation",
@@ -86,7 +87,10 @@ shinyUI(
                            htmlOutput("nGroup"),
                            DT::dataTableOutput('tableGroupSumm')),
                   tabPanel("Endpoint Summary",
-                           uiOutput("dropDownEP"),
+                           # uiOutput("dropDownEP"),
+                           selectInput("filterCat", label = "Select:",
+                                       choices = initialChoices,
+                                       multiple = FALSE),
                            plotOutput("endpointGraph")),
                   tabPanel("Hits Table",
                            h4("Number of sites with hits:"),
@@ -99,9 +103,8 @@ shinyUI(
                    column(7,
                           selectInput("group", label = "Groups (# End Points)",
                                       choices = setNames(initialChoices,dropDownChoices),
-                                      multiple = FALSE,
+                                      multiple = FALSE,width = '400px',
                                       selected = unique(endPointInfo[,4])[7])),
-                   # column(5, uiOutput("groupControl")),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
                                        choices = list("Chemical" = 1, "Class" = 2), 
                                        selected = 1))
@@ -109,7 +112,6 @@ shinyUI(
                  tabsetPanel(
                    tabPanel("Visualizations",
                             htmlOutput("BoxHeader"),
-                            # uiOutput("numControl2"),
                             plotOutput("stackBar"),
                             h5("All EARs"),
                             plotOutput("graph")
