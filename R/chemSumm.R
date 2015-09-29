@@ -117,7 +117,13 @@ chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
 #' pCodeInfo <- pCodeInfo
 #' endPoint <- endPointToxCreate(pCodeInfo)
 endPointToxCreate <- function(pCodeInfoDF,
-                              casrn_pCode="casrn", units_pCode="parameter_units", mlWt_pCode="mlWt"){
+                              casrn_pCode="casrn", units_pCode="parameter_units", 
+                              mlWt_pCode="mlWt"){
+  
+  unitConversion <- setNames(c(10^6, 10^3, 1), c("pg/l", "ng/l", "ug/l") )
+  pCodeInfoDF[,mlWt_pCode] <- pCodeInfoDF[,mlWt_pCode] * unitConversion[tolower(pCodeInfoDF[,units_pCode])]
+  
+  
   AC50gainTemp <- AC50gain
   AC50 <- left_join(AC50gainTemp, 
                     pCodeInfoDF[,c(casrn_pCode, units_pCode, mlWt_pCode)],
