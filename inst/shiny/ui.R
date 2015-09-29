@@ -31,6 +31,15 @@ dropDownChoices <- c("regulation of transcription factor activity (103)",
                      "oxidative phosphorylation (8)",                
                      "protein stabilization (19)",                   
                      "cell morphology (1)")
+uniqueClasses <- c("OC Pesticides","PAH",                       
+                   "Detergent Metabolites","Insecticide",               
+                   "Antimicrobial Disinfectant","Pharmaceuticals",     
+                   "Herbicide","Flavor/Fragrance",
+                   "Other","Solvent",       
+                   "Plasticizer","Antioxidant",
+                   "Fire Retardant","Fuel",                   
+                   "Hormones",                 
+                   "Human Drug, Non Prescription")
 
 shinyUI(
   fluidPage(
@@ -107,7 +116,7 @@ shinyUI(
                                       selected = unique(endPointInfo[,4])[7])),
                    column(5,radioButtons("radio", label = "", inline = TRUE,
                                        choices = list("Chemical" = 1, "Class" = 2), 
-                                       selected = 1))
+                                       selected = 2))
                  ),
                  tabsetPanel(
                    tabPanel("Visualizations",
@@ -120,7 +129,10 @@ shinyUI(
                             htmlOutput("TableHeader"),
                             DT::dataTableOutput('table')),
                    tabPanel("Endpoint",
-                            uiOutput("dropDownEP2"),
+                            selectInput("filterCat2", label = "Select:",
+                                        choices = uniqueClasses,
+                                        multiple = FALSE),
+                            # uiOutput("dropDownEP2"),
                             plotOutput("endpointGraph2"),
                             DT::dataTableOutput("endpointTable2"))
 

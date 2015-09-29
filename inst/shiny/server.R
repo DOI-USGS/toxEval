@@ -910,12 +910,8 @@ shinyServer(function(input, output,session) {
     output$endpointGraph <- renderPlot({ 
 
       boxData <- boxData()
-            
-      if(is.null(input$filterCat)){
-        filterCat <- unique(boxData$cat)[1]
-      } else {
-        filterCat <- input$filterCat
-      }
+    
+      filterCat <- input$filterCat
       
       boxData3 <- boxData %>%
         filter(cat == filterCat) %>%
@@ -937,12 +933,8 @@ shinyServer(function(input, output,session) {
     output$endpointGraph2 <- renderPlot({ 
       
       boxData2 <- boxData2()
-      
-      if(is.null(input$filterCat2)){
-        filterCat2 <- unique(boxData2$cat)[1]
-      } else {
-        filterCat2 <- input$filterCat2
-      }
+
+      filterCat2 <- input$filterCat2
       
       boxData4 <- boxData2 %>%
         filter(cat == filterCat2) %>%
@@ -962,12 +954,8 @@ shinyServer(function(input, output,session) {
     
     output$endpointTable2 <- DT::renderDataTable({    
       boxData2 <- boxData2()
-      
-      if(is.null(input$filterCat2)){
-        filterCat2 <- unique(boxData2$cat)[1]
-      } else {
-        filterCat2 <- input$filterCat2
-      }
+
+      filterCat2 <- input$filterCat2
       
       boxData4 <- boxData2 %>%
         filter(cat == filterCat2) %>%
@@ -1041,26 +1029,28 @@ shinyServer(function(input, output,session) {
             choices = unique(boxData$cat)) 
     })
     
-    output$dropDownEP2 <- renderUI({
+    observe({
       boxData2 <- boxData2() %>%
         filter(EAR >= 0.1)
       
-      selectInput("filterCat2", label = "Select:",
-                  choices = unique(boxData2$cat),
-                  multiple = FALSE)
+      updateSelectInput(session, "filterCat2",
+             choices = unique(boxData2$cat)
+      )
+      
     })
     
     observe({
       
-      if(is.null(input$data)){
-        updateSelectInput(session, "sites",
-            choices =  c("All","Potential 2016",summaryFile$site)
-        )      
-      } else if (input$data == "Duluth" ){
+      if (input$data == "Duluth" ){
         updateSelectInput(session, "sites",
             choices =  c("All",stationINFO$shortName[is.na(stationINFO$queryTime)])
-        )     
+        ) 
+      } else {
+        updateSelectInput(session, "sites",
+                          choices =  c("All","Potential 2016",summaryFile$site)
+        )         
       }
+      
     })
 
     
