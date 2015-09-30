@@ -52,7 +52,8 @@ shinyUI(
                          choices = c("Water Sample",
                                      "Passive Samples",
                                      "Duluth"),
-                         selected = "Water Sample + ToxCast", multiple = FALSE),
+                         selected = "Water Sample", multiple = FALSE),
+        # uiOutput('sites'),
         selectInput("sites", label = "Site", 
                     choices = c("All","Potential 2016",summaryFile$site),
                     selected = "All", multiple = FALSE),
@@ -96,7 +97,6 @@ shinyUI(
                            htmlOutput("nGroup"),
                            DT::dataTableOutput('tableGroupSumm')),
                   tabPanel("Endpoint Summary",
-                           # uiOutput("dropDownEP"),
                            selectInput("filterCat", label = "Select:",
                                        choices = initialChoices,
                                        multiple = FALSE),
@@ -132,7 +132,6 @@ shinyUI(
                             selectInput("filterCat2", label = "Select:",
                                         choices = uniqueClasses,
                                         multiple = FALSE),
-                            # uiOutput("dropDownEP2"),
                             plotOutput("endpointGraph2"),
                             DT::dataTableOutput("endpointTable2"))
 
