@@ -212,6 +212,20 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
 
 shinyServer(function(input, output,session) {
   
+  choices <- reactive({
+    if (input$data == "Duluth" ){
+      choices =  c("All",stationINFO$shortName[is.na(stationINFO$queryTime)])
+    } else {
+      choices =  c("All","Potential 2016",summaryFile$site)
+    }
+    choices
+  })
+
+  observe({
+    updateSelectInput(session, "sites", choices = choices())
+  })
+
+
 #############################################################   
     chemicalSummary <- reactive({
       
@@ -284,21 +298,20 @@ shinyServer(function(input, output,session) {
         siteToFind <- unique(statsOfColumn$site)
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
-        
         statsOfColumn <- statsOfColumn  %>%
           filter(site %in% siteToFind)
       } else {
         siteToFind <- input$sites
-        
-        statsOfColumn <- statsOfColumn  %>%
-          filter(site %in% siteToFind)
+        if(any(siteToFind %in% statsOfColumn$site)){
+          statsOfColumn <- statsOfColumn  %>%
+            filter(site %in% siteToFind)
+        } else {
+          siteToFind <- unique(statsOfColumn$site)
+        }
       }
       
       if(length(siteToFind) == 1){
- 
-        statsOfColumn <- statsOfColumn %>%
-          filter(site %in% siteToFind) 
-        
+
         if(radio == "2"){
           statsOfColumn <- mutate(statsOfColumn, site = chnm) 
         } else if (radio == "3"){
@@ -367,14 +380,21 @@ shinyServer(function(input, output,session) {
       
       if (input$sites == "All"){
         siteToFind <- unique(chemGroup$site)
+        statsOfGroup <-  chemGroup
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
+        statsOfGroup <-  chemGroup %>%
+          filter(site %in% siteToFind)
       } else {
-        siteToFind <- input$sites
+        if(any(input$sites %in% chemGroup$site)){
+          siteToFind <- input$sites
+          statsOfGroup <-  chemGroup %>%
+            filter(site %in% siteToFind)
+        } else {
+          siteToFind <- unique(chemGroup$site)
+          statsOfGroup <-  chemGroup
+        }
       }
-      
-      statsOfGroup <-  chemGroup %>%
-        filter(site %in% siteToFind)
       
       # Move this:      
       if(radioMaxGroup == "2"){
@@ -432,8 +452,19 @@ shinyServer(function(input, output,session) {
         siteToFind <- unique(chemicalSummaryFiltered$site)
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
+        
+        chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
+          filter(site %in% siteToFind) 
       } else {
-        siteToFind <- input$sites
+        if(any(input$sites %in% chemicalSummaryFiltered$site)){
+          siteToFind <- input$sites
+          
+          chemicalSummaryFiltered <- chemicalSummaryFiltered %>%
+            filter(site %in% siteToFind) 
+        } else {
+          siteToFind <- unique(chemicalSummaryFiltered$site)
+        }
+        
       }
       
       if(radio == "2"){
@@ -450,7 +481,6 @@ shinyServer(function(input, output,session) {
       statTable <- chemicalSummaryFiltered %>%
         filter_(paste0(groupCol," == '", group, "'")) %>%
         mutate(site = siteKey[site]) %>%
-        filter(site %in% siteToFind) %>%
         group_by(grouping, date) %>%
         summarise(sumEAR = sum(EAR),
                   nHits = sum(hits)) %>%
@@ -498,16 +528,24 @@ shinyServer(function(input, output,session) {
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
       } else {
-        siteToFind <- input$sites
+        if(any(input$sites %in% statsOfGroupOrdered$site)){
+          siteToFind <- input$sites
+          statsOfGroupOrdered <- statsOfGroupOrdered %>%
+            filter(siteToFind %in% site)
+        } else {
+          siteToFind <- unique(statsOfGroupOrdered$site)
+        }
       }
 
       if(length(siteToFind) > 1){
         
+        colToSort <- 1
         if (input$data == "Water Sample"){
           
           summaryFile <- filter(summaryFile, site %in% siteToFind)
-          
           statsOfGroupOrdered <- left_join(summaryFile[,c("site","nSamples")], statsOfGroupOrdered, by="site")
+          
+          colToSort <- 2
         }
         
         meanChem <- grep("mean",names(statsOfGroupOrdered))
@@ -517,7 +555,7 @@ shinyServer(function(input, output,session) {
                                       rownames = FALSE,
                                       filter = 'top',
                                       options = list(pageLength = nrow(statsOfGroupOrdered), 
-                                                     order=list(list(2,'desc'))))
+                                                     order=list(list(colToSort,'desc'))))
 
         tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem], 
                                   background = styleColorBar(range(statsOfGroupOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
@@ -556,6 +594,10 @@ shinyServer(function(input, output,session) {
       
       statCol <- statsOfColumn()
       
+      colToSort <- 1
+      if("nSamples" %in% names(statCol)){
+        colToSort <- 2
+      }
       freqCol <- grep("freq",names(statCol))
       maxEARS <- grep("maxEAR",names(statCol))
       
@@ -583,7 +625,7 @@ shinyServer(function(input, output,session) {
       tableSumm <- DT::datatable(statCol, 
                                  rownames = FALSE,
                                  options = list(pageLength = nrow(statCol),
-                                   order=list(list(2,'desc'))))
+                                   order=list(list(colToSort,'desc'))))
 
       
       tableSumm <- formatRound(tableSumm, names(statCol)[-ignoreIndex], 2) 
@@ -645,8 +687,16 @@ shinyServer(function(input, output,session) {
         siteToFind <- unique(chemGroup$site)
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
+        chemGroup <- chemGroup %>%
+          filter(site %in% siteToFind) 
       } else {
-        siteToFind <- input$sites
+        if(any(input$sites %in% chemGroup$site)){
+          siteToFind <- input$sites
+          chemGroup <- chemGroup %>%
+            filter(site %in% siteToFind) 
+        } else {
+          siteToFind <- unique(chemGroup$site)
+        }
       }
       
       chemGroupBP_group <- chemGroup %>%
@@ -663,7 +713,6 @@ shinyServer(function(input, output,session) {
       }
       
       boxData2 <- chemGroupBP_group %>%
-        filter(site %in% siteToFind) %>%
         filter(choices %in% group) 
         # filter(EAR > 0)
       
@@ -701,13 +750,20 @@ shinyServer(function(input, output,session) {
         siteToFind <- unique(chemGroup$site)
       } else if (input$sites == "Potential 2016"){
         siteToFind <- df2016$Site
+        chemGroup <- chemGroup %>%
+          filter(site %in% siteToFind)
       } else {
-        siteToFind <- input$sites
+        if(any(input$sites %in% chemGroup$site)){
+          siteToFind <- input$sites
+          chemGroup <- chemGroup %>%
+            filter(site %in% siteToFind)
+        } else {
+          siteToFind <- unique(chemGroup$site)
+        }
       }
             
       boxData <- chemGroup %>%
-        mutate(date = factor(as.numeric(date) - min(as.numeric(date)))) %>%
-        filter(site %in% siteToFind)
+        mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
       
       if(radioMaxGroup == "1"){
         boxData <- mutate(boxData, cat=choices)
@@ -772,10 +828,14 @@ shinyServer(function(input, output,session) {
           filter(site %in% siteToFind)
         
       } else {
-        siteToFind <- input$sites
-        sumStat <- sumStat %>%
-          filter_(paste0("site == '", siteToFind, "'")) %>%
-          data.frame()
+        if(any(input$sites %in%sumStat$site)){
+          siteToFind <- input$sites
+          sumStat <- sumStat %>%
+            filter(site %in% siteToFind)
+        } else {
+          siteToFind <- unique(sumStat$site)
+        }
+
       }
       
       mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
@@ -1038,20 +1098,5 @@ shinyServer(function(input, output,session) {
       )
       
     })
-    
-    observe({
-      
-      if (input$data == "Duluth" ){
-        updateSelectInput(session, "sites",
-            choices =  c("All",stationINFO$shortName[is.na(stationINFO$queryTime)])
-        ) 
-      } else {
-        updateSelectInput(session, "sites",
-                          choices =  c("All","Potential 2016",summaryFile$site)
-        )         
-      }
-      
-    })
 
-    
 })
