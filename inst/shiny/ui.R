@@ -43,38 +43,46 @@ uniqueClasses <- c("OC Pesticides","PAH",
 
 shinyUI(
   fluidPage(
-  
+    titlePanel("toxEval"),
+    fluidRow(
+      column(1),
+      column(10,
+             leaflet::leafletOutput("mymap"),
+             htmlOutput("mapFooter"))
+    ),
     fluidRow(
       column(1),
       column(4,
-        h1("toxEval"),
         selectInput("data", label = "Data", 
                          choices = c("Water Sample",
                                      "Passive Samples",
                                      "Duluth"),
                          selected = "Water Sample", multiple = FALSE),
         # uiOutput('sites'),
-        selectInput("sites", label = "Site", 
-                    choices = c("All","Potential 2016",summaryFile$site),
-                    selected = "All", multiple = FALSE),
+
         selectInput("groupCol", label = "Annotation (# Groups)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
-                                      selected = names(endPointInfo)[4], multiple = FALSE),
-        tags$div(class="header", checked=NA,
-                 tags$p("For annotation information, see: "),
-                 tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
-                        "ToxCast")),
-        wellPanel(
-          helpText(a("Get Shiny App Code", href="https://github.com/USGS-R/toxEval/tree/master/inst/shiny",target="_blank")
-          ), style = "padding: 2px; width:150px"
-        )
+                                      selected = names(endPointInfo)[4], multiple = FALSE)
         ),
       column(6, 
-             leaflet::leafletOutput("mymap"),
-             htmlOutput("mapFooter")
+             selectInput("sites", label = "Site", 
+                         choices = c("All","Potential 2016",summaryFile$site),
+                         selected = "All", multiple = FALSE),
+             fluidRow(
+               column(5,
+                      tags$div(class="header", checked=NA,
+                               tags$p("For annotation information: "),
+                               tags$a(href="http://www.epa.gov/ncct/toxcast/files/ToxCast%20Assays/ToxCast_Assay_Annotation_Data_Users_Guide_20141021.pdf", 
+                                      "ToxCast"))),
+               column(4,
+                      wellPanel(
+                        helpText(a("Get Shiny App Code", href="https://github.com/USGS-R/toxEval/tree/master/inst/shiny",target="_blank")
+                        ), style = "padding: 2px; width:150px"
+                      ))
+             )
+
       ),
       column(1)),
-        
     fluidRow(
       column(1),
       column(10,
