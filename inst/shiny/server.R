@@ -811,12 +811,23 @@ shinyServer(function(input, output,session) {
       
       sumStat <- summaryFile 
       
-      if (input$data == "Passive Samples" | input$data == "Duluth"){
+      if (input$data == "Passive Samples"){
         sumStat <- chemGroup() %>%
           group_by(site) %>%
           summarise(maxEAR = max(EAR)) %>%
           mutate(nSamples = 1) %>%
-          mutate(freq = NA)
+          mutate(freq = NA)        
+      } else if (input$data == "Duluth"){
+        sumStat <- chemGroup() %>%
+          group_by(site, date) %>%
+          summarise(maxEAR = max(EAR),
+                    hits=as.numeric(any(hits > 0))) %>%
+          data.frame() %>%
+          group_by(site) %>%
+          summarise(nSamples = n(),
+                    maxEAR=max(maxEAR,na.rm=TRUE),
+                    freq=sum(hits)/n()) %>%
+          data.frame()
       } else {
         sumStat <- sumStat
       }
@@ -920,6 +931,8 @@ shinyServer(function(input, output,session) {
     output$mapFooter <- renderUI({
       if(input$data == "Water Sample"){
         HTML("<h5>Size range represents number of collected samples from 1-64</h5>")
+      } else if (input$data == "Duluth") {
+        HTML("<h5>Size range represents number of collected samples from 1-26</h5>")
       } else {
         HTML("<h5>One sample per site</h5>")
       }
