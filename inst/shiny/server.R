@@ -225,7 +225,6 @@ shinyServer(function(input, output,session) {
     updateSelectInput(session, "sites", choices = choices())
   })
 
-
 #############################################################   
     chemicalSummary <- reactive({
       
@@ -1092,10 +1091,26 @@ shinyServer(function(input, output,session) {
       orderData <- order(sumOfColumns,decreasing = TRUE) 
       orderData <- orderData[sumOfColumns[orderData] != 0] + 1
       
-      tableData1 <- DT::datatable(tableData[,c(1,orderData)], 
-                                  rownames = FALSE,
+      tableData <- tableData[,c(1,orderData)]
+      colors <- brewer.pal(9,"Blues") #"RdYlBu"
+      
+      groups <- tableData$Groups
+      
+      tableData <- tableData[!is.na(groups),-1]
+      rownames(tableData) <- groups[!is.na(groups)]
+
+      cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
+            
+      tableData1 <- DT::datatable(tableData, 
+                                  rownames = TRUE,
                                   options = list(pageLength = nrow(tableData), 
                                                  order=list(list(1,'desc'))))
+
+      for(i in 1:ncol(tableData)){
+        tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
+                    backgroundColor = styleInterval(cuts = cuts,values = colors))        
+      }
+
 
       tableData1
       
