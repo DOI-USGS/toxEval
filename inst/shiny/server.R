@@ -225,7 +225,6 @@ shinyServer(function(input, output,session) {
     updateSelectInput(session, "sites", choices = choices())
   })
 
-
 #############################################################   
     chemicalSummary <- reactive({
       
@@ -800,9 +799,10 @@ shinyServer(function(input, output,session) {
     
     output$mymap <- leaflet::renderLeaflet({
       
-      leaflet() %>%
-        addProviderTiles("Esri.WorldPhysical") %>%
-        setView(lng = -83.5, lat = 44.5, zoom=5) 
+      leaflet(height = "50px") %>%
+        # addProviderTiles("Esri.WorldPhysical") %>%
+        addProviderTiles("CartoDB.Positron") %>%
+        setView(lng = -83.5, lat = 44.5, zoom=6) 
       
     })
     
@@ -810,12 +810,23 @@ shinyServer(function(input, output,session) {
       
       sumStat <- summaryFile 
       
-      if (input$data == "Passive Samples" | input$data == "Duluth"){
+      if (input$data == "Passive Samples"){
         sumStat <- chemGroup() %>%
           group_by(site) %>%
           summarise(maxEAR = max(EAR)) %>%
           mutate(nSamples = 1) %>%
-          mutate(freq = NA)
+          mutate(freq = NA)        
+      } else if (input$data == "Duluth"){
+        sumStat <- chemGroup() %>%
+          group_by(site, date) %>%
+          summarise(maxEAR = max(EAR),
+                    hits=as.numeric(any(hits > 0))) %>%
+          data.frame() %>%
+          group_by(site) %>%
+          summarise(nSamples = n(),
+                    maxEAR=max(maxEAR,na.rm=TRUE),
+                    freq=sum(hits)/n()) %>%
+          data.frame()
       } else {
         sumStat <- sumStat
       }
@@ -841,32 +852,38 @@ shinyServer(function(input, output,session) {
       mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
       
-      col_types <- c("darkblue","dodgerblue","green","yellow","orange","red","brown")
+      col_types <- c("darkblue","dodgerblue","chartreuse2","gold1","orange","brown","red")
 
       if(nrow(mapData) > 1){
         leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
         pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
-        rad <- 1.5*seq(5000,20000, 1000)
+        rad <-3*seq(1,4,length.out = 16)
+        # rad <- 1.5*seq(5000,20000, 1000)
         mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
       } else {
         leg_vals <- unique(as.numeric(quantile(c(0,mapData$maxEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
         pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
-        mapData$sizes <- 1.5*12000
+        mapData$sizes <- 3
+        # mapData$sizes <- 1.5*12000
       }
       
       
       map <- leafletProxy("mymap", data=mapData) %>%
-        clearShapes() %>%
+        # clearShapes() %>%
+        clearMarkers() %>%
         clearControls() %>%
-        addCircles(lat=~dec.lat.va, lng=~dec.long.va, 
+        addCircleMarkers(lat=~dec.lat.va, lng=~dec.long.va, 
                    popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
                                 "<tr><td>maxEAR: </td><td>",sprintf("%.1f",mapData$maxEAR),'</td></tr>',
                                 "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
                                 "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr></table>') ,
                    fillColor = ~pal(maxEAR), 
-                   weight = 1,
-                   color = "black",
-                   fillOpacity = 0.8, radius = ~sizes, opacity = 0.8) 
+                   # weight = 1,
+                   # color = "black",
+                   fillOpacity = 0.8, 
+                   radius = ~sizes, 
+                   stroke=FALSE,
+                   opacity = 0.8) 
       
       if(length(siteToFind) > 1){
         map <- addLegend(map,
@@ -913,6 +930,8 @@ shinyServer(function(input, output,session) {
     output$mapFooter <- renderUI({
       if(input$data == "Water Sample"){
         HTML("<h5>Size range represents number of collected samples from 1-64</h5>")
+      } else if (input$data == "Duluth") {
+        HTML("<h5>Size range represents number of collected samples from 1-26</h5>")
       } else {
         HTML("<h5>One sample per site</h5>")
       }
@@ -1072,10 +1091,26 @@ shinyServer(function(input, output,session) {
       orderData <- order(sumOfColumns,decreasing = TRUE) 
       orderData <- orderData[sumOfColumns[orderData] != 0] + 1
       
-      tableData1 <- DT::datatable(tableData[,c(1,orderData)], 
-                                  rownames = FALSE,
+      tableData <- tableData[,c(1,orderData)]
+      colors <- brewer.pal(9,"Blues") #"RdYlBu"
+      
+      groups <- tableData$Groups
+      
+      tableData <- tableData[!is.na(groups),-1]
+      rownames(tableData) <- groups[!is.na(groups)]
+
+      cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
+            
+      tableData1 <- DT::datatable(tableData, 
+                                  rownames = TRUE,
                                   options = list(pageLength = nrow(tableData), 
                                                  order=list(list(1,'desc'))))
+
+      for(i in 1:ncol(tableData)){
+        tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
+                    backgroundColor = styleInterval(cuts = cuts,values = colors))        
+      }
+
 
       tableData1
       

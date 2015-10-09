@@ -93,8 +93,8 @@ chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
     separate(pCode, into=c("colHeader","pCode"), "_") %>% #totally not generalized
     left_join(pCodeInfoDF[c(code_pCode,casrn_pCode,class_pCode)], by=c("pCode"=code_pCode))  %>%
     right_join(endPoint, by=c(casrn=casrn_ep)) %>%
-    select(-mlWt, -conversion, -casrn,  -Units, -pCode, -colHeader) %>%
-    gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date)  %>% 
+    select(-mlWt, -conversion, -Units, -pCode, -colHeader) %>%
+    gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date, -casrn)  %>% 
     filter(!is.na(endPointValue)) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
     mutate(hits = as.numeric(EAR > 0.1),
