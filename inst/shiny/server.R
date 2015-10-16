@@ -90,13 +90,13 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       arrange(median)
     
     orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-    orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
-    
+    # orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
+
     graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
     
-    graphData <- filter(graphData, !is.na(cat))
+    graphData <- filter(graphData, !is.na(reorderedCat))
     
-    nlabels <- table(graphData$cat[graphData$stat == "meanEAR"])
+    nlabels <- table(graphData$reorderedCat[graphData$stat == "meanEAR"])
     
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
       scale_y_log10("Mean EAR Per Site")
@@ -121,14 +121,14 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       arrange(median)
     
     orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-    orderedLevels <- c(levels(siteData$cat)[!(levels(siteData$cat) %in% orderedLevels)],orderedLevels)
+    # orderedLevels <- c(levels(siteData$cat)[!(levels(siteData$cat) %in% orderedLevels)],orderedLevels)
     
     siteData$reorderedCat <- factor(as.character(siteData$cat), levels=orderedLevels)
       
     lowerPlot <- ggplot(siteData)+
       scale_y_log10("Sum of EAR")
     
-    nlabels <- table(siteData$cat)
+    nlabels <- table(siteData$reorderedCat)
     labelsText <<- "nSamples"
   }
   
@@ -1117,7 +1117,6 @@ shinyServer(function(input, output,session) {
                     color = styleInterval(40,values = c("black","white")),
                     `font-size` = '15px')
       }
-
 
       tableData1
       
