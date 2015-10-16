@@ -76,6 +76,7 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       group_by(site, cat) %>%
       summarise(maxEAR=max(sumEAR),
                 meanEAR=mean(sumEAR)) %>%
+      data.frame() %>%
       mutate(cat=as.character(cat)) %>%
       gather(stat, value, -site, -cat) %>%
       mutate(cat=factor(cat, levels=uniqueClasses))
@@ -494,7 +495,8 @@ shinyServer(function(input, output,session) {
                                       colnames = c('Maximum EAR' = 3, 'Frequency of Hits' = 4,
                                                    'Mean EAR' = 2),
                                       filter = 'top',
-                                      options = list(pageLength = nrow(statTable), 
+                                      options = list(dom = 'ft',
+                                                     pageLength = nrow(statTable), 
                                                      order=list(list(2,'desc')))) %>%
           formatRound(c("Maximum EAR","Frequency of Hits","Mean EAR"), 2) %>%
           formatStyle("Maximum EAR", 
@@ -553,7 +555,8 @@ shinyServer(function(input, output,session) {
         tableGroup <- DT::datatable(statsOfGroupOrdered, 
                                       rownames = FALSE,
                                       filter = 'top',
-                                      options = list(pageLength = nrow(statsOfGroupOrdered), 
+                                      options = list(dom = 'ft',
+                                                     pageLength = nrow(statsOfGroupOrdered), 
                                                      order=list(list(colToSort,'desc'))))
 
         tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem], 
@@ -623,8 +626,9 @@ shinyServer(function(input, output,session) {
       colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
       tableSumm <- DT::datatable(statCol, 
                                  rownames = FALSE,
-                                 options = list(pageLength = nrow(statCol),
-                                   order=list(list(colToSort,'desc'))))
+                                 options = list(dom = 'ft',
+                                                pageLength = nrow(statCol),
+                                                order=list(list(colToSort,'desc'))))
 
       
       tableSumm <- formatRound(tableSumm, names(statCol)[-ignoreIndex], 2) 
@@ -1103,7 +1107,8 @@ shinyServer(function(input, output,session) {
             
       tableData1 <- DT::datatable(tableData, 
                                   rownames = TRUE,
-                                  options = list(pageLength = nrow(tableData), 
+                                  options = list(dom = 't',
+                                                 pageLength = nrow(tableData), 
                                                  order=list(list(1,'desc'))))
 
       for(i in 1:ncol(tableData)){
