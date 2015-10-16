@@ -1113,7 +1113,9 @@ shinyServer(function(input, output,session) {
 
       for(i in 1:ncol(tableData)){
         tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
-                    backgroundColor = styleInterval(cuts = cuts,values = colors))        
+                    backgroundColor = styleInterval(cuts = cuts,values = colors),
+                    color = styleInterval(40,values = c("black","white")),
+                    `font-size` = '15px')
       }
 
 

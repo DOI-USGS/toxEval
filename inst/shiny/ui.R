@@ -111,7 +111,7 @@ shinyUI(
                            plotOutput("endpointGraph")),
                   tabPanel("Hits Table",
                            h4("Number of sites with hits:"),
-                           DT::dataTableOutput("hitsTable"))
+                           div(DT::dataTableOutput("hitsTable"), style="font-size:90%"))
 
             )
             ),
