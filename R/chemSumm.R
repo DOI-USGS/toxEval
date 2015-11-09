@@ -8,6 +8,7 @@
 #' @param classCol column name of chemical class
 #' @param siteCol column name of site
 #' @param dateCol column name of date
+#' @importFrom dplyr %>%
 #' @export
 #' @examples
 #' wData <- wData
