@@ -14,12 +14,27 @@ packagePath <- system.file("extdata", package="toxEval")
 filePath <- file.path(packagePath, "stationINFO.RData")
 load(file=filePath)
 siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
+
+sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
+                  "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
+                  "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette",
+                  "WhiteMI","Muskegon","MilwaukeeMouth","GrandMI","Kalamazoo2","PawPaw",
+                  "StJoseph","IndianaHC","Burns","ThunderBay","AuSable","Rifle",
+                  "Saginaw","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
+                  "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
+                  "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
+
+pathToApp <- system.file("extdata", package="toxEval")
+
+summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
+endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
+
 stationINFO <- stationINFO %>%
   mutate(lakeCat = factor(Lake, 
                           levels=c("Lake Superior","Lake Michigan",
                                    "Lake Huron",
                                    "Detroit River and Lake St. Clair","Lake Erie",
-                                   "Lake Ontario", "St. Lawrence River"))) %>%
+                                   "Lake Ontario", "St. Lawrence River")))%>%
   arrange(lakeCat, dec.long.va) %>%
   mutate(lakeColor = c("tomato3","black","springgreen3","brown","brown","blue","blue")[as.numeric(lakeCat)] )
 
@@ -27,27 +42,24 @@ lakeKey <- setNames(as.character(stationINFO$lakeCat), stationINFO$fullSiteID)
 lakeKey[lakeKey == "Detroit River and Lake St. Clair"] <- "Lake Erie"
 lakeKey[lakeKey == "St. Lawrence River"] <- "Lake Ontario"
 
-pathToApp <- system.file("extdata", package="toxEval")
+# stationINFO$lakeColor[stationINFO$shortName == "BlackMI"] <- "springgreen3"
 
-summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
-endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
-chemicalSummaryWS <- readRDS(file.path(pathToApp,"chemicalSummary.rds"))
-chemicalSummaryPS <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
-chemicalSummaryDL <- readRDS(file.path(pathToApp,"chemSummeryDL.rds"))
-chemicalSummaryPS$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummaryPS))
 df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-uniqueClasses <- unique(c(unique(chemicalSummaryPS$class),unique(chemicalSummaryWS$class),unique(chemicalSummaryDL$class)))
+# uniqueClasses <- unique(c(unique(chemicalSummaryPS$class),unique(chemicalSummaryWS$class),unique(chemicalSummaryDL$class)))
+
+uniqueClasses <- c("OC Pesticides","PAH","Detergent Metabolites","Insecticide","Antimicrobial Disinfectant","Pharmaceuticals",
+                   "Herbicide","Flavor/Fragrance","Other","Solvent","Plasticizer","Antioxidant","Fire Retardant","Human Drug, Non Prescription",
+                   "Fuel","Hormones")            
 
 #Missing Duluth info:
 
 stationINFO$lakeColor[is.na(stationINFO$lakeColor)] <- "brown"
 stationINFO$dec.lat.va[is.na(stationINFO$dec.lat.va)] <- 46.7
 stationINFO$dec.long.va[is.na(stationINFO$dec.long.va)] <- -92.4
-
 
 interl3 <- function (a,b,cv) {
   n <- min(length(a),length(b),length(cv))
@@ -63,6 +75,15 @@ interl <- function (a,b) {
   c(p1,p2)
 }
 
+fancyNumbers <- function(n){
+  x <-gsub(pattern = "1e",replacement = "10^",x = format(n, scientific = TRUE))
+  exponents <- as.numeric(sapply(strsplit(x, "\\^"), function(j) j[2]))-1
+  base <- ifelse(exponents == 0, "1", ifelse(exponents == 1, "10","10^"))
+  exponents[exponents == 0 | exponents == 1] <- ""
+  textReturn <- parse(text=paste0(base,exponents))
+  return(textReturn)
+}
+
 makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
   
   siteToFind <- unique(boxData$site)
@@ -76,6 +97,7 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       group_by(site, cat) %>%
       summarise(maxEAR=max(sumEAR),
                 meanEAR=mean(sumEAR)) %>%
+      data.frame() %>%
       mutate(cat=as.character(cat)) %>%
       gather(stat, value, -site, -cat) %>%
       mutate(cat=factor(cat, levels=uniqueClasses))
@@ -88,18 +110,18 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       filter(!is.na(cat)) %>%
       arrange(median)
     
-    orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-    orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
-    
+    orderedLevels <<- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
+    # orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
+
     graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
     
-    graphData <- filter(graphData, !is.na(cat))
+    graphData <- filter(graphData, !is.na(reorderedCat))
     
-    nlabels <- table(graphData$cat[graphData$stat == "meanEAR"])
+    nlabels <- table(graphData$reorderedCat[graphData$stat == "meanEAR"])
     
     lowerPlot <- ggplot(graphData[graphData$stat == "meanEAR",])+
-      scale_y_log10("Mean EAR Per Site")
-    
+      scale_y_log10("Mean EAR Per Site",
+                    labels=fancyNumbers)
     labelsText <<- "nSites"
     
   } else {
@@ -119,16 +141,16 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       filter(!is.na(cat)) %>%
       arrange(median)
     
-    orderedLevels <- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-    orderedLevels <- c(levels(siteData$cat)[!(levels(siteData$cat) %in% orderedLevels)],orderedLevels)
-    
+    orderedLevels <<- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
     siteData$reorderedCat <- factor(as.character(siteData$cat), levels=orderedLevels)
       
     lowerPlot <- ggplot(siteData)+
-      scale_y_log10("Sum of EAR")
+      scale_y_log10("Sum of EAR",
+                    labels=fancyNumbers)
     
-    nlabels <- table(siteData$cat)
+    nlabels <- table(siteData$reorderedCat)
     labelsText <<- "nSamples"
+
   }
   
   if(!boxPlot){
@@ -137,23 +159,38 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
     lowerPlot <- lowerPlot + geom_boxplot(aes(x=reorderedCat, y=value, fill=cat)) 
   }
   
+  text.size <<- ifelse(length(orderedLevels) > 15, 13, 16)
+  
   lowerPlot <- lowerPlot + 
     theme(legend.position = "none") +
-    theme(axis.text.y = element_text(size=10)) +
+    theme(axis.text.y = element_text(size=text.size,color = "black"), 
+          axis.text.x = element_text(size=16,color = "black", vjust = 0),
+          axis.title = element_text(size=16)) +
     xlab("") +
     geom_hline(yintercept = 0.1, linetype="dashed", color="red")  +
     scale_x_discrete(drop=FALSE) +
     scale_fill_discrete(drop=FALSE)
 
   ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
+  ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
+
+  countNonZero <- graphData %>%
+    filter(stat == "meanEAR") %>%
+    group_by(cat) %>%
+    summarise(nonZero = as.character(sum(value>0)),
+              hits = as.character(sum(value>0.1)))
+  countNonZero$nonZero[countNonZero$nonZero == "0"] <- ""
+  countNonZero$hits[countNonZero$hits == "0"] <- ""
   
-  namesToPlot <<- names(nlabels)
-  nSamples <<- as.character(nlabels)
+  namesToPlot <<- as.character(countNonZero$cat)
+  nSamples <<- countNonZero$nonZero
+  nHits <<- countNonZero$hits
   
   lowerPlot <- lowerPlot + 
-    geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=3)  +
-    geom_text(data=data.frame(), aes(label = c(labelsText,"Hit Threshold"), 
-                                     y = c(ymin,0.1), x = c(Inf,Inf),size=3, vjust = -1)) + 
+    geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
+    geom_text(data=data.frame(), aes(x=namesToPlot, y=ymax,label=nHits),size=5) +
+    geom_text(data=data.frame(), aes(label = c("# Non Zero","Hit Threshold","# Hits"), 
+                                     y = c(ymin,0.1,ymax), x = c(Inf,Inf,Inf),size=20, vjust = -1)) + 
     coord_flip() 
   
   # Code to override clipping
@@ -166,17 +203,17 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
   if(length(siteToFind) > 1){
 
     graphData <- graphData %>%
-      arrange(as.character(cat))
+      arrange(as.character(cat)) %>%
+      filter(stat == "meanEAR")
     
     upperPlot <- ggplot(graphData, aes(x=site, y=value, fill = cat)) +
       geom_bar(stat="identity") +
-      facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
+      # facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
                                        colour=siteLimits$lakeColor)) +
       scale_x_discrete(limits=siteLimits$Station.shortname,drop=FALSE) +
       xlab("") +
-      ylab("EAR") +
-      # scale_y_log10("EAR") +
+      ylab("Mean EAR per Site") +
       scale_fill_discrete("", drop=FALSE) 
     
     if(noLegend){
@@ -228,12 +265,19 @@ shinyServer(function(input, output,session) {
 #############################################################   
     chemicalSummary <- reactive({
       
+      if(input$ACtype == "Original"){
+        path <- pathToApp
+      } else {
+        path <- "D:/LADData/RCode/toxEval"
+      }
+      
       if (input$data == "Water Sample"){
-        chemicalSummary <- chemicalSummaryWS
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
       } else if (input$data == "Passive Samples"){
-        chemicalSummary <- chemicalSummaryPS
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
+        chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
       } else if (input$data == "Duluth"){
-        chemicalSummary <- chemicalSummaryDL
+        chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
       }
       
       chemicalSummary 
@@ -494,7 +538,8 @@ shinyServer(function(input, output,session) {
                                       colnames = c('Maximum EAR' = 3, 'Frequency of Hits' = 4,
                                                    'Mean EAR' = 2),
                                       filter = 'top',
-                                      options = list(pageLength = nrow(statTable), 
+                                      options = list(dom = 'ft',
+                                                     pageLength = nrow(statTable), 
                                                      order=list(list(2,'desc')))) %>%
           formatRound(c("Maximum EAR","Frequency of Hits","Mean EAR"), 2) %>%
           formatStyle("Maximum EAR", 
@@ -553,7 +598,8 @@ shinyServer(function(input, output,session) {
         tableGroup <- DT::datatable(statsOfGroupOrdered, 
                                       rownames = FALSE,
                                       filter = 'top',
-                                      options = list(pageLength = nrow(statsOfGroupOrdered), 
+                                      options = list(dom = 'ft',
+                                                     pageLength = nrow(statsOfGroupOrdered), 
                                                      order=list(list(colToSort,'desc'))))
 
         tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem], 
@@ -623,8 +669,9 @@ shinyServer(function(input, output,session) {
       colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
       tableSumm <- DT::datatable(statCol, 
                                  rownames = FALSE,
-                                 options = list(pageLength = nrow(statCol),
-                                   order=list(list(colToSort,'desc'))))
+                                 options = list(dom = 'ft',
+                                                pageLength = nrow(statCol),
+                                                order=list(list(colToSort,'desc'))))
 
       
       tableSumm <- formatRound(tableSumm, names(statCol)[-ignoreIndex], 2) 
@@ -808,16 +855,17 @@ shinyServer(function(input, output,session) {
     
     observe({
       
-      sumStat <- summaryFile 
+      chemGroup <- chemGroup()
       
       if (input$data == "Passive Samples"){
-        sumStat <- chemGroup() %>%
+        sumStat <- chemGroup %>%
           group_by(site) %>%
           summarise(maxEAR = max(EAR)) %>%
           mutate(nSamples = 1) %>%
           mutate(freq = NA)        
-      } else if (input$data == "Duluth"){
-        sumStat <- chemGroup() %>%
+      } else {
+        sumStat <- chemGroup %>%
+          # filter(class == "Human Drug, Non Prescription") %>%
           group_by(site, date) %>%
           summarise(maxEAR = max(EAR),
                     hits=as.numeric(any(hits > 0))) %>%
@@ -827,9 +875,7 @@ shinyServer(function(input, output,session) {
                     maxEAR=max(maxEAR,na.rm=TRUE),
                     freq=sum(hits)/n()) %>%
           data.frame()
-      } else {
-        sumStat <- sumStat
-      }
+      } 
       
       if (input$sites == "All"){
         siteToFind <- unique(sumStat$site)
@@ -846,13 +892,12 @@ shinyServer(function(input, output,session) {
         } else {
           siteToFind <- unique(sumStat$site)
         }
-
       }
       
       mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
       mapData <- mapData[!is.na(mapData$dec.lat.va),]
       
-      col_types <- c("darkblue","dodgerblue","chartreuse2","gold1","orange","brown","red")
+      col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
 
       if(nrow(mapData) > 1){
         leg_vals <- unique(as.numeric(quantile(mapData$maxEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
@@ -866,7 +911,8 @@ shinyServer(function(input, output,session) {
         mapData$sizes <- 3
         # mapData$sizes <- 1.5*12000
       }
-      
+
+      pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
       
       map <- leafletProxy("mymap", data=mapData) %>%
         # clearShapes() %>%
@@ -891,7 +937,7 @@ shinyServer(function(input, output,session) {
           pal=pal,
           values=~maxEAR,
           opacity = 0.8,
-          labFormat = labelFormat(transform = function(x) as.integer(x)),
+          labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
           title = 'Maximum EAR')
         
       }
@@ -1100,17 +1146,27 @@ shinyServer(function(input, output,session) {
       rownames(tableData) <- groups[!is.na(groups)]
 
       cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
-            
-      tableData1 <- DT::datatable(tableData, 
+      
+      names(tableData)[names(tableData) == "Human Drug, Non Prescription"] <- "Human Drug"
+      names(tableData)[names(tableData) == "Flavor/Fragrance"] <- "Flavor / Fragrance"
+      
+      tableData1 <- DT::datatable(tableData, # extensions = 'TableTools',
                                   rownames = TRUE,
-                                  options = list(pageLength = nrow(tableData), 
+                                  options = list(dom = 't',
+                                                 initComplete = JS(
+                                                   "function(settings, json) {",
+                                                   "$(this.api().table().header()).css({'font-size': 'large'});",
+                                                   "}"),
+                                                 pageLength = nrow(tableData),
+                                                 # tableTools = list(sSwfPath = copySWF()),
                                                  order=list(list(1,'desc'))))
 
       for(i in 1:ncol(tableData)){
         tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
-                    backgroundColor = styleInterval(cuts = cuts,values = colors))        
+                    backgroundColor = styleInterval(cuts = cuts,values = colors),
+                    color = styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
+                    `font-size` = '17px')
       }
-
 
       tableData1
       

@@ -58,7 +58,7 @@ shinyUI(
                                      "Passive Samples",
                                      "Duluth"),
                          selected = "Water Sample", multiple = FALSE),
-        # uiOutput('sites'),
+        radioButtons("ACtype", label="AC50", choices=c("Original","Corrected"), selected = "Corrected", inline = TRUE),
 
         selectInput("groupCol", label = "Annotation (# Groups)", 
                                       choices = setNames(names(endPointInfo)[-3],groupChoices),
@@ -111,7 +111,7 @@ shinyUI(
                            plotOutput("endpointGraph")),
                   tabPanel("Hits Table",
                            h4("Number of sites with hits:"),
-                           DT::dataTableOutput("hitsTable"))
+                           div(DT::dataTableOutput("hitsTable"), style="font-size:90%"))
 
             )
             ),
