@@ -265,11 +265,11 @@ shinyServer(function(input, output,session) {
 #############################################################   
     chemicalSummary <- reactive({
       
-      if(input$ACtype == "Original"){
+      # if(input$ACtype == "Original"){
         path <- pathToApp
-      } else {
-        path <- "D:/LADData/RCode/toxEval"
-      }
+#       } else {
+#         path <- "D:/LADData/RCode/toxEval"
+#       }
       
       if (input$data == "Water Sample"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
