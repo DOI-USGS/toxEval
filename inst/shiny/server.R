@@ -216,12 +216,18 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       arrange(as.character(cat)) %>%
       filter(stat == "meanEAR")
     
+    if(all(sitesOrdered %in% siteLimits$Station.shortname) & length(siteLimits$Station.shortname) == length(sitesOrdered)){
+      siteLimits <- mutate(siteLimits, Station.shortname = factor(Station.shortname, levels=sitesOrdered))
+    } else {
+      siteLimits <- mutate(siteLimits, Station.shortname = factor(Station.shortname))
+    }
+    
     upperPlot <- ggplot(graphData, aes(x=site, y=value, fill = cat)) +
       geom_bar(stat="identity") +
       # facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
                                        colour=siteLimits$lakeColor)) +
-      scale_x_discrete(limits=siteLimits$Station.shortname,drop=FALSE) +
+      scale_x_discrete(limits=levels(siteLimits$Station.shortname),drop=FALSE) +
       xlab("") +
       ylab("Mean EAR per Site") +
       scale_fill_discrete("", drop=FALSE) 
