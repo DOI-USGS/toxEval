@@ -131,7 +131,7 @@ shinyUI(
                             htmlOutput("BoxHeader"),
                             plotOutput("stackBar"),
                             h5("All EARs"),
-                            plotOutput("graph")
+                            plotOutput("graph",  height = "600px")
                    ),
                    tabPanel("Table",
                             htmlOutput("TableHeader"),

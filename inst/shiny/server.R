@@ -111,7 +111,6 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       arrange(median)
     
     orderedLevels <<- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-    # orderedLevels <- c(levels(graphData$cat)[!(levels(graphData$cat) %in% orderedLevels)],orderedLevels)
 
     graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
     
@@ -124,9 +123,21 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
                     labels=fancyNumbers)
     labelsText <<- "nSites"
     
+    countNonZero <- graphData %>%
+      filter(stat == "meanEAR") %>%
+      group_by(cat) %>%
+      summarise(nonZero = as.character(sum(value>0)),
+                hits = as.character(sum(value>0.1)))
+    countNonZero$nonZero[countNonZero$nonZero == "0"] <- ""
+    countNonZero$hits[countNonZero$hits == "0"] <- ""
+    
+    namesToPlot <<- as.character(countNonZero$cat)
+    nSamples <<- countNonZero$nonZero
+    nHits <<- countNonZero$hits
+    
   } else {
     
-    siteData <- boxData %>%
+    graphData <- boxData %>%
       group_by(site,date,cat) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
@@ -134,22 +145,33 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       rename(value=sumEAR)%>%
       filter(!is.na(cat))
     
-    orderColsBy <- siteData %>%
+    orderColsBy <- graphData %>%
       mutate(cat = as.character(cat)) %>%
       group_by(cat) %>%
       summarise(median = median(value[value != 0])) %>%
       filter(!is.na(cat)) %>%
-      arrange(median)
+      arrange(!is.na(median),median)
     
-    orderedLevels <<- orderColsBy$cat[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-    siteData$reorderedCat <- factor(as.character(siteData$cat), levels=orderedLevels)
+    orderedLevels <<- orderColsBy$cat#[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
+    graphData$reorderedCat <- factor(as.character(graphData$cat), levels=orderedLevels)
       
-    lowerPlot <- ggplot(siteData)+
+    lowerPlot <- ggplot(graphData)+
       scale_y_log10("Sum of EAR",
                     labels=fancyNumbers)
     
-    nlabels <- table(siteData$reorderedCat)
+    nlabels <- table(graphData$reorderedCat)
     labelsText <<- "nSamples"
+    
+    countNonZero <- graphData %>%
+      group_by(cat) %>%
+      summarise(nonZero = as.character(sum(value>0)),
+                hits = as.character(sum(value>0.1)))
+    countNonZero$nonZero[countNonZero$nonZero == "0"] <- ""
+    countNonZero$hits[countNonZero$hits == "0"] <- ""
+    
+    namesToPlot <<- as.character(countNonZero$cat)
+    nSamples <<- countNonZero$nonZero
+    nHits <<- countNonZero$hits
 
   }
   
@@ -174,18 +196,6 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
   ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
   ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
 
-  countNonZero <- graphData %>%
-    filter(stat == "meanEAR") %>%
-    group_by(cat) %>%
-    summarise(nonZero = as.character(sum(value>0)),
-              hits = as.character(sum(value>0.1)))
-  countNonZero$nonZero[countNonZero$nonZero == "0"] <- ""
-  countNonZero$hits[countNonZero$hits == "0"] <- ""
-  
-  namesToPlot <<- as.character(countNonZero$cat)
-  nSamples <<- countNonZero$nonZero
-  nHits <<- countNonZero$hits
-  
   lowerPlot <- lowerPlot + 
     geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
     geom_text(data=data.frame(), aes(x=namesToPlot, y=ymax,label=nHits),size=5) +
@@ -912,7 +922,7 @@ shinyServer(function(input, output,session) {
         # mapData$sizes <- 1.5*12000
       }
 
-      pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
+      # pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
       
       map <- leafletProxy("mymap", data=mapData) %>%
         # clearShapes() %>%
