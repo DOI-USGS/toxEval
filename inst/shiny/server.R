@@ -247,6 +247,9 @@ shinyServer(function(input, output,session) {
     if (input$data == "Duluth" ){
       duluthSites <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
       choices =  c("All",duluthSites$shortName)
+    } else if(input$data == "NPS"){
+      npsSites <- readRDS(file.path(pathToApp,"npsSite.rds"))
+      choices =  c("All",npsSites$shortName)      
     } else {
       choices =  c("All","Potential 2016",summaryFile$site)
     }
@@ -273,6 +276,9 @@ shinyServer(function(input, output,session) {
       } else if (input$data == "Duluth"){
         chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
+      } else if (input$data == "NPS"){
+        chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
+        stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
       }
       siteKey <<- setNames(stationINFO$shortName, stationINFO$fullSiteID)
       chemicalSummary 
