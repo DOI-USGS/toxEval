@@ -275,7 +275,6 @@ shinyServer(function(input, output,session) {
         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
       }
-      siteKey <<- setNames(stationINFO$shortName, stationINFO$fullSiteID)
       chemicalSummary 
       
     })
@@ -329,9 +328,11 @@ shinyServer(function(input, output,session) {
         data.table()%>%
         left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
         data.frame() %>%
-        mutate(site = siteKey[site]) %>%
         rename(endPoint = assay_component_endpoint_name) %>%
-        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue") 
+        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue") %>%
+        left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
+        select(-site) %>%
+        rename(site=shortName)
       
       if (input$sites == "All"){
         siteToFind <- unique(statsOfColumn$site)
@@ -403,10 +404,11 @@ shinyServer(function(input, output,session) {
         data.table() %>%
         left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
         data.frame() %>%
-        mutate(site = siteKey[site]) %>%
         rename(endPoint=assay_component_endpoint_name) %>%
-        select_("hits","EAR","chnm","class","site","date","choices"=groupCol,"endPoint", "endPointValue")
-      
+        select_("hits","EAR","chnm","class","site","date","choices"=groupCol,"endPoint", "endPointValue") %>%
+        left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
+        select(-site) %>%
+        rename(site=shortName)
     })
     
     statsOfGroupOrdered <- reactive({
@@ -519,7 +521,9 @@ shinyServer(function(input, output,session) {
       
       statTable <- chemicalSummaryFiltered %>%
         filter_(paste0(groupCol," == '", group, "'")) %>%
-        mutate(site = siteKey[site]) %>%
+        left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
+        select(-site) %>%
+        rename(site=shortName) %>%
         group_by(grouping, date) %>%
         summarise(sumEAR = sum(EAR),
                   nHits = sum(hits)) %>%
@@ -765,17 +769,9 @@ shinyServer(function(input, output,session) {
     plots <- reactive({
       
       boxData <- boxData2()
-      
       siteToFind <- unique(boxData$site)
-      
       noLegend <- TRUE
-
-      if(input$radio == "2"){
-        levelsToGraph <- uniqueClasses 
-      } else {
-        levelsToGraph <- unique(boxData$cat)
-      }
-      
+      levelsToGraph <- unique(boxData$cat)
       boxPlot <- !(input$data == "Passive Samples" & length(siteToFind) == 1)
       
       return(makePlots(boxData, noLegend, boxPlot, levelsToGraph))
@@ -831,10 +827,7 @@ shinyServer(function(input, output,session) {
 
       radioMaxGroup <- input$radioMaxGroup
       boxGraph <-  !(input$data == "Passive Samples" & length(siteToFind) == 1) 
-      if(input$radioMaxGroup == "3"){
-        levelsToGraph <- uniqueClasses
-      }
-      
+
       return(makePlots(boxData, noLegend, boxGraph, levelsToGraph))
     })
 
