@@ -10,11 +10,6 @@ library(grid)
 
 endPointInfo <- endPointInfo
 
-# packagePath <- system.file("extdata", package="toxEval")
-# filePath <- file.path(packagePath, "stationINFO.RData")
-# load(file=filePath)
-# siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
-
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
                   "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
