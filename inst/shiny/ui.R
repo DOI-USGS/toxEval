@@ -1,4 +1,5 @@
 library(toxEval)
+
 endPointInfo <- endPointInfo
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
@@ -56,7 +57,8 @@ shinyUI(
         selectInput("data", label = "Data", 
                          choices = c("Water Sample",
                                      "Passive Samples",
-                                     "Duluth"),
+                                     "Duluth",
+                                     "NPS"),
                          selected = "Water Sample", multiple = FALSE),
         # radioButtons("ACtype", label="AC50", choices=c("Original","Corrected"), selected = "Corrected", inline = TRUE),
 

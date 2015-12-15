@@ -10,14 +10,9 @@ library(grid)
 
 endPointInfo <- endPointInfo
 
-packagePath <- system.file("extdata", package="toxEval")
-filePath <- file.path(packagePath, "stationINFO.RData")
-load(file=filePath)
-siteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
-
-sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
+sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
-                  "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette",
+                  "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
                   "WhiteMI","Muskegon","MilwaukeeMouth","GrandMI","Kalamazoo2","PawPaw",
                   "StJoseph","IndianaHC","Burns","ThunderBay","AuSable","Rifle",
                   "Saginaw","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
@@ -26,40 +21,18 @@ sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
 
 pathToApp <- system.file("extdata", package="toxEval")
 
+stationINFO <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
-
-stationINFO <- stationINFO %>%
-  mutate(lakeCat = factor(Lake, 
-                          levels=c("Lake Superior","Lake Michigan",
-                                   "Lake Huron",
-                                   "Detroit River and Lake St. Clair","Lake Erie",
-                                   "Lake Ontario", "St. Lawrence River")))%>%
-  arrange(lakeCat, dec.long.va) %>%
-  mutate(lakeColor = c("tomato3","black","springgreen3","brown","brown","blue","blue")[as.numeric(lakeCat)] )
-
-lakeKey <- setNames(as.character(stationINFO$lakeCat), stationINFO$fullSiteID)
-lakeKey[lakeKey == "Detroit River and Lake St. Clair"] <- "Lake Erie"
-lakeKey[lakeKey == "St. Lawrence River"] <- "Lake Ontario"
-
-# stationINFO$lakeColor[stationINFO$shortName == "BlackMI"] <- "springgreen3"
 
 df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-# uniqueClasses <- unique(c(unique(chemicalSummaryPS$class),unique(chemicalSummaryWS$class),unique(chemicalSummaryDL$class)))
-
 uniqueClasses <- c("OC Pesticides","PAH","Detergent Metabolites","Insecticide","Antimicrobial Disinfectant","Pharmaceuticals",
                    "Herbicide","Flavor/Fragrance","Other","Solvent","Plasticizer","Antioxidant","Fire Retardant","Human Drug, Non Prescription",
                    "Fuel","Hormones")            
-
-#Missing Duluth info:
-
-stationINFO$lakeColor[is.na(stationINFO$lakeColor)] <- "brown"
-stationINFO$dec.lat.va[is.na(stationINFO$dec.lat.va)] <- 46.7
-stationINFO$dec.long.va[is.na(stationINFO$dec.long.va)] <- -92.4
 
 interl3 <- function (a,b,cv) {
   n <- min(length(a),length(b),length(cv))
@@ -216,10 +189,10 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       arrange(as.character(cat)) %>%
       filter(stat == "meanEAR")
     
-    if(all(sitesOrdered %in% siteLimits$Station.shortname) & length(siteLimits$Station.shortname) == length(sitesOrdered)){
-      siteLimits <- mutate(siteLimits, Station.shortname = factor(Station.shortname, levels=sitesOrdered))
+    if(all(siteLimits$shortName %in% sitesOrdered)){
+      siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
     } else {
-      siteLimits <- mutate(siteLimits, Station.shortname = factor(Station.shortname))
+      siteLimits <- mutate(siteLimits, shortName = factor(shortName))
     }
     
     upperPlot <- ggplot(graphData, aes(x=site, y=value, fill = cat)) +
@@ -227,7 +200,7 @@ makePlots <- function(boxData, noLegend, boxPlot, uniqueClasses){
       # facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
                                        colour=siteLimits$lakeColor)) +
-      scale_x_discrete(limits=levels(siteLimits$Station.shortname),drop=FALSE) +
+      scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
       xlab("") +
       ylab("Mean EAR per Site") +
       scale_fill_discrete("", drop=FALSE) 
@@ -267,10 +240,15 @@ shinyServer(function(input, output,session) {
   
   choices <- reactive({
     if (input$data == "Duluth" ){
-      choices =  c("All",stationINFO$shortName[is.na(stationINFO$queryTime)])
+      duluthSites <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
+      choices =  c("All",duluthSites$shortName)
+    } else if(input$data == "NPS"){
+      npsSites <- readRDS(file.path(pathToApp,"npsSite.rds"))
+      choices =  c("All",npsSites$shortName)      
     } else {
       choices =  c("All","Potential 2016",summaryFile$site)
     }
+    
     choices
   })
 
@@ -281,21 +259,23 @@ shinyServer(function(input, output,session) {
 #############################################################   
     chemicalSummary <- reactive({
       
-      # if(input$ACtype == "Original"){
-        path <- pathToApp
-#       } else {
-#         path <- "D:/LADData/RCode/toxEval"
-#       }
+      path <- pathToApp
       
       if (input$data == "Water Sample"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
+        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
         chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
+        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Duluth"){
         chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
+        stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
+      } else if (input$data == "NPS"){
+        chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
+        stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
       }
-      
+      siteKey <<- setNames(stationINFO$shortName, stationINFO$fullSiteID)
       chemicalSummary 
       
     })
