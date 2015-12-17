@@ -12,4 +12,7 @@ explore_endpoints(browse = TRUE)
 \description{
 Open an interactive app
 }
+\examples{
+explore_endpoints()
+}
 

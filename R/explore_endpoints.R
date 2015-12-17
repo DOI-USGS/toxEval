@@ -16,6 +16,11 @@
 #' @import RColorBrewer
 #' @import grid
 #' @import gridExtra 
+#' @import shinydashboard
+#' @examples 
+#' \dontrun{
+#' explore_endpoints()
+#' }
 explore_endpoints <- function(browse=TRUE){
   runApp(system.file('shiny', package='toxEval'), launch.browser = browse)
 }
