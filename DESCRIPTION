@@ -26,6 +26,7 @@ Imports:
     gridExtra,
     grid,
     shiny,
+    shinydashboard,
     data.table,
     RColorBrewer
 Suggests:
