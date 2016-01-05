@@ -13,6 +13,8 @@ explore_endpoints(browse = TRUE)
 Open an interactive app
 }
 \examples{
+\dontrun{
 explore_endpoints()
+}
 }
 
