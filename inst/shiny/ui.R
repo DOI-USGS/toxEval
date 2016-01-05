@@ -58,35 +58,48 @@ sidebar <- dashboardSidebar(
                choices = setNames(initialChoices,dropDownChoices),
                multiple = FALSE,width = '400px',
                selected = "All"),
+   conditionalPanel(
+     condition = "input.mainOut == 'endpoint'",
+     selectInput("epGroup", label = "Choose Chemical",
+                 choices = "All",
+                 multiple = FALSE,
+                 selected = "All")     
+   ),
    menuItem("Source code", icon = icon("file-code-o"), 
             href = "https://github.com/USGS-R/toxEval/tree/master/inst/shiny")
   )
 )
 
 body <- dashboardBody(
-  tabBox(width = 12,
+  tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
+             value="map",
             leaflet::leafletOutput("mymap"),
             htmlOutput("mapFooter")
     ),
     tabPanel(title = tagList("Summary", shiny::icon("bar-chart")),
+             value="summary",
             plotOutput("stackBarGroup"),
             plotOutput("graphGroup",  height = "600px")
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
+             value="maxEAR",
             h5("maxEAR = Maximum summation of EARs per sample"),
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm')
     ),
     tabPanel(title = tagList("Max Hits", shiny::icon("bars")),
+             value="maxHits",
             htmlOutput("nGroup"),
             DT::dataTableOutput('tableGroupSumm')
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
+             value="siteHits",
             h4("Number of sites with hits:"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%")
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
+             value="endpoint",
             plotOutput("endpointGraph",  height = "600px")
     )
   ),

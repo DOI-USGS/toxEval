@@ -255,6 +255,37 @@ shinyServer(function(input, output,session) {
   observe({
     updateSelectInput(session, "sites", choices = choices())
   })
+  
+  observe({
+    labelText <- "Choose Chemical"
+    
+    if (input$radioMaxGroup == 2){
+      labelText <- "Choose Chemical"
+    } else if(input$radioMaxGroup == 3){
+      labelText <- "Choose Class"
+    } else if(input$radioMaxGroup == 1){
+      labelText <- "Choose Group"
+    }
+    
+    updateSelectInput(session, "epGroup", label = labelText)
+  })
+  
+  observe({
+    valueText <- "All"
+    chemicalSummary <- chemicalSummary()
+    
+    if (input$radioMaxGroup == 2){
+      
+      uniqueChems <- c("All",unique(chemicalSummary$chnm))
+      valueText <- uniqueChems
+    } else if(input$radioMaxGroup == 3){
+      valueText <- c("All",unique(chemicalSummary$class))
+    } else if(input$radioMaxGroup == 1){
+      valueText <- c("All",unique(chemicalSummary$choices))
+    }
+    
+    updateSelectInput(session, "epGroup", choices = valueText)
+  })
 
   observe({
     groupChoice <- input$group
@@ -268,6 +299,43 @@ shinyServer(function(input, output,session) {
                        selected = 3)
   })
   
+  
+  observe({
+    
+    columnName <- input$groupCol
+    
+    updateSelectInput(session, "group", selected = "All")
+    
+  })
+  
+  observe({
+       
+        columnName <- input$groupCol
+# #        chemGroup <- chemicalSummary()
+# #         
+# #        orderBy <- chemGroup %>%
+# #          group_by(choices) %>%
+# #          summarise(max = max(EAR),
+# #                    nEndPoint = length(unique(endPoint))) %>%
+# #          arrange(desc(max)) %>%
+# #          filter(!is.na(choices))
+#         
+       endPointInfo <- endPointInfo
+       orderBy <- endPointInfo[,columnName]
+       orderNames <- names(table(orderBy))
+       nEndPoints <- as.integer(table(orderBy))
+       df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
+         arrange(desc(nEndPoints))
+       
+       dropDownHeader <- c("All",paste0(df$orderNames," (",df$nEndPoints,")"))
+        
+       updateSelectInput(session, "group",
+        choices = setNames(c("All",df$orderNames),dropDownHeader)
+       )
+    })
+  
+
+      
 #############################################################   
     chemicalSummary <- reactive({
       
@@ -751,24 +819,6 @@ shinyServer(function(input, output,session) {
       
   ############################################################# 
       
-      observe({
-
-       chemGroup <- chemicalSummary()
-        
-       orderBy <- chemGroup %>%
-         group_by(choices) %>%
-         summarise(max = max(EAR),
-                   nEndPoint = length(unique(endPoint))) %>%
-         arrange(desc(max)) %>%
-         filter(!is.na(choices))
-        
-       dropDownHeader <- c("All",paste0(orderBy$choices," (",orderBy$nEndPoint,")"))
-        
-       updateSelectInput(session, "group",
-        choices = setNames(c("All",orderBy$choices),dropDownHeader)
-       )
-    })
-      
       output$TableHeader <- renderUI({
         HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
       })
@@ -834,11 +884,23 @@ shinyServer(function(input, output,session) {
       
       output$endpointGraph <- renderPlot({ 
   
+        filterBy <- input$epGroup
+        
+        filterCat <- switch(as.character(input$radioMaxGroup),
+                            "1" = "choices",
+                            "2" = "chnm",
+                            "3" = "class")
+        
         boxData <- boxData()
       
         boxData3 <- boxData %>%
           filter(endPoint %in% unique(endPoint[EAR > 0.1]))
   
+        if(filterBy != "All"){
+          boxData3 <- boxData3 %>%
+            filter_(paste0(filterCat," == '", filterBy,"'"))
+        }
+        
         stackedPlot <- ggplot(boxData3, aes(x = cat, y = EAR))+
           scale_y_log10("Mean EAR Per Site") +
           geom_boxplot(aes(x=endPoint, y=EAR)) +
