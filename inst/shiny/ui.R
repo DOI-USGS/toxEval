@@ -80,7 +80,8 @@ body <- dashboardBody(
     tabPanel(title = tagList("Summary", shiny::icon("bar-chart")),
              value="summary",
             plotOutput("stackBarGroup"),
-            plotOutput("graphGroup",  height = "600px")
+            h4(""),
+            plotOutput("graphGroup",  height = "500px")
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
