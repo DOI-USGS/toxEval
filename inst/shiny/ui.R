@@ -39,12 +39,21 @@ header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   selectInput("data", label = "Data", 
-                     choices = c("Water Sample",
-                                 "Passive Samples",
-                                 "Duluth",
-                                 "NPS"),
-                     selected = "Water Sample", multiple = FALSE),
+#    selectInput("data", label = "Data", 
+#                      choices = c("Water Sample",
+#                                  "Passive Samples",
+#                                  "Duluth",
+#                                  "NPS"),
+#                      selected = "Water Sample", multiple = FALSE),
+#    selectInput("data", label = "Data", 
+#                choices = c("No Futz",
+#                            "10% Measurement",
+#                            "10% AC50"),
+#                selected = "No Futz", multiple = FALSE),
+    selectInput("data", label = "Data", 
+                choices = c("V2",
+                            "V1"),
+                selected = "V2", multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                  choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                  selected = 3),
@@ -80,7 +89,8 @@ body <- dashboardBody(
     tabPanel(title = tagList("Summary", shiny::icon("bar-chart")),
              value="summary",
             plotOutput("stackBarGroup"),
-            plotOutput("graphGroup",  height = "600px")
+            h4(""),
+            plotOutput("graphGroup",  height = "500px")
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
