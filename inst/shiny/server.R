@@ -159,6 +159,7 @@ makePlots <- function(boxData, noLegend, boxPlot){
   ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
   
   xmax <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[2]
+  xmin <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[1]
 
   lowerPlot <- lowerPlot + 
     geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
@@ -172,16 +173,13 @@ makePlots <- function(boxData, noLegend, boxPlot){
         grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
         ymin = log10(df1$y[i]),      # Vertical position of the textGrob
         ymax = log10(df1$y[i]),
-        xmin = xmax,         # Note: The grobs are positioned outside the plot area
-        xmax = xmax)
+        xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
+        xmax = xmax+0.05)
   }
 
-      
-      
-#       data=data.frame(), aes(label = c("# Non Zero","Hit Threshold","# Hits"), 
-#                                      y = c(ymin,0.1,ymax), x = c(Inf,Inf,Inf),size=20, vjust = -1)) + 
-#     
-  lowerPlot <- lowerPlot + coord_flip() 
+  lowerPlot <- lowerPlot + 
+    # scale_x_continuous(limits = c(xmin,xmax+0.5)) + 
+    coord_flip() 
   
   # Code to override clipping
   lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
@@ -293,19 +291,6 @@ shinyServer(function(input, output,session) {
   })
 
   observe({
-    groupChoice <- input$group
-    if(groupChoice == "All"){
-      radioChoices = list("Group" = 1, "Chemical" = 2, "Class" = 3)
-    } else {
-      radioChoices = list("Chemical" = 2, "Class" = 3)
-    }
-    updateRadioButtons(session, "radioMaxGroup", 
-                       choices = radioChoices,
-                       selected = 3)
-  })
-  
-  
-  observe({
     
     columnName <- input$groupCol
     
@@ -315,16 +300,8 @@ shinyServer(function(input, output,session) {
   
   observe({
        
-        columnName <- input$groupCol
-# #        chemGroup <- chemicalSummary()
-# #         
-# #        orderBy <- chemGroup %>%
-# #          group_by(choices) %>%
-# #          summarise(max = max(EAR),
-# #                    nEndPoint = length(unique(endPoint))) %>%
-# #          arrange(desc(max)) %>%
-# #          filter(!is.na(choices))
-#         
+       columnName <- input$groupCol
+
        endPointInfo <- endPointInfo
        orderBy <- endPointInfo[,columnName]
        orderNames <- names(table(orderBy))
@@ -348,20 +325,42 @@ shinyServer(function(input, output,session) {
       groupCol <- input$groupCol
       group <- input$group
       
-      if (input$data == "Water Sample"){
+#       if (input$data == "Water Sample"){
+#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
+#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+#       } else if (input$data == "Passive Samples"){
+#         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
+#         chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
+#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+#       } else if (input$data == "Duluth"){
+#         chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
+#         stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
+#       } else if (input$data == "NPS"){
+#         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
+#         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
+#       }
+      
+#       if (input$data == "No Futz"){
+#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary_original.rds"))
+#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+#       } else if (input$data == "10% AC50"){
+#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary_new_10percentMeas.rds"))
+#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+#       } else if (input$data == "10% Measurement"){
+#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary_old_10percentAC.rds"))
+#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+#       } else if (input$data == "NPS"){
+#         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
+#         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
+#       }
+      
+      if (input$data == "V2"){
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
+        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+      } else if (input$data == "V1"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } else if (input$data == "Passive Samples"){
-        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
-        chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
-        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } else if (input$data == "Duluth"){
-        chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
-        stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
-      } else if (input$data == "NPS"){
-        chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
-        stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
-      }
+      } 
       
       chemicalSummary <- rename(chemicalSummary, assay_component_endpoint_name=endPoint) %>%
         filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
