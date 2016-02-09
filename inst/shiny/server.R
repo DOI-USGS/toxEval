@@ -107,7 +107,9 @@ makePlots <- function(boxData, noLegend, boxPlot){
       group_by(site,date,cat) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
-      rename(meanEAR=sumEAR)
+      rename(meanEAR=sumEAR)%>%
+      mutate(cat=factor(cat)) %>%
+      filter(!is.na(cat)) 
     
     orderColsBy <- graphData %>%
       mutate(cat = as.character(cat)) %>%
@@ -497,20 +499,23 @@ shinyServer(function(input, output,session) {
         group_by(site,category) %>%
         summarise(max = sum(sumEAR > 0.1),
                   mean = sum(mean(sumEAR) > 0.1),
-                  hit = as.numeric(any(sumEAR > 0.1)) )%>%
+                  hit = as.numeric(any(sumEAR > 0.1)),
+                  nSamples = n())%>%
         data.frame()
 
       if(length(siteToFind) > 1){
         statsOfGroupOrdered <- statsOfGroupOrdered %>%
           group_by(site) %>%
           summarise(max=sum(max > 0),
-                    mean=sum(mean > 0))
-      } else {
-        statsOfGroupOrdered <- statsOfGroupOrdered %>%
-          data.frame() %>%
-          left_join(summaryFile[c("site","nSamples")], by="site") %>%
-          select(-site, -hit)
+                    mean=sum(mean > 0),
+                    nSamples = median(nSamples))
       }
+#       } else {
+#         statsOfGroupOrdered <- statsOfGroupOrdered %>%
+#           data.frame() %>%
+#           left_join(summaryFile[c("site","nSamples")], by="site") %>%
+#           select(-site, -hit)
+#       }
       
       statsOfGroupOrdered
         
@@ -539,13 +544,6 @@ shinyServer(function(input, output,session) {
       if(length(siteToFind) > 1){
         
         colToSort <- 1
-        if (input$data == "Water Sample"){
-          
-          summaryFile <- filter(summaryFile, site %in% siteToFind)
-          statsOfGroupOrdered <- left_join(summaryFile[,c("site","nSamples")], statsOfGroupOrdered, by="site")
-          
-          colToSort <- 2
-        }
         
         meanChem <- grep("mean",names(statsOfGroupOrdered))
         maxChem <- grep("max",names(statsOfGroupOrdered))
@@ -624,6 +622,7 @@ shinyServer(function(input, output,session) {
       tableSumm <- DT::datatable(statCol, 
                                  rownames = FALSE,
                                  options = list(dom = 'ft',
+                                                scrollX = TRUE,
                                                 pageLength = nrow(statCol),
                                                 order=list(list(colToSort,'desc'))))
 
@@ -878,7 +877,7 @@ shinyServer(function(input, output,session) {
                           "<h5>mean = Mean number of",word,"with hits per site</h5>",
                           "<h5>nSamples = Number of samples per site</h5>")
         } else {
-          textUI <- paste("<h5>hits = Number of",word,"with hits </h5>",
+          textUI <- paste("<h5>hits = Number of samples with hits </h5>",
                           "<h5>nSamples = Number of samples per site</h5>")
         }
         HTML(textUI)
