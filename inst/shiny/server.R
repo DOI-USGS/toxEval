@@ -30,10 +30,6 @@ df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-# uniqueClasses <- c("OC Pesticides","PAH","Detergent Metabolites","Insecticide","Antimicrobial Disinfectant","Pharmaceuticals",
-#                    "Herbicide","Flavor/Fragrance","Other","Solvent","Plasticizer","Antioxidant","Fire Retardant","Human Drug, Non Prescription",
-#                    "Fuel","Hormones")            
-
 interl3 <- function (a,b,cv) {
   n <- min(length(a),length(b),length(cv))
   p1 <- as.vector(rbind(a[1:n],b[1:n],cv[1:n]))
@@ -616,28 +612,6 @@ shinyServer(function(input, output,session) {
       print(grid.draw(groupPlots()$lowerPlot))
     })
 
-    # boxData <- reactive({
-    #   
-    #   radioMaxGroup <- input$radioMaxGroup
-    #   
-    #   chemGroup <- chemicalSummary()
-    #   siteToFind <- unique(chemGroup$site)
-    # 
-    #   boxData <- chemGroup %>%
-    #     mutate(date = factor(as.numeric(date) - min(as.numeric(date))))
-    #   
-    #   if(radioMaxGroup == "1"){
-    #     boxData <- mutate(boxData, cat=choices)
-    #   } else if (radioMaxGroup == "2"){
-    #     boxData <- mutate(boxData, cat=chnm)
-    #   } else {
-    #     boxData <- mutate(boxData, cat=class)
-    #   }
-    # 
-    #   return(boxData)
-    #   
-    # })
-
     groupPlots <- reactive({
       
       boxData <- chemicalSummary()
@@ -709,7 +683,6 @@ shinyServer(function(input, output,session) {
         # pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
         
         map <- leafletProxy("mymap", data=mapData) %>%
-          # clearShapes() %>%
           clearMarkers() %>%
           clearControls() %>%
           addCircleMarkers(lat=~dec.lat.va, lng=~dec.long.va, 
@@ -733,7 +706,6 @@ shinyServer(function(input, output,session) {
             opacity = 0.8,
             labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
             title = 'Mean EAR')
-          
         }
         
         map
@@ -763,6 +735,16 @@ shinyServer(function(input, output,session) {
   
       output$TableHeaderColumns <- renderUI({
         HTML(paste("<h4>", input$data,": ",input$sites, "</h4>"))
+      })
+      
+      output$siteHitText <- renderUI({
+        
+        if(input$sites == "All" | input$sites == "Potential 2016"){
+          HTML(paste("<h4>Number of sites with hits</h4>"))
+        } else {
+          HTML(paste("<h4>Number of samples with hits</h4>"))
+        }        
+        
       })
   
       output$nGroup <- renderUI({
@@ -840,33 +822,54 @@ shinyServer(function(input, output,session) {
         
         boxData <- chemicalSummary()
         
-        tableData <- boxData %>%
-          group_by(site, choices, class) %>%
-          summarize(hits = any(hits > 0)) %>%
-          group_by(choices, class) %>%
-          summarize(nSites = sum(hits)) %>%
-          data.frame() %>%
-          reshape(idvar="choices",timevar="class", direction="wide") 
+        if(length(unique(boxData$site)) > 1){
+          tableData <- boxData %>%
+            group_by(site, choices, category) %>%
+            summarize(hits = any(hits > 0)) %>%
+            group_by(choices, category) %>%
+            summarize(nSites = sum(hits)) %>%
+            data.frame() 
+        } else {
+          tableData <- boxData %>%
+            group_by(choices, category, date)
+          
+          tableData <- tableData %>%
+            summarise(sumEAR=sum(EAR)) %>%
+            data.frame() %>%
+            group_by(choices, category) %>%
+            summarise(nSites = sum(sumEAR>0.1))%>%
+            data.frame() 
+          
+        }
         
-        names(tableData) <- gsub("nSites.","",names(tableData))
-        names(tableData)[1] <- "Groups"
-        
-        sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
-        orderData <- order(sumOfColumns,decreasing = TRUE) 
-        orderData <- orderData[sumOfColumns[orderData] != 0] + 1
-        
-        tableData <- tableData[,c(1,orderData)]
-        colors <- brewer.pal(9,"Blues") #"RdYlBu"
-        
-        groups <- tableData$Groups
-        
-        tableData <- tableData[!is.na(groups),-1]
-        rownames(tableData) <- groups[!is.na(groups)]
-  
-        cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
-        
-        names(tableData)[names(tableData) == "Human Drug, Non Prescription"] <- "Human Drug"
-        names(tableData)[names(tableData) == "Flavor/Fragrance"] <- "Flavor / Fragrance"
+        if(input$radioMaxGroup != "1"){
+          tableData <- tableData %>%
+            reshape(idvar="choices",timevar="category", direction="wide") 
+          
+          names(tableData) <- gsub("nSites.","",names(tableData))
+          names(tableData)[1] <- "Groups"
+          
+          sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
+          orderData <- order(sumOfColumns,decreasing = TRUE) 
+          orderData <- orderData[sumOfColumns[orderData] != 0] + 1
+          
+          tableData <- tableData[,c(1,orderData)]
+          colors <- brewer.pal(9,"Blues") #"RdYlBu"
+          
+          groups <- tableData$Groups
+          
+          tableData <- tableData[!is.na(groups),-1]
+          rownames(tableData) <- groups[!is.na(groups)]
+          
+          cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
+          
+          names(tableData)[names(tableData) == "Human Drug, Non Prescription"] <- "Human Drug"
+          names(tableData)[names(tableData) == "Flavor/Fragrance"] <- "Flavor / Fragrance"
+        } else {
+          tableData <- select(tableData, choices, nSites)
+          rownames(tableData) <- tableData$choices
+          tableData <- tableData[,-1,drop=FALSE]
+        }
         
         tableData1 <- DT::datatable(tableData, # extensions = 'TableTools',
                                     rownames = TRUE,
@@ -878,14 +881,14 @@ shinyServer(function(input, output,session) {
                                                    pageLength = nrow(tableData),
                                                    # tableTools = list(sSwfPath = copySWF()),
                                                    order=list(list(1,'desc'))))
-  
-        for(i in 1:ncol(tableData)){
-          tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
-                      backgroundColor = styleInterval(cuts = cuts,values = colors),
-                      color = styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
-                      `font-size` = '17px')
+        if(input$radioMaxGroup != "1"){
+          for(i in 1:ncol(tableData)){
+            tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
+                        backgroundColor = styleInterval(cuts = cuts,values = colors),
+                        color = styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
+                        `font-size` = '17px')
+          }
         }
-  
         tableData1
         
       })

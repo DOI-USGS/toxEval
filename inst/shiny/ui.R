@@ -104,8 +104,8 @@ body <- dashboardBody(
             DT::dataTableOutput('tableGroupSumm')
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
-             value="siteHits",
-            h4("Number of sites with hits:"),
+            value="siteHits",
+            htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%")
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
