@@ -825,7 +825,7 @@ shinyServer(function(input, output,session) {
         if(length(unique(boxData$site)) > 1){
           tableData <- boxData %>%
             group_by(site, choices, category) %>%
-            summarize(hits = any(hits > 0)) %>%
+            summarize(hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
             group_by(choices, category) %>%
             summarize(nSites = sum(hits)) %>%
             data.frame() 
@@ -837,7 +837,7 @@ shinyServer(function(input, output,session) {
             summarise(sumEAR=sum(EAR)) %>%
             data.frame() %>%
             group_by(choices, category) %>%
-            summarise(nSites = sum(sumEAR>0.1))%>%
+            summarise(nSites = sum(sumEAR>0.1))%>% #or is a hit when the sum is greater than 0.1?
             data.frame() 
           
         }
