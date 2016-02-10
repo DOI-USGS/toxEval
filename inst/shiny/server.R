@@ -326,6 +326,7 @@ shinyServer(function(input, output,session) {
       path <- pathToApp
       groupCol <- input$groupCol
       group <- input$group
+      radioMaxGroup <- input$radioMaxGroup
       
 #       if (input$data == "Water Sample"){
 #         chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
@@ -383,6 +384,30 @@ shinyServer(function(input, output,session) {
         
         chemicalSummary <- filter(chemicalSummary, endPoint %in% endPointInfoSub$endPoint)
       }
+    
+      if(radioMaxGroup == "2"){
+        chemicalSummary <- chemicalSummary %>%
+          mutate(category=chnm)
+      } else if(radioMaxGroup == "3"){
+        chemicalSummary <- chemicalSummary %>%
+          mutate(category=class)
+      } else if(radioMaxGroup == "4"){
+        chemicalSummary <- chemicalSummary %>%
+          mutate(category=endPoint) 
+      } else {
+        chemicalSummary <- chemicalSummary %>%
+          mutate(category = choices)         
+      }
+      
+      if (input$sites == "Potential 2016"){
+        chemicalSummary <-  chemicalSummary %>%
+          filter(site %in% df2016$Site)
+      } else if (input$sites != "All"){
+        if(any(input$sites %in% chemicalSummary$site)){
+          chemicalSummary <-  chemicalSummary %>%
+            filter(site %in% input$sites)
+        }
+      }
       
       chemicalSummary 
       
@@ -393,24 +418,24 @@ shinyServer(function(input, output,session) {
       chemicalSummary <- chemicalSummary()
 
       radio <- input$radioMaxGroup
-      
       statsOfColumn <- chemicalSummary 
 
-      if (input$sites == "All"){
-        siteToFind <- unique(statsOfColumn$site)
-      } else if (input$sites == "Potential 2016"){
-        siteToFind <- df2016$Site
-        statsOfColumn <- statsOfColumn  %>%
-          filter(site %in% siteToFind)
-      } else {
-        siteToFind <- input$sites
-        if(any(siteToFind %in% statsOfColumn$site)){
-          statsOfColumn <- statsOfColumn  %>%
-            filter(site %in% siteToFind)
-        } else {
-          siteToFind <- unique(statsOfColumn$site)
-        }
-      }
+      # if (input$sites == "All"){
+      #   siteToFind <- unique(statsOfColumn$site)
+      # } else if (input$sites == "Potential 2016"){
+      #   siteToFind <- df2016$Site
+      #   statsOfColumn <- statsOfColumn  %>%
+      #     filter(site %in% siteToFind)
+      # } else {
+      #   siteToFind <- input$sites
+      #   if(any(siteToFind %in% statsOfColumn$site)){
+      #     statsOfColumn <- statsOfColumn  %>%
+      #       filter(site %in% siteToFind)
+      #   } else {
+      #     siteToFind <- unique(statsOfColumn$site)
+      #   }
+      # }
+      siteToFind <- unique(statsOfColumn$site)
       
       if(length(siteToFind) == 1){
 
@@ -424,10 +449,10 @@ shinyServer(function(input, output,session) {
       } 
 
       statsOfColumn <- statsOfColumn %>%
-        group_by(site, date, choices) %>%
+        group_by(site, date, category) %>%
         summarise(sumEAR = sum(EAR),
                   nHits = sum(hits)) %>%
-        group_by(site, choices) %>%
+        group_by(site, category) %>%
         summarise(maxEAR = max(sumEAR),
                   meanEAR = mean(sumEAR),
                   sumHits = sum(nHits),
@@ -436,62 +461,38 @@ shinyServer(function(input, output,session) {
       
       if(!(length(siteToFind) == 1 & radio == "1")){
         statsOfColumn <- statsOfColumn %>%
-          gather(calc, value, -site, -choices) %>%
-          unite(choice_calc, choices, calc, sep=" ") %>%
+          gather(calc, value, -site, -category) %>%
+          unite(choice_calc, category, calc, sep=" ") %>%
           spread(choice_calc, value)        
       }
-      
-      if(length(siteToFind) > 1){
-        if (input$data == "Water Sample"){
-          summaryFile <- filter(summaryFile, site %in% siteToFind)
-          statsOfColumn <- left_join(summaryFile[,c("site","nSamples")], statsOfColumn, by="site")
-        }
-      }
-      
+
       statsOfColumn
       
     })
     
     statsOfGroupOrdered <- reactive({
-      
-      groupCol <- input$groupCol
 
-      radioMaxGroup <- input$radioMaxGroup
+      statsOfGroup <- chemicalSummary()   
       
-      chemGroup <- chemicalSummary()   
+      # if (input$sites == "All"){
+      #   siteToFind <- unique(chemGroup$site)
+      #   statsOfGroup <-  chemGroup
+      # } else if (input$sites == "Potential 2016"){
+      #   siteToFind <- df2016$Site
+      #   statsOfGroup <-  chemGroup %>%
+      #     filter(site %in% siteToFind)
+      # } else {
+      #   if(any(input$sites %in% chemGroup$site)){
+      #     siteToFind <- input$sites
+      #     statsOfGroup <-  chemGroup %>%
+      #       filter(site %in% siteToFind)
+      #   } else {
+      #     siteToFind <- unique(chemGroup$site)
+      #     statsOfGroup <-  chemGroup
+      #   }
+      # }
       
-      if (input$sites == "All"){
-        siteToFind <- unique(chemGroup$site)
-        statsOfGroup <-  chemGroup
-      } else if (input$sites == "Potential 2016"){
-        siteToFind <- df2016$Site
-        statsOfGroup <-  chemGroup %>%
-          filter(site %in% siteToFind)
-      } else {
-        if(any(input$sites %in% chemGroup$site)){
-          siteToFind <- input$sites
-          statsOfGroup <-  chemGroup %>%
-            filter(site %in% siteToFind)
-        } else {
-          siteToFind <- unique(chemGroup$site)
-          statsOfGroup <-  chemGroup
-        }
-      }
-      
-      # Move this:      
-      if(radioMaxGroup == "2"){
-        statsOfGroup <- statsOfGroup %>%
-          mutate(category=chnm)
-      } else if(radioMaxGroup == "3"){
-        statsOfGroup <- statsOfGroup %>%
-          mutate(category=class)
-      } else if(radioMaxGroup == "4"){
-        statsOfGroup <- statsOfGroup %>%
-          mutate(category=endPoint) 
-      } else {
-        statsOfGroup <- statsOfGroup %>%
-          mutate(category = choices)         
-      }
+      siteToFind <- unique(statsOfGroup$site)
       
       statsOfGroupOrdered <- statsOfGroup %>%
         group_by(site, date,category) %>%
@@ -510,13 +511,7 @@ shinyServer(function(input, output,session) {
                     mean=sum(mean > 0),
                     nSamples = median(nSamples))
       }
-#       } else {
-#         statsOfGroupOrdered <- statsOfGroupOrdered %>%
-#           data.frame() %>%
-#           left_join(summaryFile[c("site","nSamples")], by="site") %>%
-#           select(-site, -hit)
-#       }
-      
+
       statsOfGroupOrdered
         
     }) 
@@ -628,6 +623,8 @@ shinyServer(function(input, output,session) {
 
       
       tableSumm <- formatRound(tableSumm, names(statCol)[-ignoreIndex], 2) 
+      
+      # maxCols <- ifelse(length(maxEARS) >= 10, 10, length(maxEARS))
       
       for(i in 1:length(maxEARS)){
         tableSumm <- formatStyle(tableSumm, 
