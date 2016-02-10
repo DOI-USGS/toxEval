@@ -420,21 +420,6 @@ shinyServer(function(input, output,session) {
       radio <- input$radioMaxGroup
       statsOfColumn <- chemicalSummary 
 
-      # if (input$sites == "All"){
-      #   siteToFind <- unique(statsOfColumn$site)
-      # } else if (input$sites == "Potential 2016"){
-      #   siteToFind <- df2016$Site
-      #   statsOfColumn <- statsOfColumn  %>%
-      #     filter(site %in% siteToFind)
-      # } else {
-      #   siteToFind <- input$sites
-      #   if(any(siteToFind %in% statsOfColumn$site)){
-      #     statsOfColumn <- statsOfColumn  %>%
-      #       filter(site %in% siteToFind)
-      #   } else {
-      #     siteToFind <- unique(statsOfColumn$site)
-      #   }
-      # }
       siteToFind <- unique(statsOfColumn$site)
       
       if(length(siteToFind) == 1){
@@ -454,12 +439,12 @@ shinyServer(function(input, output,session) {
                   nHits = sum(hits)) %>%
         group_by(site, category) %>%
         summarise(maxEAR = max(sumEAR),
-                  meanEAR = mean(sumEAR),
-                  sumHits = sum(nHits),
+                  # meanEAR = mean(sumEAR),
+                  # sumHits = sum(nHits),
                   freq = sum(nHits > 0)/n()) %>%
         data.frame()
       
-      if(!(length(siteToFind) == 1 & radio == "1")){
+      if(!(length(siteToFind) == 1)){ #  & radio == "1"
         statsOfColumn <- statsOfColumn %>%
           gather(calc, value, -site, -category) %>%
           unite(choice_calc, category, calc, sep=" ") %>%
@@ -473,25 +458,7 @@ shinyServer(function(input, output,session) {
     statsOfGroupOrdered <- reactive({
 
       statsOfGroup <- chemicalSummary()   
-      
-      # if (input$sites == "All"){
-      #   siteToFind <- unique(chemGroup$site)
-      #   statsOfGroup <-  chemGroup
-      # } else if (input$sites == "Potential 2016"){
-      #   siteToFind <- df2016$Site
-      #   statsOfGroup <-  chemGroup %>%
-      #     filter(site %in% siteToFind)
-      # } else {
-      #   if(any(input$sites %in% chemGroup$site)){
-      #     siteToFind <- input$sites
-      #     statsOfGroup <-  chemGroup %>%
-      #       filter(site %in% siteToFind)
-      #   } else {
-      #     siteToFind <- unique(chemGroup$site)
-      #     statsOfGroup <-  chemGroup
-      #   }
-      # }
-      
+
       siteToFind <- unique(statsOfGroup$site)
       
       statsOfGroupOrdered <- statsOfGroup %>%
@@ -521,20 +488,8 @@ shinyServer(function(input, output,session) {
     output$tableGroupSumm <- DT::renderDataTable({        
 
       statsOfGroupOrdered <- statsOfGroupOrdered()
-  
-      if (input$sites == "All"){
-        siteToFind <- unique(statsOfGroupOrdered$site)
-      } else if (input$sites == "Potential 2016"){
-        siteToFind <- df2016$Site
-      } else {
-        if(any(input$sites %in% statsOfGroupOrdered$site)){
-          siteToFind <- input$sites
-          statsOfGroupOrdered <- statsOfGroupOrdered %>%
-            filter(siteToFind %in% site)
-        } else {
-          siteToFind <- unique(statsOfGroupOrdered$site)
-        }
-      }
+
+      siteToFind <- unique(statsOfGroupOrdered$site)
 
       if(length(siteToFind) > 1){
         
@@ -566,8 +521,8 @@ shinyServer(function(input, output,session) {
           tableGroup <- DT::datatable(statsOfGroupOrdered[,c("category","max","nSamples")], 
                                       rownames = FALSE,
                                       colnames = c('hits' = 2),
-                                      filter = 'top',
-                                      options = list(pageLength = nrow(statsOfGroupOrdered), 
+                                      options = list(dom = 'ft',
+                                                     pageLength = nrow(statsOfGroupOrdered), 
                                                      order=list(list(1,'desc'))))
 
           tableGroup <- formatStyle(tableGroup, "hits", 
