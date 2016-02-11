@@ -11,6 +11,8 @@ library(grid)
 endPointInfo <- endPointInfo
 
 endPointInfo <- endPointInfo[,c(39,51,30)]
+endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
+endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
@@ -306,6 +308,14 @@ shinyServer(function(input, output,session) {
        nEndPoints <- as.integer(table(orderBy))
        df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
          arrange(desc(nEndPoints))
+       
+       if(length(grep("background",df$orderNames)) > 0){
+         df <- df[-grep("background",df$orderNames),]
+       }
+       
+       if(length(grep("cell cycle",df$orderNames)) > 0){
+         df <- df[-grep("cell cycle",df$orderNames),]
+       }
        
        dropDownHeader <- c("All",paste0(df$orderNames," (",df$nEndPoints,")"))
         
