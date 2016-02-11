@@ -63,7 +63,7 @@ NULL
 
 #' Endpoint information from ToxCast
 #' 
-#' Downloaded on March 20, 2015 from ToxCast dashboard
+#' Downloaded on October 2015 from ToxCast dashboard
 #'
 #'@name endPointInfo
 #'@docType data

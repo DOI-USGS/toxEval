@@ -10,6 +10,8 @@ library(grid)
 
 endPointInfo <- endPointInfo
 
+endPointInfo <- endPointInfo[,c(39,51,30)]
+
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
                   "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
@@ -27,7 +29,7 @@ endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
 
 df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 
-choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
+choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
 interl3 <- function (a,b,cv) {
@@ -299,8 +301,6 @@ shinyServer(function(input, output,session) {
   observe({
        
        columnName <- input$groupCol
-
-       endPointInfo <- endPointInfo
        orderBy <- endPointInfo[,columnName]
        orderNames <- names(table(orderBy))
        nEndPoints <- as.integer(table(orderBy))
@@ -361,10 +361,21 @@ shinyServer(function(input, output,session) {
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } 
       
-      chemicalSummary <- rename(chemicalSummary, assay_component_endpoint_name=endPoint) %>%
-        filter(assay_component_endpoint_name %in% endPointInfo$assay_component_endpoint_name ) %>%
-        data.table()%>%
-        left_join(data.table(endPointInfo[,c("assay_component_endpoint_name", groupCol)]), by = "assay_component_endpoint_name") %>%
+      ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
+      if(length(grep("background",ep[,2])) > 0){
+        ep <- ep[-grep("background",ep[,2]),]
+      }
+      if(length(grep("cell cycle",ep[,2])) > 0){
+        ep <- ep[-grep("cell cycle",ep[,2]),]
+      }
+      ep <- ep[!is.na(ep[,2]),]
+      
+
+      
+      chemicalSummary <- rename(chemicalSummary, assay_component_endpoint_name=endPoint)%>%
+        filter(assay_component_endpoint_name %in% ep$assay_component_endpoint_name ) %>%
+        data.table() %>%
+        left_join(data.table(ep)) %>%
         data.frame() %>%
         rename(endPoint = assay_component_endpoint_name) %>%
         select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue") %>%
@@ -874,10 +885,11 @@ shinyServer(function(input, output,session) {
         tableData1 <- DT::datatable(tableData, # extensions = 'TableTools',
                                     rownames = TRUE,
                                     options = list(dom = 't',
-                                                   initComplete = JS(
-                                                     "function(settings, json) {",
-                                                     "$(this.api().table().header()).css({'font-size': 'large'});",
-                                                     "}"),
+                                                   scrollX = TRUE,
+                                                   # initComplete = JS(
+                                                   #   "function(settings, json) {",
+                                                   #   "$(this.api().table().header()).css({'font-size': 'large'});",
+                                                   #   "}"),
                                                    pageLength = nrow(tableData),
                                                    # tableTools = list(sSwfPath = copySWF()),
                                                    order=list(list(1,'desc'))))
