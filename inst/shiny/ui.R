@@ -1,39 +1,56 @@
 library(toxEval)
 library(shinydashboard)
 endPointInfo <- endPointInfo
-choicesPerGroup <- apply(endPointInfo[,-3], 2, function(x) length(unique(x)))
+endPointInfo <- endPointInfo[,c(39,51,30)]
+choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
+
 pathToApp <- system.file("extdata", package="toxEval")
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 
 # Help set up data:
-groupCol <- "biological_process_target"
-group <- "regulation of transcription factor activity"
-initialChoices <- c( "All",
-                     "regulation of transcription factor activity",
-                     "receptor binding",
-                     "cell proliferation",
-                     "regulation of gene expression",              
-                     "cell cycle",                       
-                     "cell death",                                 
-                     "regulation of catalytic activity",           
-                     "mitochondrial depolarization",                
-                     "oxidative phosphorylation",                
-                     "protein stabilization",                   
-                     "cell morphology")
+# initialChoices <- c( "All",
+#                      "regulation of transcription factor activity",
+#                      "receptor binding",
+#                      "cell proliferation",
+#                      "regulation of gene expression",
+#                      "cell cycle",
+#                      "cell death",
+#                      "regulation of catalytic activity",
+#                      "mitochondrial depolarization",
+#                      "oxidative phosphorylation",
+#                      "protein stabilization",
+#                      "cell morphology")
+# 
+# dropDownChoices <- c("All",
+#                      "regulation of transcription factor activity (103)",
+#                      "receptor binding (86)",
+#                      "cell proliferation (26)",
+#                      "regulation of gene expression (108)",
+#                      "cell cycle (21)",
+#                      "cell death (20)",
+#                      "regulation of catalytic activity (105)",
+#                      "mitochondrial depolarization (7)",
+#                      "oxidative phosphorylation (8)",
+#                      "protein stabilization (19)",
+#                      "cell morphology (1)")
 
-dropDownChoices <- c("All",
-                     "regulation of transcription factor activity (103)",
-                     "receptor binding (86)",
-                     "cell proliferation (26)",
-                     "regulation of gene expression (108)",              
-                     "cell cycle (21)",                       
-                     "cell death (20)",                                 
-                     "regulation of catalytic activity (105)",           
-                     "mitochondrial depolarization (7)",                
-                     "oxidative phosphorylation (8)",                
-                     "protein stabilization (19)",                   
-                     "cell morphology (1)")
+dropDownChoices <- c("All", "nuclear receptor (172)","cell morphology (97)",     
+                    "dna binding (84)","growth factor (6)",        
+                    "cell adhesion molecules (32)","cytokine (82)","gpcr (82)",                  
+                    "kinase (122)","protease (42)","misc protein (4)",
+                    "protease inhibitor (42)","cyp (81)","esterase (12)",     
+                    "phosphatase (38)","hydrolase (11)","oxidoreductase (22)",         
+                    "lyase (6)","methyltransferase (2)","ion channel (20)",           
+                    "transporter (23)","steroid hormone (20)","transferase (9)" )
+initialChoices <- c("All", "nuclear receptor","cell morphology",     
+                    "dna binding","growth factor",        
+                    "cell adhesion molecules","cytokine","gpcr",                  
+                    "kinase","protease","misc protein",
+                    "protease inhibitor","cyp","esterase",     
+                    "phosphatase","hydrolase","oxidoreductase",         
+                    "lyase","methyltransferase","ion channel",           
+                    "transporter","steroid hormone","transferase" )
 
 header <- dashboardHeader(title = "toxEval")
 
@@ -61,8 +78,8 @@ sidebar <- dashboardSidebar(
                choices = c("All","Potential 2016",summaryFile$site),
                selected = "All", multiple = FALSE),
    selectInput("groupCol", label = "Annotation (# Groups)", 
-                                 choices = setNames(names(endPointInfo)[-3],groupChoices),
-                                 selected = names(endPointInfo)[4], multiple = FALSE),
+                                 choices = setNames(names(endPointInfo)[-1],groupChoices),
+                                 selected = names(endPointInfo)[1], multiple = FALSE),
    selectInput("group", label = "Groups (# End Points)",
                choices = setNames(initialChoices,dropDownChoices),
                multiple = FALSE,width = '400px',
@@ -104,8 +121,8 @@ body <- dashboardBody(
             DT::dataTableOutput('tableGroupSumm')
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
-             value="siteHits",
-            h4("Number of sites with hits:"),
+            value="siteHits",
+            htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%")
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),

@@ -5,7 +5,7 @@
 \alias{endPointInfo}
 \title{Endpoint information from ToxCast}
 \description{
-Downloaded on March 20, 2015 from ToxCast dashboard
+Downloaded on October 2015 from ToxCast dashboard
 }
 \examples{
 endPointInfo <- endPointInfo
