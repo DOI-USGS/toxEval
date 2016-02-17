@@ -2,6 +2,9 @@ library(toxEval)
 library(shinydashboard)
 endPointInfo <- endPointInfo
 endPointInfo <- endPointInfo[,c(39,51,30)]
+endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
+endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
+
 choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
@@ -35,22 +38,24 @@ summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 #                      "protein stabilization (19)",
 #                      "cell morphology (1)")
 
-dropDownChoices <- c("All", "nuclear receptor (172)","cell morphology (97)",     
-                    "dna binding (84)","growth factor (6)",        
-                    "cell adhesion molecules (32)","cytokine (82)","gpcr (82)",                  
-                    "kinase (122)","protease (42)","misc protein (4)",
-                    "protease inhibitor (42)","cyp (81)","esterase (12)",     
-                    "phosphatase (38)","hydrolase (11)","oxidoreductase (22)",         
-                    "lyase (6)","methyltransferase (2)","ion channel (20)",           
-                    "transporter (23)","steroid hormone (20)","transferase (9)" )
-initialChoices <- c("All", "nuclear receptor","cell morphology",     
-                    "dna binding","growth factor",        
-                    "cell adhesion molecules","cytokine","gpcr",                  
-                    "kinase","protease","misc protein",
-                    "protease inhibitor","cyp","esterase",     
-                    "phosphatase","hydrolase","oxidoreductase",         
-                    "lyase","methyltransferase","ion channel",           
-                    "transporter","steroid hormone","transferase" )
+dropDownChoices <- c( "All","nuclear receptor (172)",     
+                      "kinase (118)",
+                      "cyp (81)","dna binding (78)",         
+                      "gpcr (76)","phosphatase (38)",      
+                      "protease (30)",    
+                      "transporter (23)","oxidoreductase (22)",      
+                      "ion channel (20)","steroid hormone (20)",       
+                      "esterase (12)","hydrolase (11)",             
+                      "transferase (9)","lyase (6)",      
+                      "cell morphology (2)","growth factor (2)",         
+                      "methyltransferase (2)","misc protein (2)")
+initialChoices <- c("All","nuclear receptor","kinase",
+                    "cyp","dna binding","gpcr",                 
+                    "phosphatase","protease",         
+                    "transporter","oxidoreductase","ion channel",     
+                    "steroid hormone","esterase","hydrolase",        
+                    "transferase","lyase","cell morphology",     
+                    "growth factor","methyltransferase","misc protein")
 
 header <- dashboardHeader(title = "toxEval")
 
@@ -69,7 +74,7 @@ sidebar <- dashboardSidebar(
 #                selected = "No Futz", multiple = FALSE),
     selectInput("data", label = "Data", 
                 choices = c("V2",
-                            "V1"),
+                            "V2_noFlags_except"),
                 selected = "V2", multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                  choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
@@ -79,7 +84,7 @@ sidebar <- dashboardSidebar(
                selected = "All", multiple = FALSE),
    selectInput("groupCol", label = "Annotation (# Groups)", 
                                  choices = setNames(names(endPointInfo)[-1],groupChoices),
-                                 selected = names(endPointInfo)[1], multiple = FALSE),
+                                 selected = names(endPointInfo)[2], multiple = FALSE),
    selectInput("group", label = "Groups (# End Points)",
                choices = setNames(initialChoices,dropDownChoices),
                multiple = FALSE,width = '400px',
