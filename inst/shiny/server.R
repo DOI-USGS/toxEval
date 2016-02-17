@@ -363,13 +363,16 @@ shinyServer(function(input, output,session) {
 #         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
 #       }
       
-      if (input$data == "V2"){
+      if (input$data == "V2_noAPR_BSK"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } else if (input$data == "V2_noFlags_except"){
+      } else if (input$data == "V2_noFlags_noAPR_BSK"){
         chemicalSummary <- readRDS(file.path(path,"chemSumNoFilters.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } 
+      } else if(input$data == "V2_AllFiles_noFlags"){
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryAllFilesFilteredFlags.rds"))
+        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))        
+      }
       
       ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
       if(length(grep("background",ep[,2])) > 0){
