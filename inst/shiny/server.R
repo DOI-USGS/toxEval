@@ -366,8 +366,8 @@ shinyServer(function(input, output,session) {
       if (input$data == "V2"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } else if (input$data == "V1"){
-        chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
+      } else if (input$data == "V2_noFlags_except"){
+        chemicalSummary <- readRDS(file.path(path,"chemSumNoFilters.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } 
       
@@ -845,10 +845,13 @@ shinyServer(function(input, output,session) {
         
         if(length(unique(boxData$site)) > 1){
           tableData <- boxData %>%
+            group_by(site, choices, category, date) %>%
+            summarize(sumEAR = sum(EAR)) %>%
             group_by(site, choices, category) %>%
-            summarize(hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
+            summarize(meanEAR = mean(sumEAR)) %>%
+              # hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
             group_by(choices, category) %>%
-            summarize(nSites = sum(hits)) %>%
+            summarize(nSites = sum(meanEAR>0.1)) %>%
             data.frame() 
         } else {
           tableData <- boxData %>%

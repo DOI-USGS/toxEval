@@ -74,7 +74,7 @@ sidebar <- dashboardSidebar(
 #                selected = "No Futz", multiple = FALSE),
     selectInput("data", label = "Data", 
                 choices = c("V2",
-                            "V1"),
+                            "V2_noFlags_except"),
                 selected = "V2", multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                  choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
