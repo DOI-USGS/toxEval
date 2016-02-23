@@ -44,6 +44,10 @@ NULL
 
 #' Constants included with toxEval. Units are log micro-Molarity (log uM).
 #' 
+#' AC50gain downloaded on October 2015 from ToxCast dashboard. AC50gain values 
+#' are either the reported modl_ga (winning model) or 10% of modl_ga if the AC50gain
+#' value is lower than the lowest measured concentration. Also, 
+#' 
 #'\itemize{
 #'  \item{AC50gain}{AC50 gain endpoints}
 #'  \item{AC50loss}{AC50 loss endpoints}
