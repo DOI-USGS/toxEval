@@ -334,45 +334,21 @@ shinyServer(function(input, output,session) {
       group <- input$group
       radioMaxGroup <- input$radioMaxGroup
       
-#       if (input$data == "Water Sample"){
-#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary.rds"))
-#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-#       } else if (input$data == "Passive Samples"){
-#         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
-#         chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
-#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-#       } else if (input$data == "Duluth"){
-#         chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
-#         stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
-#       } else if (input$data == "NPS"){
-#         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
-#         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
-#       }
-      
-#       if (input$data == "No Futz"){
-#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary_original.rds"))
-#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-#       } else if (input$data == "10% AC50"){
-#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary_new_10percentMeas.rds"))
-#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-#       } else if (input$data == "10% Measurement"){
-#         chemicalSummary <- readRDS(file.path(path,"chemicalSummary_old_10percentAC.rds"))
-#         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-#       } else if (input$data == "NPS"){
-#         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
-#         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
-#       }
-      
-      if (input$data == "V2_noAPR_BSK"){
+      if (input$data == "Water Sample"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } else if (input$data == "V2_noFlags_noAPR_BSK"){
-        chemicalSummary <- readRDS(file.path(path,"chemSumNoFilters.rds"))
+      } else if (input$data == "Passive Samples"){
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
+        chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
-      } else if(input$data == "V2_AllFiles_noFlags"){
-        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryAllFilesFilteredFlags.rds"))
-        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))        
+      } else if (input$data == "Duluth"){
+        chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
+        stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
+#       } else if (input$data == "NPS"){
+#         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
+#         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
       }
+      
       
       ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
       if(length(grep("background",ep[,2])) > 0){
