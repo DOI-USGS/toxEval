@@ -344,9 +344,9 @@ shinyServer(function(input, output,session) {
       } else if (input$data == "Duluth"){
         chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
-#       } else if (input$data == "NPS"){
-#         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
-#         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))        
+      } else if (input$data == "NPS"){
+        chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
+        stationINFO <<- readRDS(file.path(path,"npsSite.rds"))
       }
       
       
