@@ -7,6 +7,7 @@ library(tidyr)
 library(toxEval)
 library(RColorBrewer)
 library(grid)
+library(RColorBrewer)
 
 endPointInfo <- endPointInfo
 
@@ -61,7 +62,7 @@ fancyNumbers <- function(n){
   return(textReturn)
 }
 
-makePlots <- function(boxData, noLegend, boxPlot){
+makePlots <- function(boxData, noLegend, boxPlot, meanEARlogic = FALSE){
   
   siteToFind <- unique(boxData$site)
 
@@ -72,7 +73,7 @@ makePlots <- function(boxData, noLegend, boxPlot){
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
       group_by(site, category) %>%
-      summarise(meanEAR=mean(sumEAR)) %>%
+      summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
       data.frame() %>%
       mutate(category=as.character(category)) 
     
@@ -147,6 +148,11 @@ makePlots <- function(boxData, noLegend, boxPlot){
   
   text.size <<- ifelse(length(orderedLevels) > 15, 13, 16)
   
+  cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  cbValues <- colorRampPalette(cbPalette)(length(unique(graphData$category)))
+  set.seed(3)
+  cbValues <- sample(cbValues)
+  
   lowerPlot <- lowerPlot + 
     theme(legend.position = "none") +
     theme(axis.text.y = element_text(size=text.size,color = "black"), 
@@ -180,7 +186,7 @@ makePlots <- function(boxData, noLegend, boxPlot){
   }
 
   lowerPlot <- lowerPlot + 
-    # scale_x_continuous(limits = c(xmin,xmax+0.5)) + 
+    scale_fill_manual(values = cbValues) +
     coord_flip() 
   
   # Code to override clipping
@@ -203,13 +209,23 @@ makePlots <- function(boxData, noLegend, boxPlot){
     
     upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = category)) +
       geom_bar(stat="identity") +
-      # facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") + 
-      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25, 
+      # facet_wrap(~stat, nrow=2, ncol=1, scales = "free_y") +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25,
                                        colour=siteLimits$lakeColor)) +
       scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
       xlab("") +
       ylab("Mean EAR per Site") +
-      scale_fill_discrete("", drop=FALSE) 
+      scale_fill_discrete("", drop=FALSE) +
+      scale_fill_manual(values = cbValues) 
+    
+    # upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = category)) +
+    #   geom_bar(stat="identity") +
+    #   theme(axis.text.y = element_text(colour=siteLimits$lakeColor))  +
+    #   scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+    #   xlab("") +
+    #   ylab("Mean EAR per Site") +
+    #   scale_fill_discrete("", drop=FALSE) +
+    #   scale_fill_manual(values = cbValues)
     
     if(noLegend){
       upperPlot <- upperPlot + 
@@ -358,13 +374,11 @@ shinyServer(function(input, output,session) {
         ep <- ep[-grep("cell cycle",ep[,2]),]
       }
       ep <- ep[!is.na(ep[,2]),]
-      
-
-      
+    
       chemicalSummary <- rename(chemicalSummary, assay_component_endpoint_name=endPoint)%>%
         filter(assay_component_endpoint_name %in% ep$assay_component_endpoint_name ) %>%
         data.table() %>%
-        left_join(data.table(ep)) %>%
+        left_join(data.table(ep), by="assay_component_endpoint_name") %>%
         data.frame() %>%
         rename(endPoint = assay_component_endpoint_name) %>%
         select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue") %>%
@@ -417,6 +431,7 @@ shinyServer(function(input, output,session) {
     statsOfColumn <- reactive({
       
       chemicalSummary <- chemicalSummary()
+      meanEARlogic <- input$meanEAR
 
       radio <- input$radioMaxGroup
       statsOfColumn <- chemicalSummary 
@@ -439,7 +454,7 @@ shinyServer(function(input, output,session) {
         summarise(sumEAR = sum(EAR),
                   nHits = sum(hits)) %>%
         group_by(site, category) %>%
-        summarise(maxEAR = max(sumEAR),
+        summarise(maxEAR = ifelse(meanEARlogic, mean(sumEAR), max(sumEAR)),
                   freq = sum(nHits > 0)/n()) %>%
         data.frame()
       
@@ -475,7 +490,9 @@ shinyServer(function(input, output,session) {
           group_by(site) %>%
           summarise(max=sum(max > 0),
                     mean=sum(mean > 0),
+                    # total=sum(hit>=1),
                     nSamples = median(nSamples))
+
       }
 
       statsOfGroupOrdered
@@ -539,6 +556,7 @@ shinyServer(function(input, output,session) {
     output$tableSumm <- DT::renderDataTable({
       
       statCol <- statsOfColumn()
+      meanEARlogic <- as.logical(input$meanEAR)
       
       colToSort <- 1
       if("nSamples" %in% names(statCol)){
@@ -566,6 +584,11 @@ shinyServer(function(input, output,session) {
       
       freqCol <- grep("freq",names(statCol))
       maxEARS <- grep("maxEAR",names(statCol))
+      
+      if(meanEARlogic){
+        names(statCol)[maxEARS] <- gsub("max","mean",names(statCol)[maxEARS])
+      }
+      
       
       colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
       tableSumm <- DT::datatable(statCol, 
@@ -615,6 +638,7 @@ shinyServer(function(input, output,session) {
     groupPlots <- reactive({
       
       boxData <- chemicalSummary()
+      meanEARlogic <- input$meanEAR
       
       noLegend <- TRUE
       boxGraph <- TRUE
@@ -623,7 +647,7 @@ shinyServer(function(input, output,session) {
       radioMaxGroup <- input$radioMaxGroup
       boxGraph <-  !(input$data == "Passive Samples" & length(siteToFind) == 1) 
 
-      return(makePlots(boxData, noLegend, boxGraph))
+      return(makePlots(boxData, noLegend, boxGraph,meanEARlogic))
     })
 
 # #############################################################    
@@ -640,25 +664,19 @@ shinyServer(function(input, output,session) {
       observe({
         
         chemGroup <- chemicalSummary()
+        meanEARlogic <- input$meanEAR
         
-        if (input$data == "Passive Samples"){
-          sumStat <- chemGroup %>%
-            group_by(site) %>%
-            summarise(meanEAR = mean(EAR)) %>%
-            mutate(nSamples = 1) %>%
-            mutate(freq = NA)        
-        } else {
-          sumStat <- chemGroup %>%
-            group_by(site, date) %>%
-            summarise(sumEAR = sum(EAR),
-                      hits=as.numeric(any(hits > 0))) %>%
-            data.frame() %>%
-            group_by(site) %>%
-            summarise(nSamples = n(),
-                      meanEAR=mean(sumEAR,na.rm=TRUE),
-                      freq=sum(hits)/n()) %>%
-            data.frame()
-        } 
+        sumStat <- chemGroup %>%
+          group_by(site, date) %>%
+          summarise(sumEAR = sum(EAR),
+                    hits=as.numeric(any(hits > 0))) %>%
+          data.frame() %>%
+          group_by(site) %>%
+          summarise(nSamples = n(),
+                    meanEAR=ifelse(meanEARlogic,mean(sumEAR,na.rm=TRUE),max(sumEAR,na.rm=TRUE)),
+                    freq=sum(hits)/n()) %>%
+          data.frame()
+ 
         
         siteToFind <- unique(sumStat$site)
 
@@ -705,7 +723,7 @@ shinyServer(function(input, output,session) {
             values=~meanEAR,
             opacity = 0.8,
             labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
-            title = 'Mean EAR')
+            title = ifelse(meanEARlogic,'Mean EAR','Max EAR'))
         }
         
         map
@@ -821,13 +839,14 @@ shinyServer(function(input, output,session) {
       output$hitsTable <- DT::renderDataTable({    
         
         boxData <- chemicalSummary()
+        meanEARlogic <- input$meanEAR
         
         if(length(unique(boxData$site)) > 1){
           tableData <- boxData %>%
             group_by(site, choices, category, date) %>%
             summarize(sumEAR = sum(EAR)) %>%
             group_by(site, choices, category) %>%
-            summarize(meanEAR = mean(sumEAR)) %>%
+            summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
               # hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
             group_by(choices, category) %>%
             summarize(nSites = sum(meanEAR>0.1)) %>%
@@ -861,7 +880,7 @@ shinyServer(function(input, output,session) {
           
           groups <- tableData$Groups
           
-          tableData <- tableData[!is.na(groups),-1]
+          tableData <- tableData[!is.na(groups),-1,drop=FALSE]
           rownames(tableData) <- groups[!is.na(groups)]
           
           cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
