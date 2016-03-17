@@ -433,6 +433,14 @@ shinyServer(function(input, output,session) {
     output$graphGroup <- renderPlot({ 
       print(grid.draw(groupPlots()$lowerPlot))
     })
+    
+    output$graphGroup.ui <- renderUI({
+      heightOfGraph <- 500
+      if(as.numeric(input$radioMaxGroup) == 2){
+        heightOfGraph <- 800
+      }
+      plotOutput("graphGroup", height = heightOfGraph)
+    })
 
     groupPlots <- reactive({
       
@@ -661,17 +669,24 @@ shinyServer(function(input, output,session) {
             siteLimits <- mutate(siteLimits, shortName = factor(shortName))
           }
           
-          upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = category)) +
+          if(catType != 2){
+            upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = reorderedCat))
+          } else {
+            upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = class))
+          }
+          
+          upperPlot <- upperPlot +
             geom_bar(stat="identity") +
             theme_minimal() +
             theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25,
                                              colour=siteLimits$lakeColor)) +
             scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
             xlab("") +
-            ylab("Mean EAR per Site") +
+            ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
             scale_fill_discrete("", drop=FALSE) +
             scale_fill_manual(values = cbValues) 
           
+
           
           if(noLegend){
             upperPlot <- upperPlot + 
@@ -701,7 +716,6 @@ shinyServer(function(input, output,session) {
         
         return(list(upperPlot=upperPlot, lowerPlot=lowerPlot))
       }
-      
       
       return(makePlots(boxData, noLegend, boxGraph,meanEARlogic, catType))
     })

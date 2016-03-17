@@ -77,11 +77,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Summary", shiny::icon("bar-chart")),
              value="summary",
-             # fluidRow(
-             #   box(plotOutput("stackBarGroup"),width = 6, height = 15),
-             #   box(plotOutput("graphGroup"),  width = 6)
-             # )
-            plotOutput("graphGroup",  height = "500px"),
+            uiOutput("graphGroup.ui"),
             h4(""),
             plotOutput("stackBarGroup")
     ),
