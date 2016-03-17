@@ -1,5 +1,6 @@
 library(toxEval)
 library(shinydashboard)
+
 endPointInfo <- endPointInfo
 endPointInfo <- endPointInfo[,c(39,51,30)]
 endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
@@ -10,33 +11,6 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
 pathToApp <- system.file("extdata", package="toxEval")
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
-
-# Help set up data:
-# initialChoices <- c( "All",
-#                      "regulation of transcription factor activity",
-#                      "receptor binding",
-#                      "cell proliferation",
-#                      "regulation of gene expression",
-#                      "cell cycle",
-#                      "cell death",
-#                      "regulation of catalytic activity",
-#                      "mitochondrial depolarization",
-#                      "oxidative phosphorylation",
-#                      "protein stabilization",
-#                      "cell morphology")
-# 
-# dropDownChoices <- c("All",
-#                      "regulation of transcription factor activity (103)",
-#                      "receptor binding (86)",
-#                      "cell proliferation (26)",
-#                      "regulation of gene expression (108)",
-#                      "cell cycle (21)",
-#                      "cell death (20)",
-#                      "regulation of catalytic activity (105)",
-#                      "mitochondrial depolarization (7)",
-#                      "oxidative phosphorylation (8)",
-#                      "protein stabilization (19)",
-#                      "cell morphology (1)")
 
 dropDownChoices <- c( "All","nuclear receptor (172)",     
                       "kinase (118)",
@@ -71,6 +45,7 @@ sidebar <- dashboardSidebar(
    radioButtons("radioMaxGroup", label = "",
                  choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                  selected = 3),
+   radioButtons("meanEAR",choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),inline = TRUE, label = ""),
    selectInput("sites", label = "Site", 
                choices = c("All","Potential 2016",summaryFile$site),
                selected = "All", multiple = FALSE),
@@ -102,9 +77,13 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Summary", shiny::icon("bar-chart")),
              value="summary",
-            plotOutput("stackBarGroup"),
+             # fluidRow(
+             #   box(plotOutput("stackBarGroup"),width = 6, height = 15),
+             #   box(plotOutput("graphGroup"),  width = 6)
+             # )
+            plotOutput("graphGroup",  height = "500px"),
             h4(""),
-            plotOutput("graphGroup",  height = "500px")
+            plotOutput("stackBarGroup")
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
@@ -112,7 +91,7 @@ body <- dashboardBody(
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm')
     ),
-    tabPanel(title = tagList("Max Hits", shiny::icon("bars")),
+    tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
             htmlOutput("nGroup"),
             DT::dataTableOutput('tableGroupSumm')
