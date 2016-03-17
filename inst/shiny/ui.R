@@ -12,33 +12,6 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 pathToApp <- system.file("extdata", package="toxEval")
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 
-# Help set up data:
-# initialChoices <- c( "All",
-#                      "regulation of transcription factor activity",
-#                      "receptor binding",
-#                      "cell proliferation",
-#                      "regulation of gene expression",
-#                      "cell cycle",
-#                      "cell death",
-#                      "regulation of catalytic activity",
-#                      "mitochondrial depolarization",
-#                      "oxidative phosphorylation",
-#                      "protein stabilization",
-#                      "cell morphology")
-# 
-# dropDownChoices <- c("All",
-#                      "regulation of transcription factor activity (103)",
-#                      "receptor binding (86)",
-#                      "cell proliferation (26)",
-#                      "regulation of gene expression (108)",
-#                      "cell cycle (21)",
-#                      "cell death (20)",
-#                      "regulation of catalytic activity (105)",
-#                      "mitochondrial depolarization (7)",
-#                      "oxidative phosphorylation (8)",
-#                      "protein stabilization (19)",
-#                      "cell morphology (1)")
-
 dropDownChoices <- c( "All","nuclear receptor (172)",     
                       "kinase (118)",
                       "cyp (81)","dna binding (78)",         
