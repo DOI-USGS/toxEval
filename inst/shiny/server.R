@@ -737,6 +737,8 @@ shinyServer(function(input, output,session) {
         chemGroup <- chemicalSummary()
         meanEARlogic <- input$meanEAR
         
+        statsOfGroupOrdered <- statsOfGroupOrdered()
+        
         sumStat <- chemGroup %>%
           group_by(site, date) %>%
           summarise(sumEAR = sum(EAR),
@@ -752,6 +754,8 @@ shinyServer(function(input, output,session) {
         siteToFind <- unique(sumStat$site)
 
         mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
+        mapData <- left_join(mapData, statsOfGroupOrdered, by=c("shortName"="site"))
+        
         mapData <- mapData[!is.na(mapData$dec.lat.va),]
         
         col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
@@ -761,7 +765,7 @@ shinyServer(function(input, output,session) {
           pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
           rad <-3*seq(1,4,length.out = 16)
           # rad <- 1.5*seq(5000,20000, 1000)
-          mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
+          mapData$sizes <- rad[as.numeric(cut(mapData$max, breaks=16))]
         } else {
           leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
           pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
@@ -808,13 +812,16 @@ shinyServer(function(input, output,session) {
       })
       
       output$mapFooter <- renderUI({
-        if(input$data == "Water Sample"){
-          HTML("<h5>Size range represents number of collected samples from 1-64</h5>")
-        } else if (input$data == "Duluth") {
-          HTML("<h5>Size range represents number of collected samples from 1-26</h5>")
+        
+        if(input$radioMaxGroup == "1"){
+          word <- "groups"
+        } else if (input$radioMaxGroup == "2"){
+          word <- "chemicals"
         } else {
-          HTML("<h5>One sample per site</h5>")
+          word <- "classes"
         }
+
+        HTML(paste0("<h5>Size range represents number of ",word," with hits</h5>"))
         
       })
       
