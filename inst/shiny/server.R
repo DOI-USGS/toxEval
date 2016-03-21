@@ -154,7 +154,13 @@ shinyServer(function(input, output,session) {
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
-        chemicalSummary$date <- rep(as.POSIXct(as.Date("1970-01-01")),nrow(chemicalSummary))
+        chemicalSummary$date <- as.POSIXct(as.Date(paste0(chemicalSummary$year,"-01-01")))
+        if(input$year == "2014"){
+          chemicalSummary <- filter(chemicalSummary, date > as.POSIXct(as.Date("2011-01-01")))
+        } else if (input$year == "2010"){
+          chemicalSummary <- filter(chemicalSummary, date < as.POSIXct(as.Date("2011-01-01")))
+        }
+        
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Duluth"){
         chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
@@ -540,6 +546,19 @@ shinyServer(function(input, output,session) {
           nSamples <<- countNonZero$nonZero
           nHits <<- countNonZero$hits
           
+          if(!boxPlot){
+            lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=category, size=3))
+          } else {
+            if(catType  != 2){
+              lowerPlot <- lowerPlot + 
+                geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
+              
+            } else {
+              lowerPlot <- lowerPlot + 
+                geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=class),lwd=0.1,outlier.size=1) 
+            }
+          }
+          
         } else {
           
           graphData <- boxData %>%
@@ -575,21 +594,13 @@ shinyServer(function(input, output,session) {
           namesToPlot <<- as.character(countNonZero$category)
           nSamples <<- countNonZero$nonZero
           nHits <<- countNonZero$hits
-        }
-        
-        if(!boxPlot){
-          lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=category, size=3))
-        } else {
           
-          if(catType  != 2){
-            lowerPlot <- lowerPlot + 
-              geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
-            
+          if(!boxPlot){
+            lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=reorderedCat, size=3))
           } else {
             lowerPlot <- lowerPlot + 
-              geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=class),lwd=0.1,outlier.size=1) 
+              geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
           }
-          
         }
         
         text.size <<- ifelse(length(orderedLevels) > 15, 13, 16)
@@ -609,7 +620,7 @@ shinyServer(function(input, output,session) {
           scale_x_discrete(drop=FALSE) +
           scale_fill_discrete(drop=FALSE)
         
-        if(catType  != 2){
+        if(catType  != 2 | length(siteToFind) == 1){
           lowerPlot <- lowerPlot + 
             theme(legend.position = "none")
           
@@ -646,7 +657,7 @@ shinyServer(function(input, output,session) {
           scale_fill_manual(values = cbValues) +
           coord_flip() 
         
-        if(catType == 2){
+        if(catType == 2 & length(siteToFind) > 1){
           lowerPlot <- lowerPlot +
             scale_color_manual(values = cbValues) 
         }
@@ -686,8 +697,6 @@ shinyServer(function(input, output,session) {
             scale_fill_discrete("", drop=FALSE) +
             scale_fill_manual(values = cbValues) 
           
-
-          
           if(noLegend){
             upperPlot <- upperPlot + 
               guides(fill=FALSE) 
@@ -697,21 +706,25 @@ shinyServer(function(input, output,session) {
           
           chemGroupBPOneSite <- boxData %>%
             select(-site)  %>%
-            arrange(as.character(category)) 
+            arrange(as.character(category)) %>%
+            mutate(category = factor(as.character(category),levels=orderedLevels)) %>%
+            filter(!is.na(category))
           
           upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = category)) +
             geom_bar(stat="identity")+
+            theme_minimal() +
             theme(axis.text.x=element_blank(),
                   axis.ticks=element_blank())+
             xlab("Individual Samples") + 
             ylab("EAR") +
             scale_fill_discrete("", drop=FALSE) +
-            labs(fill="") 
+            # labs(fill="") +
+            scale_fill_manual(values = cbValues) 
           
-          if(noLegend){
-            upperPlot <- upperPlot +
-              guides(fill=FALSE) 
-          } 
+          # if(noLegend){
+          #   upperPlot <- upperPlot +
+          #     guides(fill=FALSE) 
+          # } 
         }
         
         return(list(upperPlot=upperPlot, lowerPlot=lowerPlot))
