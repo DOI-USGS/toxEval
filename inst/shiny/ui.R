@@ -41,7 +41,12 @@ sidebar <- dashboardSidebar(
                                  "Duluth",
                                  "NPS"),
                      selected = "Water Sample", multiple = FALSE),
-
+   conditionalPanel(
+     condition = "input.data == 'Passive Samples'",
+     radioButtons("year", label = "",inline = TRUE,
+                  choices = c("2010", "2014", "Combo"), 
+                  selected = "Combo")   
+   ),
    radioButtons("radioMaxGroup", label = "",
                  choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                  selected = 3),
