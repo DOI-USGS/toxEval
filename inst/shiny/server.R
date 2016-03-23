@@ -750,6 +750,16 @@ shinyServer(function(input, output,session) {
         chemGroup <- chemicalSummary()
         meanEARlogic <- input$meanEAR
         
+        maxEARWords <- ifelse(meanEARlogic,"meanEAR","maxEAR")
+
+        if(input$radioMaxGroup == "1"){
+          typeWords <- "groups"
+        } else if (input$radioMaxGroup == "2"){
+          typeWords <- "chemicals"
+        } else {
+          typeWords <- "classes"
+        }
+          
         statsOfGroupOrdered <- statsOfGroupOrdered()
         
         sumStat <- chemGroup %>%
@@ -759,7 +769,7 @@ shinyServer(function(input, output,session) {
           data.frame() %>%
           group_by(site) %>%
           summarise(nSamples = n(),
-                    meanEAR=ifelse(meanEARlogic,mean(sumEAR,na.rm=TRUE),max(sumEAR,na.rm=TRUE)),
+                    meanEAR=ifelse(as.logical(meanEARlogic),mean(sumEAR,na.rm=TRUE),max(sumEAR,na.rm=TRUE)),
                     freq=sum(hits)/n()) %>%
           data.frame()
  
@@ -767,7 +777,7 @@ shinyServer(function(input, output,session) {
         siteToFind <- unique(sumStat$site)
 
         mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
-        mapData <- left_join(mapData, statsOfGroupOrdered, by=c("shortName"="site"))
+        mapData <- left_join(mapData, statsOfGroupOrdered, by=c("shortName"="site", "nSamples"="nSamples"))
         
         mapData <- mapData[!is.na(mapData$dec.lat.va),]
         
@@ -787,15 +797,23 @@ shinyServer(function(input, output,session) {
         }
   
         # pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
+
+        if(as.logical(meanEARlogic)){
+          counts <- mapData$mean
+        } else {
+          counts <- mapData$max
+        }
         
         map <- leafletProxy("mymap", data=mapData) %>%
           clearMarkers() %>%
           clearControls() %>%
           addCircleMarkers(lat=~dec.lat.va, lng=~dec.long.va, 
                      popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
-                                  "<tr><td>maxEAR: </td><td>",sprintf("%.1f",mapData$maxEAR),'</td></tr>',
+                                  "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanEAR),'</td></tr>',
                                   "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
-                                  "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr></table>') ,
+                                  "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr>',
+                                  "<tr><td>Number of ",typeWords," with hits: </td><td>",counts,'</td></tr>',
+                                  '</table>') ,
                      fillColor = ~pal(meanEAR), 
                      # weight = 1,
                      # color = "black",
