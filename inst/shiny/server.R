@@ -783,12 +783,18 @@ shinyServer(function(input, output,session) {
         
         col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
   
+        if(as.logical(meanEARlogic)){
+          counts <- mapData$mean
+        } else {
+          counts <- mapData$max
+        }
+        
         if(nrow(mapData) > 1){
           leg_vals <- unique(as.numeric(quantile(mapData$meanEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-          pal = colorBin(col_types, mapData$maxEAR, bins = leg_vals)
+          pal = colorBin(col_types, mapData$meanEAR, bins = leg_vals)
           rad <-3*seq(1,4,length.out = 16)
           # rad <- 1.5*seq(5000,20000, 1000)
-          mapData$sizes <- rad[as.numeric(cut(mapData$max, breaks=16))]
+          mapData$sizes <- rad[as.numeric(cut(counts, breaks=16))]
         } else {
           leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
           pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
@@ -798,11 +804,7 @@ shinyServer(function(input, output,session) {
   
         # pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
 
-        if(as.logical(meanEARlogic)){
-          counts <- mapData$mean
-        } else {
-          counts <- mapData$max
-        }
+
         
         map <- leafletProxy("mymap", data=mapData) %>%
           clearMarkers() %>%
