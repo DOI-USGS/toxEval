@@ -801,11 +801,7 @@ shinyServer(function(input, output,session) {
           mapData$sizes <- 3
           # mapData$sizes <- 1.5*12000
         }
-  
-        # pal = colorBin(col_types, c(0,355), bins = c(0,0.1,1,7,60,250,355))
 
-
-        
         map <- leafletProxy("mymap", data=mapData) %>%
           clearMarkers() %>%
           clearControls() %>%
@@ -846,6 +842,15 @@ shinyServer(function(input, output,session) {
       
       output$mapFooter <- renderUI({
         
+        statsOfGroupOrdered <- statsOfGroupOrdered()
+        meanEARlogic <- input$meanEAR
+        
+        if(as.logical(meanEARlogic)){
+          counts <- statsOfGroupOrdered$mean
+        } else {
+          counts <- statsOfGroupOrdered$max
+        }
+        
         if(input$radioMaxGroup == "1"){
           word <- "groups"
         } else if (input$radioMaxGroup == "2"){
@@ -854,7 +859,8 @@ shinyServer(function(input, output,session) {
           word <- "classes"
         }
 
-        HTML(paste0("<h5>Size range represents number of ",word," with hits</h5>"))
+        HTML(paste0("<h5>Size range represents number of ",word,
+                    " with hits. Ranges from 1 - ",max(counts,na.rm = TRUE),"</h5>"))
         
       })
       
