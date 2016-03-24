@@ -105,7 +105,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
-            plotOutput("endpointGraph",  height = "600px")
+            plotOutput("endpointGraph",  height = "1000px")
     )
   ),
 
