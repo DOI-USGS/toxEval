@@ -63,6 +63,14 @@ fancyNumbers <- function(n){
   return(textReturn)
 }
 
+fancyNumbers2 <- function(n){
+  textReturn <-  signif(n,digits = 2)
+  textReturn <- as.character(textReturn)
+  textReturn[length(textReturn)] <- paste(">",textReturn[length(textReturn)])
+  textReturn[1] <- paste("<",textReturn[1])
+  return(textReturn)
+}
+
 shinyServer(function(input, output,session) {
   
   choices <- reactive({
@@ -620,6 +628,98 @@ shinyServer(function(input, output,session) {
       print(grid.draw(lowerPlot))
     })
     
+    output$graphHeat <- renderPlot({ 
+      
+      graphData <- graphData()
+      meanEARlogic <- as.logical(input$meanEAR)
+      catType = as.numeric(input$radioMaxGroup)
+      
+      siteToFind <- unique(graphData$site)
+      
+      siteLimits <- stationINFO %>%
+        filter(shortName %in% unique(graphData$site))
+      
+      if(all(siteLimits$shortName %in% sitesOrdered)){
+        siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
+      } else {
+        siteLimits <- mutate(siteLimits, shortName = factor(shortName))
+      }
+      
+      if(length(siteToFind) > 1){
+        
+        if(catType == 2){
+
+          orderClass <- graphData %>%
+            group_by(class,category) %>%
+            summarise(median = median(meanEAR[meanEAR != 0])) %>%
+            data.frame() %>%
+            arrange(desc(median)) %>%
+            filter(!duplicated(class)) %>%
+            arrange(median) 
+          
+          orderChem <- graphData %>%
+            group_by(category,class) %>%
+            summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+            data.frame() %>%
+            mutate(class = factor(class, levels=orderClass$class)) %>%
+            arrange(class, median)
+          
+          orderClass <- mutate(orderClass, class = factor(class, levels=levels(orderChem$class)))
+          
+          orderedLevels <- orderChem$category[!is.na(orderChem$median)] 
+          
+          graphData$class <- factor(graphData$class, levels=levels(orderClass$class))
+          graphData$reorderedCat <- factor(graphData$category, levels=orderedLevels)
+          
+          heat <- ggplot(data = graphData) +
+            geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
+            theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
+                                             angle = 90,vjust=0.5,hjust = 1)) +
+            scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+            ylab("") +
+            xlab("") +
+            labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
+            scale_fill_gradient( guide = "legend",
+                                 trans = 'log',
+                                 low = "white", high = "steelblue",
+                                 breaks=c(0.00001,0.001,0.1,10,100,500),
+                                 na.value = 'lightgrey',labels=fancyNumbers2) +
+            facet_grid(class ~ .,scales="free_y", space="free_y") +
+            theme(strip.text.y = element_text(angle=0, hjust=0), 
+                  strip.background = element_rect(fill="white"),
+                  panel.margin.y=unit(0.05, "lines"))
+          
+        } else {
+          graphData$reorderedCat <- factor(graphData$category, levels=rev(levels(graphData$reorderedCat)))
+          
+          heat <- ggplot(data = graphData) +
+            geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
+            theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
+                                             angle = 90,vjust=0.5,hjust = 1)) +
+            scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+            ylab("") +
+            xlab("") +
+            labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
+            scale_fill_gradient( guide = "legend",
+                                 trans = 'log',
+                                 low = "white", high = "steelblue",
+                                 breaks=c(0.00001,0.001,0.1,10,100,500),
+                                 na.value = 'lightgrey',labels=fancyNumbers2)
+        }
+        
+      } 
+      
+      print(heat)
+    })
+    
+    output$graphHeat.ui <- renderUI({
+      heightOfGraph <- 500
+      if(as.numeric(input$radioMaxGroup) == 2){
+        heightOfGraph <- 800
+      }
+      plotOutput("graphHeat", height = heightOfGraph)
+    })
+    
     output$graphGroup.ui <- renderUI({
       heightOfGraph <- 500
       if(as.numeric(input$radioMaxGroup) == 2){
@@ -960,7 +1060,12 @@ shinyServer(function(input, output,session) {
           summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
           arrange(median)
         
-        graphData$endPoint <- factor(graphData$endPoint, levels = orderColsBy$endPoint)
+        if(any(is.na(orderColsBy$median))){
+          orderedLevels <<- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
+                              orderColsBy$endPoint[!is.na(orderColsBy$median)])
+        }
+        
+        graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevels)
         
         stackedPlot <- ggplot(graphData)+
           scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
