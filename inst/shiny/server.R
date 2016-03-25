@@ -16,6 +16,13 @@ endPointInfo <- endPointInfo[,c(39,51,30)]
 endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
 endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
+cleanUpNames <- endPointInfo$intended_target_family
+cleanUpNames <- stri_trans_totitle(cleanUpNames)
+cleanUpNames[grep("Dna",cleanUpNames)] <- "DNA Binding"
+cleanUpNames[grep("Cyp",cleanUpNames)] <- "CYP"
+cleanUpNames[grep("Gpcr",cleanUpNames)] <- "GPCR"
+endPointInfo$intended_target_family <- cleanUpNames
+
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
                   "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
@@ -170,11 +177,11 @@ shinyServer(function(input, output,session) {
       
       
       ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
-      if(length(grep("background",ep[,2])) > 0){
-        ep <- ep[-grep("background",ep[,2]),]
+      if(length(grep("Background",ep[,2])) > 0){
+        ep <- ep[-grep("Background",ep[,2]),]
       }
-      if(length(grep("cell cycle",ep[,2])) > 0){
-        ep <- ep[-grep("cell cycle",ep[,2]),]
+      if(length(grep("Cell Cycle",ep[,2])) > 0){
+        ep <- ep[-grep("Cell Cycle",ep[,2]),]
       }
       ep <- ep[!is.na(ep[,2]),]
     
@@ -431,11 +438,186 @@ shinyServer(function(input, output,session) {
 # #############################################################
      
     output$stackBarGroup <- renderPlot({ 
-      print(groupPlots()$upperPlot)
+      
+      graphData <- graphData()
+      meanEARlogic <- as.logical(input$meanEAR)
+      catType = as.numeric(input$radioMaxGroup)
+      siteToFind <- unique(graphData$site)
+      
+      cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+      cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$reorderedCat)))
+      set.seed(4)
+      cbValues <- sample(cbValues)
+      
+      siteLimits <- stationINFO %>%
+        filter(shortName %in% unique(graphData$site))
+      
+      if(length(siteToFind) > 1){
+        
+        if(all(siteLimits$shortName %in% sitesOrdered)){
+          siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
+        } else {
+          siteLimits <- mutate(siteLimits, shortName = factor(shortName))
+        }
+        
+        if(catType != 2){
+          upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = reorderedCat))
+        } else {
+          upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = class))
+        }
+        
+        upperPlot <- upperPlot +
+          geom_bar(stat="identity") +
+          theme_minimal() +
+          theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25,
+                                           colour=siteLimits$lakeColor)) +
+          scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+          xlab("") +
+          ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
+          scale_fill_manual(values = cbValues, drop=FALSE) + 
+          guides(fill=FALSE) 
+
+        
+      } else {
+        
+        chemGroupBPOneSite <- chemicalSummary() %>%
+          select(-site) 
+        
+        chemGroupBPOneSite <- mutate(chemGroupBPOneSite, category = factor(category,levels=orderedLevels))
+        
+        upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = category)) +
+          geom_bar(stat="identity")+
+          theme_minimal() +
+          theme(axis.text.x=element_blank(),
+                axis.ticks=element_blank())+
+          xlab("Individual Samples") + 
+          ylab("EAR") +
+          scale_fill_discrete("", drop=FALSE) +
+          scale_fill_manual(values = cbValues, drop=FALSE) +
+          guides(fill=FALSE)
+
+      }
+      
+      print(upperPlot)
     })
 
     output$graphGroup <- renderPlot({ 
-      print(grid.draw(groupPlots()$lowerPlot))
+      
+      graphData <- graphData()
+      meanEARlogic <- as.logical(input$meanEAR)
+      catType = as.numeric(input$radioMaxGroup)
+      siteToFind <- unique(graphData$site)
+      boxPlotLogic <-  !(input$data == "Passive Samples" & length(siteToFind) == 1) 
+      
+      countNonZero <- graphData %>%
+        group_by(category) %>%
+        summarise(nonZero = as.character(sum(meanEAR>0)),
+                  hits = as.character(sum(meanEAR>0.1)))
+      
+      countNonZero$hits[countNonZero$hits == "0"] <- ""
+      
+      namesToPlot <<- as.character(countNonZero$category)
+      nSamples <<- countNonZero$nonZero
+      nHits <<- countNonZero$hits
+      
+      if(length(siteToFind) > 1){
+        
+        lowerPlot <- ggplot(graphData)+
+          scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) # fance labels
+        labelsText <<- "nSites"
+        
+        if(!boxPlotLogic){
+          lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=reorderedCat, size=3))
+        } else {
+          if(catType  != 2){
+            lowerPlot <- lowerPlot + 
+              geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
+            
+          } else {
+            lowerPlot <- lowerPlot + 
+              geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=class),lwd=0.1,outlier.size=1) 
+          }
+        }
+        
+      } else {
+        
+        lowerPlot <- ggplot(graphData)+
+          scale_y_log10("Sum of EAR",labels=fancyNumbers) # labels=fancyNumbers
+        
+        labelsText <<- "nSamples"
+        
+        if(!boxPlot){
+          lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=reorderedCat, size=3))
+        } else {
+          lowerPlot <- lowerPlot + 
+            geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
+        }
+      }
+      
+      text.size <<- ifelse(length(orderedLevels) > 15, 13, 16)
+      
+      cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+      cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$reorderedCat)))
+      set.seed(4)
+      cbValues <- sample(cbValues)
+      
+      lowerPlot <- lowerPlot + 
+        theme_minimal() +
+        theme(axis.text.y = element_text(size=text.size, color = "black", margin = margin(0,-10,0,0),vjust = 0.2), 
+              axis.text.x = element_text(size=16, color = "black", vjust = 0, margin = margin(-15,0,0,0)),
+              axis.title = element_text(size=16)) +
+        xlab("") +
+        geom_hline(yintercept = 0.1, linetype="dashed", color="black",lwd=0.25)  +
+        scale_x_discrete(drop=FALSE) +
+        scale_fill_discrete(drop=FALSE)
+      
+      if(catType  != 2 | length(siteToFind) == 1){
+        lowerPlot <- lowerPlot + 
+          theme(legend.position = "none")
+        
+      } else {
+        lowerPlot <- lowerPlot + 
+          theme(legend.key = element_blank(),
+                legend.title = element_blank(),
+                legend.text = element_text(size=10)) 
+      }
+      
+      ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
+      ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
+      
+      xmax <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[2]
+      xmin <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[1]
+      
+      lowerPlot <- lowerPlot + 
+        geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
+        geom_text(data=data.frame(), aes(x=namesToPlot, y=ymax,label=nHits),size=5) 
+      
+      df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+      
+      for(i in 1:3){
+        lowerPlot <- lowerPlot + 
+          annotation_custom(
+            grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
+            ymin = log10(df1$y[i]),      # Vertical position of the textGrob
+            ymax = log10(df1$y[i]),
+            xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
+            xmax = xmax+0.05)
+      }
+      
+      lowerPlot <- lowerPlot + 
+        scale_fill_manual(values = cbValues, drop=FALSE) +
+        coord_flip() 
+      
+      if(catType == 2 & length(siteToFind) > 1){
+        lowerPlot <- lowerPlot +
+          scale_color_manual(values = cbValues) 
+      }
+      
+      # Code to override clipping
+      lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
+      lowerPlot$layout$clip[lowerPlot$layout$name == "panel"] <- "off"
+
+      print(grid.draw(lowerPlot))
     })
     
     output$graphGroup.ui <- renderUI({
@@ -445,157 +627,79 @@ shinyServer(function(input, output,session) {
       }
       plotOutput("graphGroup", height = heightOfGraph)
     })
-
-    groupPlots <- reactive({
+    
+    graphData <- reactive({
+      
+      meanEARlogic <- as.logical(input$meanEAR)
+      catType <- as.numeric(input$radioMaxGroup)
+      columnName <- input$groupCol
       
       boxData <- chemicalSummary()
-      meanEARlogic <- as.logical(input$meanEAR)
-
-      boxGraph <- TRUE
       siteToFind <- unique(boxData$site)
-
-      radioMaxGroup <- input$radioMaxGroup
-      noLegend <- TRUE
-      boxGraph <-  !(input$data == "Passive Samples" & length(siteToFind) == 1) 
-
-      catType = as.numeric(input$radioMaxGroup)
       
-      makePlots <- function(boxData, noLegend, boxPlot, meanEARlogic = FALSE, catType = 1, columnName=input$groupCol){
+      if(catType == 1){
+        orderBy <- endPointInfo[,columnName]
+        orderNames <- names(table(orderBy))
+        orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
+      }
         
-        siteToFind <- unique(boxData$site)
-        
-        if(catType == 1){
-          orderBy <- endPointInfo[,columnName]
-          orderNames <- stri_trans_totitle(names(table(orderBy)))
-          orderNames[grep("Dna",orderNames)] <- "DNA Binding"
-          orderNames[grep("Cyp",orderNames)] <- "CYP"
-          orderNames[grep("Gpcr",orderNames)] <- "GPCR"
-        }
-        
-        if(length(siteToFind) > 1){
-
-          if(catType %in% c(1,3)){
-            graphData <- boxData %>%
-              group_by(site,date,category) %>%
-              summarise(sumEAR=sum(EAR)) %>%
-              data.frame() %>%
-              group_by(site, category) %>%
-              summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
-              data.frame() %>%
-              mutate(category=as.character(category)) 
-            
-            if(catType == 1){
-              graphData <- mutate(graphData, category=stri_trans_totitle(category))
-              graphData$category[grep("Dna",graphData$category)] <- "DNA Binding"
-              graphData$category[grep("Cyp",graphData$category)] <- "CYP"
-              graphData$category[grep("Gpcr",graphData$category)] <- "GPCR"
-              
-            }
-
-            orderColsBy <- graphData %>%
-              group_by(category) %>%
-              summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-              arrange(median)
-            
-            orderedLevels <<- orderColsBy$category # [!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
-                  
-            if(any(is.na(orderColsBy$median))){
-              orderedLevels <<- c(orderColsBy$category[is.na(orderColsBy$median)],
-                                  orderColsBy$category[!is.na(orderColsBy$median)])
-            }
-                  
-            if(catType == 1){
-              orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
-              orderedLevels <<- c(orderNames[!(orderNames %in% orderedLevels)],orderedLevels)
-            }
-            
-            graphData$reorderedCat <- factor(as.character(graphData$category), levels=orderedLevels)
-
-          } else {
-
-            graphData <- boxData %>%
-              group_by(site,date,category,class) %>%
-              summarise(sumEAR=sum(EAR)) %>%
-              data.frame() %>%
-              group_by(site, category,class) %>%
-              summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
-              data.frame() %>%
-              mutate(category=as.character(category)) 
-            
-            orderClass <- graphData %>%
-              group_by(class,category) %>%
-              summarise(median = median(meanEAR[meanEAR != 0])) %>%
-              data.frame() %>%
-              arrange(desc(median)) %>%
-              filter(!duplicated(class)) %>%
-              arrange(median)
-            
-            orderChem <- graphData %>%
-              group_by(category,class) %>%
-              summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-              data.frame() %>%
-              mutate(class = factor(class, levels=orderClass$class)) %>%
-              arrange(class, median)
-            
-            orderedLevels <<- orderChem$category # [!is.na(orderChem$median)] #The !is.na takes out any category that was all censo
-            
-            if(any(is.na(orderChem$median))){
-              orderedLevels <<- c(orderChem$category[is.na(orderChem$median)],
-                                  orderChem$category[!is.na(orderChem$median)])
-            }
-            
-            if(catType == 1){
-              orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
-              orderedLevels <<- c(orderNames[!(orderNames %in% orderedLevels)],orderedLevels)
-            }
-            
-            graphData <- mutate(graphData, reorderedCat = factor(as.character(category), levels=orderedLevels)) %>%
-              mutate(class = factor(class, levels=rev(orderClass$class)))
+      if(catType == 2 & length(siteToFind) > 1){
+          
+          graphData <- chemicalSummary() %>%
+            group_by(site,date,category,class) %>%
+            summarise(sumEAR=sum(EAR)) %>%
+            data.frame() %>%
+            group_by(site, category,class) %>%
+            summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
+            data.frame() %>%
+            mutate(category=as.character(category))
+          
+          orderClass <- graphData %>%
+            group_by(class,category) %>%
+            summarise(median = median(meanEAR[meanEAR != 0])) %>%
+            data.frame() %>%
+            arrange(desc(median)) %>%
+            filter(!duplicated(class)) %>%
+            arrange(median)
+          
+          orderChem <- graphData %>%
+            group_by(category,class) %>%
+            summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+            data.frame() %>%
+            mutate(class = factor(class, levels=orderClass$class)) %>%
+            arrange(class, median)
+          
+          orderedLevels <<- orderChem$category # [!is.na(orderChem$median)] #The !is.na takes out any category that was all censo
+          
+          if(any(is.na(orderChem$median))){
+            orderedLevels <<- c(orderChem$category[is.na(orderChem$median)],
+                                orderChem$category[!is.na(orderChem$median)])
           }
           
-          lowerPlot <- ggplot(graphData)+
-            scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) # fance labels
-          labelsText <<- "nSites"
           
-          countNonZero <- graphData %>%
-            group_by(category) %>%
-            summarise(nonZero = as.character(sum(meanEAR>0)),
-                      hits = as.character(sum(meanEAR>0.1)))
-          
-          # countNonZero$nonZero[countNonZero$nonZero == "0"] <- ""
-          countNonZero$hits[countNonZero$hits == "0"] <- ""
-          
-          namesToPlot <<- as.character(countNonZero$category)
-          nSamples <<- countNonZero$nonZero
-          nHits <<- countNonZero$hits
-          
-          if(!boxPlot){
-            lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=reorderedCat, size=3))
-          } else {
-            if(catType  != 2){
-              lowerPlot <- lowerPlot + 
-                geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
-              
-            } else {
-              lowerPlot <- lowerPlot + 
-                geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=class),lwd=0.1,outlier.size=1) 
-            }
-          }
-          
+          graphData <- mutate(graphData, reorderedCat = factor(as.character(category), levels=orderedLevels)) %>%
+            mutate(class = factor(class, levels=rev(orderClass$class)))
+        
         } else {
           
           graphData <- boxData %>%
             group_by(site,date,category) %>%
             summarise(sumEAR=sum(EAR)) %>%
-            data.frame() %>%
-            rename(meanEAR=sumEAR)
-            # mutate(category=factor(category)) 
+            data.frame() 
           
-          if(catType == 1){
-            graphData <- mutate(graphData, category=stri_trans_totitle(category))
-            graphData$category[grep("Dna",graphData$category)] <- "DNA Binding"
-            graphData$category[grep("Cyp",graphData$category)] <- "CYP"
-            graphData$category[grep("Gpcr",graphData$category)] <- "GPCR"
+          if (length(siteToFind) > 1){
+      
+            graphData <- graphData %>%
+              group_by(site, category) %>%
+              summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
+              data.frame() %>%
+              mutate(category=as.character(category)) 
+            
+          } else {
+          
+            graphData <- graphData %>%
+              rename(meanEAR=sumEAR) %>%
+              mutate(category=as.character(category)) 
             
           }
           
@@ -603,9 +707,9 @@ shinyServer(function(input, output,session) {
             mutate(category = as.character(category)) %>%
             group_by(category) %>%
             summarise(median = median(meanEAR[meanEAR != 0])) %>%
-            arrange(!is.na(median),median)
+            arrange(median)
           
-          orderedLevels <<- orderColsBy$category#[!is.na(orderColsBy$median)] #The !is.na takes out any category that was all censo
+          orderedLevels <<- orderColsBy$category
           
           if(any(is.na(orderColsBy$median))){
             orderedLevels <<- c(orderColsBy$category[is.na(orderColsBy$median)],
@@ -617,161 +721,11 @@ shinyServer(function(input, output,session) {
           }
           
           graphData$reorderedCat <- factor(as.character(graphData$category), levels=orderedLevels)
-          
-          lowerPlot <- ggplot(graphData)+
-            scale_y_log10("Sum of EAR",labels=fancyNumbers) # labels=fancyNumbers
-          
-          labelsText <<- "nSamples"
-          
-          countNonZero <- graphData %>%
-            group_by(category) %>%
-            summarise(nonZero = as.character(sum(meanEAR>0)),
-                      hits = as.character(sum(meanEAR>0.1)))
-          # countNonZero$nonZero[countNonZero$nonZero == "0"] <- ""
-          countNonZero$hits[countNonZero$hits == "0"] <- ""
-          
-          namesToPlot <<- as.character(countNonZero$category)
-          nSamples <<- countNonZero$nonZero
-          nHits <<- countNonZero$hits
-          
-          if(!boxPlot){
-            lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=reorderedCat, size=3))
-          } else {
-            lowerPlot <- lowerPlot + 
-              geom_boxplot(aes(x=reorderedCat, y=meanEAR, fill=reorderedCat),lwd=0.1,outlier.size=1) 
-          }
+        
         }
-        
-        text.size <<- ifelse(length(orderedLevels) > 15, 13, 16)
-        
-        cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-        cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$reorderedCat)))
-        set.seed(4)
-        cbValues <- sample(cbValues)
-        
-        lowerPlot <- lowerPlot + 
-          theme_minimal() +
-          theme(axis.text.y = element_text(size=text.size, color = "black", margin = margin(0,-10,0,0),vjust = 0.2), 
-                axis.text.x = element_text(size=16, color = "black", vjust = 0, margin = margin(-15,0,0,0)),
-                axis.title = element_text(size=16)) +
-          xlab("") +
-          geom_hline(yintercept = 0.1, linetype="dashed", color="black",lwd=0.25)  +
-          scale_x_discrete(drop=FALSE) +
-          scale_fill_discrete(drop=FALSE)
-        
-        if(catType  != 2 | length(siteToFind) == 1){
-          lowerPlot <- lowerPlot + 
-            theme(legend.position = "none")
           
-        } else {
-          lowerPlot <- lowerPlot + 
-            theme(legend.key = element_blank(),
-                  legend.title = element_blank(),
-                  legend.text = element_text(size=10)) 
-        }
-        
-        ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
-        ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
-        
-        xmax <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[2]
-        xmin <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[1]
-        
-        lowerPlot <- lowerPlot + 
-          geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
-          geom_text(data=data.frame(), aes(x=namesToPlot, y=ymax,label=nHits),size=5) 
-        
-        df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
-        
-        for(i in 1:3){
-          lowerPlot <- lowerPlot + 
-            annotation_custom(
-              grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
-              ymin = log10(df1$y[i]),      # Vertical position of the textGrob
-              ymax = log10(df1$y[i]),
-              xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
-              xmax = xmax+0.05)
-        }
-        
-        lowerPlot <- lowerPlot + 
-          scale_fill_manual(values = cbValues, drop=FALSE) +
-          coord_flip() 
-        
-        if(catType == 2 & length(siteToFind) > 1){
-          lowerPlot <- lowerPlot +
-            scale_color_manual(values = cbValues) 
-        }
-        
-        # Code to override clipping
-        lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
-        lowerPlot$layout$clip[lowerPlot$layout$name == "panel"] <- "off"
-        
-        siteLimits <- stationINFO %>%
-          filter(shortName %in% unique(boxData$site))
-        
-        if(length(siteToFind) > 1){
-          
-          if(all(siteLimits$shortName %in% sitesOrdered)){
-            siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
-          } else {
-            siteLimits <- mutate(siteLimits, shortName = factor(shortName))
-          }
-
-          if(catType != 2){
-            upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = reorderedCat))
-          } else {
-            upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = class))
-          }
-          
-          upperPlot <- upperPlot +
-            geom_bar(stat="identity") +
-            theme_minimal() +
-            theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25,
-                                             colour=siteLimits$lakeColor)) +
-            scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
-            xlab("") +
-            ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
-            scale_fill_manual(values = cbValues, drop=FALSE)
-          
-          if(noLegend){
-            upperPlot <- upperPlot + 
-              guides(fill=FALSE) 
-          }
-          
-        } else {
-          
-          chemGroupBPOneSite <- boxData %>%
-            select(-site) 
-          
-          if(catType == 1){
-            chemGroupBPOneSite <- mutate(chemGroupBPOneSite, category=stri_trans_totitle(category))
-            chemGroupBPOneSite$category[grep("Dna",chemGroupBPOneSite$category)] <- "DNA Binding"
-            chemGroupBPOneSite$category[grep("Cyp",chemGroupBPOneSite$category)] <- "CYP"
-            chemGroupBPOneSite$category[grep("Gpcr",chemGroupBPOneSite$category)] <- "GPCR"
-            
-          }
-
-          chemGroupBPOneSite <- mutate(chemGroupBPOneSite, category = factor(category,levels=orderedLevels))
-
-          upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = category)) +
-            geom_bar(stat="identity")+
-            theme_minimal() +
-            theme(axis.text.x=element_blank(),
-                  axis.ticks=element_blank())+
-            xlab("Individual Samples") + 
-            ylab("EAR") +
-            scale_fill_discrete("", drop=FALSE) +
-            scale_fill_manual(values = cbValues, drop=FALSE) 
-          
-          if(noLegend){
-            upperPlot <- upperPlot +
-              guides(fill=FALSE)
-          }
-        }
-        
-        return(list(upperPlot=upperPlot, lowerPlot=lowerPlot))
-      }
+      graphData
       
-      return(makePlots(boxData, noLegend, boxGraph,meanEARlogic, catType))
     })
 
 # #############################################################    
