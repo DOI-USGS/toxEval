@@ -139,8 +139,6 @@ shinyServer(function(input, output,session) {
        )
     })
   
-
-      
 #############################################################   
     chemicalSummary <- reactive({
       
@@ -590,8 +588,8 @@ shinyServer(function(input, output,session) {
             group_by(site,date,category) %>%
             summarise(sumEAR=sum(EAR)) %>%
             data.frame() %>%
-            rename(meanEAR=sumEAR)%>%
-            mutate(category=factor(category)) 
+            rename(meanEAR=sumEAR)
+            # mutate(category=factor(category)) 
           
           if(catType == 1){
             graphData <- mutate(graphData, category=stri_trans_totitle(category))
@@ -695,7 +693,7 @@ shinyServer(function(input, output,session) {
         }
         
         lowerPlot <- lowerPlot + 
-          scale_fill_manual(values = cbValues) +
+          scale_fill_manual(values = cbValues, drop=FALSE) +
           coord_flip() 
         
         if(catType == 2 & length(siteToFind) > 1){
@@ -732,8 +730,8 @@ shinyServer(function(input, output,session) {
             scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
             xlab("") +
             ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
-            scale_fill_discrete("", drop=FALSE) +
-            scale_fill_manual(values = cbValues, drop=FALSE) 
+            scale_x_discrete(drop=FALSE) +
+            scale_fill_manual(values = cbValues, drop=FALSE)
           
           if(noLegend){
             upperPlot <- upperPlot + 
