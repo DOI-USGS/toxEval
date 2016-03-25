@@ -554,7 +554,7 @@ shinyServer(function(input, output,session) {
         
         labelsText <<- "nSamples"
         
-        if(!boxPlot){
+        if(!boxPlotLogic){
           lowerPlot <- lowerPlot + geom_point(aes(x=reorderedCat, y=meanEAR, color=reorderedCat, size=3))
         } else {
           lowerPlot <- lowerPlot + 
@@ -645,70 +645,67 @@ shinyServer(function(input, output,session) {
         siteLimits <- mutate(siteLimits, shortName = factor(shortName))
       }
       
-      if(length(siteToFind) > 1){
-        
-        if(catType == 2){
+      if(catType == 2 & length(siteToFind) > 1){
 
-          orderClass <- graphData %>%
-            group_by(class,category) %>%
-            summarise(median = median(meanEAR[meanEAR != 0])) %>%
-            data.frame() %>%
-            arrange(desc(median)) %>%
-            filter(!duplicated(class)) %>%
-            arrange(median) 
-          
-          orderChem <- graphData %>%
-            group_by(category,class) %>%
-            summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-            data.frame() %>%
-            mutate(class = factor(class, levels=orderClass$class)) %>%
-            arrange(class, median)
-          
-          orderClass <- mutate(orderClass, class = factor(class, levels=levels(orderChem$class)))
-          
-          orderedLevels <- orderChem$category[!is.na(orderChem$median)] 
-          
-          graphData$class <- factor(graphData$class, levels=levels(orderClass$class))
-          graphData$reorderedCat <- factor(graphData$category, levels=orderedLevels)
-          
-          heat <- ggplot(data = graphData) +
-            geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
-            theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
-                                             angle = 90,vjust=0.5,hjust = 1)) +
-            scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
-            ylab("") +
-            xlab("") +
-            labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
-            scale_fill_gradient( guide = "legend",
-                                 trans = 'log',
-                                 low = "white", high = "steelblue",
-                                 breaks=c(0.00001,0.001,0.1,10,100,500),
-                                 na.value = 'lightgrey',labels=fancyNumbers2) +
-            facet_grid(class ~ .,scales="free_y", space="free_y") +
-            theme(strip.text.y = element_text(angle=0, hjust=0), 
-                  strip.background = element_rect(fill="white"),
-                  panel.margin.y=unit(0.05, "lines"))
-          
-        } else {
-          graphData$reorderedCat <- factor(graphData$category, levels=rev(levels(graphData$reorderedCat)))
-          
-          heat <- ggplot(data = graphData) +
-            geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
-            theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
-                                             angle = 90,vjust=0.5,hjust = 1)) +
-            scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
-            ylab("") +
-            xlab("") +
-            labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
-            scale_fill_gradient( guide = "legend",
-                                 trans = 'log',
-                                 low = "white", high = "steelblue",
-                                 breaks=c(0.00001,0.001,0.1,10,100,500),
-                                 na.value = 'lightgrey',labels=fancyNumbers2)
-        }
+        orderClass <- graphData %>%
+          group_by(class,category) %>%
+          summarise(median = median(meanEAR[meanEAR != 0])) %>%
+          data.frame() %>%
+          arrange(desc(median)) %>%
+          filter(!duplicated(class)) %>%
+          arrange(median) 
         
-      } 
-      
+        orderChem <- graphData %>%
+          group_by(category,class) %>%
+          summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+          data.frame() %>%
+          mutate(class = factor(class, levels=orderClass$class)) %>%
+          arrange(class, median)
+        
+        orderClass <- mutate(orderClass, class = factor(class, levels=levels(orderChem$class)))
+        
+        orderedLevels <- orderChem$category[!is.na(orderChem$median)] 
+        
+        graphData$class <- factor(graphData$class, levels=levels(orderClass$class))
+        graphData$reorderedCat <- factor(graphData$category, levels=orderedLevels)
+        
+        heat <- ggplot(data = graphData) +
+          geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
+          theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
+                                           angle = 90,vjust=0.5,hjust = 1)) +
+          scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+          ylab("") +
+          xlab("") +
+          labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
+          scale_fill_gradient( guide = "legend",
+                               trans = 'log',
+                               low = "white", high = "steelblue",
+                               breaks=c(0.00001,0.001,0.1,10,100,500),
+                               na.value = 'lightgrey',labels=fancyNumbers2) +
+          facet_grid(class ~ .,scales="free_y", space="free_y") +
+          theme(strip.text.y = element_text(angle=0, hjust=0), 
+                strip.background = element_rect(fill="white"),
+                panel.margin.y=unit(0.05, "lines"))
+        
+      } else {
+        
+        graphData$reorderedCat <- factor(graphData$category, levels=rev(levels(graphData$reorderedCat)))
+        
+        heat <- ggplot(data = graphData) +
+          geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
+          theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
+                                           angle = 90,vjust=0.5,hjust = 1)) +
+          scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+          ylab("") +
+          xlab("") +
+          labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
+          scale_fill_gradient( guide = "legend",
+                               trans = 'log',
+                               low = "white", high = "steelblue",
+                               breaks=c(0.00001,0.001,0.1,10,100,500),
+                               na.value = 'lightgrey',labels=fancyNumbers2)
+      }
+
       print(heat)
     })
     
