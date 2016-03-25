@@ -75,6 +75,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  tags$head(tags$link(rel="shortcut icon", href="favicon.ico")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
@@ -106,6 +107,10 @@ body <- dashboardBody(
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
             plotOutput("endpointGraph",  height = "1000px")
+    ),
+    tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
+                   value="heat",
+                   uiOutput("graphHeat.ui")
     )
   ),
 
