@@ -730,7 +730,6 @@ shinyServer(function(input, output,session) {
             scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
             xlab("") +
             ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
-            scale_x_discrete(drop=FALSE) +
             scale_fill_manual(values = cbValues, drop=FALSE)
           
           if(noLegend){
@@ -741,11 +740,18 @@ shinyServer(function(input, output,session) {
         } else {
           
           chemGroupBPOneSite <- boxData %>%
-            select(-site)  %>%
-            arrange(as.character(category)) %>%
-            mutate(category = factor(as.character(category),levels=orderedLevels)) 
-            # filter(!is.na(category))
+            select(-site) 
           
+          if(catType == 1){
+            chemGroupBPOneSite <- mutate(chemGroupBPOneSite, category=stri_trans_totitle(category))
+            chemGroupBPOneSite$category[grep("Dna",chemGroupBPOneSite$category)] <- "DNA Binding"
+            chemGroupBPOneSite$category[grep("Cyp",chemGroupBPOneSite$category)] <- "CYP"
+            chemGroupBPOneSite$category[grep("Gpcr",chemGroupBPOneSite$category)] <- "GPCR"
+            
+          }
+
+          chemGroupBPOneSite <- mutate(chemGroupBPOneSite, category = factor(category,levels=orderedLevels))
+
           upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = category)) +
             geom_bar(stat="identity")+
             theme_minimal() +
@@ -754,7 +760,7 @@ shinyServer(function(input, output,session) {
             xlab("Individual Samples") + 
             ylab("EAR") +
             scale_fill_discrete("", drop=FALSE) +
-            scale_fill_manual(values = cbValues) 
+            scale_fill_manual(values = cbValues, drop=FALSE) 
           
           if(noLegend){
             upperPlot <- upperPlot +
@@ -993,9 +999,14 @@ shinyServer(function(input, output,session) {
           namesToPlotEP <<- as.character(countNonZero$endPoint)
           nSamplesEP <<- countNonZero$nonZero
           nHitsEP <<- countNonZero$hits
-          
-          
         }
+        
+        orderColsBy <- graphData %>%
+          group_by(endPoint) %>%
+          summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+          arrange(median)
+        
+        graphData$endPoint <- factor(graphData$endPoint, levels = orderColsBy$endPoint)
         
         stackedPlot <- ggplot(graphData)+
           scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
