@@ -45,6 +45,7 @@ sidebar <- dashboardSidebar(
                                  "Passive Samples",
                                  "Duluth",
                                  "NPS"),
+                                 # ,"Detection Limits"),
                      selected = "Water Sample", multiple = FALSE),
    conditionalPanel(
      condition = "input.data == 'Passive Samples'",

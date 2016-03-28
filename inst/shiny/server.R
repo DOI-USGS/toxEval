@@ -185,6 +185,9 @@ shinyServer(function(input, output,session) {
       } else if (input$data == "NPS"){
         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))
+      } else if (input$data == "Detection Limits"){
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryDetectionLevels.rds"))
+        stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       }
       
       ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
@@ -1028,7 +1031,7 @@ shinyServer(function(input, output,session) {
       boxData <- chemicalSummary()
     
       graphData <- boxData %>%
-        filter(!is.na(category)) %>%
+        # filter(!is.na(category)) %>%
         group_by(site,date,category,endPoint) %>%
         summarise(sumEAR=sum(EAR)) %>%
         data.frame() %>%
@@ -1058,12 +1061,14 @@ shinyServer(function(input, output,session) {
         summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
         arrange(median)
       
+      orderedLevelsEP <<- orderColsBy$endPoint
+      
       if(any(is.na(orderColsBy$median))){
-        orderedLevels <<- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
+        orderedLevelsEP <<- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
                             orderColsBy$endPoint[!is.na(orderColsBy$median)])
       }
       
-      graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevels)
+      graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
       
       stackedPlot <- ggplot(graphData)+
         scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
