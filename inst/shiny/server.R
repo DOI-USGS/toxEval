@@ -12,7 +12,11 @@ library(stringi)
 
 endPointInfo <- endPointInfo
 
-endPointInfo <- endPointInfo[,c(39,51,30)]
+choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
+
+choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
+
+endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
 endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
 endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
@@ -139,12 +143,12 @@ shinyServer(function(input, output,session) {
        df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
          arrange(desc(nEndPoints))
        
-       if(length(grep("background",df$orderNames)) > 0){
-         df <- df[-grep("background",df$orderNames),]
+       if(length(grep("Background",df$orderNames)) > 0){
+         df <- df[-grep("Background",df$orderNames),]
        }
        
-       if(length(grep("cell cycle",df$orderNames)) > 0){
-         df <- df[-grep("cell cycle",df$orderNames),]
+       if(length(grep("Cell Cycle",df$orderNames)) > 0){
+         df <- df[-grep("Cell Cycle",df$orderNames),]
        }
        
        dropDownHeader <- c("All",paste0(df$orderNames," (",df$nEndPoints,")"))
@@ -182,7 +186,6 @@ shinyServer(function(input, output,session) {
         chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
         stationINFO <<- readRDS(file.path(path,"npsSite.rds"))
       }
-      
       
       ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
       if(length(grep("Background",ep[,2])) > 0){
@@ -647,6 +650,10 @@ shinyServer(function(input, output,session) {
       
       if(catType == 2 & length(siteToFind) > 1){
 
+        levels(graphData$class)[levels(graphData$class) == "Human Drug, Non Prescription"] <- "Human Drug"
+        levels(graphData$class)[levels(graphData$class) == "Antimicrobial Disinfectant"] <- "Antimicrobial"
+        levels(graphData$class)[levels(graphData$class) == "Detergent Metabolites"] <- "Detergent"
+        
         orderClass <- graphData %>%
           group_by(class,category) %>%
           summarise(median = median(meanEAR[meanEAR != 0])) %>%
@@ -827,364 +834,358 @@ shinyServer(function(input, output,session) {
 
 # #############################################################    
      
-      output$mymap <- leaflet::renderLeaflet({
-        
-        map <- leaflet(height = "50px") %>%
-          addProviderTiles("CartoDB.Positron") %>%
-          setView(lng = -83.5, lat = 44.5, zoom=6) 
-        
-        map
-        
-      })
+    output$mymap <- leaflet::renderLeaflet({
       
-      observe({
-        
-        chemGroup <- chemicalSummary()
-        meanEARlogic <- input$meanEAR
-        
-        maxEARWords <- ifelse(meanEARlogic,"meanEAR","maxEAR")
+      map <- leaflet(height = "50px") %>%
+        addProviderTiles("CartoDB.Positron") %>%
+        setView(lng = -83.5, lat = 44.5, zoom=6) 
+      
+      map
+      
+    })
+    
+    observe({
+      
+      chemGroup <- chemicalSummary()
+      meanEARlogic <- input$meanEAR
+      
+      maxEARWords <- ifelse(meanEARlogic,"meanEAR","maxEAR")
 
-        if(input$radioMaxGroup == "1"){
-          typeWords <- "groups"
-        } else if (input$radioMaxGroup == "2"){
-          typeWords <- "chemicals"
-        } else {
-          typeWords <- "classes"
-        }
-          
-        statsOfGroupOrdered <- statsOfGroupOrdered()
+      if(input$radioMaxGroup == "1"){
+        typeWords <- "groups"
+      } else if (input$radioMaxGroup == "2"){
+        typeWords <- "chemicals"
+      } else {
+        typeWords <- "classes"
+      }
         
-        sumStat <- chemGroup %>%
-          group_by(site, date) %>%
-          summarise(sumEAR = sum(EAR),
-                    hits=as.numeric(any(hits > 0))) %>%
-          data.frame() %>%
-          group_by(site) %>%
-          summarise(nSamples = n(),
-                    meanEAR=ifelse(as.logical(meanEARlogic),mean(sumEAR,na.rm=TRUE),max(sumEAR,na.rm=TRUE)),
-                    freq=sum(hits)/n()) %>%
-          data.frame()
- 
-        
-        siteToFind <- unique(sumStat$site)
+      statsOfGroupOrdered <- statsOfGroupOrdered()
+      
+      sumStat <- chemGroup %>%
+        group_by(site, date) %>%
+        summarise(sumEAR = sum(EAR),
+                  hits=as.numeric(any(hits > 0))) %>%
+        data.frame() %>%
+        group_by(site) %>%
+        summarise(nSamples = n(),
+                  meanEAR=ifelse(as.logical(meanEARlogic),mean(sumEAR,na.rm=TRUE),max(sumEAR,na.rm=TRUE)),
+                  freq=sum(hits)/n()) %>%
+        data.frame()
 
-        mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
-        mapData <- left_join(mapData, statsOfGroupOrdered, by=c("shortName"="site", "nSamples"="nSamples"))
-        
-        mapData <- mapData[!is.na(mapData$dec.lat.va),]
-        
-        col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
-  
-        if(as.logical(meanEARlogic)){
-          counts <- mapData$mean
-        } else {
-          counts <- mapData$max
-        }
-        
-        if(nrow(mapData) > 1){
-          leg_vals <- unique(as.numeric(quantile(mapData$meanEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-          pal = colorBin(col_types, mapData$meanEAR, bins = leg_vals)
-          rad <-3*seq(1,4,length.out = 16)
-          # rad <- 1.5*seq(5000,20000, 1000)
-          mapData$sizes <- rad[as.numeric(cut(counts, breaks=16))]
-        } else {
-          leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-          pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
-          mapData$sizes <- 3
-          # mapData$sizes <- 1.5*12000
-        }
+      
+      siteToFind <- unique(sumStat$site)
 
-        map <- leafletProxy("mymap", data=mapData) %>%
-          clearMarkers() %>%
-          clearControls() %>%
-          addCircleMarkers(lat=~dec.lat.va, lng=~dec.long.va, 
-                     popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
-                                  "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanEAR),'</td></tr>',
-                                  "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
-                                  "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr>',
-                                  "<tr><td>Number of ",typeWords," with hits: </td><td>",counts,'</td></tr>',
-                                  '</table>') ,
-                     fillColor = ~pal(meanEAR), 
-                     # weight = 1,
-                     # color = "black",
-                     fillOpacity = 0.8, 
-                     radius = ~sizes, 
-                     stroke=FALSE,
-                     opacity = 0.8) 
-        
-        if(length(siteToFind) > 1){
-          map <- addLegend(map,
-            position = 'bottomleft',
-            pal=pal,
-            values=~meanEAR,
-            opacity = 0.8,
-            labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
-            title = ifelse(meanEARlogic,'Mean EAR','Max EAR'))
-        }
-        
-        map
-        
-      })
+      mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
+      mapData <- left_join(mapData, statsOfGroupOrdered, by=c("shortName"="site", "nSamples"="nSamples"))
       
-  ############################################################# 
+      mapData <- mapData[!is.na(mapData$dec.lat.va),]
       
-      output$TableHeader <- renderUI({
-        HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
-      })
-      
-      output$mapFooter <- renderUI({
-        
-        statsOfGroupOrdered <- statsOfGroupOrdered()
-        meanEARlogic <- input$meanEAR
-        
-        if(as.logical(meanEARlogic)){
-          counts <- statsOfGroupOrdered$mean
-        } else {
-          counts <- statsOfGroupOrdered$max
-        }
-        
-        if(input$radioMaxGroup == "1"){
-          word <- "groups"
-        } else if (input$radioMaxGroup == "2"){
-          word <- "chemicals"
-        } else {
-          word <- "classes"
-        }
+      col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
 
-        HTML(paste0("<h5>Size range represents number of ",word,
-                    " with hits. Ranges from 1 - ",max(counts,na.rm = TRUE),"</h5>"))
-        
-      })
+      if(as.logical(meanEARlogic)){
+        counts <- mapData$mean
+      } else {
+        counts <- mapData$max
+      }
       
-      output$BoxHeader <- renderUI({
-        HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
-      })
-  
-      output$TableHeaderColumns <- renderUI({
-        HTML(paste("<h4>", input$data,": ",input$sites, "</h4>"))
-      })
+      if(nrow(mapData) > 1){
+        leg_vals <- unique(as.numeric(quantile(mapData$meanEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+        pal = colorBin(col_types, mapData$meanEAR, bins = leg_vals)
+        rad <-3*seq(1,4,length.out = 16)
+        # rad <- 1.5*seq(5000,20000, 1000)
+        mapData$sizes <- rad[as.numeric(cut(counts, breaks=16))]
+      } else {
+        leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+        pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
+        mapData$sizes <- 3
+        # mapData$sizes <- 1.5*12000
+      }
+
+      map <- leafletProxy("mymap", data=mapData) %>%
+        clearMarkers() %>%
+        clearControls() %>%
+        addCircleMarkers(lat=~dec.lat.va, lng=~dec.long.va, 
+                   popup=paste0('<b>',mapData$Station.Name,"</b><br/><table>",
+                                "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanEAR),'</td></tr>',
+                                "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
+                                "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr>',
+                                "<tr><td>Number of ",typeWords," with hits: </td><td>",counts,'</td></tr>',
+                                '</table>') ,
+                   fillColor = ~pal(meanEAR), 
+                   # weight = 1,
+                   # color = "black",
+                   fillOpacity = 0.8, 
+                   radius = ~sizes, 
+                   stroke=FALSE,
+                   opacity = 0.8) 
       
-      output$siteHitText <- renderUI({
-        
-        if(input$sites == "All" | input$sites == "Potential 2016"){
-          HTML(paste("<h4>Number of sites with hits</h4>"))
-        } else {
-          HTML(paste("<h4>Number of samples with hits</h4>"))
-        }        
-        
-      })
-  
-      output$nGroup <- renderUI({
-  
-        radio <- input$radioMaxGroup
-        
-        if(input$sites == "All"){
-          siteToFind <- summaryFile$site
-        } else if (input$sites == "Potential 2016"){
-          siteToFind <- df2016$Site
-        } else {
-          siteToFind <- input$sites
-        }
-        
-        if(radio == "2"){
-          word <- "chemicals"
-        } else if (radio == "3") {
-          word <- "classes"
-        } else if(radio == "4"){
-          word <- "endPoints"
-        } else {
-          word <- "groups"
-        }
-        
-        if(length(siteToFind) > 1){
-          place <- "per site"
-        } else {
-          place <- ""
-        }
-        
-        if(length(siteToFind) > 1){
-          textUI <- paste("<h5>max = Maximum number of",word,"with hits per site</h5>",
-                          "<h5>mean = Mean number of",word,"with hits per site</h5>",
-                          "<h5>nSamples = Number of samples per site</h5>")
-        } else {
-          textUI <- paste("<h5>hits = Number of samples with hits </h5>",
-                          "<h5>nSamples = Number of samples per site</h5>")
-        }
-        HTML(textUI)
-        
-      })
+      if(length(siteToFind) > 1){
+        map <- addLegend(map,
+          position = 'bottomleft',
+          pal=pal,
+          values=~meanEAR,
+          opacity = 0.8,
+          labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
+          title = ifelse(meanEARlogic,'Mean EAR','Max EAR'))
+      }
       
-      output$endpointGraph <- renderPlot({ 
-  
-        filterBy <- input$epGroup
-        meanEARlogic <- as.logical(input$meanEAR)
-        
-        filterCat <- switch(as.character(input$radioMaxGroup),
-                            "1" = "choices",
-                            "2" = "chnm",
-                            "3" = "class")
-        
-        boxData <- chemicalSummary()
+      map
       
-        graphData <- boxData %>%
-          filter(!is.na(category)) %>%
-          group_by(site,date,category,endPoint) %>%
+    })
+    
+############################################################# 
+    
+    output$TableHeader <- renderUI({
+      HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
+    })
+    
+    output$mapFooter <- renderUI({
+      
+      statsOfGroupOrdered <- statsOfGroupOrdered()
+      meanEARlogic <- input$meanEAR
+      
+      if(as.logical(meanEARlogic)){
+        counts <- statsOfGroupOrdered$mean
+      } else {
+        counts <- statsOfGroupOrdered$max
+      }
+      
+      if(input$radioMaxGroup == "1"){
+        word <- "groups"
+      } else if (input$radioMaxGroup == "2"){
+        word <- "chemicals"
+      } else {
+        word <- "classes"
+      }
+
+      HTML(paste0("<h5>Size range represents number of ",word,
+                  " with hits. Ranges from 1 - ",max(counts,na.rm = TRUE),"</h5>"))
+      
+    })
+    
+    output$BoxHeader <- renderUI({
+      HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
+    })
+
+    output$TableHeaderColumns <- renderUI({
+      HTML(paste("<h4>", input$data,": ",input$sites, "</h4>"))
+    })
+    
+    output$siteHitText <- renderUI({
+      
+      if(input$sites == "All" | input$sites == "Potential 2016"){
+        HTML(paste("<h4>Number of sites with hits</h4>"))
+      } else {
+        HTML(paste("<h4>Number of samples with hits</h4>"))
+      }        
+      
+    })
+
+    output$nGroup <- renderUI({
+
+      radio <- input$radioMaxGroup
+      chemicalSummary <- chemicalSummary()
+      siteToFind <- length(unique(chemicalSummary$site))
+
+      if(radio == "2"){
+        word <- "chemicals"
+      } else if (radio == "3") {
+        word <- "classes"
+      } else if(radio == "4"){
+        word <- "endPoints"
+      } else {
+        word <- "groups"
+      }
+      
+      if(length(siteToFind) > 1){
+        place <- "per site"
+      } else {
+        place <- ""
+      }
+      
+      if(length(siteToFind) > 1){
+        textUI <- paste("<h5>max = Maximum number of",word,"with hits per site</h5>",
+                        "<h5>mean = Mean number of",word,"with hits per site</h5>",
+                        "<h5>nSamples = Number of samples per site</h5>")
+      } else {
+        textUI <- paste("<h5>hits = Number of samples with hits </h5>",
+                        "<h5>nSamples = Number of samples per site</h5>")
+      }
+      HTML(textUI)
+      
+    })
+    
+    output$endpointGraph <- renderPlot({ 
+
+      filterBy <- input$epGroup
+      meanEARlogic <- as.logical(input$meanEAR)
+      
+      filterCat <- switch(as.character(input$radioMaxGroup),
+                          "1" = "choices",
+                          "2" = "chnm",
+                          "3" = "class")
+      
+      boxData <- chemicalSummary()
+    
+      graphData <- boxData %>%
+        filter(!is.na(category)) %>%
+        group_by(site,date,category,endPoint) %>%
+        summarise(sumEAR=sum(EAR)) %>%
+        data.frame() %>%
+        group_by(site, category,endPoint) %>%
+        summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
+        data.frame() %>%
+        mutate(category=as.character(category)) 
+
+      if(filterBy != "All"){
+        graphData <- graphData %>%
+          filter_(paste0("category == '", filterBy,"'"))
+        
+        countNonZero <- graphData %>%
+          group_by(endPoint) %>%
+          summarise(nonZero = as.character(sum(meanEAR>0)),
+                    hits = as.character(sum(meanEAR>0.1)))
+        
+        countNonZero$hits[countNonZero$hits == "0"] <- ""
+        
+        namesToPlotEP <<- as.character(countNonZero$endPoint)
+        nSamplesEP <<- countNonZero$nonZero
+        nHitsEP <<- countNonZero$hits
+      }
+      
+      orderColsBy <- graphData %>%
+        group_by(endPoint) %>%
+        summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+        arrange(median)
+      
+      if(any(is.na(orderColsBy$median))){
+        orderedLevels <<- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
+                            orderColsBy$endPoint[!is.na(orderColsBy$median)])
+      }
+      
+      graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevels)
+      
+      stackedPlot <- ggplot(graphData)+
+        scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
+        geom_boxplot(aes(x=endPoint, y=meanEAR)) +
+        theme_minimal() +
+        xlab("") +
+        theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
+        geom_hline(yintercept = 0.1, linetype="dashed", color="black")
+      
+      if(filterBy != "All"){
+        
+        ymin <<- 10^(ggplot_build(stackedPlot)$panel$ranges[[1]]$y.range)[1]
+        ymax <<- 10^(ggplot_build(stackedPlot)$panel$ranges[[1]]$y.range)[2]
+        
+        xmax <<- ggplot_build(stackedPlot)$panel$ranges[[1]]$x.range[2]
+        xmin <<- ggplot_build(stackedPlot)$panel$ranges[[1]]$x.range[1]
+        
+        stackedPlot <- stackedPlot + 
+          geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5)  +
+          geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5) 
+        
+        df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+        
+        for(i in 1:3){
+          stackedPlot <- stackedPlot + 
+            annotation_custom(
+              grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
+              ymin = log10(df1$y[i]),      # Vertical position of the textGrob
+              ymax = log10(df1$y[i]),
+              xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
+              xmax = xmax+0.05)
+        }
+      }
+      stackedPlot <- stackedPlot +
+        coord_flip()
+      
+      # Code to override clipping
+      stackedPlot <- ggplot_gtable(ggplot_build(stackedPlot))
+      stackedPlot$layout$clip[stackedPlot$layout$name == "panel"] <- "off"
+      
+      print(grid.draw(stackedPlot))
+      
+    })
+    
+    output$hitsTable <- DT::renderDataTable({    
+      
+      boxData <- chemicalSummary()
+      meanEARlogic <- input$meanEAR
+      
+      if(length(unique(boxData$site)) > 1){
+        tableData <- boxData %>%
+          group_by(site, choices, category, date) %>%
+          summarize(sumEAR = sum(EAR)) %>%
+          group_by(site, choices, category) %>%
+          summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
+            # hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
+          group_by(choices, category) %>%
+          summarize(nSites = sum(meanEAR>0.1)) %>%
+          data.frame() 
+      } else {
+        tableData <- boxData %>%
+          group_by(choices, category, date)
+        
+        tableData <- tableData %>%
           summarise(sumEAR=sum(EAR)) %>%
           data.frame() %>%
-          group_by(site, category,endPoint) %>%
-          summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
-          data.frame() %>%
-          mutate(category=as.character(category)) 
-
-        if(filterBy != "All"){
-          graphData <- graphData %>%
-            filter_(paste0("category == '", filterBy,"'"))
-          
-          countNonZero <- graphData %>%
-            group_by(endPoint) %>%
-            summarise(nonZero = as.character(sum(meanEAR>0)),
-                      hits = as.character(sum(meanEAR>0.1)))
-          
-          countNonZero$hits[countNonZero$hits == "0"] <- ""
-          
-          namesToPlotEP <<- as.character(countNonZero$endPoint)
-          nSamplesEP <<- countNonZero$nonZero
-          nHitsEP <<- countNonZero$hits
-        }
+          group_by(choices, category) %>%
+          summarise(nSites = sum(sumEAR>0.1))%>% #or is a hit when the sum is greater than 0.1?
+          data.frame() 
         
-        orderColsBy <- graphData %>%
-          group_by(endPoint) %>%
-          summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-          arrange(median)
-        
-        if(any(is.na(orderColsBy$median))){
-          orderedLevels <<- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
-                              orderColsBy$endPoint[!is.na(orderColsBy$median)])
-        }
-        
-        graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevels)
-        
-        stackedPlot <- ggplot(graphData)+
-          scale_y_log10(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
-          geom_boxplot(aes(x=endPoint, y=meanEAR)) +
-          theme_minimal() +
-          xlab("") +
-          theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-          geom_hline(yintercept = 0.1, linetype="dashed", color="black")
-        
-        if(filterBy != "All"){
-          
-          ymin <<- 10^(ggplot_build(stackedPlot)$panel$ranges[[1]]$y.range)[1]
-          ymax <<- 10^(ggplot_build(stackedPlot)$panel$ranges[[1]]$y.range)[2]
-          
-          xmax <<- ggplot_build(stackedPlot)$panel$ranges[[1]]$x.range[2]
-          xmin <<- ggplot_build(stackedPlot)$panel$ranges[[1]]$x.range[1]
-          
-          stackedPlot <- stackedPlot + 
-            geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5)  +
-            geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5) 
-          
-          df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
-          
-          for(i in 1:3){
-            stackedPlot <- stackedPlot + 
-              annotation_custom(
-                grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
-                ymin = log10(df1$y[i]),      # Vertical position of the textGrob
-                ymax = log10(df1$y[i]),
-                xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
-                xmax = xmax+0.05)
-          }
-        }
-        stackedPlot <- stackedPlot +
-          coord_flip()
-        
-        # Code to override clipping
-        stackedPlot <- ggplot_gtable(ggplot_build(stackedPlot))
-        stackedPlot$layout$clip[stackedPlot$layout$name == "panel"] <- "off"
-        
-        print(grid.draw(stackedPlot))
-        
-      })
+      }
       
-      output$hitsTable <- DT::renderDataTable({    
+      if(input$radioMaxGroup != "1"){
+        tableData <- tableData %>%
+          reshape(idvar="choices",timevar="category", direction="wide") 
         
-        boxData <- chemicalSummary()
-        meanEARlogic <- input$meanEAR
+        names(tableData) <- gsub("nSites.","",names(tableData))
+        names(tableData)[1] <- "Groups"
         
-        if(length(unique(boxData$site)) > 1){
-          tableData <- boxData %>%
-            group_by(site, choices, category, date) %>%
-            summarize(sumEAR = sum(EAR)) %>%
-            group_by(site, choices, category) %>%
-            summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
-              # hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
-            group_by(choices, category) %>%
-            summarize(nSites = sum(meanEAR>0.1)) %>%
-            data.frame() 
-        } else {
-          tableData <- boxData %>%
-            group_by(choices, category, date)
-          
-          tableData <- tableData %>%
-            summarise(sumEAR=sum(EAR)) %>%
-            data.frame() %>%
-            group_by(choices, category) %>%
-            summarise(nSites = sum(sumEAR>0.1))%>% #or is a hit when the sum is greater than 0.1?
-            data.frame() 
-          
+        sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
+        orderData <- order(sumOfColumns,decreasing = TRUE) 
+        orderData <- orderData[sumOfColumns[orderData] != 0] + 1
+        
+        tableData <- tableData[,c(1,orderData)]
+        colors <- brewer.pal(9,"Blues") #"RdYlBu"
+        
+        groups <- tableData$Groups
+        
+        tableData <- tableData[!is.na(groups),-1,drop=FALSE]
+        rownames(tableData) <- groups[!is.na(groups)]
+        
+        cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
+        
+        names(tableData)[names(tableData) == "Human Drug, Non Prescription"] <- "Human Drug"
+        names(tableData)[names(tableData) == "Flavor/Fragrance"] <- "Flavor / Fragrance"
+      } else {
+        tableData <- select(tableData, choices, nSites)
+        rownames(tableData) <- tableData$choices
+        tableData <- tableData[,-1,drop=FALSE]
+      }
+      
+      tableData1 <- DT::datatable(tableData, # extensions = 'TableTools',
+                                  rownames = TRUE,
+                                  options = list(dom = 't',
+                                                 scrollX = TRUE,
+                                                 # initComplete = JS(
+                                                 #   "function(settings, json) {",
+                                                 #   "$(this.api().table().header()).css({'font-size': 'large'});",
+                                                 #   "}"),
+                                                 pageLength = nrow(tableData),
+                                                 # tableTools = list(sSwfPath = copySWF()),
+                                                 order=list(list(1,'desc'))))
+      if(input$radioMaxGroup != "1"){
+        for(i in 1:ncol(tableData)){
+          tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
+                      backgroundColor = styleInterval(cuts = cuts,values = colors),
+                      color = styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
+                      `font-size` = '17px')
         }
-        
-        if(input$radioMaxGroup != "1"){
-          tableData <- tableData %>%
-            reshape(idvar="choices",timevar="category", direction="wide") 
-          
-          names(tableData) <- gsub("nSites.","",names(tableData))
-          names(tableData)[1] <- "Groups"
-          
-          sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
-          orderData <- order(sumOfColumns,decreasing = TRUE) 
-          orderData <- orderData[sumOfColumns[orderData] != 0] + 1
-          
-          tableData <- tableData[,c(1,orderData)]
-          colors <- brewer.pal(9,"Blues") #"RdYlBu"
-          
-          groups <- tableData$Groups
-          
-          tableData <- tableData[!is.na(groups),-1,drop=FALSE]
-          rownames(tableData) <- groups[!is.na(groups)]
-          
-          cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
-          
-          names(tableData)[names(tableData) == "Human Drug, Non Prescription"] <- "Human Drug"
-          names(tableData)[names(tableData) == "Flavor/Fragrance"] <- "Flavor / Fragrance"
-        } else {
-          tableData <- select(tableData, choices, nSites)
-          rownames(tableData) <- tableData$choices
-          tableData <- tableData[,-1,drop=FALSE]
-        }
-        
-        tableData1 <- DT::datatable(tableData, # extensions = 'TableTools',
-                                    rownames = TRUE,
-                                    options = list(dom = 't',
-                                                   scrollX = TRUE,
-                                                   # initComplete = JS(
-                                                   #   "function(settings, json) {",
-                                                   #   "$(this.api().table().header()).css({'font-size': 'large'});",
-                                                   #   "}"),
-                                                   pageLength = nrow(tableData),
-                                                   # tableTools = list(sSwfPath = copySWF()),
-                                                   order=list(list(1,'desc'))))
-        if(input$radioMaxGroup != "1"){
-          for(i in 1:ncol(tableData)){
-            tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
-                        backgroundColor = styleInterval(cuts = cuts,values = colors),
-                        color = styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
-                        `font-size` = '17px')
-          }
-        }
-        tableData1
-        
-      })
+      }
+      tableData1
+      
+    })
 
 })
