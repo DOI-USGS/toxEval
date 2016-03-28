@@ -2,11 +2,16 @@ library(toxEval)
 library(shinydashboard)
 
 endPointInfo <- endPointInfo
-endPointInfo <- endPointInfo[,c(39,51,30)]
+
+choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
+
+choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
+
+endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
 endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
 endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
-choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x)))
+choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x[!is.na(x)])))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
 pathToApp <- system.file("extdata", package="toxEval")
@@ -57,7 +62,7 @@ sidebar <- dashboardSidebar(
                selected = "All", multiple = FALSE),
    selectInput("groupCol", label = "Annotation (# Groups)", 
                                  choices = setNames(names(endPointInfo)[-1],groupChoices),
-                                 selected = names(endPointInfo)[2], multiple = FALSE),
+                                 selected = names(endPointInfo)[names(endPointInfo) == "intended_target_family"], multiple = FALSE),
    selectInput("group", label = "Groups (# End Points)",
                choices = setNames(initialChoices,dropDownChoices),
                multiple = FALSE,width = '400px',
