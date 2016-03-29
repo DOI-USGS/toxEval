@@ -17,8 +17,6 @@ choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)]
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
 endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
-endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
-endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
 cleanUpNames <- endPointInfo$intended_target_family
 cleanUpNames <- stri_trans_totitle(cleanUpNames)
@@ -96,6 +94,22 @@ shinyServer(function(input, output,session) {
   })
   
   observe({
+    
+    allChoices <- c("APR","ATG","BSK",
+                    "NVS","OT","TOX21","CEETOX",
+                    "CLD","TANGUAY","NHEERL_PADILLA",
+                    "NCCT_SIMMONS","ACEA")
+    
+    if(input$allAssay == 0) {
+      return(NULL)
+    } else if (input$allAssay%%2 == 0){
+        updateCheckboxGroupInput(session, "assay", selected = allChoices)
+    } else {
+        updateCheckboxGroupInput(session, "assay", selected = allChoices[1])
+    }
+  })
+  
+  observe({
     labelText <- "Choose Chemical"
     
     if (input$radioMaxGroup == 2){
@@ -143,13 +157,13 @@ shinyServer(function(input, output,session) {
        df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
          arrange(desc(nEndPoints))
        
-       if(length(grep("Background",df$orderNames)) > 0){
-         df <- df[-grep("Background",df$orderNames),]
-       }
-       
-       if(length(grep("Cell Cycle",df$orderNames)) > 0){
-         df <- df[-grep("Cell Cycle",df$orderNames),]
-       }
+       # if(length(grep("Background",df$orderNames)) > 0){
+       #   df <- df[-grep("Background",df$orderNames),]
+       # }
+       # 
+       # if(length(grep("Cell Cycle",df$orderNames)) > 0){
+       #   df <- df[-grep("Cell Cycle",df$orderNames),]
+       # }
        
        dropDownHeader <- c("All",paste0(df$orderNames," (",df$nEndPoints,")"))
         
@@ -165,9 +179,15 @@ shinyServer(function(input, output,session) {
       groupCol <- input$groupCol
       group <- input$group
       radioMaxGroup <- input$radioMaxGroup
+      assays <- input$assay
+      
+      validate(
+        need(length(input$assay) > 0, 'Check at least one assay')
+      )
       
       if (input$data == "Water Sample"){
-        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
+        # chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
@@ -189,8 +209,10 @@ shinyServer(function(input, output,session) {
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryDetectionLevels.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       }
-      
-      ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
+
+      ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),c("assay_component_endpoint_name", groupCol)])
+
+      # ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
       if(length(grep("Background",ep[,2])) > 0){
         ep <- ep[-grep("Background",ep[,2]),]
       }
@@ -211,7 +233,7 @@ shinyServer(function(input, output,session) {
         rename(site=shortName)
       
       if(group != "All"){
-        endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
+        endPointInfoSub <- select_(ep, "assay_component_endpoint_name", groupCol) %>%
           distinct() %>%
           rename(endPoint=assay_component_endpoint_name) %>%
           filter_(paste0(groupCol," =='", group, "'"))
@@ -296,16 +318,17 @@ shinyServer(function(input, output,session) {
     statsOfGroupOrdered <- reactive({
 
       statsOfGroup <- chemicalSummary()   
-
+      hitThres <- input$hitThres
+      
       siteToFind <- unique(statsOfGroup$site)
       
       statsOfGroupOrdered <- statsOfGroup %>%
         group_by(site, date,category) %>%
         summarise(sumEAR = sum(EAR)) %>%
         group_by(site,category) %>%
-        summarise(max = sum(sumEAR > 0.1),
-                  mean = sum(mean(sumEAR) > 0.1),
-                  hit = as.numeric(any(sumEAR > 0.1)),
+        summarise(max = sum(sumEAR > hitThres),
+                  mean = sum(mean(sumEAR) > hitThres),
+                  hit = as.numeric(any(sumEAR > hitThres)),
                   nSamples = n())%>%
         data.frame()
 
@@ -517,6 +540,7 @@ shinyServer(function(input, output,session) {
 
     output$graphGroup <- renderPlot({ 
       
+      hitThres <<- input$hitThres
       graphData <- graphData()
       meanEARlogic <- as.logical(input$meanEAR)
       catType = as.numeric(input$radioMaxGroup)
@@ -526,7 +550,7 @@ shinyServer(function(input, output,session) {
       countNonZero <- graphData %>%
         group_by(category) %>%
         summarise(nonZero = as.character(sum(meanEAR>0)),
-                  hits = as.character(sum(meanEAR>0.1)))
+                  hits = as.character(sum(meanEAR>hitThres)))
       
       countNonZero$hits[countNonZero$hits == "0"] <- ""
       
@@ -581,7 +605,7 @@ shinyServer(function(input, output,session) {
               axis.text.x = element_text(size=16, color = "black", vjust = 0, margin = margin(-15,0,0,0)),
               axis.title = element_text(size=16)) +
         xlab("") +
-        geom_hline(yintercept = 0.1, linetype="dashed", color="black",lwd=0.25)  +
+        geom_hline(yintercept = hitThres, linetype="dashed", color="black",lwd=0.25)  +
         scale_x_discrete(drop=FALSE) +
         scale_fill_discrete(drop=FALSE)
       
@@ -606,7 +630,7 @@ shinyServer(function(input, output,session) {
         geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
         geom_text(data=data.frame(), aes(x=namesToPlot, y=ymax,label=nHits),size=5) 
       
-      df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+      df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
       
       for(i in 1:3){
         lowerPlot <- lowerPlot + 
@@ -740,14 +764,16 @@ shinyServer(function(input, output,session) {
       meanEARlogic <- as.logical(input$meanEAR)
       catType <- as.numeric(input$radioMaxGroup)
       columnName <- input$groupCol
+      assays <- input$assay
       
       boxData <- chemicalSummary()
       siteToFind <- unique(boxData$site)
       
       if(catType == 1){
-        orderBy <- endPointInfo[,columnName]
-        orderNames <- names(table(orderBy))
-        orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
+        ep <- endPointInfo[which(endPointInfo$assay_source_name %in% assays),][[columnName]]
+        # orderBy <- endPointInfo[,columnName]
+        orderNames <- names(table(ep))
+        # orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
       }
         
       if(catType == 2 & length(siteToFind) > 1){
@@ -1022,6 +1048,7 @@ shinyServer(function(input, output,session) {
 
       filterBy <- input$epGroup
       meanEARlogic <- as.logical(input$meanEAR)
+      hitThres <<- input$hitThres
       
       filterCat <- switch(as.character(input$radioMaxGroup),
                           "1" = "choices",
@@ -1047,7 +1074,7 @@ shinyServer(function(input, output,session) {
         countNonZero <- graphData %>%
           group_by(endPoint) %>%
           summarise(nonZero = as.character(sum(meanEAR>0)),
-                    hits = as.character(sum(meanEAR>0.1)))
+                    hits = as.character(sum(meanEAR>hitThres)))
         
         countNonZero$hits[countNonZero$hits == "0"] <- ""
         
@@ -1076,7 +1103,7 @@ shinyServer(function(input, output,session) {
         theme_minimal() +
         xlab("") +
         theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-        geom_hline(yintercept = 0.1, linetype="dashed", color="black")
+        geom_hline(yintercept = hitThres, linetype="dashed", color="black")
       
       if(filterBy != "All"){
         
@@ -1090,7 +1117,7 @@ shinyServer(function(input, output,session) {
           geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5)  +
           geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5) 
         
-        df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+        df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
         
         for(i in 1:3){
           stackedPlot <- stackedPlot + 
@@ -1116,7 +1143,8 @@ shinyServer(function(input, output,session) {
     output$hitsTable <- DT::renderDataTable({    
       
       boxData <- chemicalSummary()
-      meanEARlogic <- input$meanEAR
+      meanEARlogic <- as.logical(input$meanEAR)
+      hitThres <<- input$hitThres
       
       if(length(unique(boxData$site)) > 1){
         tableData <- boxData %>%
@@ -1126,7 +1154,7 @@ shinyServer(function(input, output,session) {
           summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
             # hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
           group_by(choices, category) %>%
-          summarize(nSites = sum(meanEAR>0.1)) %>%
+          summarize(nSites = sum(meanEAR>hitThres)) %>%
           data.frame() 
       } else {
         tableData <- boxData %>%
@@ -1136,7 +1164,7 @@ shinyServer(function(input, output,session) {
           summarise(sumEAR=sum(EAR)) %>%
           data.frame() %>%
           group_by(choices, category) %>%
-          summarise(nSites = sum(sumEAR>0.1))%>% #or is a hit when the sum is greater than 0.1?
+          summarise(nSites = sum(sumEAR>hitThres))%>%
           data.frame() 
         
       }
@@ -1192,5 +1220,108 @@ shinyServer(function(input, output,session) {
       tableData1
       
     })
+    
+    
+    output$hitsTableEPs <- DT::renderDataTable({
+
+      boxData <- chemicalSummary()
+      meanEARlogic <- as.logical(input$meanEAR)
+      hitThres <<- input$hitThres
+
+      fullData_init <- data.frame(Groups="",stringsAsFactors = FALSE)
+      fullData <- fullData_init
+      
+      if(length(unique(boxData$site)) > 1){
+        
+        for(i in unique(boxData$choices)){
+          dataSub <- boxData %>%
+            filter(choices == i) %>%
+            group_by(site, category, endPoint, date) %>%
+            summarize(sumEAR = sum(EAR)) %>%
+            group_by(site, category, endPoint) %>%
+            summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
+            group_by(category, endPoint) %>%
+            summarize(nSites = sum(meanEAR>hitThres)) %>%
+            data.frame() %>%
+            arrange(desc(nSites)) %>%
+            reshape(idvar="endPoint",timevar="category", direction="wide") 
+          
+          names(dataSub) <- gsub("nSites.","",names(dataSub))
+          names(dataSub)[1] <- "Groups"
+
+          if(ncol(dataSub) > 2){
+            dataSub <- dataSub[,c(1,1+which(colSums(dataSub[,-1],na.rm = TRUE) != 0))]
+          }
+          
+          if(is.data.frame(dataSub)){
+            if(ncol(dataSub) > 2){
+              dataSub <- dataSub[(rowSums(dataSub[,-1],na.rm = TRUE) != 0),]
+            } else {
+              dataSub <- dataSub[which(dataSub[,-1] != 0 ),]
+            }
+            
+            dataSub <- dataSub %>%
+              data.frame() %>%
+              mutate(choices = i)
+            
+            fullData <- full_join(fullData,dataSub)
+
+          }
+          
+
+        }
+        
+      } else {
+        
+        for(i in unique(boxData$choices)){
+          dataSub <- boxData %>%
+            filter(choices == i) %>%
+            group_by(category, endPoint, date) %>%
+            summarise(sumEAR=sum(EAR)) %>%
+            data.frame() %>%
+            group_by(endPoint, category) %>%
+            summarise(nSites = sum(sumEAR>hitThres))%>%
+            data.frame() %>%
+            arrange(desc(nSites)) %>%
+            reshape(idvar="endPoint",timevar="category", direction="wide") 
+          
+          names(dataSub) <- gsub("nSites.","",names(dataSub))
+          names(dataSub)[1] <- "Groups"
+          
+          
+          
+          if(ncol(dataSub) > 2){
+            dataSub <- dataSub[,c(1,1+which(colSums(dataSub[,-1],na.rm = TRUE) != 0))]
+          }
+          
+          if(is.data.frame(dataSub)){
+            if(ncol(dataSub) > 2){
+              dataSub <- dataSub[(rowSums(dataSub[,-1],na.rm = TRUE) != 0),]
+            } else {
+              dataSub <- dataSub[which(dataSub[,-1] != 0 ),]
+            }
+            dataSub <- dataSub %>%
+              data.frame() %>%
+              mutate(choices = i)
+            
+            fullData <- full_join(fullData,dataSub)
+          
+          }
+          
+        }
+
+      }
+      
+      fullData <- fullData[,c("Groups","choices",names(fullData)[!(names(fullData) %in% c("Groups","choices"))])]
+
+      fullData <- DT::datatable(fullData, # extensions = 'TableTools',
+                                  rownames = FALSE,
+                                  options = list(dom = 't',
+                                                 # scrollX = TRUE,
+                                                 pageLength = nrow(fullData),
+                                                 order=list(list(1,'desc'))))
+      
+    })
+    
 
 })
