@@ -186,8 +186,8 @@ shinyServer(function(input, output,session) {
       )
       
       if (input$data == "Water Sample"){
-        # chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
-        chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
+        # chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
