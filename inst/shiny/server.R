@@ -318,16 +318,17 @@ shinyServer(function(input, output,session) {
     statsOfGroupOrdered <- reactive({
 
       statsOfGroup <- chemicalSummary()   
-
+      hitThres <- input$hitThres
+      
       siteToFind <- unique(statsOfGroup$site)
       
       statsOfGroupOrdered <- statsOfGroup %>%
         group_by(site, date,category) %>%
         summarise(sumEAR = sum(EAR)) %>%
         group_by(site,category) %>%
-        summarise(max = sum(sumEAR > 0.1),
-                  mean = sum(mean(sumEAR) > 0.1),
-                  hit = as.numeric(any(sumEAR > 0.1)),
+        summarise(max = sum(sumEAR > hitThres),
+                  mean = sum(mean(sumEAR) > hitThres),
+                  hit = as.numeric(any(sumEAR > hitThres)),
                   nSamples = n())%>%
         data.frame()
 
@@ -539,6 +540,7 @@ shinyServer(function(input, output,session) {
 
     output$graphGroup <- renderPlot({ 
       
+      hitThres <<- input$hitThres
       graphData <- graphData()
       meanEARlogic <- as.logical(input$meanEAR)
       catType = as.numeric(input$radioMaxGroup)
@@ -548,7 +550,7 @@ shinyServer(function(input, output,session) {
       countNonZero <- graphData %>%
         group_by(category) %>%
         summarise(nonZero = as.character(sum(meanEAR>0)),
-                  hits = as.character(sum(meanEAR>0.1)))
+                  hits = as.character(sum(meanEAR>hitThres)))
       
       countNonZero$hits[countNonZero$hits == "0"] <- ""
       
@@ -603,7 +605,7 @@ shinyServer(function(input, output,session) {
               axis.text.x = element_text(size=16, color = "black", vjust = 0, margin = margin(-15,0,0,0)),
               axis.title = element_text(size=16)) +
         xlab("") +
-        geom_hline(yintercept = 0.1, linetype="dashed", color="black",lwd=0.25)  +
+        geom_hline(yintercept = hitThres, linetype="dashed", color="black",lwd=0.25)  +
         scale_x_discrete(drop=FALSE) +
         scale_fill_discrete(drop=FALSE)
       
@@ -628,7 +630,7 @@ shinyServer(function(input, output,session) {
         geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
         geom_text(data=data.frame(), aes(x=namesToPlot, y=ymax,label=nHits),size=5) 
       
-      df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+      df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
       
       for(i in 1:3){
         lowerPlot <- lowerPlot + 
@@ -1046,6 +1048,7 @@ shinyServer(function(input, output,session) {
 
       filterBy <- input$epGroup
       meanEARlogic <- as.logical(input$meanEAR)
+      hitThres <<- input$hitThres
       
       filterCat <- switch(as.character(input$radioMaxGroup),
                           "1" = "choices",
@@ -1071,7 +1074,7 @@ shinyServer(function(input, output,session) {
         countNonZero <- graphData %>%
           group_by(endPoint) %>%
           summarise(nonZero = as.character(sum(meanEAR>0)),
-                    hits = as.character(sum(meanEAR>0.1)))
+                    hits = as.character(sum(meanEAR>hitThres)))
         
         countNonZero$hits[countNonZero$hits == "0"] <- ""
         
@@ -1100,7 +1103,7 @@ shinyServer(function(input, output,session) {
         theme_minimal() +
         xlab("") +
         theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-        geom_hline(yintercept = 0.1, linetype="dashed", color="black")
+        geom_hline(yintercept = hitThres, linetype="dashed", color="black")
       
       if(filterBy != "All"){
         
@@ -1114,7 +1117,7 @@ shinyServer(function(input, output,session) {
           geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5)  +
           geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5) 
         
-        df1 <- data.frame(y = c(ymin,0.1,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+        df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
         
         for(i in 1:3){
           stackedPlot <- stackedPlot + 
@@ -1141,6 +1144,7 @@ shinyServer(function(input, output,session) {
       
       boxData <- chemicalSummary()
       meanEARlogic <- input$meanEAR
+      hitThres <<- input$hitThres
       
       if(length(unique(boxData$site)) > 1){
         tableData <- boxData %>%
@@ -1150,7 +1154,7 @@ shinyServer(function(input, output,session) {
           summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
             # hits = any(hits > 0)) %>% #is a hit when any EAR is greater than 0.1?
           group_by(choices, category) %>%
-          summarize(nSites = sum(meanEAR>0.1)) %>%
+          summarize(nSites = sum(meanEAR>hitThres)) %>%
           data.frame() 
       } else {
         tableData <- boxData %>%
@@ -1160,7 +1164,7 @@ shinyServer(function(input, output,session) {
           summarise(sumEAR=sum(EAR)) %>%
           data.frame() %>%
           group_by(choices, category) %>%
-          summarise(nSites = sum(sumEAR>0.1))%>% #or is a hit when the sum is greater than 0.1?
+          summarise(nSites = sum(sumEAR>hitThres))%>% #or is a hit when the sum is greater than 0.1?
           data.frame() 
         
       }
