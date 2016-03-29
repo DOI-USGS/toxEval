@@ -17,8 +17,6 @@ choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)]
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
 endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
-endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
-endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
 cleanUpNames <- endPointInfo$intended_target_family
 cleanUpNames <- stri_trans_totitle(cleanUpNames)
@@ -96,6 +94,22 @@ shinyServer(function(input, output,session) {
   })
   
   observe({
+    
+    allChoices <- c("APR","ATG","BSK",
+                    "NVS","OT","TOX21","CEETOX",
+                    "CLD","TANGUAY","NHEERL_PADILLA",
+                    "NCCT_SIMMONS","ACEA")
+    
+    if(input$allAssay == 0) {
+      return(NULL)
+    } else if (input$allAssay%%2 == 0){
+        updateCheckboxGroupInput(session, "assay", selected = allChoices)
+    } else {
+        updateCheckboxGroupInput(session, "assay", selected = allChoices[1])
+    }
+  })
+  
+  observe({
     labelText <- "Choose Chemical"
     
     if (input$radioMaxGroup == 2){
@@ -143,13 +157,13 @@ shinyServer(function(input, output,session) {
        df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
          arrange(desc(nEndPoints))
        
-       if(length(grep("Background",df$orderNames)) > 0){
-         df <- df[-grep("Background",df$orderNames),]
-       }
-       
-       if(length(grep("Cell Cycle",df$orderNames)) > 0){
-         df <- df[-grep("Cell Cycle",df$orderNames),]
-       }
+       # if(length(grep("Background",df$orderNames)) > 0){
+       #   df <- df[-grep("Background",df$orderNames),]
+       # }
+       # 
+       # if(length(grep("Cell Cycle",df$orderNames)) > 0){
+       #   df <- df[-grep("Cell Cycle",df$orderNames),]
+       # }
        
        dropDownHeader <- c("All",paste0(df$orderNames," (",df$nEndPoints,")"))
         
@@ -165,9 +179,15 @@ shinyServer(function(input, output,session) {
       groupCol <- input$groupCol
       group <- input$group
       radioMaxGroup <- input$radioMaxGroup
+      assays <- input$assay
+      
+      validate(
+        need(length(input$assay) > 0, 'Check at least one assay')
+      )
       
       if (input$data == "Water Sample"){
-        chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
+        # chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
+        chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       } else if (input$data == "Passive Samples"){
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
@@ -189,8 +209,10 @@ shinyServer(function(input, output,session) {
         chemicalSummary <- readRDS(file.path(path,"chemicalSummaryDetectionLevels.rds"))
         stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
       }
-      
-      ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
+
+      ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),c("assay_component_endpoint_name", groupCol)])
+
+      # ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
       if(length(grep("Background",ep[,2])) > 0){
         ep <- ep[-grep("Background",ep[,2]),]
       }
@@ -211,7 +233,7 @@ shinyServer(function(input, output,session) {
         rename(site=shortName)
       
       if(group != "All"){
-        endPointInfoSub <- select_(endPointInfo, "assay_component_endpoint_name", groupCol) %>%
+        endPointInfoSub <- select_(ep, "assay_component_endpoint_name", groupCol) %>%
           distinct() %>%
           rename(endPoint=assay_component_endpoint_name) %>%
           filter_(paste0(groupCol," =='", group, "'"))
@@ -740,14 +762,16 @@ shinyServer(function(input, output,session) {
       meanEARlogic <- as.logical(input$meanEAR)
       catType <- as.numeric(input$radioMaxGroup)
       columnName <- input$groupCol
+      assays <- input$assay
       
       boxData <- chemicalSummary()
       siteToFind <- unique(boxData$site)
       
       if(catType == 1){
-        orderBy <- endPointInfo[,columnName]
-        orderNames <- names(table(orderBy))
-        orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
+        ep <- endPointInfo[which(endPointInfo$assay_source_name %in% assays),][[columnName]]
+        # orderBy <- endPointInfo[,columnName]
+        orderNames <- names(table(ep))
+        # orderNames <- orderNames[!(orderNames %in% c("Cell Cycle","Background Measurement"))]
       }
         
       if(catType == 2 & length(siteToFind) > 1){

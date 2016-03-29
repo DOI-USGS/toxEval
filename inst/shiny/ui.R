@@ -8,8 +8,6 @@ choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)]
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
 endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
-endPointInfo <- endPointInfo[-grep("BSK",endPointInfo$assay_component_endpoint_name),]
-endPointInfo <- endPointInfo[-grep("APR",endPointInfo$assay_component_endpoint_name),]
 
 choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x[!is.na(x)])))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
@@ -47,6 +45,24 @@ sidebar <- dashboardSidebar(
                                  "NPS"),
                                  # ,"Detection Limits"),
                      selected = "Water Sample", multiple = FALSE),
+   menuItem("Assay", icon = icon("th"), tabName = "assay",
+            actionButton("allAssay", label="Select/Deselect all"),
+            checkboxGroupInput("assay", "Assays:",
+                               c("Apredica" = "APR",
+                                 "Attagene" = "ATG",
+                                 "BioSeek" = "BSK",
+                                 "NovaScreen" = "NVS",
+                                 "Odyssey Thera" = "OT",
+                                 "Toxicity Testing" = "TOX21",
+                                 "CEETOX" = "CEETOX",
+                                 "CLD" = "CLD",
+                                 "TANGUAY" = "TANGUAY",
+                                 "NHEERL_PADILLA"="NHEERL_PADILLA",
+                                 "NCCT_SIMMONS"="NCCT_SIMMONS",
+                                 "ACEA Biosciences" = "ACEA"),
+              selected=c("ATG","NVS","OT","TOX21","CEETOX",
+                         "CLD","TANGUAY","NHEERL_PADILLA",
+                         "NCCT_SIMMONS","ACEA"))),
    conditionalPanel(
      condition = "input.data == 'Passive Samples'",
      radioButtons("year", label = "",inline = TRUE,
