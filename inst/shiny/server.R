@@ -1143,7 +1143,7 @@ shinyServer(function(input, output,session) {
     output$hitsTable <- DT::renderDataTable({    
       
       boxData <- chemicalSummary()
-      meanEARlogic <- input$meanEAR
+      meanEARlogic <- as.logical(input$meanEAR)
       hitThres <<- input$hitThres
       
       if(length(unique(boxData$site)) > 1){
@@ -1164,7 +1164,7 @@ shinyServer(function(input, output,session) {
           summarise(sumEAR=sum(EAR)) %>%
           data.frame() %>%
           group_by(choices, category) %>%
-          summarise(nSites = sum(sumEAR>hitThres))%>% #or is a hit when the sum is greater than 0.1?
+          summarise(nSites = sum(sumEAR>hitThres))%>%
           data.frame() 
         
       }
@@ -1220,5 +1220,108 @@ shinyServer(function(input, output,session) {
       tableData1
       
     })
+    
+    
+    output$hitsTableEPs <- DT::renderDataTable({
+
+      boxData <- chemicalSummary()
+      meanEARlogic <- as.logical(input$meanEAR)
+      hitThres <<- input$hitThres
+
+      fullData_init <- data.frame(Groups="",stringsAsFactors = FALSE)
+      fullData <- fullData_init
+      
+      if(length(unique(boxData$site)) > 1){
+        
+        for(i in unique(boxData$choices)){
+          dataSub <- boxData %>%
+            filter(choices == i) %>%
+            group_by(site, category, endPoint, date) %>%
+            summarize(sumEAR = sum(EAR)) %>%
+            group_by(site, category, endPoint) %>%
+            summarize(meanEAR = ifelse(meanEARlogic, mean(sumEAR),max(sumEAR))) %>%
+            group_by(category, endPoint) %>%
+            summarize(nSites = sum(meanEAR>hitThres)) %>%
+            data.frame() %>%
+            arrange(desc(nSites)) %>%
+            reshape(idvar="endPoint",timevar="category", direction="wide") 
+          
+          names(dataSub) <- gsub("nSites.","",names(dataSub))
+          names(dataSub)[1] <- "Groups"
+
+          if(ncol(dataSub) > 2){
+            dataSub <- dataSub[,c(1,1+which(colSums(dataSub[,-1],na.rm = TRUE) != 0))]
+          }
+          
+          if(is.data.frame(dataSub)){
+            if(ncol(dataSub) > 2){
+              dataSub <- dataSub[(rowSums(dataSub[,-1],na.rm = TRUE) != 0),]
+            } else {
+              dataSub <- dataSub[which(dataSub[,-1] != 0 ),]
+            }
+            
+            dataSub <- dataSub %>%
+              data.frame() %>%
+              mutate(choices = i)
+            
+            fullData <- full_join(fullData,dataSub)
+
+          }
+          
+
+        }
+        
+      } else {
+        
+        for(i in unique(boxData$choices)){
+          dataSub <- boxData %>%
+            filter(choices == i) %>%
+            group_by(category, endPoint, date) %>%
+            summarise(sumEAR=sum(EAR)) %>%
+            data.frame() %>%
+            group_by(endPoint, category) %>%
+            summarise(nSites = sum(sumEAR>hitThres))%>%
+            data.frame() %>%
+            arrange(desc(nSites)) %>%
+            reshape(idvar="endPoint",timevar="category", direction="wide") 
+          
+          names(dataSub) <- gsub("nSites.","",names(dataSub))
+          names(dataSub)[1] <- "Groups"
+          
+          
+          
+          if(ncol(dataSub) > 2){
+            dataSub <- dataSub[,c(1,1+which(colSums(dataSub[,-1],na.rm = TRUE) != 0))]
+          }
+          
+          if(is.data.frame(dataSub)){
+            if(ncol(dataSub) > 2){
+              dataSub <- dataSub[(rowSums(dataSub[,-1],na.rm = TRUE) != 0),]
+            } else {
+              dataSub <- dataSub[which(dataSub[,-1] != 0 ),]
+            }
+            dataSub <- dataSub %>%
+              data.frame() %>%
+              mutate(choices = i)
+            
+            fullData <- full_join(fullData,dataSub)
+          
+          }
+          
+        }
+
+      }
+      
+      fullData <- fullData[,c("Groups","choices",names(fullData)[!(names(fullData) %in% c("Groups","choices"))])]
+
+      fullData <- DT::datatable(fullData, # extensions = 'TableTools',
+                                  rownames = FALSE,
+                                  options = list(dom = 't',
+                                                 # scrollX = TRUE,
+                                                 pageLength = nrow(fullData),
+                                                 order=list(list(1,'desc'))))
+      
+    })
+    
 
 })

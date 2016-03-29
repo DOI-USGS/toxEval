@@ -127,6 +127,11 @@ body <- dashboardBody(
             htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%")
     ),
+    tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
+             value="endHits",
+             # htmlOutput("siteHitText"),
+             div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%")
+    ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
             plotOutput("endpointGraph",  height = "1000px")
