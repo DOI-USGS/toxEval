@@ -1228,7 +1228,7 @@ shinyServer(function(input, output,session) {
       meanEARlogic <- as.logical(input$meanEAR)
       hitThres <<- input$hitThres
 
-      fullData_init <- data.frame(Groups="",stringsAsFactors = FALSE)
+      fullData_init <- data.frame(Endpoint="",stringsAsFactors = FALSE)
       fullData <- fullData_init
       
       if(length(unique(boxData$site)) > 1){
@@ -1247,7 +1247,7 @@ shinyServer(function(input, output,session) {
             reshape(idvar="endPoint",timevar="category", direction="wide") 
           
           names(dataSub) <- gsub("nSites.","",names(dataSub))
-          names(dataSub)[1] <- "Groups"
+          names(dataSub)[1] <- "Endpoint"
 
           if(ncol(dataSub) > 2){
             dataSub <- dataSub[,c(1,1+which(colSums(dataSub[,-1],na.rm = TRUE) != 0))]
@@ -1262,7 +1262,7 @@ shinyServer(function(input, output,session) {
             
             dataSub <- dataSub %>%
               data.frame() %>%
-              mutate(choices = i)
+              mutate(Group = i)
             
             fullData <- full_join(fullData,dataSub)
 
@@ -1286,7 +1286,7 @@ shinyServer(function(input, output,session) {
             reshape(idvar="endPoint",timevar="category", direction="wide") 
           
           names(dataSub) <- gsub("nSites.","",names(dataSub))
-          names(dataSub)[1] <- "Groups"
+          names(dataSub)[1] <- "Endpoint"
           
           
           
@@ -1302,7 +1302,7 @@ shinyServer(function(input, output,session) {
             }
             dataSub <- dataSub %>%
               data.frame() %>%
-              mutate(choices = i)
+              mutate(Group = i)
             
             fullData <- full_join(fullData,dataSub)
           
@@ -1312,14 +1312,29 @@ shinyServer(function(input, output,session) {
 
       }
       
-      fullData <- fullData[,c("Groups","choices",names(fullData)[!(names(fullData) %in% c("Groups","choices"))])]
+      fullData <- fullData[,c("Endpoint","Group",names(fullData)[!(names(fullData) %in% c("Endpoint","Group"))])]
 
+      fullData <- fullData[-1,]
+      
+      names(fullData) <- gsub("\\."," ",names(fullData))
+      names(fullData)[names(fullData) == "Human Drug  Non Prescription"] <- "Human Drug"
+      names(fullData)[names(fullData) == "Flavor/Fragrance"] <- "Flavor / Fragrance"
+      
+      sumOfColumns <- colSums(fullData[c(-1,-2)],na.rm = TRUE)
+      orderData <- order(sumOfColumns,decreasing = TRUE) 
+      orderData <- orderData[sumOfColumns[orderData] != 0] + 2
+      
+      fullData <- fullData[,c(1,2,orderData)]
+      colors <- brewer.pal(9,"Blues") #"RdYlBu"
+      
+      groups <- fullData$Groups
+      
       fullData <- DT::datatable(fullData, # extensions = 'TableTools',
                                   rownames = FALSE,
                                   options = list(dom = 't',
-                                                 # scrollX = TRUE,
+                                                 scrollX = TRUE,
                                                  pageLength = nrow(fullData),
-                                                 order=list(list(1,'desc'))))
+                                                 order=list(list(2,'desc'))))
       
     })
     

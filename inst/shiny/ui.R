@@ -69,7 +69,9 @@ sidebar <- dashboardSidebar(
                   choices = c("2010", "2014", "Combo"), 
                   selected = "Combo")   
    ),
-   numericInput("hitThres",label = "Hit Threshold",value = 0.1),
+   conditionalPanel(
+     condition = "input.mainOut != 'heat'",
+   numericInput("hitThres",label = "Hit Threshold",value = 0.1)),
    radioButtons("radioMaxGroup", label = "",
                  choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                  selected = 3),
