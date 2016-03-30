@@ -1267,8 +1267,6 @@ shinyServer(function(input, output,session) {
             fullData <- full_join(fullData,dataSub)
 
           }
-          
-
         }
         
       } else {
@@ -1288,8 +1286,6 @@ shinyServer(function(input, output,session) {
           names(dataSub) <- gsub("nSites.","",names(dataSub))
           names(dataSub)[1] <- "Endpoint"
           
-          
-          
           if(ncol(dataSub) > 2){
             dataSub <- dataSub[,c(1,1+which(colSums(dataSub[,-1],na.rm = TRUE) != 0))]
           }
@@ -1305,11 +1301,8 @@ shinyServer(function(input, output,session) {
               mutate(Group = i)
             
             fullData <- full_join(fullData,dataSub)
-          
           }
-          
         }
-
       }
       
       fullData <- fullData[,c("Endpoint","Group",names(fullData)[!(names(fullData) %in% c("Endpoint","Group"))])]
