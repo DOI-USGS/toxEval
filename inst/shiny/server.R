@@ -113,6 +113,58 @@ shinyServer(function(input, output,session) {
     }
   })
   
+  groupDF <- eventReactive(input$changeAnn, ignoreNULL = FALSE, {
+    groupCol <- input$groupCol
+    assays <- input$assay
+
+    ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),
+                                  c("assay_component_endpoint_name", groupCol)])
+    ep <- ep[!is.na(ep[,2]),]
+    ep <- ep[ep[,2] != "NA",]
+
+    ep
+  })
+  
+  # groupDF <- reactive({
+  #   groupCol <- input$groupCol
+  #   assays <- input$assay
+  # 
+  #   ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),
+  #                                 c("assay_component_endpoint_name", groupCol)])
+  #   ep <- ep[!is.na(ep[,2]),]
+  #   ep <- ep[ep[,2] != "NA",]
+  # 
+  #   ep
+  # 
+  # })
+  
+  observe({
+    
+    ep <- groupDF()
+    
+    orderBy <- ep[,2]
+    orderNames <- names(table(orderBy))
+    nEndPoints <- as.integer(table(orderBy))
+    
+    df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
+      arrange(desc(nEndPoints))
+
+    dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
+
+    selChoices <- df$orderNames
+    # if("Background Measurement" %in% selChoices){
+    #   selChoices <- selChoices[-grep("Background",selChoices)]
+    # }
+    # if("Cell Cycle" %in% selChoices){
+    #   selChoices <- selChoices[-grep("Cell Cycle",selChoices)]
+    # }
+    
+    updateCheckboxGroupInput(session, "group", 
+                             choices = setNames(df$orderNames,dropDownHeader),
+                             selected = selChoices)
+
+  })
+  
   observe({
     labelText <- "Choose Chemical"
     
@@ -143,47 +195,22 @@ shinyServer(function(input, output,session) {
     
     updateSelectInput(session, "epGroup", choices = valueText)
   })
-
-  observe({
-    
-    columnName <- input$groupCol
-    
-    updateSelectInput(session, "group", selected = "All")
-    
-  })
-  
-  observe({
-       
-       columnName <- input$groupCol
-       orderBy <- endPointInfo[,columnName]
-       orderNames <- names(table(orderBy))
-       nEndPoints <- as.integer(table(orderBy))
-       df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
-         arrange(desc(nEndPoints))
-       
-       # if(length(grep("Background",df$orderNames)) > 0){
-       #   df <- df[-grep("Background",df$orderNames),]
-       # }
-       # 
-       # if(length(grep("Cell Cycle",df$orderNames)) > 0){
-       #   df <- df[-grep("Cell Cycle",df$orderNames),]
-       # }
-       
-       dropDownHeader <- c("All",paste0(df$orderNames," (",df$nEndPoints,")"))
-        
-       updateSelectInput(session, "group",
-        choices = setNames(c("All",df$orderNames),dropDownHeader)
-       )
-    })
   
 #############################################################   
   chemicalSummary <- reactive({
     
+    ep <- groupDF() 
     path <- pathToApp
-    groupCol <- input$groupCol
-    group <- input$group
+    groupCol <- names(ep)[2]
+    
     radioMaxGroup <- input$radioMaxGroup
     assays <- input$assay
+    
+    group <- input$group
+    
+    if(!any(group %in% names(table(ep[,2])))){
+      group <- names(table(ep[,2]))
+    }
     
     validate(
       need(length(input$assay) > 0, 'Check at least one assay')
@@ -213,17 +240,7 @@ shinyServer(function(input, output,session) {
       chemicalSummary <- readRDS(file.path(path,"chemicalSummaryDetectionLevels.rds"))
       stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
     }
-
-    ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),c("assay_component_endpoint_name", groupCol)])
-
-    # if(length(grep("Background",ep[,2])) > 0){
-    #   ep <- ep[-grep("Background",ep[,2]),]
-    # }
-    # if(length(grep("Cell Cycle",ep[,2])) > 0){
-    #   ep <- ep[-grep("Cell Cycle",ep[,2]),]
-    # }
-    ep <- ep[!is.na(ep[,2]),]
-  
+    
     chemicalSummary <- rename(chemicalSummary, assay_component_endpoint_name=endPoint)%>%
       filter(assay_component_endpoint_name %in% ep$assay_component_endpoint_name ) %>%
       data.table() %>%
@@ -235,14 +252,16 @@ shinyServer(function(input, output,session) {
       select(-site) %>%
       rename(site=shortName)
     
-    if(group != "All"){
       endPointInfoSub <- select_(ep, "assay_component_endpoint_name", groupCol) %>%
         distinct() %>%
-        rename(endPoint=assay_component_endpoint_name) %>%
-        filter_(paste0(groupCol," =='", group, "'"))
+        rename(endPoint=assay_component_endpoint_name) 
+      
+      names(endPointInfoSub)[2] <- "groupC"
+      
+      endPointInfoSub <- filter(endPointInfoSub, groupC %in%  group)
       
       chemicalSummary <- filter(chemicalSummary, endPoint %in% endPointInfoSub$endPoint)
-    }
+
   
     if(radioMaxGroup == "2"){
       chemicalSummary <- chemicalSummary %>%
@@ -764,9 +783,12 @@ shinyServer(function(input, output,session) {
   
   graphData <- reactive({
     
+    ep <- groupDF() 
+    columnName <- names(ep)[2]
+    
     meanEARlogic <- as.logical(input$meanEAR)
     catType <- as.numeric(input$radioMaxGroup)
-    columnName <- input$groupCol
+    
     assays <- input$assay
     
     boxData <- chemicalSummary()

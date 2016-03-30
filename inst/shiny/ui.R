@@ -15,24 +15,25 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 pathToApp <- system.file("extdata", package="toxEval")
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 
-dropDownChoices <- c( "All","nuclear receptor (172)",     
-                      "kinase (118)",
-                      "cyp (81)","dna binding (78)",         
-                      "gpcr (76)","phosphatase (38)",      
-                      "protease (30)",    
-                      "transporter (23)","oxidoreductase (22)",      
-                      "ion channel (20)","steroid hormone (20)",       
-                      "esterase (12)","hydrolase (11)",             
-                      "transferase (9)","lyase (6)",      
-                      "cell morphology (2)","growth factor (2)",         
-                      "methyltransferase (2)","misc protein (2)")
-initialChoices <- c("All","nuclear receptor","kinase",
-                    "cyp","dna binding","gpcr",                 
-                    "phosphatase","protease",         
-                    "transporter","oxidoreductase","ion channel",     
-                    "steroid hormone","esterase","hydrolase",        
-                    "transferase","lyase","cell morphology",     
-                    "growth factor","methyltransferase","misc protein")
+endPointInfo$intended_target_family <- stri_trans_totitle(endPointInfo$intended_target_family)
+endPointInfo$intended_target_family[grep("Dna",endPointInfo$intended_target_family)] <- "DNA Binding"
+endPointInfo$intended_target_family[grep("Cyp",endPointInfo$intended_target_family)] <- "CYP"
+endPointInfo$intended_target_family[grep("Gpcr",endPointInfo$intended_target_family)] <- "GPCR"
+
+ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", "intended_target_family")])
+ep <- ep[!is.na(ep[,2]),]
+ep <- ep[ep[,2] != "NA",]
+
+orderBy <- ep[,2]
+orderNames <- names(table(orderBy))
+nEndPoints <- as.integer(table(orderBy))
+
+df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
+  arrange(desc(nEndPoints))
+
+dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
+
+selChoices <- df$orderNames
 
 header <- dashboardHeader(title = "toxEval")
 
@@ -45,8 +46,12 @@ sidebar <- dashboardSidebar(
                                  "NPS"),
                                  # ,"Detection Limits"),
                      selected = "Water Sample", multiple = FALSE),
+   radioButtons("radioMaxGroup", label = "",
+                choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
+                selected = 3),
+   radioButtons("meanEAR",choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
+                inline = TRUE, label = "",selected = "MaxEAR"),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
-            actionButton("allAssay", label="Select/Deselect all"),
             checkboxGroupInput("assay", "Assays:",
                                c("Apredica" = "APR",
                                  "Attagene" = "ATG",
@@ -62,7 +67,25 @@ sidebar <- dashboardSidebar(
                                  "ACEA Biosciences" = "ACEA"),
               selected=c("ATG","NVS","OT","TOX21","CEETOX",
                          "CLD","TANGUAY","NHEERL_PADILLA",
-                         "NCCT_SIMMONS","ACEA"))),
+                         "NCCT_SIMMONS","ACEA")),
+              actionButton("allAssay", label="Select/Deselect all")),
+   menuItem("Annotation", icon = icon("th"), tabName = "annotation",
+            selectInput("groupCol", label = "Annotation (# Groups)", 
+                        choices = setNames(names(endPointInfo)[-1],groupChoices),
+                        selected = names(endPointInfo)[names(endPointInfo) == "intended_target_family"], 
+                        multiple = FALSE),
+            actionButton("changeAnn", label="Switch Annotation")
+            ),
+   menuItem("Group", icon = icon("th"), tabName = "groupMenu",
+            checkboxGroupInput("group", "Groups (# End Points)",
+                               setNames(df$orderNames,dropDownHeader),
+                               selected=df$orderNames),
+            actionButton("allGroup", label="Select All/Deselect")),
+   menuItem("Sites", icon = icon("th"), tabName = "siteMenu",
+            selectInput("sites", label = "Site", 
+                        choices = c("All","Potential 2016",summaryFile$site),
+                        selected = "All", multiple = FALSE)
+   ),
    conditionalPanel(
      condition = "input.data == 'Passive Samples'",
      radioButtons("year", label = "",inline = TRUE,
@@ -72,21 +95,6 @@ sidebar <- dashboardSidebar(
    conditionalPanel(
      condition = "input.mainOut != 'heat'",
    numericInput("hitThres",label = "Hit Threshold",value = 0.1)),
-   radioButtons("radioMaxGroup", label = "",
-                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
-                 selected = 3),
-   radioButtons("meanEAR",choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
-                inline = TRUE, label = "",selected = "MaxEAR"),
-   selectInput("sites", label = "Site", 
-               choices = c("All","Potential 2016",summaryFile$site),
-               selected = "All", multiple = FALSE),
-   selectInput("groupCol", label = "Annotation (# Groups)", 
-                                 choices = setNames(names(endPointInfo)[-1],groupChoices),
-                                 selected = names(endPointInfo)[names(endPointInfo) == "intended_target_family"], multiple = FALSE),
-   selectInput("group", label = "Groups (# End Points)",
-               choices = setNames(initialChoices,dropDownChoices),
-               multiple = FALSE,width = '400px',
-               selected = "All"),
    conditionalPanel(
      condition = "input.mainOut == 'endpoint'",
      selectInput("epGroup", label = "Choose Chemical",
