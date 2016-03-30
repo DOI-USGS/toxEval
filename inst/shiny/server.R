@@ -1225,7 +1225,6 @@ shinyServer(function(input, output,session) {
       
     })
     
-    
     output$hitsTableEPs <- DT::renderDataTable({
 
       boxData <- chemicalSummary()
