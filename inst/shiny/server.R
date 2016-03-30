@@ -73,6 +73,10 @@ fancyNumbers2 <- function(n){
   return(textReturn)
 }
 
+createLink <- function(cas,ep, hits) {
+  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",ep,'" target="_blank" >',hits,'</a>')
+}
+
 shinyServer(function(input, output,session) {
   
   choices <- reactive({
@@ -227,7 +231,7 @@ shinyServer(function(input, output,session) {
         left_join(data.table(ep), by="assay_component_endpoint_name") %>%
         data.frame() %>%
         rename(endPoint = assay_component_endpoint_name) %>%
-        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue") %>%
+        select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue","casrn") %>%
         left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
         select(-site) %>%
         rename(site=shortName)
@@ -1226,6 +1230,8 @@ shinyServer(function(input, output,session) {
 
       boxData <- chemicalSummary()
       meanEARlogic <- as.logical(input$meanEAR)
+      catType <- as.numeric(input$radioMaxGroup)
+      
       hitThres <<- input$hitThres
 
       fullData_init <- data.frame(Endpoint="",stringsAsFactors = FALSE)
@@ -1322,7 +1328,27 @@ shinyServer(function(input, output,session) {
       
       groups <- fullData$Groups
       
+      if(catType == 2){
+        casKey <- select(boxData, chnm, casrn) %>%
+          distinct()
+        
+        hits <- sapply(fullData, function(x) as.character(x))
+        
+        for(k in 1:nrow(fullData)){
+          for(z in 3:ncol(fullData)){
+            if(!is.na(fullData[k,z])){
+              hits[k,z] <- createLink(ep = fullData$Endpoint[k], 
+                                      cas = casKey$casrn[casKey$chnm == names(fullData)[z]], 
+                                      hits = fullData[k,z])
+            }
+          }
+        }
+        
+        fullData <- hits
+      }
+
       fullData <- DT::datatable(fullData, # extensions = 'TableTools',
+                                  escape = FALSE,
                                   rownames = FALSE,
                                   options = list(dom = 't',
                                                  scrollX = TRUE,
