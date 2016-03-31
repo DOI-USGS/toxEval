@@ -74,7 +74,7 @@ fancyNumbers2 <- function(n){
 }
 
 createLink <- function(cas,ep, hits) {
-  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",ep,'+7678050" target="_blank" >',hits,'</a>')
+  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",ep,'" target="_blank" >',hits,'</a>')
 }
 
 shinyServer(function(input, output,session) {
@@ -139,6 +139,11 @@ shinyServer(function(input, output,session) {
 
     selChoices <- df$orderNames
 
+    if(names(ep)[2] == "intended_target_family"){
+      selChoices <- selChoices[c(-3,-9)]
+    }
+    
+    
     updateCheckboxGroupInput(session, "group", 
                              choices = setNames(df$orderNames,dropDownHeader),
                              selected = selChoices)
