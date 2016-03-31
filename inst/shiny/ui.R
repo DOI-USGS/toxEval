@@ -1,5 +1,14 @@
 library(toxEval)
 library(shinydashboard)
+library(dplyr)
+library(ggplot2)
+library(DT)
+library(leaflet)
+library(data.table)
+library(tidyr)
+library(RColorBrewer)
+library(grid)
+library(stringi)
 
 endPointInfo <- endPointInfo
 
