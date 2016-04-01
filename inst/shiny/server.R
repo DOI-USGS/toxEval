@@ -12,6 +12,10 @@ library(stringi)
 
 endPointInfo <- endPointInfo
 
+endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "ATG" & endPointInfo$signal_direction == "loss"),]
+endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "NVS" & endPointInfo$signal_direction == "gain"),]
+endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p3_ratio",]
+
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
 
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
@@ -140,7 +144,7 @@ shinyServer(function(input, output,session) {
     selChoices <- df$orderNames
 
     if(names(ep)[2] == "intended_target_family"){
-      selChoices <- selChoices[c(-3,-9)]
+      selChoices <- selChoices[c(-2,-8,-18)]
     }
     
     
@@ -891,6 +895,9 @@ shinyServer(function(input, output,session) {
   observe({
     
     chemGroup <- chemicalSummary()
+    
+    # chemGroup <- filter(chemGroup, class == "Human Drug, Non Prescription")
+    
     meanEARlogic <- input$meanEAR
     
     maxEARWords <- ifelse(meanEARlogic,"meanEAR","maxEAR")
@@ -945,6 +952,9 @@ shinyServer(function(input, output,session) {
       # mapData$sizes <- 1.5*12000
     }
 
+    # leg_vals <- c(0,0.01,1,50,1000,18000)
+    # pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
+    # 
     map <- leafletProxy("mymap", data=mapData) %>%
       clearMarkers() %>%
       clearControls() %>%
@@ -971,6 +981,7 @@ shinyServer(function(input, output,session) {
         opacity = 0.8,
         labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
         title = ifelse(meanEARlogic,'Mean EAR','Max EAR'))
+        # title = "Human Drug Max EAR")
     }
     
     map
