@@ -127,8 +127,10 @@ body <- dashboardBody(
     tabPanel(title = tagList("Summary", shiny::icon("bar-chart")),
              value="summary",
             uiOutput("graphGroup.ui"),
+            downloadButton('downloadBoxPlot', 'Download PNG'),
             h4(""),
-            plotOutput("stackBarGroup")
+            plotOutput("stackBarGroup"),
+            downloadButton('downloadStackPlot', 'Download PNG')
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
@@ -157,7 +159,8 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
-                   uiOutput("graphHeat.ui")
+                   uiOutput("graphHeat.ui"),
+             downloadButton('downloadHeatPlot', 'Download PNG')
     )
   ),
 
