@@ -1058,7 +1058,7 @@ shinyServer(function(input, output,session) {
         pal=pal,
         values=~meanEAR,
         opacity = 0.8,
-        labFormat = labelFormat(digits = 4), #transform = function(x) as.integer(x)),
+        labFormat = labelFormat(digits = 2), #transform = function(x) as.integer(x)),
         title = ifelse(meanEARlogic,'Mean EAR','Max EAR'))
         # title = "Herbicide Max EAR")
     }
