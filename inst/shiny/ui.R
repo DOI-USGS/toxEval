@@ -58,6 +58,13 @@ sidebar <- dashboardSidebar(
    radioButtons("radioMaxGroup", label = "",
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
+   conditionalPanel(
+     condition = "input.mainOut == 'endpoint'",
+     selectInput("epGroup", label = "Choose Chemical",
+                 choices = "All",
+                 multiple = FALSE,
+                 selected = "All")     
+   ),
    radioButtons("meanEAR",choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
                 inline = TRUE, label = "",selected = "MaxEAR"),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
@@ -77,7 +84,7 @@ sidebar <- dashboardSidebar(
               selected=c("ATG","NVS","OT","TOX21","CEETOX",
                          "CLD","TANGUAY","NHEERL_PADILLA",
                          "NCCT_SIMMONS","ACEA")),
-              actionButton("allAssay", label="Select/Deselect all")),
+              actionButton("pickAssay", label="Switch Assays")),
    menuItem("Annotation", icon = icon("th"), tabName = "annotation",
             selectInput("groupCol", label = "Annotation (# Groups)", 
                         choices = setNames(names(endPointInfo)[-1],groupChoices),
@@ -104,13 +111,6 @@ sidebar <- dashboardSidebar(
      radioButtons("year", label = "",inline = TRUE,
                   choices = c("2010", "2014", "Combo"), 
                   selected = "Combo")   
-   ),
-   conditionalPanel(
-     condition = "input.mainOut == 'endpoint'",
-     selectInput("epGroup", label = "Choose Chemical",
-                 choices = "All",
-                 multiple = FALSE,
-                 selected = "All")     
    ),
    menuItem("Source code", icon = icon("file-code-o"), 
             href = "https://github.com/USGS-R/toxEval/tree/master/inst/shiny")
