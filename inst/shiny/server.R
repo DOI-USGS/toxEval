@@ -79,7 +79,7 @@ fancyNumbers2 <- function(n){
 }
 
 createLink <- function(cas,ep, hits) {
-  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",ep,'" target="_blank" >',hits,'</a>')
+  paste0('<a href="http://actor.epa.gov/dashboard/#chemical/',cas,'" target="_blank" >',hits,'</a>')
 }
 
 shinyServer(function(input, output,session) {
