@@ -998,6 +998,7 @@ shinyServer(function(input, output,session) {
     mapData <- left_join(mapData, statsOfGroupOrdered, by=c("shortName"="site", "nSamples"="nSamples"))
     
     mapData <- mapData[!is.na(mapData$dec.lat.va),]
+    mapData <- unique(mapData)
     
     col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
 
@@ -1006,6 +1007,9 @@ shinyServer(function(input, output,session) {
     } else {
       counts <- mapData$max
     }
+    
+    mapData$meanEAR[is.na(mapData$meanEAR)] <- 0
+    counts[is.na(counts)] <- 0
     
     if(nrow(mapData) > 1){
       leg_vals <- unique(as.numeric(quantile(mapData$meanEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
@@ -1083,7 +1087,7 @@ shinyServer(function(input, output,session) {
     }
 
     HTML(paste0("<h5>Size range represents number of ",word,
-                " with hits. Ranges from 1 - ",max(counts,na.rm = TRUE),"</h5>"))
+                " with hits. Ranges from ", min(counts,na.rm = TRUE)," - ", max(counts,na.rm = TRUE),"</h5>"))
     
   })
   
@@ -1309,8 +1313,8 @@ shinyServer(function(input, output,session) {
                                                    text = 'Download',
                                                    filename= 'test'
                                                  )),
-                                               pageLength = nrow(tableData),
-                                               order=list(list(1,'desc'))))
+                                 pageLength = nrow(tableData),
+                                 order=list(list(1,'desc'))))
     if(input$radioMaxGroup != "1"){
       for(i in 1:ncol(tableData)){
         tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
