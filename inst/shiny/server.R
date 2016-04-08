@@ -1083,7 +1083,7 @@ shinyServer(function(input, output,session) {
     }
 
     HTML(paste0("<h5>Size range represents number of ",word,
-                " with hits. Ranges from 1 - ",max(counts,na.rm = TRUE),"</h5>"))
+                " with hits. Ranges from ", min(counts,na.rm = TRUE)," - ", max(counts,na.rm = TRUE),"</h5>"))
     
   })
   
@@ -1309,8 +1309,8 @@ shinyServer(function(input, output,session) {
                                                    text = 'Download',
                                                    filename= 'test'
                                                  )),
-                                               pageLength = nrow(tableData),
-                                               order=list(list(1,'desc'))))
+                                 pageLength = nrow(tableData),
+                                 order=list(list(1,'desc'))))
     if(input$radioMaxGroup != "1"){
       for(i in 1:ncol(tableData)){
         tableData1 <- formatStyle(tableData1, columns = names(tableData)[i], 
