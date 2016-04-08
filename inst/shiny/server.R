@@ -15,6 +15,7 @@ endPointInfo <- endPointInfo
 endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "ATG" & endPointInfo$signal_direction == "loss"),]
 endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "NVS" & endPointInfo$signal_direction == "gain"),]
 endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p3_ratio",]
+endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p2_viability",]
 
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
 
@@ -100,30 +101,35 @@ shinyServer(function(input, output,session) {
   observe({
     updateSelectInput(session, "sites", choices = choices())
   })
-  
-  observe({
+
+  assayDF <- eventReactive(input$pickAssay, ignoreNULL = FALSE, {
     
-    allChoices <- c("APR","ATG","BSK",
-                    "NVS","OT","TOX21","CEETOX",
-                    "CLD","TANGUAY","NHEERL_PADILLA",
-                    "NCCT_SIMMONS","ACEA")
+    ep <- groupDF()
+    assays <- input$assay
     
-    if(input$allAssay == 0) {
-      return(NULL)
-    } else if (input$allAssay%%2 == 0){
-        updateCheckboxGroupInput(session, "assay", selected = allChoices)
-    } else {
-        updateCheckboxGroupInput(session, "assay", selected = allChoices[1])
-    }
+    endPointInfoSub <- distinct(ep) %>%
+      rename(endPoint=assay_component_endpoint_name) %>%
+      data.frame() 
+    
+    index <- unique(grep(paste(assays,collapse="|"), 
+                         endPointInfoSub$endPoint))
+    
+    endPointInfoSub <- endPointInfoSub[index,]
+    
+    endPointInfoSub
+    
   })
   
   groupDF <- eventReactive(input$changeAnn, ignoreNULL = FALSE, {
     groupCol <- input$groupCol
-    assays <- input$assay
 
-    ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),
-                                  c("assay_component_endpoint_name", groupCol)])
+    ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
     ep
+  })
+  
+  hitThresValue <- eventReactive(input$changeHit, ignoreNULL = FALSE, {
+    hitThresValue <- input$hitThres
+    hitThresValue
   })
 
   observe({
@@ -144,9 +150,8 @@ shinyServer(function(input, output,session) {
     selChoices <- df$orderNames
 
     if(names(ep)[2] == "intended_target_family"){
-      selChoices <- selChoices[c(-2,-8,-18)]
+      selChoices <- selChoices[!(selChoices %in% c("Cell Cycle","Background Measurement","Cell Morphology"))]
     }
-    
     
     updateCheckboxGroupInput(session, "group", 
                              choices = setNames(df$orderNames,dropDownHeader),
@@ -188,25 +193,21 @@ shinyServer(function(input, output,session) {
 #############################################################   
   chemicalSummary <- reactive({
     
-    ep <- groupDF() 
-    ep <- ep[!is.na(ep[,2]),]
-    ep <- ep[ep[,2] != "NA",]
-    
+    ep <- assayDF()
     path <- pathToApp
+    
     groupCol <- names(ep)[2]
     
     radioMaxGroup <- input$radioMaxGroup
-    assays <- input$assay
-    
     group <- input$group
     
     if(!any(group %in% names(table(ep[,2])))){
       group <- names(table(ep[,2]))
     }
     
-    validate(
-      need(length(input$assay) > 0, 'Check at least one assay')
-    )
+    # validate(
+    #   need(length(input$assay) > 0, 'Check at least one assay')
+    # )
     
     if (input$data == "Water Sample"){
       chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
@@ -233,29 +234,19 @@ shinyServer(function(input, output,session) {
       stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
     }
     
-    chemicalSummary <- rename(chemicalSummary, assay_component_endpoint_name=endPoint)%>%
-      filter(assay_component_endpoint_name %in% ep$assay_component_endpoint_name ) %>%
+    chemicalSummary <- chemicalSummary %>%
+      filter(endPoint %in% ep$endPoint) %>%
       data.table() %>%
-      left_join(data.table(ep), by="assay_component_endpoint_name") %>%
+      left_join(data.table(ep), by="endPoint") %>%
       data.frame() %>%
-      rename(endPoint = assay_component_endpoint_name) %>%
       select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue","casrn") %>%
       left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
       select(-site) %>%
       rename(site=shortName)
     
-    endPointInfoSub <- distinct(ep) %>%
-      rename(endPoint=assay_component_endpoint_name) %>%
-      data.frame() 
+    names(ep)[2] <- "groupC"
     
-    index <- unique (grep(paste(assays,collapse="|"), 
-                          endPointInfoSub$endPoint))
-    
-    endPointInfoSub <- endPointInfoSub[index,]
-    
-    names(endPointInfoSub)[2] <- "groupC"
-    
-    endPointInfoSub <- filter(endPointInfoSub, groupC %in%  group)
+    endPointInfoSub <- filter(ep, groupC %in%  group)
     
     chemicalSummary <- filter(chemicalSummary, endPoint %in% endPointInfoSub$endPoint)
 
@@ -337,7 +328,7 @@ shinyServer(function(input, output,session) {
   statsOfGroupOrdered <- reactive({
 
     statsOfGroup <- chemicalSummary()   
-    hitThres <- input$hitThres
+    hitThres <- hitThresValue()
     
     siteToFind <- unique(statsOfGroup$site)
     
@@ -380,11 +371,26 @@ shinyServer(function(input, output,session) {
       meanChem <- grep("mean",names(statsOfGroupOrdered))
       maxChem <- grep("max",names(statsOfGroupOrdered))
 
-      tableGroup <- DT::datatable(statsOfGroupOrdered, 
+      tableGroup <- DT::datatable(statsOfGroupOrdered,  extensions = 'Buttons',
                                     rownames = FALSE,
-                                    options = list(dom = 'ft',
-                                                   pageLength = nrow(statsOfGroupOrdered), 
-                                                   order=list(list(colToSort,'desc'))))
+                                    options = list(
+                                                  pageLength = nrow(statsOfGroupOrdered), 
+                                                  order=list(list(colToSort,'desc')),
+                                                 dom = 'Bfrtip',
+                                                 buttons =
+                                                   list('colvis', list(
+                                                     extend = 'collection',
+                                                     buttons = list(list(extend='csv',
+                                                                         filename = 'hitCount'),
+                                                                    list(extend='excel',
+                                                                         filename = 'hitCount'),
+                                                                    list(extend='pdf',
+                                                                         filename= 'hitCount')),
+                                                     text = 'Download')
+                                                   )
+                                                 ))
+                                    # options = list(dom = 'ft',
+
 
       tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem], 
                                 background = styleColorBar(range(statsOfGroupOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
@@ -400,12 +406,25 @@ shinyServer(function(input, output,session) {
 
       } else {
         
-        tableGroup <- DT::datatable(statsOfGroupOrdered[,c("category","max","nSamples")], 
-                                    rownames = FALSE,
+        tableGroup <- DT::datatable(statsOfGroupOrdered[,c("category","max","nSamples")], extensions = 'Buttons', 
                                     colnames = c('hits' = 2),
-                                    options = list(dom = 'ft',
-                                                   pageLength = nrow(statsOfGroupOrdered), 
-                                                   order=list(list(1,'desc'))))
+                                    rownames = FALSE,
+                                    options = list(
+                                      pageLength = nrow(statsOfGroupOrdered), 
+                                      order=list(list(1,'desc')),
+                                      dom = 'Bfrtip',
+                                      buttons =
+                                        list('colvis', list(
+                                          extend = 'collection',
+                                          buttons = list(list(extend='csv',
+                                                              filename = 'hitCount'),
+                                                         list(extend='excel',
+                                                              filename = 'hitCount'),
+                                                         list(extend='pdf',
+                                                              filename= 'hitCount')),
+                                          text = 'Download')
+                                        )
+                                    ))
 
         tableGroup <- formatStyle(tableGroup, "hits", 
                                   background = styleColorBar(range(statsOfGroupOrdered[,"max"],na.rm=TRUE), 'goldenrod'),
@@ -457,9 +476,22 @@ shinyServer(function(input, output,session) {
     
     
     colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
-    tableSumm <- DT::datatable(statCol, 
+    tableSumm <- DT::datatable(statCol, extensions = 'Buttons', 
                                rownames = FALSE,
-                               options = list(dom = 'ft',
+                               options = list(#dom = 'ft',
+                                              dom = 'Bfrtip',
+                                              buttons =
+                                                list('colvis', list(
+                                                  extend = 'collection',
+                                                  buttons = list(list(extend='csv',
+                                                                      filename = 'hitStats'),
+                                                                 list(extend='excel',
+                                                                      filename = 'hitStats'),
+                                                                 list(extend='pdf',
+                                                                      filename= 'hitStats')),
+                                                  text = 'Download'
+                                                  )
+                                                ),
                                               scrollX = TRUE,
                                               pageLength = nrow(statCol),
                                               order=list(list(colToSort,'desc'))))
@@ -553,13 +585,14 @@ shinyServer(function(input, output,session) {
         guides(fill=FALSE)
 
     }
+    ggsave("stackPlot.png",upperPlot,bg = "transparent")
     
     print(upperPlot)
   })
 
   output$graphGroup <- renderPlot({ 
     
-    hitThres <<- input$hitThres
+    hitThres <- hitThresValue()
     graphData <- graphData()
     meanEARlogic <- as.logical(input$meanEAR)
     catType = as.numeric(input$radioMaxGroup)
@@ -636,7 +669,10 @@ shinyServer(function(input, output,session) {
       lowerPlot <- lowerPlot + 
         theme(legend.key = element_blank(),
               legend.title = element_blank(),
-              legend.text = element_text(size=10)) 
+              # legend.text = element_text(size=9),
+              legend.justification = c(1, 0), 
+              legend.position = c(1, 0),
+              legend.background = element_rect(colour = 'black', fill = 'white')) 
     }
     
     ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
@@ -674,8 +710,40 @@ shinyServer(function(input, output,session) {
     lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
     lowerPlot$layout$clip[lowerPlot$layout$name == "panel"] <- "off"
 
+    ggsave("boxPlot.png",lowerPlot,bg = "transparent")
+    
     print(grid.draw(lowerPlot))
   })
+  
+  output$downloadBoxPlot <- downloadHandler(
+    
+    filename = function() {
+      "boxPlot.png"
+    },
+    content = function(file) {
+      file.copy("boxPlot.png", file)
+    }
+  )
+  
+  output$downloadStackPlot <- downloadHandler(
+    
+    filename = function() {
+      "stackPlot.png"
+    },
+    content = function(file) {
+      file.copy("stackPlot.png", file)
+    }
+  )
+  
+  output$downloadHeatPlot <- downloadHandler(
+    
+    filename = function() {
+      "heatPlot.png"
+    },
+    content = function(file) {
+      file.copy("heatPlot.png", file)
+    }
+  )
   
   output$graphHeat <- renderPlot({ 
     
@@ -733,7 +801,7 @@ shinyServer(function(input, output,session) {
         scale_fill_gradient( guide = "legend",
                              trans = 'log',
                              low = "white", high = "steelblue",
-                             breaks=c(0.00001,0.001,0.1,10,100,500),
+                             breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
                              na.value = 'lightgrey',labels=fancyNumbers2) +
         facet_grid(class ~ .,scales="free_y", space="free_y") +
         theme(strip.text.y = element_text(angle=0, hjust=0), 
@@ -755,10 +823,12 @@ shinyServer(function(input, output,session) {
         scale_fill_gradient( guide = "legend",
                              trans = 'log',
                              low = "white", high = "steelblue",
-                             breaks=c(0.00001,0.001,0.1,10,100,500),
+                             breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
                              na.value = 'lightgrey',labels=fancyNumbers2)
     }
 
+    ggsave("heatPlot.png",heat,bg = "transparent")
+    
     print(heat)
   })
   
@@ -780,14 +850,12 @@ shinyServer(function(input, output,session) {
   
   graphData <- reactive({
     
-    ep <- groupDF() 
+    ep <- assayDF() 
     columnName <- names(ep)[2]
     
     meanEARlogic <- as.logical(input$meanEAR)
     catType <- as.numeric(input$radioMaxGroup)
-    
-    assays <- input$assay
-    
+
     boxData <- chemicalSummary()
     siteToFind <- unique(boxData$site)
     
@@ -896,7 +964,7 @@ shinyServer(function(input, output,session) {
     
     chemGroup <- chemicalSummary()
     
-    # chemGroup <- filter(chemGroup, class == "Human Drug, Non Prescription")
+    # chemGroup <- filter(chemGroup, class == "Herbicide")
     
     meanEARlogic <- input$meanEAR
     
@@ -952,9 +1020,9 @@ shinyServer(function(input, output,session) {
       # mapData$sizes <- 1.5*12000
     }
 
-    # leg_vals <- c(0,0.01,1,50,1000,18000)
+    # leg_vals <- c(0,0.0001,0.001,0.01,0.1,1,10)
     # pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
-    # 
+
     map <- leafletProxy("mymap", data=mapData) %>%
       clearMarkers() %>%
       clearControls() %>%
@@ -973,15 +1041,16 @@ shinyServer(function(input, output,session) {
                  stroke=FALSE,
                  opacity = 0.8) 
     
+
     if(length(siteToFind) > 1){
       map <- addLegend(map,
         position = 'bottomleft',
         pal=pal,
         values=~meanEAR,
         opacity = 0.8,
-        labFormat = labelFormat(digits = 1), #transform = function(x) as.integer(x)),
+        labFormat = labelFormat(digits = 2), #transform = function(x) as.integer(x)),
         title = ifelse(meanEARlogic,'Mean EAR','Max EAR'))
-        # title = "Human Drug Max EAR")
+        # title = "Herbicide Max EAR")
     }
     
     map
@@ -1074,7 +1143,7 @@ shinyServer(function(input, output,session) {
 
     filterBy <- input$epGroup
     meanEARlogic <- as.logical(input$meanEAR)
-    hitThres <<- input$hitThres
+    hitThres <- hitThresValue()
     
     filterCat <- switch(as.character(input$radioMaxGroup),
                         "1" = "choices",
@@ -1170,7 +1239,7 @@ shinyServer(function(input, output,session) {
     
     boxData <- chemicalSummary()
     meanEARlogic <- as.logical(input$meanEAR)
-    hitThres <<- input$hitThres
+    hitThres <- hitThresValue()
     
     if(length(unique(boxData$site)) > 1){
       tableData <- boxData %>%
@@ -1224,16 +1293,23 @@ shinyServer(function(input, output,session) {
       tableData <- tableData[,-1,drop=FALSE]
     }
     
-    tableData1 <- DT::datatable(tableData, # extensions = 'TableTools',
+    tableData1 <- DT::datatable(tableData, extensions = 'Buttons',
                                 rownames = TRUE,
-                                options = list(dom = 't',
-                                               scrollX = TRUE,
-                                               # initComplete = JS(
-                                               #   "function(settings, json) {",
-                                               #   "$(this.api().table().header()).css({'font-size': 'large'});",
-                                               #   "}"),
+                                options = list(scrollX = TRUE,
+                                               dom = 'Bfrtip',
+                                               buttons = 
+                                                 list('colvis', list(
+                                                   extend = 'collection',
+                                                   buttons = list(list(extend='csv',
+                                                                       filename = 'siteHits'),
+                                                                  list(extend='excel',
+                                                                       filename = 'siteHits'),
+                                                                  list(extend='pdf',
+                                                                       filename= 'siteHits')),
+                                                   text = 'Download',
+                                                   filename= 'test'
+                                                 )),
                                                pageLength = nrow(tableData),
-                                               # tableTools = list(sSwfPath = copySWF()),
                                                order=list(list(1,'desc'))))
     if(input$radioMaxGroup != "1"){
       for(i in 1:ncol(tableData)){
@@ -1253,7 +1329,7 @@ shinyServer(function(input, output,session) {
     meanEARlogic <- as.logical(input$meanEAR)
     catType <- as.numeric(input$radioMaxGroup)
     
-    hitThres <<- input$hitThres
+    hitThres <- hitThresValue()
 
     fullData_init <- data.frame(Endpoint="",stringsAsFactors = FALSE)
     fullData <- fullData_init
@@ -1368,10 +1444,21 @@ shinyServer(function(input, output,session) {
       fullData <- hits
     }
 
-    fullData <- DT::datatable(fullData, # extensions = 'TableTools',
+    fullData <- DT::datatable(fullData, extensions = 'Buttons',
                                 escape = FALSE,
                                 rownames = FALSE,
-                                options = list(dom = 't',
+                                options = list(dom = 'Bfrtip',
+                                               buttons = 
+                                                 list('colvis', list(
+                                                   extend = 'collection',
+                                                   buttons = list(list(extend='csv',
+                                                                       filename = 'epHits'),
+                                                                  list(extend='excel',
+                                                                       filename = 'epHits'),
+                                                                  list(extend='pdf',
+                                                                       filename= 'epHits')),
+                                                   text = 'Download'
+                                                 )),
                                                scrollX = TRUE,
                                                pageLength = nrow(fullData),
                                                order=list(list(2,'desc'))))
