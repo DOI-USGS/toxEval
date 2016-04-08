@@ -95,15 +95,16 @@ sidebar <- dashboardSidebar(
                         choices = c("All","Potential 2016",summaryFile$site),
                         selected = "All", multiple = FALSE)
    ),
+   menuItem("Hit Threshold",icon = icon("th"), tabName = "hitThresTab",
+            numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),
+            actionButton("changeHit", label="Change Hit Threshold")
+   ),
    conditionalPanel(
      condition = "input.data == 'Passive Samples'",
      radioButtons("year", label = "",inline = TRUE,
                   choices = c("2010", "2014", "Combo"), 
                   selected = "Combo")   
    ),
-   conditionalPanel(
-     condition = "input.mainOut != 'heat'",
-   numericInput("hitThres",label = "Hit Threshold",value = 0.1)),
    conditionalPanel(
      condition = "input.mainOut == 'endpoint'",
      selectInput("epGroup", label = "Choose Chemical",

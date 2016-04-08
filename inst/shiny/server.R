@@ -120,10 +120,8 @@ shinyServer(function(input, output,session) {
   
   groupDF <- eventReactive(input$changeAnn, ignoreNULL = FALSE, {
     groupCol <- input$groupCol
-    assays <- input$assay
 
-    ep <- data.frame(endPointInfo[which(endPointInfo$assay_source_name %in% assays),
-                                  c("assay_component_endpoint_name", groupCol)])
+    ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
     ep
   })
 
@@ -145,9 +143,8 @@ shinyServer(function(input, output,session) {
     selChoices <- df$orderNames
 
     if(names(ep)[2] == "intended_target_family"){
-      selChoices <- selChoices[c(-2)]
+      selChoices <- selChoices[!(selChoices %in% c("Cell Cycle","Background Measurement","Cell Morphology"))]
     }
-    
     
     updateCheckboxGroupInput(session, "group", 
                              choices = setNames(df$orderNames,dropDownHeader),
@@ -189,10 +186,13 @@ shinyServer(function(input, output,session) {
 #############################################################   
   chemicalSummary <- reactive({
     
-    ep <- groupDF() 
+    ep <- groupDF()
     ep <- ep[!is.na(ep[,2]),]
     ep <- ep[ep[,2] != "NA",]
     
+    groupCol <- names(ep)[2]
+    assays <- input$assay
+
     path <- pathToApp
     groupCol <- names(ep)[2]
     
@@ -249,7 +249,7 @@ shinyServer(function(input, output,session) {
       rename(endPoint=assay_component_endpoint_name) %>%
       data.frame() 
     
-    index <- unique (grep(paste(assays,collapse="|"), 
+    index <- unique(grep(paste(assays,collapse="|"), 
                           endPointInfoSub$endPoint))
     
     endPointInfoSub <- endPointInfoSub[index,]
@@ -396,8 +396,7 @@ shinyServer(function(input, output,session) {
                                                                          filename = 'hitCount'),
                                                                     list(extend='pdf',
                                                                          filename= 'hitCount')),
-                                                     text = 'Download',
-                                                     filename= 'test')
+                                                     text = 'Download')
                                                    )
                                                  ))
                                     # options = list(dom = 'ft',
@@ -680,7 +679,10 @@ shinyServer(function(input, output,session) {
       lowerPlot <- lowerPlot + 
         theme(legend.key = element_blank(),
               legend.title = element_blank(),
-              legend.text = element_text(size=10)) 
+              # legend.text = element_text(size=9),
+              legend.justification = c(1, 0), 
+              legend.position = c(1, 0),
+              legend.background = element_rect(colour = 'black', fill = 'white')) 
     }
     
     ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
@@ -1467,8 +1469,7 @@ shinyServer(function(input, output,session) {
                                                                        filename = 'epHits'),
                                                                   list(extend='pdf',
                                                                        filename= 'epHits')),
-                                                   text = 'Download',
-                                                   filename= 'test'
+                                                   text = 'Download'
                                                  )),
                                                scrollX = TRUE,
                                                pageLength = nrow(fullData),
