@@ -107,45 +107,18 @@ shinyServer(function(input, output,session) {
     updateSelectInput(session, "sites", choices = choices())
   })
   
-  epDF <- reactiveValues(endPoint = endPointInfo$endPoint[endPointInfo$assay_source_name %in% initAssay],
-                         assay = endPointInfo$assay_source_name[endPointInfo$assay_source_name %in% initAssay],
-                         groupCol = endPointInfo$intended_target_family[endPointInfo$assay_source_name %in% initAssay],
+  epDF <- reactiveValues(assays = initAssay,
                          groupColName = "intended_target_family")
 
   observeEvent(input$pickAssay, {
-    
-    epDF_temp <- data.frame(endPoint = epDF[["endPoint"]],
-                            assay = epDF[["assay"]],
-                            groupCol = epDF[["groupCol"]],
-                            stringsAsFactors = FALSE) %>%
-      filter(assay %in% input$assay)
-    
-    epDF[["endPoint"]] <- NULL
-    epDF[["assay"]] <- NULL
-    epDF[["groupCol"]] <- NULL
-    
-    epDF[["endPoint"]] <- epDF_temp$endPoint
-    epDF[["assay"]] <- epDF_temp$assay
-    epDF[["groupCol"]] <- epDF_temp$groupCol
-    
+    epDF[["assays"]] <- NULL
+    epDF[["assays"]] <- input$assay
+
   })
   
   observeEvent(input$changeAnn, {
 
-    epDF_temp <- data.frame(endPoint = endPointInfo$endPoint,
-                       assay = endPointInfo$assay_source_name,
-                       groupCol = endPointInfo[[input$groupCol]],
-                       stringsAsFactors = FALSE) %>%
-      filter(assay %in% input$assay)
-    
-    epDF[["endPoint"]] <- NULL
-    epDF[["assay"]] <- NULL
-    epDF[["groupCol"]] <- NULL
     epDF[["groupColName"]] <- NULL
-    
-    epDF[["endPoint"]] <- epDF_temp$endPoint
-    epDF[["assay"]] <- epDF_temp$assay
-    epDF[["groupCol"]] <- epDF_temp$groupCol
     epDF[["groupColName"]] <- input$groupCol
 
   })
@@ -156,13 +129,15 @@ shinyServer(function(input, output,session) {
   })
 
   observe({
-    
-    ep <- data.frame(endPoint = epDF[["endPoint"]],
-                     groupCol = epDF[["groupCol"]],
-                     stringsAsFactors = FALSE) 
 
-    ep <- ep[!is.na(ep[,"groupCol"]),]
-    ep <- ep[ep[,"groupCol"] != "NA",]
+    groupCol <- epDF[["groupColName"]]
+    assays <- epDF[["assays"]]
+    
+    ep <- data.frame(endPoint = endPointInfo[["endPoint"]],
+                     groupCol = endPointInfo[[groupCol]],
+                     assaysFull = endPointInfo[["assay_source_name"]],
+                     stringsAsFactors = FALSE) %>%
+      filter(assaysFull %in% assays)
     
     orderBy <- ep[,"groupCol"]
     orderNames <- names(table(orderBy))
@@ -204,7 +179,6 @@ shinyServer(function(input, output,session) {
     chemicalSummary <- chemicalSummary()
     
     if (input$radioMaxGroup == 2){
-      
       uniqueChems <- c("All",unique(chemicalSummary$chnm))
       valueText <- uniqueChems
     } else if(input$radioMaxGroup == 3){
@@ -219,9 +193,14 @@ shinyServer(function(input, output,session) {
 #############################################################   
   chemicalSummary <- reactive({
     
-    ep <- data.frame(endPoint = epDF[["endPoint"]],
-                     groupCol = epDF[["groupCol"]],
-                     stringsAsFactors = FALSE) 
+    groupCol <- epDF[["groupColName"]]
+    assays <- epDF[["assays"]]
+    
+    ep <- data.frame(endPoint = endPointInfo[["endPoint"]],
+                     groupCol = endPointInfo[[groupCol]],
+                     assaysFull = endPointInfo[["assay_source_name"]],
+                     stringsAsFactors = FALSE) %>%
+      filter(assaysFull %in% assays)
     
     path <- pathToApp
     radioMaxGroup <- input$radioMaxGroup
@@ -874,10 +853,14 @@ shinyServer(function(input, output,session) {
   
   graphData <- reactive({
     
-    ep <- data.frame(endPoint = epDF[["endPoint"]],
-                     groupCol = epDF[["groupCol"]],
-                     stringsAsFactors = FALSE)
-    # columnName <- names(ep)[2]
+    groupCol <- epDF[["groupColName"]]
+    assays <- epDF[["assays"]]
+    
+    ep <- data.frame(endPoint = endPointInfo[["endPoint"]],
+                     groupCol = endPointInfo[[groupCol]],
+                     assaysFull = endPointInfo[["assay_source_name"]],
+                     stringsAsFactors = FALSE) %>%
+      filter(assaysFull %in% assays)
     
     meanEARlogic <- as.logical(input$meanEAR)
     catType <- as.numeric(input$radioMaxGroup)
@@ -886,7 +869,7 @@ shinyServer(function(input, output,session) {
     siteToFind <- unique(boxData$site)
     
     if(catType == 1){
-      orderNames <- names(table(ep[,2]))
+      orderNames <- names(table(ep[,"groupCol"]))
     }
       
     if(catType == 2 & length(siteToFind) > 1){
