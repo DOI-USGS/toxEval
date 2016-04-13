@@ -157,12 +157,18 @@ shinyServer(function(input, output,session) {
 
   observe({
     
-    ep <- data.frame(endPoint = epDF[["endPoint"]],
-                     groupCol = epDF[["groupCol"]],
-                     stringsAsFactors = FALSE) 
-
-    ep <- ep[!is.na(ep[,"groupCol"]),]
-    ep <- ep[ep[,"groupCol"] != "NA",]
+    # ep <- data.frame(endPoint = epDF[["endPoint"]],
+    #                  groupCol = epDF[["groupCol"]],
+    #                  stringsAsFactors = FALSE) 
+    # 
+    # ep <- ep[!is.na(ep[,"groupCol"]),]
+    # ep <- ep[ep[,"groupCol"] != "NA",]
+    
+    groupCol <- epDF[["groupColName"]]
+    
+    ep <- data.frame(endPoint = endPointInfo[["endPoint"]],
+                     groupCol = endPointInfo[[groupCol]],
+                     stringsAsFactors = FALSE)
     
     orderBy <- ep[,"groupCol"]
     orderNames <- names(table(orderBy))
@@ -204,7 +210,6 @@ shinyServer(function(input, output,session) {
     chemicalSummary <- chemicalSummary()
     
     if (input$radioMaxGroup == 2){
-      
       uniqueChems <- c("All",unique(chemicalSummary$chnm))
       valueText <- uniqueChems
     } else if(input$radioMaxGroup == 3){
