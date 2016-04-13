@@ -21,7 +21,8 @@ choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)]
 
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
-endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
+endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))] %>%
+  rename(endPoint = assay_component_endpoint_name)
 
 cleanUpNames <- endPointInfo$intended_target_family
 cleanUpNames <- stri_trans_totitle(cleanUpNames)
@@ -49,6 +50,10 @@ df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 
 choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
+
+initAssay <-  c("ATG","NVS","OT","TOX21","CEETOX",
+                "CLD","TANGUAY","NHEERL_PADILLA",
+                "NCCT_SIMMONS","ACEA")
 
 interl <- function (a,b) {
   n <- min(length(a),length(b))
@@ -86,11 +91,11 @@ shinyServer(function(input, output,session) {
   
   choices <- reactive({
     if (input$data == "Duluth" ){
-      duluthSites <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
+      duluthSites <- readRDS(file.path(pathToApp,"sitesDuluth.rds"))
       choices =  c("All",duluthSites$shortName)
     } else if(input$data == "NPS"){
       npsSites <- readRDS(file.path(pathToApp,"npsSite.rds"))
-      choices =  c("All",npsSites$shortName)      
+      choices =  c("All",npsSites$shortName)  
     } else {
       choices =  c("All","Potential 2016",summaryFile$site)
     }
@@ -101,30 +106,48 @@ shinyServer(function(input, output,session) {
   observe({
     updateSelectInput(session, "sites", choices = choices())
   })
+  
+  epDF <- reactiveValues(endPoint = endPointInfo$endPoint[endPointInfo$assay_source_name %in% initAssay],
+                         assay = endPointInfo$assay_source_name[endPointInfo$assay_source_name %in% initAssay],
+                         groupCol = endPointInfo$intended_target_family[endPointInfo$assay_source_name %in% initAssay],
+                         groupColName = "intended_target_family")
 
-  assayDF <- eventReactive(input$pickAssay, ignoreNULL = FALSE, {
+  observeEvent(input$pickAssay, {
     
-    ep <- groupDF()
-    assays <- input$assay
+    epDF_temp <- data.frame(endPoint = epDF[["endPoint"]],
+                            assay = epDF[["assay"]],
+                            groupCol = epDF[["groupCol"]],
+                            stringsAsFactors = FALSE) %>%
+      filter(assay %in% input$assay)
     
-    endPointInfoSub <- distinct(ep) %>%
-      rename(endPoint=assay_component_endpoint_name) %>%
-      data.frame() 
+    epDF[["endPoint"]] <- NULL
+    epDF[["assay"]] <- NULL
+    epDF[["groupCol"]] <- NULL
     
-    index <- unique(grep(paste(assays,collapse="|"), 
-                         endPointInfoSub$endPoint))
-    
-    endPointInfoSub <- endPointInfoSub[index,]
-    
-    endPointInfoSub
+    epDF[["endPoint"]] <- epDF_temp$endPoint
+    epDF[["assay"]] <- epDF_temp$assay
+    epDF[["groupCol"]] <- epDF_temp$groupCol
     
   })
   
-  groupDF <- eventReactive(input$changeAnn, ignoreNULL = FALSE, {
-    groupCol <- input$groupCol
+  observeEvent(input$changeAnn, {
 
-    ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", groupCol)])
-    ep
+    epDF_temp <- data.frame(endPoint = endPointInfo$endPoint,
+                       assay = endPointInfo$assay_source_name,
+                       groupCol = endPointInfo[[input$groupCol]],
+                       stringsAsFactors = FALSE) %>%
+      filter(assay %in% input$assay)
+    
+    epDF[["endPoint"]] <- NULL
+    epDF[["assay"]] <- NULL
+    epDF[["groupCol"]] <- NULL
+    epDF[["groupColName"]] <- NULL
+    
+    epDF[["endPoint"]] <- epDF_temp$endPoint
+    epDF[["assay"]] <- epDF_temp$assay
+    epDF[["groupCol"]] <- epDF_temp$groupCol
+    epDF[["groupColName"]] <- input$groupCol
+
   })
   
   hitThresValue <- eventReactive(input$changeHit, ignoreNULL = FALSE, {
@@ -134,11 +157,14 @@ shinyServer(function(input, output,session) {
 
   observe({
     
-    ep <- groupDF()
-    ep <- ep[!is.na(ep[,2]),]
-    ep <- ep[ep[,2] != "NA",]
+    ep <- data.frame(endPoint = epDF[["endPoint"]],
+                     groupCol = epDF[["groupCol"]],
+                     stringsAsFactors = FALSE) 
+
+    ep <- ep[!is.na(ep[,"groupCol"]),]
+    ep <- ep[ep[,"groupCol"] != "NA",]
     
-    orderBy <- ep[,2]
+    orderBy <- ep[,"groupCol"]
     orderNames <- names(table(orderBy))
     nEndPoints <- as.integer(table(orderBy))
     
@@ -149,7 +175,7 @@ shinyServer(function(input, output,session) {
 
     selChoices <- df$orderNames
 
-    if(names(ep)[2] == "intended_target_family"){
+    if(epDF[["groupColName"]] == "intended_target_family"){
       selChoices <- selChoices[!(selChoices %in% c("Cell Cycle","Background Measurement","Cell Morphology"))]
     }
     
@@ -161,7 +187,7 @@ shinyServer(function(input, output,session) {
   
   observe({
     labelText <- "Choose Chemical"
-    
+
     if (input$radioMaxGroup == 2){
       labelText <- "Choose Chemical"
     } else if(input$radioMaxGroup == 3){
@@ -169,7 +195,7 @@ shinyServer(function(input, output,session) {
     } else if(input$radioMaxGroup == 1){
       labelText <- "Choose Group"
     }
-    
+
     updateSelectInput(session, "epGroup", label = labelText)
   })
   
@@ -187,22 +213,23 @@ shinyServer(function(input, output,session) {
       valueText <- c("All",unique(chemicalSummary$choices))
     }
     
-    updateSelectInput(session, "epGroup", choices = valueText)
+    updateSelectInput(session, "epGroup", choices = valueText, selected = valueText[2])
   })
   
 #############################################################   
   chemicalSummary <- reactive({
     
-    ep <- assayDF()
+    ep <- data.frame(endPoint = epDF[["endPoint"]],
+                     groupCol = epDF[["groupCol"]],
+                     stringsAsFactors = FALSE) 
+    
     path <- pathToApp
-    
-    groupCol <- names(ep)[2]
-    
     radioMaxGroup <- input$radioMaxGroup
     group <- input$group
-    
+
     if(!any(group %in% names(table(ep[,2])))){
       group <- names(table(ep[,2]))
+      group <- group[group != "NA"]
     }
     
     # validate(
@@ -239,18 +266,15 @@ shinyServer(function(input, output,session) {
       data.table() %>%
       left_join(data.table(ep), by="endPoint") %>%
       data.frame() %>%
-      select_("hits","EAR","chnm","class","date","choices"=groupCol,"site","endPoint","endPointValue","casrn") %>%
+      select_("hits","EAR","chnm","class","date","choices"="groupCol","site","endPoint","endPointValue","casrn") %>%
       left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
       select(-site) %>%
       rename(site=shortName)
-    
-    names(ep)[2] <- "groupC"
-    
-    endPointInfoSub <- filter(ep, groupC %in%  group)
+
+    endPointInfoSub <- filter(ep, groupCol %in%  group)
     
     chemicalSummary <- filter(chemicalSummary, endPoint %in% endPointInfoSub$endPoint)
 
-  
     if(radioMaxGroup == "2"){
       chemicalSummary <- chemicalSummary %>%
         mutate(category=chnm)
@@ -850,8 +874,10 @@ shinyServer(function(input, output,session) {
   
   graphData <- reactive({
     
-    ep <- assayDF() 
-    columnName <- names(ep)[2]
+    ep <- data.frame(endPoint = epDF[["endPoint"]],
+                     groupCol = epDF[["groupCol"]],
+                     stringsAsFactors = FALSE)
+    # columnName <- names(ep)[2]
     
     meanEARlogic <- as.logical(input$meanEAR)
     catType <- as.numeric(input$radioMaxGroup)
@@ -991,7 +1017,6 @@ shinyServer(function(input, output,session) {
                 freq=sum(hits)/n()) %>%
       data.frame()
 
-    
     siteToFind <- unique(sumStat$site)
 
     mapData <- right_join(stationINFO[,c("shortName", "Station.Name", "dec.lat.va","dec.long.va")], sumStat, by=c("shortName"="site"))
@@ -1011,17 +1036,15 @@ shinyServer(function(input, output,session) {
     mapData$meanEAR[is.na(mapData$meanEAR)] <- 0
     counts[is.na(counts)] <- 0
     
-    if(nrow(mapData) > 1){
+    if(length(siteToFind) > 1){
       leg_vals <- unique(as.numeric(quantile(mapData$meanEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
       pal = colorBin(col_types, mapData$meanEAR, bins = leg_vals)
       rad <-3*seq(1,4,length.out = 16)
-      # rad <- 1.5*seq(5000,20000, 1000)
       mapData$sizes <- rad[as.numeric(cut(counts, breaks=16))]
     } else {
       leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-      pal = colorBin(col_types, c(0,mapData$maxEAR), bins = leg_vals)
+      pal = colorBin(col_types, c(0,mapData$meanEAR), bins = leg_vals)
       mapData$sizes <- 3
-      # mapData$sizes <- 1.5*12000
     }
 
     # leg_vals <- c(0,0.0001,0.001,0.01,0.1,1,10)
