@@ -13,10 +13,10 @@ library(stringi)
 endPointInfo <- endPointInfo
 
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
-
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
-endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))]
+endPointInfo <- endPointInfo[,c("assay_component_endpoint_name",names(choicesPerGroup))] %>%
+  rename(endPoint = assay_component_endpoint_name)
 
 choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x[!is.na(x)])))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
@@ -29,7 +29,7 @@ endPointInfo$intended_target_family[grep("Dna",endPointInfo$intended_target_fami
 endPointInfo$intended_target_family[grep("Cyp",endPointInfo$intended_target_family)] <- "CYP"
 endPointInfo$intended_target_family[grep("Gpcr",endPointInfo$intended_target_family)] <- "GPCR"
 
-ep <- data.frame(endPointInfo[,c("assay_component_endpoint_name", "intended_target_family")])
+ep <- data.frame(endPointInfo[,c("endPoint", "intended_target_family")])
 ep <- ep[!is.na(ep[,2]),]
 ep <- ep[ep[,2] != "NA",]
 
@@ -52,7 +52,8 @@ sidebar <- dashboardSidebar(
                      choices = c("Water Sample",
                                  "Passive Samples",
                                  "Duluth",
-                                 "NPS"),
+                                 "NPS",
+                                 "TSHP"),
                                  # ,"Detection Limits"),
                      selected = "Water Sample", multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",

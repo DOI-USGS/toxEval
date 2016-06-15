@@ -18,10 +18,9 @@ endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX2
 endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p2_viability",]
 
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
-
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
-endPointInfo <- endPointInfo[,c(39,as.integer(choicesPerGroup))] %>%
+endPointInfo <- endPointInfo[,c("assay_component_endpoint_name",names(choicesPerGroup))] %>%
   rename(endPoint = assay_component_endpoint_name)
 
 cleanUpNames <- endPointInfo$intended_target_family
@@ -238,6 +237,9 @@ shinyServer(function(input, output,session) {
     } else if (input$data == "Detection Limits"){
       chemicalSummary <- readRDS(file.path(path,"chemicalSummaryDetectionLevels.rds"))
       stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+    } else if (input$data == "TSHP"){
+      chemicalSummary <- readRDS(file.path(path,"ToxicSubstances.rds"))
+      stationINFO <<- readRDS(file.path(path,"ToxicSubstancesSites.rds"))      
     }
     
     chemicalSummary <- chemicalSummary %>%
