@@ -44,6 +44,18 @@ dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
 
 selChoices <- df$orderNames
 
+# flags <- unique(AC50gain$flags[!is.na(AC50gain$flags)])
+# flags <- unique(unlist(strsplit(flags, "\\|")))
+flags <- c("Borderline active","Only highest conc above baseline, active" ,      
+           "Only one conc above baseline, active",                              
+           "Gain AC50 < lowest conc & loss AC50 < mean conc",
+           "Biochemical assay with < 50% efficacy")
+
+flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,      
+              "Only one conc above baseline, active","Noisy data",                                 
+              "Hit-call potentially confounded by overfitting","Gain AC50 < lowest conc & loss AC50 < mean conc",
+              "Biochemical assay with < 50% efficacy")
+
 header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
@@ -103,6 +115,9 @@ sidebar <- dashboardSidebar(
                         choices = c("All","Potential 2016",summaryFile$site),
                         selected = "All", multiple = FALSE)
    ),
+   menuItem("Flags", icon = icon("th"), tabName = "flagMenu",
+            checkboxGroupInput("flags", "Flags",choices = flagsALL, selected = flags),
+            actionButton("pickFlags", label="Switch flags")),
    menuItem("Hit Threshold",icon = icon("th"), tabName = "hitThresTab",
             numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),
             actionButton("changeHit", label="Change Hit Threshold")
