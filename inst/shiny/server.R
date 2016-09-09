@@ -54,6 +54,18 @@ initAssay <-  c("ATG","NVS","OT","TOX21","CEETOX",
                 "CLD","TANGUAY","NHEERL_PADILLA",
                 "NCCT_SIMMONS","ACEA")
 
+# flags <- unique(AC50gain$flags[!is.na(AC50gain$flags)])
+# flags <- unique(unlist(strsplit(flags, "\\|")))
+flags <- c("Borderline active","Only highest conc above baseline, active" ,      
+           "Only one conc above baseline, active",                              
+           "Gain AC50 < lowest conc & loss AC50 < mean conc",
+           "Biochemical assay with < 50% efficacy")
+
+flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,      
+           "Only one conc above baseline, active","Noisy data",                                 
+           "Hit-call potentially confounded by overfitting","Gain AC50 < lowest conc & loss AC50 < mean conc",
+           "Biochemical assay with < 50% efficacy")
+
 interl <- function (a,b) {
   n <- min(length(a),length(b))
   p1 <- as.vector(rbind(a[1:n],b[1:n]))
@@ -107,7 +119,8 @@ shinyServer(function(input, output,session) {
   })
   
   epDF <- reactiveValues(assays = initAssay,
-                         groupColName = "intended_target_family")
+                         groupColName = "intended_target_family",
+                         flags = flags)
 
   observeEvent(input$pickAssay, {
     epDF[["assays"]] <- NULL
@@ -115,8 +128,12 @@ shinyServer(function(input, output,session) {
 
   })
   
+  observeEvent(input$pickFlags, {
+    epDF[["flags"]] <- NULL
+    epDF[["flags"]] <- input$flags
+  })
+  
   observeEvent(input$changeAnn, {
-
     epDF[["groupColName"]] <- NULL
     epDF[["groupColName"]] <- input$groupCol
 
@@ -194,14 +211,15 @@ shinyServer(function(input, output,session) {
     
     groupCol <- epDF[["groupColName"]]
     assays <- epDF[["assays"]]
+    hitThres <- hitThresValue()
+    flags <- epDF[["flags"]]
     
     ep <- data.frame(endPoint = endPointInfo[["endPoint"]],
                      groupCol = endPointInfo[[groupCol]],
                      assaysFull = endPointInfo[["assay_source_name"]],
                      stringsAsFactors = FALSE) %>%
       filter(assaysFull %in% assays)
-    
-    path <- pathToApp
+
     radioMaxGroup <- input$radioMaxGroup
     group <- input$group
 
@@ -216,30 +234,31 @@ shinyServer(function(input, output,session) {
     
     if (input$data == "Water Sample"){
       # chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
-      chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
-      stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+      # chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
+      
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary_includesFlags.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "Passive Samples"){
-      chemicalSummary <- readRDS(file.path(path,"chemicalSummaryPassive.rds"))
-      chemicalSummary$date <- as.POSIXct(as.Date(paste0(chemicalSummary$year,"-01-01")))
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
+      # chemicalSummary$date <- as.POSIXct(as.Date(paste0(chemicalSummary$year,"-01-01")))
       if(input$year == "2014"){
         chemicalSummary <- filter(chemicalSummary, date > as.POSIXct(as.Date("2011-01-01")))
       } else if (input$year == "2010"){
         chemicalSummary <- filter(chemicalSummary, date < as.POSIXct(as.Date("2011-01-01")))
       }
-      
       stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
     } else if (input$data == "Duluth"){
-      chemicalSummary <- readRDS(file.path(path,"chemSummeryDL.rds"))
-      stationINFO <<- readRDS(file.path(path,"sitesDuluth.rds"))
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemSummeryDL.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"sitesDuluth.rds"))
     } else if (input$data == "NPS"){
-      chemicalSummary <- readRDS(file.path(path,"chemNPS.rds"))
-      stationINFO <<- readRDS(file.path(path,"npsSite.rds"))
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemNPS.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"npsSite.rds"))
     } else if (input$data == "Detection Limits"){
-      chemicalSummary <- readRDS(file.path(path,"chemicalSummaryDetectionLevels.rds"))
-      stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummaryDetectionLevels.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "TSHP"){
-      chemicalSummary <- readRDS(file.path(path,"ToxicSubstances.rds"))
-      stationINFO <<- readRDS(file.path(path,"ToxicSubstancesSites.rds"))      
+      chemicalSummary <- readRDS(file.path(pathToApp,"ToxicSubstances.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"ToxicSubstancesSites.rds"))      
     }
     
     chemicalSummary <- chemicalSummary %>%
@@ -247,10 +266,20 @@ shinyServer(function(input, output,session) {
       data.table() %>%
       left_join(data.table(ep), by="endPoint") %>%
       data.frame() %>%
-      select_("hits","EAR","chnm","class","date","choices"="groupCol","site","endPoint","endPointValue","casrn") %>%
+      select_("EAR","chnm","class","date","groupCol","site","endPoint","casrn","flags") %>% 
+      rename(choices = groupCol) %>%
       left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
       select(-site) %>%
-      rename(site=shortName)
+      rename(site=shortName) %>%
+      mutate(hits = as.numeric(EAR > hitThres))
+    
+    if(is.null(flags)){
+      chemicalSummary <- chemicalSummary[is.na(chemicalSummary$flags),]
+    } else {
+      for(i in flagsALL[!(flagsALL %in% flags)]){
+        chemicalSummary <- chemicalSummary[-(grep(i, chemicalSummary$flags)),]
+      }      
+    }
 
     endPointInfoSub <- filter(ep, groupCol %in%  group)
     
@@ -267,7 +296,7 @@ shinyServer(function(input, output,session) {
         mutate(category=endPoint) 
     } else {
       chemicalSummary <- chemicalSummary %>%
-        mutate(category = choices)         
+        mutate(category = choices)
     }
     
     if (input$sites == "Potential 2016"){
@@ -292,7 +321,7 @@ shinyServer(function(input, output,session) {
   statsOfColumn <- reactive({
     
     chemicalSummary <- chemicalSummary()
-    meanEARlogic <- input$meanEAR
+    meanEARlogic <- as.logical(input$meanEAR)
 
     radio <- input$radioMaxGroup
     statsOfColumn <- chemicalSummary 
