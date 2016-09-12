@@ -3,6 +3,7 @@
 \docType{data}
 \name{endPointInfo}
 \alias{endPointInfo}
+\alias{flagDF}
 \title{Endpoint information from ToxCast}
 \description{
 Downloaded on October 2015 from ToxCast dashboard
@@ -10,6 +11,8 @@ Downloaded on October 2015 from ToxCast dashboard
 \examples{
 endPointInfo <- endPointInfo
 head(endPointInfo[,1:5])
+flagDF <- flagDF
+head(flagDF)
 }
 \keyword{datasets}
 
