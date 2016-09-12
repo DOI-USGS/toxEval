@@ -70,12 +70,15 @@ NULL
 #' Downloaded on October 2015 from ToxCast dashboard
 #'
 #'@name endPointInfo
+#'@aliases endPointInfo flagDF
 #'@docType data
 #'@keywords datasets
-#'@export endPointInfo 
+#'@export endPointInfo flagDF
 #'@examples
 #'endPointInfo <- endPointInfo
 #'head(endPointInfo[,1:5])
+#'flagDF <- flagDF
+#'head(flagDF)
 NULL
 
 #' passiveData

@@ -66,6 +66,11 @@ flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,
            "Hit-call potentially confounded by overfitting","Gain AC50 < lowest conc & loss AC50 < mean conc",
            "Biochemical assay with < 50% efficacy")
 
+flagsShort <- c("Borderline", "OnlyHighest", "OneAbove","Noisy",
+                "HitCall", "GainAC50", "Biochemical")
+
+flagDF <- flagsDF
+
 interl <- function (a,b) {
   n <- min(length(a),length(b))
   p1 <- as.vector(rbind(a[1:n],b[1:n]))
@@ -167,7 +172,7 @@ shinyServer(function(input, output,session) {
     selChoices <- df$orderNames
 
     if(epDF[["groupColName"]] == "intended_target_family"){
-      selChoices <- selChoices[!(selChoices %in% c("Cell Cycle","Background Measurement","Cell Morphology"))]
+      selChoices <- selChoices[!(selChoices %in% c("Background Measurement"))]
     }
     
     updateCheckboxGroupInput(session, "group", 
@@ -276,8 +281,12 @@ shinyServer(function(input, output,session) {
     if(is.null(flags)){
       chemicalSummary <- chemicalSummary[is.na(chemicalSummary$flags),]
     } else {
-      for(i in flagsALL[!(flagsALL %in% flags)]){
-        chemicalSummary <- chemicalSummary[-(grep(i, chemicalSummary$flags)),]
+      for(i in flagsShort[which(!(flagsALL %in% flags))]){
+        take.out.flags <- flagDF[!flagDF[[i]],c("casn","endPoint")]
+        
+        chemicalSummary <- right_join(chemicalSummary, take.out.flags, 
+                         by=c("casrn"="casn", "endPoint"="endPoint")) %>%
+          filter(!is.na(chnm))
       }      
     }
 
