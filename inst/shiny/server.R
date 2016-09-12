@@ -69,7 +69,7 @@ flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,
 flagsShort <- c("Borderline", "OnlyHighest", "OneAbove","Noisy",
                 "HitCall", "GainAC50", "Biochemical")
 
-flagDF <- flagsDF
+flagDF <- flagDF
 
 interl <- function (a,b) {
   n <- min(length(a),length(b))
@@ -251,7 +251,7 @@ shinyServer(function(input, output,session) {
       } else if (input$year == "2010"){
         chemicalSummary <- filter(chemicalSummary, date < as.POSIXct(as.Date("2011-01-01")))
       }
-      stationINFO <<- readRDS(file.path(path,"sitesOWC.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "Duluth"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemSummeryDL.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"sitesDuluth.rds"))
@@ -271,7 +271,7 @@ shinyServer(function(input, output,session) {
       data.table() %>%
       left_join(data.table(ep), by="endPoint") %>%
       data.frame() %>%
-      select_("EAR","chnm","class","date","groupCol","site","endPoint","casrn","flags") %>% 
+      select_("EAR","chnm","class","date","groupCol","site","endPoint","casrn") %>% 
       rename(choices = groupCol) %>%
       left_join(stationINFO[,c("fullSiteID","shortName")], by=c("site"="fullSiteID")) %>%
       select(-site) %>%
@@ -1063,7 +1063,12 @@ shinyServer(function(input, output,session) {
       leg_vals <- unique(as.numeric(quantile(mapData$meanEAR, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
       pal = colorBin(col_types, mapData$meanEAR, bins = leg_vals)
       rad <-3*seq(1,4,length.out = 16)
-      mapData$sizes <- rad[as.numeric(cut(counts, breaks=16))]
+      if(sum(counts) == 0){
+        mapData$sizes <- rad[1]
+      } else {
+        mapData$sizes <- rad[as.numeric(cut(counts, breaks=16))]
+      }
+      
     } else {
       leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanEAR), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
       pal = colorBin(col_types, c(0,mapData$meanEAR), bins = leg_vals)
