@@ -238,14 +238,11 @@ shinyServer(function(input, output,session) {
     # )
     
     if (input$data == "Water Sample"){
-      # chemicalSummary <- readRDS(file.path(path,"chemicalSummaryV2.rds"))
-      # chemicalSummary <- readRDS(file.path(path,"chemicalSummary_noFlags.rds"))
-      
       chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary_includesFlags.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "Passive Samples"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
-      # chemicalSummary$date <- as.POSIXct(as.Date(paste0(chemicalSummary$year,"-01-01")))
+      
       if(input$year == "2014"){
         chemicalSummary <- filter(chemicalSummary, date > as.POSIXct(as.Date("2011-01-01")))
       } else if (input$year == "2010"){
@@ -254,7 +251,9 @@ shinyServer(function(input, output,session) {
       stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "Duluth"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemSummeryDL.rds"))
+      chemicalSummary$date <- chemicalSummary$dateTime
       stationINFO <<- readRDS(file.path(pathToApp,"sitesDuluth.rds"))
+      stationINFO$fullSiteID <- stationINFO$shortName
     } else if (input$data == "NPS"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemNPS.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"npsSite.rds"))
