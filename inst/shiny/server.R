@@ -253,7 +253,7 @@ shinyServer(function(input, output,session) {
       chemicalSummary <- readRDS(file.path(pathToApp,"chemSummeryDL.rds"))
       chemicalSummary$date <- chemicalSummary$dateTime
       stationINFO <<- readRDS(file.path(pathToApp,"sitesDuluth.rds"))
-      stationINFO$fullSiteID <- stationINFO$shortName
+      stationINFO$fullSiteID <<- stationINFO$shortName
     } else if (input$data == "NPS"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemNPS.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"npsSite.rds"))
@@ -262,7 +262,12 @@ shinyServer(function(input, output,session) {
       stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "TSHP"){
       chemicalSummary <- readRDS(file.path(pathToApp,"ToxicSubstances.rds"))
-      stationINFO <<- readRDS(file.path(pathToApp,"ToxicSubstancesSites.rds"))      
+      stationINFO <<- readRDS(file.path(pathToApp,"ToxicSubstancesSites.rds")) 
+      stationINFO$fullSiteID <<- paste0("USGS-",stationINFO$fullSiteID)
+      stationINFO$shortName <<- c("Groundhouse Above", "Groundhouse Below", "Goose Creek Above", 
+                                 "Goose Creek Below", "Sunrise", "N Sunrise Above", "N Sunrise Below", 
+                                 "Willow Above", "Willow Below", "New Richmond", "Chisago WWTP", 
+                                 "N Branch WWTP", "Harris WWTP", "Ogilvie WWTP")
     }
     
     chemicalSummary <- chemicalSummary %>%
