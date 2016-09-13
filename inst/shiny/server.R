@@ -268,6 +268,10 @@ shinyServer(function(input, output,session) {
                                  "Goose Creek Below", "Sunrise", "N Sunrise Above", "N Sunrise Below", 
                                  "Willow Above", "Willow Below", "New Richmond", "Chisago WWTP", 
                                  "N Branch WWTP", "Harris WWTP", "Ogilvie WWTP")
+    } else if (input$data == "App State"){
+      chemicalSummary <- readRDS(file.path(pathToApp,"leviData.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"leviSites.rds"))
+      
     }
     
     chemicalSummary <- chemicalSummary %>%
