@@ -287,7 +287,13 @@ shinyServer(function(input, output,session) {
       mutate(hits = as.numeric(EAR > hitThres))
     
     if(is.null(flags)){
-      chemicalSummary <- chemicalSummary[is.na(chemicalSummary$flags),]
+      for(i in flagsShort){
+        take.out.flags <- flagDF[!flagDF[[i]],c("casn","endPoint")]
+        
+        chemicalSummary <- right_join(chemicalSummary, take.out.flags, 
+                                      by=c("casrn"="casn", "endPoint"="endPoint")) %>%
+          filter(!is.na(chnm))
+      } 
     } else {
       for(i in flagsShort[which(!(flagsALL %in% flags))]){
         take.out.flags <- flagDF[!flagDF[[i]],c("casn","endPoint")]
