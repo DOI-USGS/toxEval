@@ -113,7 +113,7 @@ sidebar <- dashboardSidebar(
             actionButton("allGroup", label="Select All/Deselect")),
    menuItem("Sites", icon = icon("th"), tabName = "siteMenu",
             selectInput("sites", label = "Site", 
-                        choices = c("All","Potential 2016",summaryFile$site),
+                        choices = c("All","2016 GLRI SP sites",summaryFile$site),
                         selected = "All", multiple = FALSE)
    ),
    menuItem("Flags", icon = icon("th"), tabName = "flagMenu",
