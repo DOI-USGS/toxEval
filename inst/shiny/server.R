@@ -113,7 +113,7 @@ shinyServer(function(input, output,session) {
       npsSites <- readRDS(file.path(pathToApp,"npsSite.rds"))
       choices =  c("All",npsSites$shortName)  
     } else {
-      choices =  c("All","Potential 2016",summaryFile$site)
+      choices =  c("All","2016 GLRI SP sites",summaryFile$site)
     }
     
     choices
@@ -316,7 +316,7 @@ shinyServer(function(input, output,session) {
         mutate(category = choices)
     }
     
-    if (input$sites == "Potential 2016"){
+    if (input$sites == "2016 GLRI SP sites"){
       chemicalSummary <-  chemicalSummary %>%
         filter(site %in% df2016$Site)
     } else if (input$sites != "All"){
@@ -1160,7 +1160,7 @@ shinyServer(function(input, output,session) {
   
   output$siteHitText <- renderUI({
     
-    if(input$sites == "All" | input$sites == "Potential 2016"){
+    if(input$sites == "All" | input$sites == "2016 GLRI SP sites"){
       HTML(paste("<h4>Number of sites with hits</h4>"))
     } else {
       HTML(paste("<h4>Number of samples with hits</h4>"))
