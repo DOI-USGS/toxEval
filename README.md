@@ -7,6 +7,7 @@ Initial code for studying ToxCast data in relation to measured concentrations.
 This section should only need to be done once per computer.
 
 The following link walks you through an installation of R and RStudio:
+
 [Installation Instructions](https://owi.usgs.gov/R/training-curriculum/intro-curriculum/Before/)
 
 If you follow those instructions exactly, you should have the USGS R repository (GRAN) added to your R profile. If that step doesn't ring a bell, paste the following into your R console:
@@ -26,9 +27,10 @@ cat('Your Rprofile has been updated to include GRAN.
 *RESTART RSTUDIO!*
 
 Useful links:
-[Download R Windows](https://cran.r-project.org/bin/windows/base/)
-[Download R Mac](https://cran.r-project.org/bin/macosx/)
-[Download RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+* [Download R Windows](https://cran.r-project.org/bin/windows/base/)
+* [Download R Mac](https://cran.r-project.org/bin/macosx/)
+* [Download RStudio](https://www.rstudio.com/products/rstudio/download/)
 
 
 ## Installation of toxEval
