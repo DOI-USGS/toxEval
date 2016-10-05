@@ -87,14 +87,16 @@ chemSummBasic <- function(wData, pCodeInfoDF,endPoint,
                      casrn_pCode="casrn",class_pCode="class",code_pCode="parameter_cd",
                      casrn_ep="casn"){
   
+  endPoint <- select(endPoint, -Units, -mlWt, -conversion) 
+  
   chemicalSummary <- wData %>%
     gather_("pCode", "measuredValue", gather_cols=names(wData)[!(names(wData) %in% c(date,station))]) %>%
     rename_("date"=date) %>%
     filter(!is.na(measuredValue)) %>%
     separate(pCode, into=c("colHeader","pCode"), "_") %>% #totally not generalized
     left_join(pCodeInfoDF[c(code_pCode,casrn_pCode,class_pCode)], by=c("pCode"=code_pCode))  %>%
+    select(-colHeader, -pCode) %>%
     right_join(endPoint, by=c(casrn=casrn_ep)) %>%
-    select(-mlWt, -conversion, -Units, -pCode, -colHeader) %>%
     gather(endPoint, endPointValue, -class, -site, -measuredValue, -chnm, -date, -casrn)  %>% 
     filter(!is.na(endPointValue)) %>%
     mutate(EAR=measuredValue/endPointValue) %>%
