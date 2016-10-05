@@ -111,7 +111,11 @@ shinyServer(function(input, output,session) {
       choices =  c("All",duluthSites$shortName)
     } else if(input$data == "NPS"){
       npsSites <- readRDS(file.path(pathToApp,"npsSite.rds"))
-      choices =  c("All",npsSites$shortName)  
+      choices =  c("All",npsSites$shortName) 
+      
+    } else if(input$data == "App State"){
+      leviSites <- readRDS(file.path(pathToApp,"leviSites.rds"))
+      choices = c("All",leviSites$shortName)
     } else {
       choices =  c("All","2016 GLRI SP sites",summaryFile$site)
     }
