@@ -58,23 +58,6 @@ explore_endpoints()
 
 ```
 
-## At-your-own-risk, highly developmental, probably buggy code installation instructions
-
-To pull the upstream changes in from github in RStudio. In the Git tab, choose the More dropdown, and choose Shell. In that window, enter:
-
-```
-git pull upstream master
-```
-
-Then, rebuild the package...go to the "Build" tab in RStudio, and choose Build and Reload.
-
-Alternatively, use the `devtools` package. In R:
-
-```r
-devtools::install_github("USGS-R/toxEval")
-```
-
-
 
 Disclaimer
 ----------
@@ -84,19 +67,7 @@ Although this software program has been used by the USGS, no warranty, expressed
 
 This software is provided "AS IS."
 
-Package Installation
----------------------------------
 
-To install the `toxEval` package you need to be using R 3.0 or greater. Then use the following command:
-
-```R
-install.packages("toxEval", repos=c("http://owi.usgs.gov/R",
-        "http://cran.us.r-project.org"))
-
-library(toxEval)
-explore_endpoints()
-
-```
 
 Linux: [![travis](https://api.travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval)
 
