@@ -81,27 +81,13 @@ NULL
 #'head(flagDF)
 NULL
 
-#' passiveData
-#' 
-#'
-#'@aliases passiveData
-#'@name passiveData
-#'@docType data
-#'@keywords datasets
-NULL
-
-#' wData 
-#'
-#'@aliases wData
-#'@name wData
-#'@docType data
-#'@keywords datasets
-NULL
-
 #' pCodeInfo 
 #'
 #'@aliases pCodeInfo
 #'@name pCodeInfo
 #'@docType data
 #'@keywords datasets
+#'@export pCodeInfo
+#'@examples
+#'head(pCodeInfo)
 NULL

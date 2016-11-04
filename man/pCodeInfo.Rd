@@ -7,5 +7,8 @@
 \description{
 pCodeInfo
 }
+\examples{
+head(pCodeInfo)
+}
 \keyword{datasets}
 

@@ -35,7 +35,7 @@ sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","Presq
                   "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
                   "WhiteMI","Muskegon","MilwaukeeMouth","GrandMI","Kalamazoo2","PawPaw",
                   "StJoseph","IndianaHC","Burns","ThunderBay","AuSable","Rifle",
-                  "Saginaw","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
+                  "Saginaw","Saginaw2","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
                   "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
 
@@ -770,8 +770,13 @@ shinyServer(function(input, output,session) {
     # Code to override clipping
     lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
     lowerPlot$layout$clip[lowerPlot$layout$name == "panel"] <- "off"
-
-    ggsave("boxPlot.png",lowerPlot,bg = "transparent")
+    
+    if(catType == 2){
+      ggsave("boxPlot.png",lowerPlot,bg = "transparent", height = 12, width = 9)
+    } else {
+      ggsave("boxPlot.png",lowerPlot,bg = "transparent", height = 6, width = 8)
+    }
+    
     
     print(grid.draw(lowerPlot))
   })
@@ -818,8 +823,10 @@ shinyServer(function(input, output,session) {
       filter(shortName %in% unique(graphData$site))
     
     if(all(siteLimits$shortName %in% sitesOrdered)){
+      graphData <- mutate(graphData, site = factor(site, levels = sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
       siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
     } else {
+      graphData <- mutate(graphData, site = factor(site, levels = unique(site)))
       siteLimits <- mutate(siteLimits, shortName = factor(shortName))
     }
     
@@ -855,7 +862,7 @@ shinyServer(function(input, output,session) {
         geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
         theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
                                          angle = 90,vjust=0.5,hjust = 1)) +
-        scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+        # scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
         ylab("") +
         xlab("") +
         labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
@@ -877,7 +884,7 @@ shinyServer(function(input, output,session) {
         geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
         theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
                                          angle = 90,vjust=0.5,hjust = 1)) +
-        scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+        # scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
         ylab("") +
         xlab("") +
         labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
