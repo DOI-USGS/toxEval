@@ -823,8 +823,10 @@ shinyServer(function(input, output,session) {
       filter(shortName %in% unique(graphData$site))
     
     if(all(siteLimits$shortName %in% sitesOrdered)){
+      graphData <- mutate(graphData, site = factor(site, levels = sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
       siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
     } else {
+      graphData <- mutate(graphData, site = factor(site, levels = unique(site)))
       siteLimits <- mutate(siteLimits, shortName = factor(shortName))
     }
     
@@ -860,7 +862,7 @@ shinyServer(function(input, output,session) {
         geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
         theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
                                          angle = 90,vjust=0.5,hjust = 1)) +
-        scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+        # scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
         ylab("") +
         xlab("") +
         labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
@@ -882,7 +884,7 @@ shinyServer(function(input, output,session) {
         geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
         theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
                                          angle = 90,vjust=0.5,hjust = 1)) +
-        scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
+        # scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
         ylab("") +
         xlab("") +
         labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
