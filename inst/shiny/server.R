@@ -35,7 +35,7 @@ sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","Presq
                   "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
                   "WhiteMI","Muskegon","MilwaukeeMouth","GrandMI","Kalamazoo2","PawPaw",
                   "StJoseph","IndianaHC","Burns","ThunderBay","AuSable","Rifle",
-                  "Saginaw","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
+                  "Saginaw","Saginaw2","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
                   "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
 
@@ -770,8 +770,13 @@ shinyServer(function(input, output,session) {
     # Code to override clipping
     lowerPlot <- ggplot_gtable(ggplot_build(lowerPlot))
     lowerPlot$layout$clip[lowerPlot$layout$name == "panel"] <- "off"
-
-    ggsave("boxPlot.png",lowerPlot,bg = "transparent")
+    
+    if(catType == 2){
+      ggsave("boxPlot.png",lowerPlot,bg = "transparent", height = 12, width = 9)
+    } else {
+      ggsave("boxPlot.png",lowerPlot,bg = "transparent", height = 6, width = 8)
+    }
+    
     
     print(grid.draw(lowerPlot))
   })
