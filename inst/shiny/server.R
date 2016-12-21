@@ -242,7 +242,7 @@ shinyServer(function(input, output,session) {
     # )
     
     if (input$data == "Water Sample"){
-      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary_includesFlags.rds"))
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary_ACC.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "Passive Samples"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
@@ -736,11 +736,11 @@ shinyServer(function(input, output,session) {
               legend.background = element_rect(colour = 'black', fill = 'white')) 
     }
     
-    ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
-    ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
+    ymin <<- 10^(ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$y.range)[1]
+    ymax <<- 10^(ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$y.range)[2]
     
-    xmax <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[2]
-    xmin <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[1]
+    xmax <<- ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$x.range[2]
+    xmin <<- ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$x.range[1]
     
     lowerPlot <- lowerPlot + 
       geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +

@@ -54,10 +54,10 @@ NULL
 #'  \item{AC10}{AC10 endpoints}
 #'}
 #'
-#'@aliases AC50gain AC50loss AC10
+#'@aliases AC50gain AC50loss AC10 ACC
 #'@name Constants
 #'@docType data
-#'@export AC50gain AC50loss AC10
+#'@export AC50gain AC50loss AC10 ACC
 #'@keywords datasets
 #'@examples
 #'AC50GainColumns <- names(AC50gain)

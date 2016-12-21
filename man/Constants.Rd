@@ -5,6 +5,7 @@
 \alias{AC10}
 \alias{AC50gain}
 \alias{AC50loss}
+\alias{ACC}
 \alias{Constants}
 \title{Constants included with toxEval. Units are log micro-Molarity (log uM).}
 \description{
