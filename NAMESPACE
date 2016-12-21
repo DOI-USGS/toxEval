@@ -3,6 +3,7 @@
 export(AC10)
 export(AC50gain)
 export(AC50loss)
+export(ACC)
 export(chemSumm)
 export(chemSummBasic)
 export(endPointInfo)

@@ -17,6 +17,63 @@ endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "NVS" & endPoin
 endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p3_ratio",]
 endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p2_viability",]
 
+endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
+                                      c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
+                                        "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "dna binding"
+
+endPointInfo$intended_target_family_sub[endPointInfo$assay_component_endpoint_name %in% 
+                                      c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
+                                        "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "basic helix-loop-helix protein"
+
+endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
+                                          c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
+                                            "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "AhR"
+
+endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
+                                      c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
+                                        "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
+                                        "CLD_SULT2A_48hr","CLD_UGT1A1_48hr","NVS_NR_bER",
+                                        "NVS_NR_bPR","NVS_NR_cAR")] <- "nuclear receptor"
+
+endPointInfo$intended_target_family_sub[endPointInfo$assay_component_endpoint_name %in% 
+                                      c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
+                                        "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
+                                        "CLD_SULT2A_48hr","CLD_UGT1A1_48hr")] <- "non-steroidal"
+
+endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
+                                    c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
+                                      "CLD_SULT2A_48hr")] <- "NR1I3" 
+
+endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
+                                       c("CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
+                                         "CLD_SULT2A_48hr")] <- "NR1I2" 
+
+endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
+                                      c("NVS_NR_bER", "NVS_NR_bPR","NVS_NR_cAR")] <- "steroidal"
+
+endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
+                                               c("NVS_NR_bER", "NVS_NR_bPR","NVS_NR_cAR")] <- c("ESR","PGR","AR")
+
+endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
+                                      c("Tanguay_ZF_120hpf_ActivityScore",
+                                        "Tanguay_ZF_120hpf_AXIS_up",
+                                        "Tanguay_ZF_120hpf_BRAI_up",
+                                        "Tanguay_ZF_120hpf_CFIN_up",
+                                        "Tanguay_ZF_120hpf_EYE_up",
+                                        "Tanguay_ZF_120hpf_JAW_up",
+                                        "Tanguay_ZF_120hpf_MORT_up",
+                                        "Tanguay_ZF_120hpf_OTIC_up",
+                                        "Tanguay_ZF_120hpf_PE_up",
+                                        "Tanguay_ZF_120hpf_PFIN_up",
+                                        "Tanguay_ZF_120hpf_PIG_up",
+                                        "Tanguay_ZF_120hpf_SNOU_up",
+                                        "Tanguay_ZF_120hpf_SOMI_up",
+                                        "Tanguay_ZF_120hpf_SWIM_up",
+                                        "Tanguay_ZF_120hpf_TR_up",
+                                        "Tanguay_ZF_120hpf_TRUN_up",
+                                        "Tanguay_ZF_120hpf_YSE_up")] <- "zebrafish"
+
+
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
@@ -242,7 +299,7 @@ shinyServer(function(input, output,session) {
     # )
     
     if (input$data == "Water Sample"){
-      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary_includesFlags.rds"))
+      chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummary_ACC.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"sitesOWC.rds"))
     } else if (input$data == "Passive Samples"){
       chemicalSummary <- readRDS(file.path(pathToApp,"chemicalSummaryPassive.rds"))
@@ -736,11 +793,11 @@ shinyServer(function(input, output,session) {
               legend.background = element_rect(colour = 'black', fill = 'white')) 
     }
     
-    ymin <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[1]
-    ymax <<- 10^(ggplot_build(lowerPlot)$panel$ranges[[1]]$y.range)[2]
+    ymin <<- 10^(ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$y.range)[1]
+    ymax <<- 10^(ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$y.range)[2]
     
-    xmax <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[2]
-    xmin <<- ggplot_build(lowerPlot)$panel$ranges[[1]]$x.range[1]
+    xmax <<- ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$x.range[2]
+    xmin <<- ggplot_build(lowerPlot)$layout$panel_ranges[[1]]$x.range[1]
     
     lowerPlot <- lowerPlot + 
       geom_text(data=data.frame(), aes(x=namesToPlot, y=ymin,label=nSamples),size=5)  +
