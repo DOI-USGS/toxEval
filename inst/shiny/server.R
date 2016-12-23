@@ -1338,28 +1338,28 @@ shinyServer(function(input, output,session) {
       geom_hline(yintercept = hitThres, linetype="dashed", color="black")
     
     if(filterBy != "All"){
-      
-      ymin <<- 10^(ggplot_build(stackedPlot)$panel$ranges[[1]]$y.range)[1]
-      ymax <<- 10^(ggplot_build(stackedPlot)$panel$ranges[[1]]$y.range)[2]
-      
-      xmax <<- ggplot_build(stackedPlot)$panel$ranges[[1]]$x.range[2]
-      xmin <<- ggplot_build(stackedPlot)$panel$ranges[[1]]$x.range[1]
-      
-      stackedPlot <- stackedPlot + 
-        geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5)  +
-        geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5) 
-      
-      df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
-      
-      for(i in 1:3){
-        stackedPlot <- stackedPlot + 
-          annotation_custom(
-            grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
-            ymin = log10(df1$y[i]),      # Vertical position of the textGrob
-            ymax = log10(df1$y[i]),
-            xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
-            xmax = xmax+0.05)
-      }
+
+      ymin <<- 10^(ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$y.range)[1]
+      ymax <<- 10^(ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$y.range)[2]
+
+      xmax <<- ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$x.range[2]
+      xmin <<- ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$x.range[1]
+
+      stackedPlot <- stackedPlot +
+        geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5) +
+        geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5)
+    #   
+    #   df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+    #   
+    #   for(i in 1:3){
+    #     stackedPlot <- stackedPlot + 
+    #       annotation_custom(
+    #         grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
+    #         ymin = log10(df1$y[i]),      # Vertical position of the textGrob
+    #         ymax = log10(df1$y[i]),
+    #         xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
+    #         xmax = xmax+0.05)
+    #   }
     }
     stackedPlot <- stackedPlot +
       coord_flip()
