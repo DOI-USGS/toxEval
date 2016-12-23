@@ -1348,18 +1348,18 @@ shinyServer(function(input, output,session) {
       stackedPlot <- stackedPlot +
         geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5) +
         geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5)
-    #   
-    #   df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
-    #   
-    #   for(i in 1:3){
-    #     stackedPlot <- stackedPlot + 
-    #       annotation_custom(
-    #         grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
-    #         ymin = log10(df1$y[i]),      # Vertical position of the textGrob
-    #         ymax = log10(df1$y[i]),
-    #         xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
-    #         xmax = xmax+0.05)
-    #   }
+
+      df1 <- data.frame(y = c(ymin,hitThres,ymax), text = c("# Non Zero","Hit Threshold","# Hits"), stringsAsFactors = FALSE)
+
+      for(i in 1:3){
+        stackedPlot <- stackedPlot +
+          annotation_custom(
+            grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
+            ymin = log10(df1$y[i]),      # Vertical position of the textGrob
+            ymax = log10(df1$y[i]),
+            xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
+            xmax = xmax+0.05)
+      }
     }
     stackedPlot <- stackedPlot +
       coord_flip()
