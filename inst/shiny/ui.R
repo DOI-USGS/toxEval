@@ -22,38 +22,11 @@ endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %
                                       c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
                                         "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "dna binding"
 
-endPointInfo$intended_target_family_sub[endPointInfo$assay_component_endpoint_name %in% 
-                                          c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
-                                            "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "basic helix-loop-helix protein"
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                               c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
-                                                 "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "AhR"
-
 endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
                                       c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
                                         "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
                                         "CLD_SULT2A_48hr","CLD_UGT1A1_48hr","NVS_NR_bER",
                                         "NVS_NR_bPR","NVS_NR_cAR")] <- "nuclear receptor"
-
-endPointInfo$intended_target_family_sub[endPointInfo$assay_component_endpoint_name %in% 
-                                          c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
-                                            "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
-                                            "CLD_SULT2A_48hr","CLD_UGT1A1_48hr")] <- "non-steroidal"
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                               c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
-                                                 "CLD_SULT2A_48hr")] <- "NR1I3" 
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                               c("CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
-                                                 "CLD_SULT2A_48hr")] <- "NR1I2" 
-
-endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("NVS_NR_bER", "NVS_NR_bPR","NVS_NR_cAR")] <- "steroidal"
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                               c("NVS_NR_bER", "NVS_NR_bPR","NVS_NR_cAR")] <- c("ESR","PGR","AR")
 
 endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
                                       c("Tanguay_ZF_120hpf_ActivityScore",
@@ -73,8 +46,6 @@ endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %
                                         "Tanguay_ZF_120hpf_TR_up",
                                         "Tanguay_ZF_120hpf_TRUN_up",
                                         "Tanguay_ZF_120hpf_YSE_up")] <- "zebrafish"
-
-
 
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
@@ -110,10 +81,9 @@ selChoices <- df$orderNames
 
 # flags <- unique(AC50gain$flags[!is.na(AC50gain$flags)])
 # flags <- unique(unlist(strsplit(flags, "\\|")))
-flags <- c("Borderline active","Only highest conc above baseline, active" ,      
-           "Only one conc above baseline, active",                              
-           "Gain AC50 < lowest conc & loss AC50 < mean conc",
-           "Biochemical assay with < 50% efficacy")
+flags <- c("Noisy data",
+           "Only one conc above baseline, active",
+           "Hit-call potentially confounded by overfitting")
 
 flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,      
               "Only one conc above baseline, active","Noisy data",                                 
@@ -130,7 +100,8 @@ sidebar <- dashboardSidebar(
                                  "Duluth",
                                  "NPS",
                                  "TSHP",
-                                 "App State"),
+                                 "App State",
+                                 "Birds"),
                                  # ,"Detection Limits"),
                      selected = "Water Sample", multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
@@ -159,9 +130,9 @@ sidebar <- dashboardSidebar(
                                  "NHEERL_PADILLA"="NHEERL_PADILLA",
                                  "NCCT_SIMMONS"="NCCT_SIMMONS",
                                  "ACEA Biosciences" = "ACEA"),
-              selected=c("APR","ATG","NVS","OT","TOX21","CEETOX",
-                         "CLD","TANGUAY","NHEERL_PADILLA",
-                         "NCCT_SIMMONS","ACEA")),
+              selected= c("ATG","NVS","OT","TOX21","CEETOX", "APR", 
+                            "CLD","TANGUAY","NHEERL_PADILLA",
+                            "NCCT_SIMMONS","ACEA")),
               actionButton("pickAssay", label="Switch Assays")),
    menuItem("Annotation", icon = icon("th"), tabName = "annotation",
             selectInput("groupCol", label = "Annotation (# Groups)", 
