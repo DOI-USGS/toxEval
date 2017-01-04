@@ -50,20 +50,20 @@ assays <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"APR"?,"BSK"?
             "CLD","TANGUAY","NHEERL_PADILLA",
             "NCCT_SIMMONS","ACEA")
 
-ep <- select(endPointInfo, 
-             endPoint = assay_component_endpoint_name,
-             groupCol = intended_target_family,
-             assaysFull = assay_source_name) %>%
-  filter(assaysFull %in% assays) %>%
-  filter(!(groupCol %in% c("background measurement"))) %>% #,"cell morphology", "cell cycle"))) %>%
-  filter(!is.na(groupCol))
-
 cleanUpNames <- endPointInfo$intended_target_family
 cleanUpNames <- stri_trans_totitle(cleanUpNames)
 cleanUpNames[grep("Dna",cleanUpNames)] <- "DNA Binding"
 cleanUpNames[grep("Cyp",cleanUpNames)] <- "CYP"
 cleanUpNames[grep("Gpcr",cleanUpNames)] <- "GPCR"
 endPointInfo$intended_target_family <- cleanUpNames
+
+ep <- select(endPointInfo, 
+             endPoint = assay_component_endpoint_name,
+             groupCol = intended_target_family,
+             assaysFull = assay_source_name) %>%
+  filter(assaysFull %in% assays) %>%
+  filter(!(groupCol %in% c("Background Measurement"))) %>% #,"cell morphology", "cell cycle"))) %>%
+  filter(!is.na(groupCol))
 
 chemicalSummary.orig <- readRDS(file.path(pathToApp,"chemicalSummary_ACC.rds"))
 chemicalSummary.orig$chnm[chemicalSummary.orig$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
@@ -90,7 +90,7 @@ stationINFO$shortName[stationINFO$shortName == "Kalamazoo2"] <- "Kalamazoo"
 stationINFO$shortName[stationINFO$shortName == "Cheboygan2"] <- "Cheboygan"
 
 
-flagsShort <- c("Borderline",  "OneAbove",
+flagsShort <- c("Borderline",  "OnlyHighest",
                 "GainAC50", "Biochemical")
 # flagsShort <- c("Borderline", "OnlyHighest", "OneAbove","Noisy",
 #                 "HitCall", "GainAC50", "Biochemical")
@@ -104,15 +104,6 @@ for(i in flagsShort){
 
 chemicalSummary <- left_join(chemicalSummary, select(flagDF, casn,endPoint, flags),
                              by=c("casrn"="casn", "endPoint"="endPoint"))
-
-flagSum <- chemicalSummary %>%
-  filter(EAR > 10^-3) %>%
-  filter(!is.na(flags)) %>%
-  group_by(chnm, endPoint, flags) %>%
-  summarise(count = n(),
-            max = max(EAR, na.rm = TRUE)) %>%
-  filter(count > 10) %>%
-  arrange(desc(max))
 
 graphData <- chemicalSummary %>%
   group_by(site,date,category,class) %>%

@@ -12,7 +12,7 @@ graphData <- chemicalSummary %>%
   left_join(select(endPointInfo, endPoint=assay_component_name, intended_target_family),
             by=c("endPoint")) %>%
   select(-category) %>%
-  rename(category = intended_target_family) %>%
+  rename(category = choices) %>%
   group_by(site,date,category) %>%
   summarise(sumEAR=sum(EAR)) %>%
   data.frame() %>%
@@ -64,7 +64,7 @@ bioPlot <- bioPlot +
 
 bioPlot
 
-ggsave(bioPlot, bg = "transparent",
+ggsave(bioPlot, #bg = "transparent",
        filename = "bioPlot.png", 
        height = 4, width = 5)
 
@@ -101,6 +101,6 @@ heat <- ggplot(data = graphData) +
         plot.background = element_rect(fill = "transparent",colour = NA))
 heat
 
-ggsave(heat, bg = "transparent",
+ggsave(heat, #bg = "transparent",
        filename = "heat_Bio.png", 
        height = 7, width = 11)

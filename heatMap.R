@@ -73,11 +73,11 @@ heat <- ggplot(data = graphData_filtered) +
         plot.background = element_rect(fill = "transparent",colour = NA))
 heat
 
-ggsave(heat, bg = "transparent",
+ggsave(heat, #bg = "transparent",
        filename = "heat_2.png", 
        height = 5, width = 8.5)
 
-ggsave(heat, bg = "transparent",
+ggsave(heat, #bg = "transparent",
        filename = "heat_Unfiltered.png", 
        height = 9, width = 11)
 

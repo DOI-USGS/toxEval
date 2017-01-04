@@ -21,38 +21,11 @@ endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %
                                       c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
                                         "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "dna binding"
 
-endPointInfo$intended_target_family_sub[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
-                                        "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "basic helix-loop-helix protein"
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                          c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
-                                            "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "AhR"
-
 endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
                                       c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
                                         "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
                                         "CLD_SULT2A_48hr","CLD_UGT1A1_48hr","NVS_NR_bER",
                                         "NVS_NR_bPR","NVS_NR_cAR")] <- "nuclear receptor"
-
-endPointInfo$intended_target_family_sub[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
-                                        "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
-                                        "CLD_SULT2A_48hr","CLD_UGT1A1_48hr")] <- "non-steroidal"
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                    c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
-                                      "CLD_SULT2A_48hr")] <- "NR1I3" 
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                       c("CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
-                                         "CLD_SULT2A_48hr")] <- "NR1I2" 
-
-endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("NVS_NR_bER", "NVS_NR_bPR","NVS_NR_cAR")] <- "steroidal"
-
-endPointInfo$intended_target_official_symbol[endPointInfo$assay_component_endpoint_name %in% 
-                                               c("NVS_NR_bER", "NVS_NR_bPR","NVS_NR_cAR")] <- c("ESR","PGR","AR")
 
 endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
                                       c("Tanguay_ZF_120hpf_ActivityScore",
@@ -73,7 +46,6 @@ endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %
                                         "Tanguay_ZF_120hpf_TRUN_up",
                                         "Tanguay_ZF_120hpf_YSE_up")] <- "zebrafish"
 
-
 choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
 choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
 
@@ -88,10 +60,14 @@ cleanUpNames[grep("Gpcr",cleanUpNames)] <- "GPCR"
 endPointInfo$intended_target_family <- cleanUpNames
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
-                  "Ontonagon","Sturgeon","Tahquamenon","Manistique","Escanaba","Ford","Cheboygan2","Indian",
-                  "Menominee","Peshtigo","Oconto","Fox","Manistee","Manitowoc","PereMarquette","Sheboygan",
-                  "WhiteMI","Muskegon","MilwaukeeMouth","GrandMI","Kalamazoo2","PawPaw",
-                  "StJoseph","IndianaHC","Burns","ThunderBay","AuSable","Rifle",
+                  "Ontonagon","Sturgeon","Tahquamenon",
+                  "Burns","IndianaHC","StJoseph","PawPaw",        
+                  "Kalamazoo2","Kalamazoo","GrandMI","MilwaukeeMouth","Muskegon",      
+                  "WhiteMI","Sheboygan","PereMarquette","Manitowoc",    
+                  "Manistee","Fox","Oconto","Peshtigo",      
+                  "Menominee","Indian","Cheboygan2","Cheboygan","Ford",         
+                  "Escanaba","Manistique",
+                  "ThunderBay","AuSable","Rifle",
                   "Saginaw","Saginaw2","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
                   "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
@@ -99,6 +75,11 @@ sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","Presq
 pathToApp <- system.file("extdata", package="toxEval")
 
 stationINFO <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
+stationINFO$Lake[stationINFO$shortName == "BlackMI"] <- "Lake Huron"
+stationINFO$Lake[stationINFO$shortName == "HuronMI"] <- "Lake Erie"
+stationINFO$Lake[stationINFO$shortName == "ClintonDP"] <- "Lake Erie"
+stationINFO$Lake[stationINFO$shortName == "Clinton"] <- "Lake Erie"
+
 summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
 endPoint <- readRDS(file.path(pathToApp,"endPoint.rds"))
 
@@ -107,16 +88,15 @@ df2016 <- readRDS(file.path(pathToApp,"df2016.rds"))
 choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-initAssay <-  c("ATG","NVS","OT","TOX21","CEETOX",
-                "CLD","TANGUAY","NHEERL_PADILLA",
-                "NCCT_SIMMONS","ACEA")
+initAssay <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"APR"?,"BSK"?
+            "CLD","TANGUAY","NHEERL_PADILLA",
+            "NCCT_SIMMONS","ACEA")
 
 # flags <- unique(AC50gain$flags[!is.na(AC50gain$flags)])
 # flags <- unique(unlist(strsplit(flags, "\\|")))
-flags <- c("Borderline active","Only highest conc above baseline, active" ,      
-           "Only one conc above baseline, active",                              
-           "Gain AC50 < lowest conc & loss AC50 < mean conc",
-           "Biochemical assay with < 50% efficacy")
+flags <- c("Noisy data",
+           "Only one conc above baseline, active",
+           "Hit-call potentially confounded by overfitting")
 
 flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,      
            "Only one conc above baseline, active","Noisy data",                                 
@@ -173,6 +153,10 @@ shinyServer(function(input, output,session) {
     } else if(input$data == "App State"){
       leviSites <- readRDS(file.path(pathToApp,"leviSites.rds"))
       choices = c("All",leviSites$shortName)
+      
+    } else if(input$data == "Birds"){
+      birdSites <- readRDS(file.path(pathToApp,"birdSites.rds"))
+      choices = c("All",birdSites$shortName)
     } else {
       choices =  c("All","2016 GLRI SP sites",summaryFile$site)
     }
@@ -333,6 +317,9 @@ shinyServer(function(input, output,session) {
       chemicalSummary <- readRDS(file.path(pathToApp,"leviData.rds"))
       stationINFO <<- readRDS(file.path(pathToApp,"leviSites.rds"))
       
+    } else if (input$data == "Birds"){
+      chemicalSummary <- readRDS(file.path(pathToApp,"birdData.rds"))
+      stationINFO <<- readRDS(file.path(pathToApp,"birdSites.rds"))      
     }
     
     chemicalSummary <- chemicalSummary %>%

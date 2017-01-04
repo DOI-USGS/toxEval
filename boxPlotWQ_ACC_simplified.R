@@ -141,7 +141,7 @@ fullData$class[fullData$class == "Detergent Metabolites"] <- "Detergent"
 
 x <- graphData[is.na(graphData$category),]  
 
-orderChem <- fullData %>% #not fullFULL...or just graphData....needs just tox and WQ
+orderChem <- graphData %>%#fullData %>% #not fullFULL...or just graphData....needs just tox and WQ
   group_by(category,class) %>%
   summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
   data.frame() %>%
@@ -150,7 +150,9 @@ orderChem <- fullData %>% #not fullFULL...or just graphData....needs just tox an
 
 orderedLevels <- as.character(orderChem$category)
 orderedLevels <- orderedLevels[!is.na(orderedLevels)]
-orderedLevels <- c(orderedLevels, unique(fullFULL$category)[which(!(unique(fullFULL$category) %in% orderedLevels))],"")
+orderedLevels <- c(orderedLevels[1:2], "Cumene", 
+                   orderedLevels[3:4],"Bromoform",
+                   orderedLevels[5:length(orderedLevels)])
 
 fullFULL <- fullFULL %>%
   mutate(guideline = factor(as.character(guideline), levels=c("ToxCast","Traditional")),
@@ -172,8 +174,8 @@ textData <- data.frame(guideline = factor(c(rep("Traditional", 2),
                                              "Water Quality Guidelines","EEQ",
                                              "Water Quality Guidelines","EEQ"), levels = levels(fullFULL$otherThing)),
                        category = factor(c("2-Methylnaphthalene","1,4-Dichlorobenzene", 
-                                           "Pentachlorophenol","Bisphenol A",
-                                           "Pentachlorophenol","Bisphenol A"), levels = levels(fullFULL$category)),
+                                           "Bisphenol A","Bisphenol A",
+                                           "Bisphenol A","Bisphenol A"), levels = levels(fullFULL$category)),
                        textExplain = c("Water Quality Guidelines Quotients",
                                        "Estradiol Equivalent Quotients",
                                        "A","B","C","D"),
