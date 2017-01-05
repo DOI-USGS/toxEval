@@ -240,7 +240,7 @@ ymax <- ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$y.range[2]
 
 toxPlot_All <- toxPlot_All +
   geom_text(data=countNonZero, aes(x=category,label=nonZero, y=ymin), size=2.5) +
-  geom_text(data = textData, aes(x=category, label=textExplain, y=y), 
+  geom_text(data = textData[-1:-2,], aes(x=category, label=textExplain, y=y), 
             size = 3) +
   geom_text(data = astrictData, aes(x=category, label=nonZero, y=0.00002), 
             size=5, vjust = 0.70)
