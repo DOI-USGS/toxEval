@@ -8,6 +8,9 @@ library(gridExtra)
 library(stringi)
 
 pCodeInfo <- pCodeInfo
+pCodeInfo$AqT_other_acute[pCodeInfo$parameter_cd == "62816"] <- 1518
+pCodeInfo$AqT_other_chronic [pCodeInfo$parameter_cd == "62816"] <- 0.86
+
 
 pathToApp <- system.file("extdata", package="toxEval")
 endPointInfo <- endPointInfo
