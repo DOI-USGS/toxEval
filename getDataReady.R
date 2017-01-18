@@ -11,7 +11,8 @@ pCodeInfo <- pCodeInfo
 pCodeInfo$AqT_other_acute[pCodeInfo$parameter_cd == "62816"] <- 1518
 pCodeInfo$AqT_other_chronic [pCodeInfo$parameter_cd == "62816"] <- 0.86
 
-
+pCodeInfo$class[!is.na(pCodeInfo$srsname) & pCodeInfo$srsname == "Benzophenone"] <- "flavor/fragrance"
+  
 pathToApp <- system.file("extdata", package="toxEval")
 endPointInfo <- endPointInfo
 
@@ -68,12 +69,61 @@ ep <- select(endPointInfo,
   filter(!(groupCol %in% c("Background Measurement"))) %>% #,"cell morphology", "cell cycle"))) %>%
   filter(!is.na(groupCol))
 
-chemicalSummary.orig <- readRDS(file.path(pathToApp,"chemicalSummary_ACC.rds"))
-chemicalSummary.orig$chnm[chemicalSummary.orig$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+############################################
+packagePath <- system.file("extdata", package="toxEval")
+filePath <- file.path(packagePath, "waterSamples.RData")
+load(file=filePath)
+
+ACC <- ACC
+ACClong <- gather(ACC, endPoint, ACC, -casn, -chnm, -flags) %>%
+  filter(!is.na(ACC)) %>%
+  left_join(select(pCodeInfo,casrn, parameter_units, mlWt),
+            by= c("casn"="casrn")) %>%
+  filter(!is.na(parameter_units)) %>%
+  mutate(conversion = mlWt) %>%
+  mutate(value = 10^ACC) %>%
+  mutate(value = value *conversion)
+
+valColumns <- grep("valueToUse", names(waterSamples))
+qualColumns <- grep("qualifier", names(waterSamples))
+
+waterData <- waterSamples[,valColumns]
+waterData[waterSamples[,qualColumns] == "<"] <- 0
 
 stationINFO <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
+newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
-chemicalSummary <- chemicalSummary.orig %>%
+wData <- cbind(waterSamples[,1:2],waterData)
+
+simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+        sep="", collapse=" ")
+}
+
+pCodeInfo$class <- as.character(sapply(tolower(pCodeInfo$class),simpleCap))
+pCodeInfo$class[pCodeInfo$class == "Pah"] <- "PAH"
+pCodeInfo$class[pCodeInfo$class == "Flavor/fragrance"] <- "Flavor/Fragrance"
+
+wDataLong <- gather(wData, pCode, measuredValue, -ActivityStartDateGiven, -site) %>%
+  rename(date = ActivityStartDateGiven) %>%
+  filter(!is.na(measuredValue)) %>%
+  mutate(pCode = gsub("valueToUse_", replacement = "", pCode)) %>%
+  left_join(select(pCodeInfo, parameter_cd, casrn, class), by=c("pCode" = "parameter_cd")) %>%
+  full_join(ACClong, by= c("casrn" = "casn")) %>%
+  filter(!is.na(ACC)) %>%
+  mutate(EAR = measuredValue/value) %>%
+  select(-mlWt, -conversion, -value, -parameter_units, -pCode, -ACC) %>%
+  filter(!is.na(EAR))
+
+chemicalSummary <- wDataLong
+#Remove DEET:
+chemicalSummary <- chemicalSummary[chemicalSummary$chnm != "DEET",]
+
+# ############################################
+chemicalSummary$chnm[chemicalSummary$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+
+chemicalSummary <- chemicalSummary %>%
   filter(endPoint %in% ep$endPoint) %>%
   data.table() %>%
   left_join(data.table(ep), by="endPoint") %>%
@@ -167,12 +217,12 @@ stationINFO$Lake[stationINFO$shortName == "BlackMI"] <- "Lake Huron"
 stationINFO$Lake[stationINFO$shortName == "HuronMI"] <- "Lake Erie"
 stationINFO$Lake[stationINFO$shortName == "ClintonDP"] <- "Lake Erie"
 stationINFO$Lake[stationINFO$shortName == "Clinton"] <- "Lake Erie"
-
+stationINFO$shortName[stationINFO$shortName == "MilwaukeeMouth"] <- "Milwaukee"
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
                   "Burns","IndianaHC","StJoseph","PawPaw",        
-                  "Kalamazoo2","Kalamazoo","GrandMI","MilwaukeeMouth","Muskegon",      
+                  "Kalamazoo2","Kalamazoo","GrandMI","Milwaukee","Muskegon",      
                   "WhiteMI","Sheboygan","PereMarquette","Manitowoc",    
                   "Manistee","Fox","Oconto","Peshtigo",      
                   "Menominee","Indian","Cheboygan2","Cheboygan","Ford",         
@@ -181,6 +231,8 @@ sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","Presq
                   "Saginaw","Saginaw2","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
                   "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
+
+graphData$site[graphData$site == "MilwaukeeMouth"] <- "Milwaukee"
 
 siteToFind <- unique(graphData$site)
 
