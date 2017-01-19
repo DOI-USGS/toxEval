@@ -166,7 +166,7 @@ fullFULL$class[which(is.na(fullFULL$class))] <- "Other"
 
 cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
               "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
-              "#FFA500")
+              "#FFA500","#F4426e")
 
 textData <- data.frame(guideline = factor(c(rep("Traditional", 2),
                                           rep("ToxCast", 2),rep("Traditional", 2)), levels = levels(fullFULL$guideline)),

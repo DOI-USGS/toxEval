@@ -12,7 +12,17 @@ pCodeInfo$AqT_other_acute[pCodeInfo$parameter_cd == "62816"] <- 1518
 pCodeInfo$AqT_other_chronic [pCodeInfo$parameter_cd == "62816"] <- 0.86
 
 pCodeInfo$class[!is.na(pCodeInfo$srsname) & pCodeInfo$srsname == "Benzophenone"] <- "flavor/fragrance"
-  
+pCodeInfo$class[!is.na(pCodeInfo$srsname) & pCodeInfo$srsname == "Indole"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$srsname) & pCodeInfo$srsname == "3-Methylindole"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "119-65-3"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "21145-77-7"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "76-22-2"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "5989-27-5"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "1222-05-5"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "124-76-5"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "76-22-2"] <- "flavor/fragrance"
+pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "360-68-9"] <- "flavor/fragrance"
+
 pathToApp <- system.file("extdata", package="toxEval")
 endPointInfo <- endPointInfo
 
@@ -86,10 +96,15 @@ ACClong <- gather(ACC, endPoint, ACC, -casn, -chnm, -flags) %>%
 
 valColumns <- grep("valueToUse", names(waterSamples))
 qualColumns <- grep("qualifier", names(waterSamples))
+detColumns <- grep("detectionLimit", names(waterSamples))
 
 waterData <- waterSamples[,valColumns]
 waterData[waterSamples[,qualColumns] == "<"] <- 0
-
+########################################################
+# waterData <- waterSamples[,detColumns]
+# names(waterData) <- names(waterSamples)[valColumns]
+# waterData[waterSamples[,qualColumns] != "<"] <- 0
+########################################################
 stationINFO <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
 newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
 
