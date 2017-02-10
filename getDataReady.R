@@ -23,6 +23,42 @@ pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "124-76-5"] <- "fla
 pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "76-22-2"] <- "flavor/fragrance"
 pCodeInfo$class[!is.na(pCodeInfo$casrn) & pCodeInfo$casrn == "360-68-9"] <- "flavor/fragrance"
 
+pCodeInfo <- pCodeInfo %>%
+  arrange(class) %>%
+  left_join(distinct(select(ACC, casn, chnm)), by=c("casrn"="casn"))
+
+pCodeInfo$chnm[pCodeInfo$casrn == "121-00-6"] <- "5-Methyl-1H-benzotriazole"
+pCodeInfo$chnm[pCodeInfo$casrn == "84-65-1"] <- "9,10-Anthraquinone"
+pCodeInfo$chnm[pCodeInfo$casrn == "5436-43-1"] <- "2,2',4,4'-Tetrabromodiphenylether (PBDE 47)"
+pCodeInfo$chnm[pCodeInfo$casrn == "13674-87-8"] <- "Tris(dichloroisopropyl) phosphate"
+pCodeInfo$chnm[pCodeInfo$casrn == "85-01-8"] <- "Phenanthrene"
+pCodeInfo$chnm[pCodeInfo$casrn == "98-82-8"] <- "Isopropylbenzene (cumene)"
+pCodeInfo$chnm[pCodeInfo$casrn == "127-18-4"] <- "Tetrachloroethene (PERC)"
+pCodeInfo$chnm[pCodeInfo$casrn == "87-86-5"] <- "Pentachlorophenol (PCP)"
+pCodeInfo$class[pCodeInfo$casrn == "2315-67-5"] <- "Detergent Metabolites"
+pCodeInfo$chnm[pCodeInfo$casrn == "2315-67-5"] <- "4-tert-Octylphenol monoethoxylate (OP1EO)"
+pCodeInfo$chnm[pCodeInfo$casrn == "20427-84-3"] <- "4-Nonylphenol diethoxylate"
+pCodeInfo$chnm[pCodeInfo$casrn == "20427-84-3"] <- "Detergent Metabolites"
+pCodeInfo$chnm[pCodeInfo$casrn == "104-35-8"] <- "4-Nonylphenol monoethoxylate"
+pCodeInfo$chnm[pCodeInfo$casrn == "1806-26-4"] <- "4-n-Octylphenol"
+pCodeInfo$class[pCodeInfo$casrn == "2315-61-9"] <- "Detergent Metabolites"
+pCodeInfo$chnm[pCodeInfo$casrn == "2315-61-9"] <- "4-tert-Octylphenol diethoxylate (OP2EO)"
+pCodeInfo$chnm[pCodeInfo$casrn == "140-66-9"] <- "4-tert-Octylphenol"
+pCodeInfo$casrn[pCodeInfo$casrn == "104-40-5"] <- "84852-15-3"
+pCodeInfo$chnm[pCodeInfo$casrn == "83-34-1"] <- "3-Methyl-1H-indole (Skatol)"
+pCodeInfo$chnm[pCodeInfo$casrn == "21145-77-7"] <- "Acetyl hexamethyl tetrahydro naphthalene (AHTN)"
+pCodeInfo$chnm[pCodeInfo$casrn == "5989-27-5"] <- "d-Limonene"
+pCodeInfo$chnm[pCodeInfo$casrn == "1222-05-5"] <- "Hexahydrohexamethyl cyclopentabenzopyran (HHCB)"
+pCodeInfo$chnm[pCodeInfo$casrn == "89-78-1"] <- "Menthol"
+pCodeInfo$class[pCodeInfo$casrn == "89-78-1"] <- "Human Drug, Non Prescription"
+pCodeInfo$class[pCodeInfo$casrn == "360-68-9"] <- "Sterols"
+pCodeInfo$chnm[pCodeInfo$casrn == "360-68-9"] <- "3-beta-Coprostanol"
+pCodeInfo$chnm[pCodeInfo$casrn == "83-46-5"] <- "beta-Sitosterol"
+pCodeInfo$chnm[pCodeInfo$casrn == "19466-47-8"] <- "beta-Stigmastanol"
+pCodeInfo$chnm[pCodeInfo$casrn == "57-88-5"] <- "Cholesterol"
+pCodeInfo$chnm[pCodeInfo$casrn == "75-25-2"] <- "Tribromomethane (bromoform)"
+
+
 pathToApp <- system.file("extdata", package="toxEval")
 endPointInfo <- endPointInfo
 
@@ -60,7 +96,7 @@ endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %
                                         "Tanguay_ZF_120hpf_TRUN_up",
                                         "Tanguay_ZF_120hpf_YSE_up")] <- "zebrafish"
 
-assays <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"APR"?,"BSK"?
+assays <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", # only "BSK" is out
             "CLD","TANGUAY","NHEERL_PADILLA",
             "NCCT_SIMMONS","ACEA")
 
@@ -78,6 +114,8 @@ ep <- select(endPointInfo,
   filter(assaysFull %in% assays) %>%
   filter(!(groupCol %in% c("Background Measurement"))) %>% #,"cell morphology", "cell cycle"))) %>%
   filter(!is.na(groupCol))
+
+
 
 ############################################
 packagePath <- system.file("extdata", package="toxEval")
