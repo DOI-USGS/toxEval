@@ -23,7 +23,7 @@ wDataLong <- gather(wData, pCode, measuredValue, -ActivityStartDateGiven, -site)
   rename(date = ActivityStartDateGiven) %>%
   filter(!is.na(measuredValue)) %>%
   mutate(pCode = gsub("valueToUse_", replacement = "", pCode)) %>%
-  left_join(select(pCodeInfo, parameter_cd, casrn, class,parameter_nm,
+  left_join(select(pCodeInfo, parameter_cd, casrn, class, chnm,
                    # EEF_avg_in.vitro,EEF_max_in.vitro_or_in.vivo,
                    AqT_EPA_acute,AqT_EPA_chronic,
                    AqT_other_acute,AqT_other_chronic),
@@ -42,22 +42,17 @@ toxCastChems <- gather(ACC, endPoint, ACC, -casn, -chnm, -flags) %>%
   left_join(pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes,c("casrn", "parameter_units", "mlWt")],
             by= c("casn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
-  select(casn, chnm) %>%
+  select(casn) %>%
   distinct()
 
 wDataLong <- wDataLong %>%
-  left_join(toxCastChems, by=c("casrn"="casn")) %>%
-  filter(!is.na(chnm)) %>%
-  mutate(parameter_nm = chnm) %>%
-  select(-chnm)
-
-wDataLong$parameter_nm[wDataLong$parameter_nm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+  filter(casrn %in% toxCastChems$casn)
 
 graphData.wq <- wDataLong %>%
-  group_by(site,date,parameter_nm,class) %>%
+  group_by(site,date,chnm,class) %>%
   summarise(sumEAR=sum(EAR)) %>%
   data.frame() %>%
-  group_by(site, parameter_nm,class) %>%
+  group_by(site, chnm,class) %>%
   summarise(meanEAR=max(sumEAR)) %>%
   data.frame() 
 
@@ -68,7 +63,7 @@ graphData <- graphData %>%
          guideline = "ToxCast")
 
 graphData.full_WQ <- mutate(graphData.wq, class=as.character(class)) %>%
-  rename(category = parameter_nm) %>%
+  rename(category = chnm) %>%
   mutate(guideline = "Traditional")
 
 graphData.full_WQ$class[graphData.full_WQ$class == "Detergent Metabolites"] <- "Detergent"
@@ -77,14 +72,12 @@ wDataLong_EQ <- gather(wData, pCode, measuredValue, -ActivityStartDateGiven, -si
   rename(date = ActivityStartDateGiven) %>%
   filter(!is.na(measuredValue)) %>%
   mutate(pCode = gsub("valueToUse_", replacement = "", pCode)) %>%
-  left_join(select(pCodeInfo, parameter_cd, casrn, class,parameter_nm,
+  left_join(select(pCodeInfo, parameter_cd, casrn, class, chnm,
                    EEF_max_in.vitro_or_in.vivo),
             by=c("pCode" = "parameter_cd")) %>%
   gather(endPoint, value, EEF_max_in.vitro_or_in.vivo) %>%
   mutate(EAR =  measuredValue*value/0.7) %>%
   filter(!is.na(EAR)) 
-
-wDataLong_EQ$parameter_nm[wDataLong_EQ$parameter_nm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
 
 waterSamplePCodes_EQ <- unique(wDataLong_EQ$pCode)
 
@@ -93,53 +86,50 @@ toxCastChems_EQ <- gather(ACC, endPoint, ACC, -casn, -chnm, -flags) %>%
   left_join(pCodeInfo[pCodeInfo$parameter_cd %in% waterSamplePCodes_EQ,c("casrn", "parameter_units", "mlWt")],
             by= c("casn"="casrn")) %>%
   filter(!is.na(parameter_units)) %>%
-  select(casn, chnm) %>%
+  select(casn) %>%
   distinct()
 
-toxCastChems_EQ$chnm[toxCastChems_EQ$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+# toxCastChems_EQ$chnm[toxCastChems_EQ$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
 
-wDataLong_EQ <- wDataLong_EQ %>%
-  left_join(toxCastChems_EQ, by=c("casrn"="casn")) %>%
-  filter(!is.na(chnm)) %>%
-  mutate(parameter_nm = chnm) %>%
-  select(-chnm)
+# wDataLong_EQ <- wDataLong_EQ %>%
+#   filter(casrn %in% toxCastChems_EQ$casn)
 
 graphData.eq <- wDataLong_EQ %>%
-  group_by(site,date,parameter_nm,class) %>%
+  group_by(site,date,chnm,class) %>%
   summarise(sumEAR=sum(EAR)) %>%
   data.frame() %>%
-  group_by(site, parameter_nm,class) %>%
+  group_by(site, chnm,class) %>%
   summarise(meanEAR=max(sumEAR)) %>%
   data.frame() %>%
   mutate(guideline = "Traditional") %>%
-  rename(category = parameter_nm)
+  rename(category = chnm)
 
 subTox <- filter(graphData, category %in% graphData.eq$category) %>%
   mutate(otherThing = "EEQ")
   
-subTox$category[subTox$category == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+# subTox$category[subTox$category == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
 
 EQ <- graphData.eq %>%
   mutate(otherThing = "EEQ")
 
-EQ$category[EQ$category == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+# EQ$category[EQ$category == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
 
 subToxWQ <- graphData %>%
   mutate(otherThing = "Water Quality Guidelines")
 
 WQ <- graphData.wq %>%
-  rename(category = parameter_nm) %>%
+  rename(category = chnm) %>%
   mutate(otherThing = "Water Quality Guidelines") %>%
   mutate(guideline = "Traditional")
 
-fullFULL <- bind_rows(subTox, EQ, subToxWQ, WQ) %>%
-  mutate(class = factor(class, levels=rev(as.character(orderClass$class))))
+fullFULL <- bind_rows(subTox, EQ, subToxWQ, WQ) 
+fullFULL$class[fullFULL$class == "Detergent Metabolites"] <- "Detergent"
+
+fullFULL <- fullFULL %>%  mutate(class = factor(class, levels=rev(as.character(orderClass$class))))
 
 fullData <- bind_rows(graphData.full_WQ, graphData) 
 
 fullData$class[fullData$class == "Detergent Metabolites"] <- "Detergent"
-
-x <- graphData[is.na(graphData$category),]  
 
 orderChem <- graphData %>%#fullData %>% #not fullFULL...or just graphData....needs just tox and WQ
   group_by(category,class) %>%
@@ -150,9 +140,13 @@ orderChem <- graphData %>%#fullData %>% #not fullFULL...or just graphData....nee
 
 orderedLevels <- as.character(orderChem$category)
 orderedLevels <- orderedLevels[!is.na(orderedLevels)]
-orderedLevels <- c(orderedLevels[1:2], "Cumene", 
-                   orderedLevels[3:4],"Bromoform",
+orderedLevels <- c(orderedLevels[1:2], "Isopropylbenzene (cumene)", 
+                   orderedLevels[3:4],"Tribromomethane (bromoform)",
                    orderedLevels[5:length(orderedLevels)])
+orderedLevels <- c(orderedLevels[1:46], "4-Nonylphenol diethoxylate",             
+                   "4-Nonylphenol monoethoxylate",            
+                   "4-tert-Octylphenol monoethoxylate (OP1EO)",
+                   "4-tert-Octylphenol diethoxylate (OP2EO)", orderedLevels[47:48] )
 
 fullFULL <- fullFULL %>%
   mutate(guideline = factor(as.character(guideline), levels=c("ToxCast","Traditional")),
@@ -162,24 +156,11 @@ fullFULL <- fullFULL %>%
 
 fullFULL$class[fullFULL$category == "4-Nonylphenol"] <- "Detergent"
 
-fullFULL$class[which(is.na(fullFULL$class))] <- "Other"
+# fullFULL$class[which(is.na(fullFULL$class))] <- "Other"
 
 cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
               "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
               "#FFA500","#F4426e")
-
-textData <- data.frame(guideline = factor(c(rep("Traditional", 2),
-                                          rep("ToxCast", 2),rep("Traditional", 2)), levels = levels(fullFULL$guideline)),
-                       otherThing = factor(c("Water Quality Guidelines","EEQ",
-                                             "Water Quality Guidelines","EEQ",
-                                             "Water Quality Guidelines","EEQ"), levels = levels(fullFULL$otherThing)),
-                       category = factor(c("2-Methylnaphthalene","1,4-Dichlorobenzene", 
-                                           "Bisphenol A","Bisphenol A",
-                                           "Bisphenol A","Bisphenol A"), levels = levels(fullFULL$category)),
-                       textExplain = c("Water Quality Guidelines Quotients",
-                                       "Estradiol Equivalent Quotients",
-                                       "A","B","C","D"),
-                       y = c(0.5,0.5,10,10,100,100))
 
 countNonZero <- fullFULL %>%
   select(site, category,guideline,otherThing, meanEAR) %>%
@@ -208,8 +189,13 @@ levels(countNonZero$guideline) <- c("ToxCast\nMaximum EAR Per Site",
                                 "Traditional*\nMaximum Quotient Per Site")
 levels(astrictData$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
                                     "Traditional*\nMaximum Quotient Per Site")
-levels(textData$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
-                                   "Traditional*\nMaximum Quotient Per Site")
+
+textData <- data.frame(guideline = factor(c(rep("ToxCast\nMaximum EAR Per Site", 2),rep("Traditional*\nMaximum Quotient Per Site", 2)), levels = levels(fullFULL$guideline)),
+                       otherThing = factor(c("Water Quality Guidelines","EEQ",
+                                             "Water Quality Guidelines","EEQ"), levels = levels(fullFULL$otherThing)),
+                       category = factor(rep("4-Nonylphenol",4), levels = levels(fullFULL$category)),
+                       textExplain = c("A","B","C","D"),
+                       y = c(10,10,100,100))
 
 toxPlot_All <- ggplot(data=fullFULL) +
   scale_y_log10(labels=fancyNumbers)  +
@@ -240,9 +226,9 @@ ymax <- ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$y.range[2]
 
 toxPlot_All <- toxPlot_All +
   geom_text(data=countNonZero, aes(x=category,label=nonZero, y=ymin), size=2.5) +
-  geom_text(data = textData[-1:-2,], aes(x=category, label=textExplain, y=y), 
+  geom_text(data = textData, aes(x=category, label=textExplain, y=y), 
             size = 3) +
-  geom_text(data = astrictData, aes(x=category, label=nonZero, y=0.00002), 
+  geom_text(data = astrictData, aes(x=category, label=nonZero, y=3.3*10^-6), 
             size=5, vjust = 0.70)
 
 toxPlot_All

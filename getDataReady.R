@@ -38,7 +38,7 @@ pCodeInfo$chnm[pCodeInfo$casrn == "87-86-5"] <- "Pentachlorophenol (PCP)"
 pCodeInfo$class[pCodeInfo$casrn == "2315-67-5"] <- "Detergent Metabolites"
 pCodeInfo$chnm[pCodeInfo$casrn == "2315-67-5"] <- "4-tert-Octylphenol monoethoxylate (OP1EO)"
 pCodeInfo$chnm[pCodeInfo$casrn == "20427-84-3"] <- "4-Nonylphenol diethoxylate"
-pCodeInfo$chnm[pCodeInfo$casrn == "20427-84-3"] <- "Detergent Metabolites"
+pCodeInfo$class[pCodeInfo$casrn == "20427-84-3"] <- "Detergent Metabolites"
 pCodeInfo$chnm[pCodeInfo$casrn == "104-35-8"] <- "4-Nonylphenol monoethoxylate"
 pCodeInfo$chnm[pCodeInfo$casrn == "1806-26-4"] <- "4-n-Octylphenol"
 pCodeInfo$class[pCodeInfo$casrn == "2315-61-9"] <- "Detergent Metabolites"
@@ -130,7 +130,8 @@ ACClong <- gather(ACC, endPoint, ACC, -casn, -chnm, -flags) %>%
   filter(!is.na(parameter_units)) %>%
   mutate(conversion = mlWt) %>%
   mutate(value = 10^ACC) %>%
-  mutate(value = value *conversion)
+  mutate(value = value *conversion) %>%
+  select(-chnm)
 
 valColumns <- grep("valueToUse", names(waterSamples))
 qualColumns <- grep("qualifier", names(waterSamples))
@@ -162,7 +163,7 @@ wDataLong <- gather(wData, pCode, measuredValue, -ActivityStartDateGiven, -site)
   rename(date = ActivityStartDateGiven) %>%
   filter(!is.na(measuredValue)) %>%
   mutate(pCode = gsub("valueToUse_", replacement = "", pCode)) %>%
-  left_join(select(pCodeInfo, parameter_cd, casrn, class), by=c("pCode" = "parameter_cd")) %>%
+  left_join(select(pCodeInfo, parameter_cd, casrn, class, chnm), by=c("pCode" = "parameter_cd")) %>%
   full_join(ACClong, by= c("casrn" = "casn")) %>%
   filter(!is.na(ACC)) %>%
   mutate(EAR = measuredValue/value) %>%
@@ -174,7 +175,7 @@ chemicalSummary <- wDataLong
 chemicalSummary <- chemicalSummary[chemicalSummary$chnm != "DEET",]
 
 # ############################################
-chemicalSummary$chnm[chemicalSummary$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
+# chemicalSummary$chnm[chemicalSummary$chnm == "4-(1,1,3,3-Tetramethylbutyl)phenol"] <- "4-tert-Octylphenol"
 
 chemicalSummary <- chemicalSummary %>%
   filter(endPoint %in% ep$endPoint) %>%
@@ -198,8 +199,17 @@ stationINFO$shortName[stationINFO$shortName == "Cheboygan2"] <- "Cheboygan"
 
 flagsShort <- c("Borderline",  "OnlyHighest",
                 "GainAC50", "Biochemical")
-# flagsShort <- c("Borderline", "OnlyHighest", "OneAbove","Noisy",
+# flagsShort <- c("Borderline", "OnlyHighest", "OneAbove","Noisy", #All
 #                 "HitCall", "GainAC50", "Biochemical")
+# So, we are taking out:
+# c("Borderline active",
+#   "Only highest conc above baseline, active",
+#   "Gain AC50 < lowest conc & loss AC50 < mean conc", 
+#   "Biochemical assay with < 50% efficacy")
+# We are leaving in:
+# c("Hit-call potentially confounded by overfitting",
+#   "Only one conc above baseline, active",
+#   "Noisy data")
 for(i in flagsShort){
   take.out.flags <- flagDF[!flagDF[[i]],c("casn","endPoint")]
   

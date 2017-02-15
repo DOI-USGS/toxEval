@@ -114,7 +114,7 @@ graphData_filtered <- bind_rows(graphData_filtered, overallSum_filtered)
 # 
 # graphData_filtered <- bind_rows(graphData_filtered, overallSum_filtered)
 
-heat <- ggplot(data = graphData_filtered) +
+heat <- ggplot(data = graphData) +
   geom_tile(aes(x = site, y=category, fill=meanEAR)) +
   theme_bw() +
   theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
