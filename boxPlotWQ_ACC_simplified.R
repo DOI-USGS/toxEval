@@ -7,7 +7,7 @@ library(grid)
 library(gridExtra)
 
 source("getDataReady.R")
-
+# source("getCenDataReady.R")
 ###########################################################################
 # WQ boxplot
 filePath <- file.path(pathToApp, "waterSamples.RData")
@@ -76,7 +76,7 @@ wDataLong_EQ <- gather(wData, pCode, measuredValue, -ActivityStartDateGiven, -si
                    EEF_max_in.vitro_or_in.vivo),
             by=c("pCode" = "parameter_cd")) %>%
   gather(endPoint, value, EEF_max_in.vitro_or_in.vivo) %>%
-  mutate(EAR =  measuredValue*value/0.7) %>%
+  mutate(EAR =  measuredValue*value*1000) %>% # we were dividing by 0.7...not sure why
   filter(!is.na(EAR)) 
 
 waterSamplePCodes_EQ <- unique(wDataLong_EQ$pCode)
@@ -156,8 +156,6 @@ fullFULL <- fullFULL %>%
 
 fullFULL$class[fullFULL$category == "4-Nonylphenol"] <- "Detergent"
 
-# fullFULL$class[which(is.na(fullFULL$class))] <- "Other"
-
 cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
               "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
               "#FFA500","#F4426e")
@@ -183,14 +181,28 @@ astrictData <- countNonZero %>%
   mutate(nonZero = "*") %>%
   filter(!(category %in% unique(WQ$category)))
 
-levels(fullFULL$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
-                                "Traditional*\nMaximum Quotient Per Site")
-levels(countNonZero$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
-                                "Traditional*\nMaximum Quotient Per Site")
-levels(astrictData$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
-                                    "Traditional*\nMaximum Quotient Per Site")
+toxAst <- data.frame(category = c("4-Nonylphenol diethoxylate",             
+                                  "4-Nonylphenol monoethoxylate",            
+                                  "4-tert-Octylphenol monoethoxylate (OP1EO)",
+                                  "4-tert-Octylphenol diethoxylate (OP2EO)",
+                                  "Isopropylbenzene (cumene)",
+                                  "Tribromomethane (bromoform)"),
+                     otherThing = c(rep("EEQ",4), rep("Water Quality Guidelines",2))) %>%
+  mutate(nonZero = "*") %>%
+  mutate(category = factor(category, levels = levels(fullFULL$category))) %>%
+  mutate(guideline = factor(c("ToxCast"), levels = levels(fullFULL$guideline))) 
 
-textData <- data.frame(guideline = factor(c(rep("ToxCast\nMaximum EAR Per Site", 2),rep("Traditional*\nMaximum Quotient Per Site", 2)), levels = levels(fullFULL$guideline)),
+
+levels(fullFULL$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
+                                "Traditional\nMaximum Quotient Per Site")
+levels(countNonZero$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
+                                "Traditional\nMaximum Quotient Per Site")
+levels(astrictData$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
+                                    "Traditional\nMaximum Quotient Per Site")
+levels(toxAst$guideline) <- c("ToxCast\nMaximum EAR Per Site", 
+                                   "Traditional\nMaximum Quotient Per Site")
+
+textData <- data.frame(guideline = factor(c(rep("ToxCast\nMaximum EAR Per Site", 2),rep("Traditional\nMaximum Quotient Per Site", 2)), levels = levels(fullFULL$guideline)),
                        otherThing = factor(c("Water Quality Guidelines","EEQ",
                                              "Water Quality Guidelines","EEQ"), levels = levels(fullFULL$otherThing)),
                        category = factor(rep("4-Nonylphenol",4), levels = levels(fullFULL$category)),
@@ -200,7 +212,7 @@ textData <- data.frame(guideline = factor(c(rep("ToxCast\nMaximum EAR Per Site",
 toxPlot_All <- ggplot(data=fullFULL) +
   scale_y_log10(labels=fancyNumbers)  +
   geom_boxplot(aes(x=category, y=meanEAR, fill=class),
-               lwd=0.1,outlier.size=0) +
+               lwd=0.1,outlier.size=1) +
   facet_grid(otherThing ~ guideline, scales = "free", space = "free") +
   theme_bw() +
   scale_x_discrete(drop=TRUE) +
@@ -224,15 +236,17 @@ toxPlot_All <- ggplot(data=fullFULL) +
 ymin <- 10^-6
 ymax <- ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$y.range[2]
 
-toxPlot_All <- toxPlot_All +
+toxPlot_All_withLabels <- toxPlot_All +
   geom_text(data=countNonZero, aes(x=category,label=nonZero, y=ymin), size=2.5) +
   geom_text(data = textData, aes(x=category, label=textExplain, y=y), 
             size = 3) +
-  geom_text(data = astrictData, aes(x=category, label=nonZero, y=3.3*10^-6), 
+  geom_text(data = astrictData, aes(x=category, label=nonZero, y=10^-5), 
+            size=5, vjust = 0.70) +
+  geom_text(data = toxAst, aes(x=category, label=nonZero, y=3.3*ymin), 
             size=5, vjust = 0.70)
 
-toxPlot_All
+toxPlot_All_withLabels
 
-ggsave(toxPlot_All, bg = "transparent",
-       filename = "allPanels.png", 
-       height = 10, width = 7.75)
+ggsave(toxPlot_All_withLabels, bg = "transparent",
+       filename = "allPanels_betterEEQ.png", 
+       height = 10, width = 9)

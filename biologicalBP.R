@@ -37,12 +37,16 @@ orderNames <- names(table(select(endPointInfo, intended_target_family)))
 
 orderedLevels <- c(orderNames[!(orderNames %in% orderedLevels)],orderedLevels)
 
+graphData <- filter(graphData, !(category %in% c("Transferase","Undefined")))
+
 graphData$category <- factor(as.character(graphData$category), levels=orderedLevels)
 
 countNonZero <- graphData %>%
   group_by(category) %>%
   summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
   data.frame()
+
+
 
 bioPlot <- ggplot(graphData)+
   scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers)+
@@ -75,7 +79,7 @@ bioPlot <- ggplot_gtable(ggplot_build(bioPlot))
 bioPlot$layout$clip[bioPlot$layout$name == "panel"] <- "off"
 
 ggsave(bioPlot, #bg = "transparent",
-       filename = "bioPlot2.png", 
+       filename = "bioPlot3.png", 
        height = 4, width = 5)
 
 graphData$site[graphData$site == "MilwaukeeMouth"] <- "Milwaukee"

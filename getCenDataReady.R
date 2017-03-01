@@ -57,10 +57,6 @@ pCodeInfo$chnm[pCodeInfo$casrn == "83-46-5"] <- "beta-Sitosterol"
 pCodeInfo$chnm[pCodeInfo$casrn == "19466-47-8"] <- "beta-Stigmastanol"
 pCodeInfo$chnm[pCodeInfo$casrn == "57-88-5"] <- "Cholesterol"
 pCodeInfo$chnm[pCodeInfo$casrn == "75-25-2"] <- "Tribromomethane (bromoform)"
-pCodeInfo$EEF_max_in.vitro_or_in.vivo[pCodeInfo$parameter_cd == "62816"] <- 0.00016
-pCodeInfo$EEF_max_in.vitro_or_in.vivo[pCodeInfo$parameter_cd == "34571"] <- 1E-7
-pCodeInfo$EEF_max_in.vitro_or_in.vivo[pCodeInfo$parameter_cd == "61704"] <- 0.000001
-pCodeInfo$EEF_max_in.vitro_or_in.vivo[pCodeInfo$parameter_cd == "62810"] <- 0.0005
 
 
 pathToApp <- system.file("extdata", package="toxEval")
@@ -143,13 +139,13 @@ valColumns <- grep("valueToUse", names(waterSamples))
 qualColumns <- grep("qualifier", names(waterSamples))
 detColumns <- grep("detectionLimit", names(waterSamples))
 
-waterData <- waterSamples[,valColumns]
-waterData[waterSamples[,qualColumns] == "<"] <- 0
+# waterData <- waterSamples[,valColumns]
+# waterData[waterSamples[,qualColumns] == "<"] <- 0
 ########################################################
 # Change to detection levels:
-# waterData <- waterSamples[,detColumns]
-# names(waterData) <- names(waterSamples)[valColumns]
-# waterData[waterSamples[,qualColumns] != "<"] <- 0
+waterData <- waterSamples[,detColumns]
+names(waterData) <- names(waterSamples)[valColumns]
+waterData[waterSamples[,qualColumns] != "<"] <- 0
 ########################################################
 stationINFO <- readRDS(file.path(pathToApp,"sitesOWC.rds"))
 newSiteKey <- setNames(stationINFO$shortName, stationINFO$fullSiteID)
