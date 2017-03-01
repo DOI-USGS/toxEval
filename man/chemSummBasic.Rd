@@ -42,4 +42,3 @@ pCodeInfo <- pCodeInfo
 endPoint <- endPointToxCreate(pCodeInfo)
 chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 }
-

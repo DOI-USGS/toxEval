@@ -34,4 +34,3 @@ endPointInfo <- endPointInfo
 epSumm <- endPointSumm(chemicalSummary, endPointInfo=endPointInfo)
 }
 }
-

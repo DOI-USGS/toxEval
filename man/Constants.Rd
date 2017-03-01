@@ -2,11 +2,11 @@
 % Please edit documentation in R/toxEval.R
 \docType{data}
 \name{Constants}
-\alias{AC10}
+\alias{Constants}
 \alias{AC50gain}
 \alias{AC50loss}
+\alias{AC10}
 \alias{ACC}
-\alias{Constants}
 \title{Constants included with toxEval. Units are log micro-Molarity (log uM).}
 \description{
 AC50gain downloaded on October 2015 from ToxCast dashboard. AC50gain values 
@@ -26,4 +26,3 @@ AC50LossColumns <- names(AC50loss)
 AC10Columns <- names(AC10)
 }
 \keyword{datasets}
-

@@ -27,4 +27,3 @@ chemicalSummary <- chemSummBasic(wData,pCodeInfo,endPoint)
 siteSummary <- siteSumm(chemicalSummary,newSiteKey)
 }
 }
-

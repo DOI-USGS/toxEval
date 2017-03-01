@@ -15,4 +15,3 @@ flagDF <- flagDF
 head(flagDF)
 }
 \keyword{datasets}
-
