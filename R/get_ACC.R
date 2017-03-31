@@ -11,7 +11,8 @@
 #' ACClong <- get_ACC(CAS)
 get_ACC <- function(CAS){
   
-  Structure_MolWt <- Substance_CASRN <- casn <- chnm <- flags <- ".dplyr"
+  # Getting rid of NSE warnings:
+  Structure_MolWt <- Substance_CASRN <- casn <- chnm <- flags <- MlWt <- ACC_value <- casrn <- endPoint <- ".dplyr"
   
   chem_list <- select(tox_chemicals,
                     casrn = Substance_CASRN,

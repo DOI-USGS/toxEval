@@ -25,6 +25,7 @@ filter_groups <- function(ep,
                       "CLD","TANGUAY","NHEERL_PADILLA",
                       "NCCT_SIMMONS","ACEA"), several.ok = TRUE)
   
+  # Getting rid of NSE warnings:
   assay_source_name <- assay_component_endpoint_name <- ".dplyr"
   
   ep <- ep[,c("assay_component_endpoint_name",groupCol,"assay_source_name")] %>%

@@ -16,9 +16,6 @@ get_chemical_summary(ACClong, filtered_ep, chem.data, chem.site, chem.info)
 \item{chem.site}{data frame with (at least) columns: SiteID, Short Name}
 
 \item{chem.info}{data frame with (at least) columns: CAS, class}
-
-\item{flagsShort}{vector of flags to TAKE OUT. Possible values are 
-"Borderline", "OnlyHighest", "OneAbove","Noisy", "HitCall", "GainAC50", "Biochemical"}
 }
 \description{
 Get ACC values for vector of CAS's
@@ -26,6 +23,7 @@ Get ACC values for vector of CAS's
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
 ACClong <- get_ACC(CAS)
+ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
