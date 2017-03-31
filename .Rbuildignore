@@ -1,4 +1,5 @@
 .travis.yml
+appveyor.yml
 toxEval.Rproj
 ^.*\.Rproj$
 ^\.Rproj\.user$
