@@ -25,6 +25,8 @@ filter_groups <- function(ep,
                       "CLD","TANGUAY","NHEERL_PADILLA",
                       "NCCT_SIMMONS","ACEA"), several.ok = TRUE)
   
+  assay_source_name <- assay_component_endpoint_name <- ".dplyr"
+  
   ep <- ep[,c("assay_component_endpoint_name",groupCol,"assay_source_name")] %>%
     rename(endPoint = assay_component_endpoint_name,
            assaysFull = assay_source_name)
@@ -39,19 +41,7 @@ filter_groups <- function(ep,
 
 
 
-#' filter_flags
-#' 
-#' Clean up the endPointInfo table from toxCast. Filtering and cleaning based on ES&T (cite Dan/Brett's paper)
-#' 
-#' @param ep data frame Endpoint information from ToxCast
-#' @param flagsShort vector of flags TO REMOVE
-#' @export
-#' @importFrom stringi stri_trans_totitle
-#' @examples 
-#' endPointInfo <- endPointInfo
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' 
+
 filter_flags <- function(ep, flagsShort = c("Borderline",
                                             "OnlyHighest",
                                             "GainAC50",

@@ -48,6 +48,8 @@ filter_groups <- function(ep,
 #' ACClong <- get_ACC(CAS)
 get_ACC <- function(CAS){
   
+  Structure_MolWt <- Substance_CASRN <- casn <- chnm <- flags <- ".dplyr"
+  
   chem_list <- select(tox_chemicals,
                     casrn = Substance_CASRN,
                     MlWt = Structure_MolWt) %>%
@@ -62,6 +64,7 @@ get_ACC <- function(CAS){
     mutate(ACC_value = 10^ACC) %>%
     mutate(ACC_value = ACC_value * MlWt) %>%
     filter(!is.na(ACC_value)) 
+
   
   return(ACClong)
 

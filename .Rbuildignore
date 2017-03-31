@@ -1,13 +1,11 @@
 .travis.yml
 appveyor.yml
 toxEval.Rproj
+.Rhistory
+.git
 ^.*\.Rproj$
 ^\.Rproj\.user$
-biologicalBP.R
 README.md
-boxPlotWQ_ACC_simplified.R
-getDataReady.R
-heatMap.R
 ^\.travis\.yml$
 ^\.Rproj\.gitignore
 ^\.Rproj\.RData
