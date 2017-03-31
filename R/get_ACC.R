@@ -53,7 +53,9 @@ get_ACC <- function(CAS){
                     MlWt = Structure_MolWt) %>%
     filter(casrn %in% CAS) 
   
-  ACClong <- gather(ACC, endPoint, ACC, -casn, -chnm, -flags) %>%
+  ACClong <- ACC %>%
+    filter(casn %in% CAS) %>%
+    gather(endPoint, ACC, -casn, -chnm, -flags) %>%
     right_join(chem_list,
                by= c("casn"="casrn")) %>%
     data.frame() %>%
