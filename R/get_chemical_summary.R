@@ -40,19 +40,7 @@ get_chemical_summary <- function(ACClong, filtered_ep,
     filter(endPoint %in% filtered_ep) %>%
     left_join(select(chem.site, SiteID, shortName = `Short Name`),
               by=c("site"="SiteID"))
-  
 
-  # # Now, we are taking out:
-  # # c("Borderline active",
-  # #   "Only highest conc above baseline, active",
-  # #   "Gain AC50 < lowest conc & loss AC50 < mean conc", 
-  # #   "Biochemical assay with < 50% efficacy")
-  # # which leaves in:
-  # # c("Hit-call potentially confounded by overfitting",
-  # #   "Only one conc above baseline, active",
-  # #   "Noisy data")
-
-  
   chemicalSummary <- chemicalSummary %>%
     left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS"))
 
