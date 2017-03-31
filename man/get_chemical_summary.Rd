@@ -9,7 +9,7 @@ get_chemical_summary(ACClong, filtered_ep, chem.data, chem.site, chem.info)
 \arguments{
 \item{ACClong}{data frame with columns: casn, chnm, MlWt, endPoint, ACC_value}
 
-\item{filtered_ep}{vector of end points}
+\item{filtered_ep}{data frame with colums: endPoints, groupCol}
 
 \item{chem.data}{data frame with (at least) columns: CAS, SiteID, Value}
 

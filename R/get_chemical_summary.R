@@ -2,7 +2,7 @@
 #' 
 #' Get ACC values for vector of CAS's
 #' @param ACClong data frame with columns: casn, chnm, MlWt, endPoint, ACC_value
-#' @param filtered_ep vector of end points
+#' @param filtered_ep data frame with colums: endPoints, groupCol
 #' @param chem.data data frame with (at least) columns: CAS, SiteID, Value
 #' @param chem.site data frame with (at least) columns: SiteID, Short Name
 #' @param chem.info data frame with (at least) columns: CAS, class
@@ -33,12 +33,14 @@ get_chemical_summary <- function(ACClong, filtered_ep,
            date = `Sample Date`,
            casrn = casn) %>%
     select(casrn, chnm, endPoint, site, date, EAR) %>%
-    filter(endPoint %in% filtered_ep) %>%
+    filter(endPoint %in% filtered_ep$endPoint) %>%
     left_join(select(chem.site, SiteID, shortName = `Short Name`),
-              by=c("site"="SiteID"))
-
-  chemicalSummary <- chemicalSummary %>%
-    left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS"))
+              by=c("site"="SiteID")) %>%
+    left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS")) %>%
+    left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
+    rename(Bio_category = groupCol)
+  
+  chemicalSummary <- 
 
   return(chemicalSummary)
 }
