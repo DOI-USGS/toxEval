@@ -2,11 +2,8 @@
 % Please edit documentation in R/toxEval.R
 \docType{data}
 \name{Constants}
-\alias{AC10}
-\alias{AC50gain}
-\alias{AC50loss}
-\alias{ACC}
 \alias{Constants}
+\alias{ACC}
 \title{Constants included with toxEval. Units are log micro-Molarity (log uM).}
 \description{
 AC50gain downloaded on October 2015 from ToxCast dashboard. AC50gain values 
@@ -15,15 +12,10 @@ value is lower than the lowest measured concentration. Also,
 }
 \details{
 \itemize{
- \item{AC50gain}{AC50 gain endpoints}
- \item{AC50loss}{AC50 loss endpoints}
- \item{AC10}{AC10 endpoints}
+ \item{ACC}{ACC endpoints}
 }
 }
 \examples{
-AC50GainColumns <- names(AC50gain)
-AC50LossColumns <- names(AC50loss)
-AC10Columns <- names(AC10)
+ACCColumnNames <- names(ACC)
 }
 \keyword{datasets}
-

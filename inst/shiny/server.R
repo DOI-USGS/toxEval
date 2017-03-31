@@ -663,12 +663,12 @@ shinyServer(function(input, output,session) {
         geom_bar(stat="identity") +
         theme_minimal() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25,
-                                         colour=siteLimits$lakeColor)) +
+                                         colour=siteLimits$lakeColor),
+              legend.title = element_blank()) +
         scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
         xlab("") +
         ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
-        scale_fill_manual(values = cbValues, drop=FALSE) + 
-        guides(fill=FALSE) 
+        scale_fill_manual(values = cbValues, drop=FALSE) 
 
       
     } else {
@@ -682,12 +682,12 @@ shinyServer(function(input, output,session) {
         geom_bar(stat="identity")+
         theme_minimal() +
         theme(axis.text.x=element_blank(),
-              axis.ticks=element_blank())+
+              axis.ticks=element_blank(),
+              legend.title = element_blank())+
         xlab("Individual Samples") + 
         ylab("EAR") +
         scale_fill_discrete("", drop=FALSE) +
-        scale_fill_manual(values = cbValues, drop=FALSE) +
-        guides(fill=FALSE)
+        scale_fill_manual(values = cbValues, drop=FALSE) 
 
     }
     ggsave("stackPlot.png",upperPlot,bg = "transparent")

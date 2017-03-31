@@ -17,4 +17,3 @@ Open an interactive app
 explore_endpoints()
 }
 }
-
