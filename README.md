@@ -2,6 +2,12 @@
 
 Initial code for studying ToxCast data in relation to measured concentrations.
 
+### Current build tests:
+
+|Linux|Windows|Test Coverage|
+|----------|------------|------------|
+| [![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval)|[![Build status](https://ci.appveyor.com/api/projects/status/msanha92b500grr7?svg=true)](https://ci.appveyor.com/project/ldecicco-USGS/toxEval-787)|[![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master)|
+
 ## Installation of R and RStudio
 
 This section should only need to be done once per computer.
@@ -58,7 +64,6 @@ explore_endpoints()
 
 ```
 
-
 Disclaimer
 ----------
 This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [http://www.usgs.gov/visual-id/credit_usgs.html#copyright](http://www.usgs.gov/visual-id/credit_usgs.html#copyright)
@@ -68,8 +73,6 @@ Although this software program has been used by the USGS, no warranty, expressed
 This software is provided "AS IS."
 
 
-
-Linux: [![travis](https://api.travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval)
 
 
  [

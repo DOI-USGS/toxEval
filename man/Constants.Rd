@@ -3,9 +3,6 @@
 \docType{data}
 \name{Constants}
 \alias{Constants}
-\alias{AC50gain}
-\alias{AC50loss}
-\alias{AC10}
 \alias{ACC}
 \title{Constants included with toxEval. Units are log micro-Molarity (log uM).}
 \description{
@@ -15,14 +12,10 @@ value is lower than the lowest measured concentration. Also,
 }
 \details{
 \itemize{
- \item{AC50gain}{AC50 gain endpoints}
- \item{AC50loss}{AC50 loss endpoints}
- \item{AC10}{AC10 endpoints}
+ \item{ACC}{ACC endpoints}
 }
 }
 \examples{
-AC50GainColumns <- names(AC50gain)
-AC50LossColumns <- names(AC50loss)
-AC10Columns <- names(AC10)
+ACCColumnNames <- names(ACC)
 }
 \keyword{datasets}

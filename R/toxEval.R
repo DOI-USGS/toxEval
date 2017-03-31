@@ -49,20 +49,16 @@ NULL
 #' value is lower than the lowest measured concentration. Also, 
 #' 
 #'\itemize{
-#'  \item{AC50gain}{AC50 gain endpoints}
-#'  \item{AC50loss}{AC50 loss endpoints}
-#'  \item{AC10}{AC10 endpoints}
+#'  \item{ACC}{ACC endpoints}
 #'}
 #'
-#'@aliases AC50gain AC50loss AC10 ACC
+#'@aliases ACC
 #'@name Constants
 #'@docType data
-#'@export AC50gain AC50loss AC10 ACC
+#'@export ACC
 #'@keywords datasets
 #'@examples
-#'AC50GainColumns <- names(AC50gain)
-#'AC50LossColumns <- names(AC50loss)
-#'AC10Columns <- names(AC10)
+#'ACCColumnNames <- names(ACC)
 NULL
 
 #' Endpoint information from ToxCast
@@ -70,24 +66,24 @@ NULL
 #' Downloaded on October 2015 from ToxCast dashboard
 #'
 #'@name endPointInfo
-#'@aliases endPointInfo flagDF
+#'@aliases endPointInfo
 #'@docType data
 #'@keywords datasets
-#'@export endPointInfo flagDF
+#'@export endPointInfo
 #'@examples
 #'endPointInfo <- endPointInfo
 #'head(endPointInfo[,1:5])
-#'flagDF <- flagDF
-#'head(flagDF)
 NULL
 
-#' pCodeInfo 
+#' tox_chemicals 
+#' 
+#' Downloaded on October 2015 from ToxCast dashboard
 #'
-#'@aliases pCodeInfo
-#'@name pCodeInfo
+#'@aliases tox_chemicals
+#'@name tox_chemicals
 #'@docType data
 #'@keywords datasets
-#'@export pCodeInfo
+#'@export tox_chemicals
 #'@examples
-#'head(pCodeInfo)
+#'head(tox_chemicals)
 NULL
