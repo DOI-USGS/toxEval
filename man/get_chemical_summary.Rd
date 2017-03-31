@@ -4,8 +4,7 @@
 \alias{get_chemical_summary}
 \title{get_chemical_summary}
 \usage{
-get_chemical_summary(ACClong, filtered_ep, chem.data, chem.site, chem.info,
-  flagsShort = c("Borderline", "OnlyHighest", "GainAC50", "Biochemical"))
+get_chemical_summary(ACClong, filtered_ep, chem.data, chem.site, chem.info)
 }
 \arguments{
 \item{ACClong}{data frame with columns: casn, chnm, MlWt, endPoint, ACC_value}

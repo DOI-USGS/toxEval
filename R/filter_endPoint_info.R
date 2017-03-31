@@ -38,31 +38,3 @@ filter_groups <- function(ep,
   
   return(ep)
 }
-
-
-
-
-filter_flags <- function(ep, flagsShort = c("Borderline",
-                                            "OnlyHighest",
-                                            "GainAC50",
-                                            "Biochemical")){
-
-  match.arg(flagsShort, 
-            c("Borderline",
-              "OnlyHighest",
-              "OneAbove",
-              "Noisy",
-              "HitCall",
-              "GainAC50",
-              "Biochemical"),
-            several.ok = TRUE)
-  # So, with the defaults, we are taking out:
-  # c("Borderline active",
-  #   "Only highest conc above baseline, active",
-  #   "Gain AC50 < lowest conc & loss AC50 < mean conc", 
-  #   "Biochemical assay with < 50% efficacy")
-  # We are leaving in with the defaults:
-  # c("Hit-call potentially confounded by overfitting",
-  #   "Only one conc above baseline, active",
-  #   "Noisy data")
-}

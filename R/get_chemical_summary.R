@@ -19,15 +19,13 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
 get_chemical_summary <- function(ACClong, filtered_ep,
-                                 chem.data, chem.site, chem.info,
-                                 flagsShort = c("Borderline",
-                                                "OnlyHighest",
-                                                "GainAC50",
-                                                "Biochemical")){
+                                 chem.data, chem.site, chem.info){
   
   match.arg(flagsShort,
             c("Borderline", "OnlyHighest", "OneAbove","Noisy", "HitCall", "GainAC50", "Biochemical"),
             several.ok = TRUE)
+  
+  casn <- chnm <- MlWt <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
   
   chemicalSummary <- full_join(select(ACClong, 
                                       casn, chnm, MlWt, endPoint, ACC_value), 
@@ -44,25 +42,54 @@ get_chemical_summary <- function(ACClong, filtered_ep,
               by=c("site"="SiteID"))
   
 
-  # Now, we are taking out:
-  # c("Borderline active",
-  #   "Only highest conc above baseline, active",
-  #   "Gain AC50 < lowest conc & loss AC50 < mean conc", 
-  #   "Biochemical assay with < 50% efficacy")
-  # which leaves in:
-  # c("Hit-call potentially confounded by overfitting",
-  #   "Only one conc above baseline, active",
-  #   "Noisy data")
-  for(i in flagsShort){
-    take.out.flags <- flagDF[!flagDF[[i]],c("casn","endPoint")]
-    
-    chemicalSummary <- right_join(chemicalSummary, take.out.flags, 
-                                  by=c("casrn"="casn", "endPoint"="endPoint")) %>%
-      filter(!is.na(chnm))
-  }
+  # # Now, we are taking out:
+  # # c("Borderline active",
+  # #   "Only highest conc above baseline, active",
+  # #   "Gain AC50 < lowest conc & loss AC50 < mean conc", 
+  # #   "Biochemical assay with < 50% efficacy")
+  # # which leaves in:
+  # # c("Hit-call potentially confounded by overfitting",
+  # #   "Only one conc above baseline, active",
+  # #   "Noisy data")
+
   
   chemicalSummary <- chemicalSummary %>%
     left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS"))
 
   return(chemicalSummary)
+}
+
+
+filter_flags <- function(ep, flagsShort = c("Borderline",
+                                            "OnlyHighest",
+                                            "GainAC50",
+                                            "Biochemical")){
+  
+  match.arg(flagsShort, 
+            c("Borderline",
+              "OnlyHighest",
+              "OneAbove",
+              "Noisy",
+              "HitCall",
+              "GainAC50",
+              "Biochemical"),
+            several.ok = TRUE)
+  # So, with the defaults, we are taking out:
+  # c("Borderline active",
+  #   "Only highest conc above baseline, active",
+  #   "Gain AC50 < lowest conc & loss AC50 < mean conc", 
+  #   "Biochemical assay with < 50% efficacy")
+  # We are leaving in with the defaults:
+  # c("Hit-call potentially confounded by overfitting",
+  #   "Only one conc above baseline, active",
+  #   "Noisy data")
+  
+  for(i in flagsShort){
+    take.out.flags <- flagDF[!flagDF[[i]],c("casn","endPoint")]
+
+    chemicalSummary <- right_join(chemicalSummary, take.out.flags,
+                                  by=c("casrn"="casn", "endPoint"="endPoint")) %>%
+      filter(!is.na(chnm))
+  }
+  
 }

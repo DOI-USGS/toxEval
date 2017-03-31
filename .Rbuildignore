@@ -3,6 +3,7 @@ appveyor.yml
 toxEval.Rproj
 .Rhistory
 .git
+images
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.md
