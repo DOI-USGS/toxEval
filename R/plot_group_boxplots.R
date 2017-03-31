@@ -7,6 +7,7 @@
 #' @param manual_remove vector of categories to remove
 #' @export
 #' @import ggplot2
+#' @importFrom stats median
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
@@ -21,6 +22,8 @@ plot_group_boxplots <- function(chemicalSummary,
                                 manual_remove = NULL){
   
   match.arg(category, c("Biological","Chemical Class"))
+  
+  site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   
   if(category == "Biological"){
     chemicalSummary$category <- chemicalSummary$Bio_category

@@ -21,7 +21,7 @@ get_chemical_summary <- function(ACClong, filtered_ep,
 
   # Getting rid of NSE warnings:
   casn <- chnm <- MlWt <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
-  EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- ".dplyr"
+  EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
   
   chemicalSummary <- full_join(select(ACClong, 
                                       casn, chnm, MlWt, endPoint, ACC_value), 
@@ -39,8 +39,6 @@ get_chemical_summary <- function(ACClong, filtered_ep,
     left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS")) %>%
     left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
     rename(Bio_category = groupCol)
-  
-  chemicalSummary <- 
 
   return(chemicalSummary)
 }

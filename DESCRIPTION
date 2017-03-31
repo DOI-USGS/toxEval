@@ -33,7 +33,8 @@ Imports:
 Suggests:
     rmarkdown,
     testthat,
-    knitr
+    knitr,
+    readxl
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
