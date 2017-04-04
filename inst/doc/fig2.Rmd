@@ -1,0 +1,110 @@
+---
+title: "Figure 2. Number of individual chemicals"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Figure 3: Biological influence}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmarkdown)
+options(continue=" ")
+options(width=60)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Number of individual chemicals with at least one sample that resulted in an exposure activity ratio > 10-3 for each site.
+
+
+
+```{r warning=FALSE, message=FALSE, fig.width=6, fig.height=6}
+library(readxl)
+library(toxEval)
+library(dplyr)
+
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+
+full_path <- file.path(path_to_tox, file_name)
+
+chem_data <- read_excel(full_path, sheet = "Data")
+chem_info <- read_excel(full_path, sheet = "Chemicals") 
+chem_site <- read_excel(full_path, sheet = "Sites")
+
+#Remove DEET:
+chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
+chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
+
+ACClong <- get_ACC(chem_info$CAS)
+ACClong <- remove_flags(ACClong)
+
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+filtered_ep <- filter_groups(cleaned_ep)
+
+chemicalSummary <- get_chemical_summary(ACClong,
+                                        filtered_ep,
+                                        chem_data, 
+                                        chem_site, 
+                                        chem_info)
+
+#Ordering the sites to flow "downstream" of the Great Lakes:
+sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+                  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+                  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+                  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+                  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+                  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+                  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+                  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+                  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+                  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+                  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+                  "Raquette","StRegis")
+
+
+threshold <- 10^-3
+
+graphData <- chemicalSummary %>%
+  group_by(site, date, chnm) %>% 
+  summarize(sumEAR = sum(EAR)) %>%
+  group_by(site, chnm) %>%
+  summarize(maxEAR = max(sumEAR)) %>%
+  group_by(site) %>%
+  summarize(nChem = sum(maxEAR > threshold)) %>%
+  data.frame() %>%
+  left_join(select(chem_site, site=SiteID, `Short Name`, site_grouping)) %>%
+  mutate(`Short Name` = factor(`Short Name`, levels = sitesOrdered)) %>%
+  mutate(site_grouping = factor(site_grouping, levels = c("Lake Superior",
+                                                          "Lake Michigan",
+                                                          "Lake Huron",
+                                                          "Lake Erie",
+                                                          "Lake Ontario")))
+
+countPlot <- ggplot(graphData)+
+  geom_bar(aes(x=`Short Name`, y=nChem),
+           stat = "identity",
+           fill = "steelblue") +
+  theme_bw() +
+  facet_grid(. ~ site_grouping, scales="free", space="free") +
+  xlab("") +
+  ylab("Number of Chemicals\n with EARmax > 0.001") +
+  theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
+  theme(strip.text.y = element_text(angle=0, hjust=0, size=7), 
+        strip.text.x = element_text(size = 8),
+        strip.background = element_rect(fill="transparent", colour = NA),
+        axis.text = element_text(size=8),
+        panel.spacing = unit(0.05, "lines"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.background = element_rect(fill = "transparent",colour = NA))
+
+countPlot
+```
+
+

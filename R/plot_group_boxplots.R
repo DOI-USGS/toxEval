@@ -99,6 +99,11 @@ fancyNumbers2 <- function(n){
   return(textReturn)
 }
 
+#' fancyNumbers
+#' 
+#' Plot fancyNumbers of groups
+#' @param n vector
+#' @export
 fancyNumbers <- function(n){
   nNoNA <- n[!is.na(n)]
   x <-gsub(pattern = "1e",replacement = "10^",x = format(nNoNA, scientific = TRUE))
