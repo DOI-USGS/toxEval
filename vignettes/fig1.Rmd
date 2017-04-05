@@ -15,14 +15,18 @@ library(knitr)
 library(rmarkdown)
 options(continue=" ")
 options(width=60)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.height = 10,
+                      fig.width = 7)
 ```
 
 Exposure activity ratios (EARs) using ToxCast endpoints for screening of potential adverse biological impact in sample analysis results from 57 tributaries of the Great Lakes, 2010-2013 (A and B), toxicity quotients comparing established water quality criteria to sample results (C), and 17-beta estradiol equivalency quotients (ng E2/L) for compounds with established estradiol equivalency factors (D). Compounds are grouped by chemical class and ordered by largest to smallest median EAR. Chemicals where water quality guidelines could not be identified are indicated with “*”.  E2, 17-β estradiol; n, number of sampling locations with detections of each chemical. [Boxes, 25th to 75th percentiles; dark line, median; whiskers, 1.5 x the interquartile range (IQR); circles, values outside 1.5 x the IQR. n, number of sites with detections of chemicals that have activity for endpoints in designated intended target families.]
 
 
 
-```{r warning=FALSE, message=FALSE, fig.width=8, fig.height=10}
+```{r }
 library(readxl)
 library(toxEval)
 library(dplyr)

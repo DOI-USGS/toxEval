@@ -3,9 +3,13 @@ library(knitr)
 library(rmarkdown)
 options(continue=" ")
 options(width=60)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.height = 7,
+                      fig.width = 7)
 
-## ----warning=FALSE, message=FALSE, fig.width=8, fig.height=8----
+## ---------------------------------------------------------
 library(readxl)
 library(toxEval)
 
@@ -39,22 +43,26 @@ chemicalSummary$Class[chemicalSummary$Class == "Human Drug, Non Prescription"] <
 chemicalSummary$Class[chemicalSummary$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
 chemicalSummary$Class[chemicalSummary$Class == "Detergent Metabolites"] <- "Detergent"
 
-bioPlot <- plot_group_boxplots(chemicalSummary, 
+#' plot_tox_boxplots(chemicalSummary, "Chemical Class")
+#' plot_tox_boxplots(chemicalSummary, "Chemical") 
+bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                filtered_ep, 
                                category = "Biological", 
                                manual_remove = c("Transferase","Undefined"))
 bioPlot
 
-## ----warning=FALSE, fig.width=8, fig.height=8-------------
-classPlot <- plot_group_boxplots(chemicalSummary,
-                                 filtered_ep,
-                                 category = "Chemical Class")
+## ---------------------------------------------------------
+classPlot <- plot_tox_boxplots(chemicalSummary, 
+                               filtered_ep, 
+                               category = "Chemical Class")
 classPlot
 
 
-## ----warning=FALSE, fig.width=8, fig.height=8-------------
-chemPlot <- plot_chemical_boxplots(chemicalSummary,
-                                 filtered_ep)
+## ---------------------------------------------------------
+
+chemPlot <- plot_tox_boxplots(chemicalSummary, 
+                               filtered_ep, 
+                               category = "Chemical")
 chemPlot
 
 

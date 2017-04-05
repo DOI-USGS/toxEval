@@ -15,7 +15,11 @@ library(knitr)
 library(rmarkdown)
 options(continue=" ")
 options(width=60)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.height = 7,
+                      fig.width = 7)
 ```
 
 
@@ -23,7 +27,7 @@ Number of individual chemicals with at least one sample that resulted in an expo
 
 
 
-```{r warning=FALSE, message=FALSE, fig.width=8, fig.height=8}
+```{r }
 library(readxl)
 library(toxEval)
 library(dplyr)

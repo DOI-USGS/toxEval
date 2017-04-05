@@ -1,16 +1,4 @@
----
-title: "SI 1: Detection Levels"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-  rmarkdown::html_vignette
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{SI 1: Detection Levels}
-  \usepackage[utf8]{inputenc}
----
-
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE---------------------------------
 library(knitr)
 library(rmarkdown)
 options(continue=" ")
@@ -20,12 +8,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       fig.height = 7,
                       fig.width = 7)
-```
 
-Using the detection levels as concentrations:
-
-
-```{r }
+## ---------------------------------------------------------
 library(readxl)
 library(toxEval)
 library(dplyr)
@@ -75,4 +59,4 @@ plot_DL <- plot_tox_boxplots(chemicalSummary, filtered_ep, "Chemical")
 
 plot_DL
 
-```
+

@@ -1,16 +1,4 @@
----
-title: "SI 1: Detection Levels"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-  rmarkdown::html_vignette
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{SI 1: Detection Levels}
-  \usepackage[utf8]{inputenc}
----
-
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE---------------------------------
 library(knitr)
 library(rmarkdown)
 options(continue=" ")
@@ -20,12 +8,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       fig.height = 7,
                       fig.width = 7)
-```
 
-Using the detection levels as concentrations:
-
-
-```{r }
+## ---------------------------------------------------------
 library(readxl)
 library(toxEval)
 library(dplyr)
@@ -54,25 +38,37 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-# Substitute max LDL or MDL for actual values:
-
-chem_data <- chem_data %>%
-  left_join(select(chem_info,
-                   CAS,
-                   MDL = `Maximum method detection level`,
-                   LDL = `Maximum laboratory reporting level`),
-            by="CAS") %>%
-  rowwise() %>%
-  mutate(Value_new = max(MDL, LDL))
-
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
                                         chem_info)
 
-plot_DL <- plot_tox_boxplots(chemicalSummary, filtered_ep, "Chemical")
+# Order the Great Lakes:
+chem_site$site_grouping <- factor(chem_site$site_grouping,
+               levels=c("Lake Superior",
+               "Lake Michigan",
+               "Lake Huron",
+               "Lake Erie",
+               "Lake Ontario"))
 
-plot_DL
+# Order sites:
+ sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+                   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+                   "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+                   "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+                   "Manistee","Fox","Oconto","Peshtigo","Menominee",
+                   "Indian","Cheboygan","Ford","Escanaba","Manistique",
+                   "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+                   "Clinton","Rouge","HuronMI","Raisin","Maumee",
+                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+                   "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+                   "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+                   "Raquette","StRegis")
 
-```
+ chem_site$`Short Name` <- factor(chem_site$`Short Name`,
+               levels = sitesOrdered)
+ graphData <- graph_chem_data(chemicalSummary)
+ plot_heat_chemicals(graphData, chem_site)
+
+
