@@ -23,7 +23,7 @@ Number of individual chemicals with at least one sample that resulted in an expo
 
 
 
-```{r warning=FALSE, message=FALSE, fig.width=6, fig.height=6}
+```{r warning=FALSE, message=FALSE, fig.width=8, fig.height=8}
 library(readxl)
 library(toxEval)
 library(dplyr)

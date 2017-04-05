@@ -5,7 +5,7 @@ options(continue=" ")
 options(width=60)
 knitr::opts_chunk$set(echo = TRUE)
 
-## ----warning=FALSE, message=FALSE, fig.width=6, fig.height=6----
+## ----warning=FALSE, message=FALSE, fig.width=8, fig.height=8----
 library(readxl)
 library(toxEval)
 
@@ -45,14 +45,14 @@ bioPlot <- plot_group_boxplots(chemicalSummary,
                                manual_remove = c("Transferase","Undefined"))
 bioPlot
 
-## ----warning=FALSE, fig.width=6, fig.height=6-------------
+## ----warning=FALSE, fig.width=8, fig.height=8-------------
 classPlot <- plot_group_boxplots(chemicalSummary,
                                  filtered_ep,
                                  category = "Chemical Class")
 classPlot
 
 
-## ----warning=FALSE, fig.width=6, fig.height=6-------------
+## ----warning=FALSE, fig.width=8, fig.height=8-------------
 chemPlot <- plot_chemical_boxplots(chemicalSummary,
                                  filtered_ep)
 chemPlot

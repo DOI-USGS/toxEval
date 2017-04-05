@@ -5,7 +5,7 @@ options(continue=" ")
 options(width=60)
 knitr::opts_chunk$set(echo = TRUE)
 
-## ----warning=FALSE, message=FALSE, fig.width=6, fig.height=10----
+## ----warning=FALSE, message=FALSE, fig.width=8, fig.height=10----
 library(readxl)
 library(toxEval)
 library(dplyr)

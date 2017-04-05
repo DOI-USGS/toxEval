@@ -22,7 +22,7 @@ Exposure activity ratios (EARs) using ToxCast endpoints for screening of potenti
 
 
 
-```{r warning=FALSE, message=FALSE, fig.width=6, fig.height=10}
+```{r warning=FALSE, message=FALSE, fig.width=8, fig.height=10}
 library(readxl)
 library(toxEval)
 library(dplyr)

@@ -24,7 +24,7 @@ Boxplots of the maximum summation of exposure activity ratios for each site by i
 
 
 
-```{r warning=FALSE, message=FALSE, fig.width=6, fig.height=6}
+```{r warning=FALSE, message=FALSE, fig.width=8, fig.height=8}
 library(readxl)
 library(toxEval)
 
@@ -67,7 +67,7 @@ bioPlot
 
 Could also do chemical classes:
 
-```{r warning=FALSE, fig.width=6, fig.height=6}
+```{r warning=FALSE, fig.width=8, fig.height=8}
 classPlot <- plot_group_boxplots(chemicalSummary,
                                  filtered_ep,
                                  category = "Chemical Class")
@@ -77,7 +77,7 @@ classPlot
 
 Could also or chemicals:
 
-```{r warning=FALSE, fig.width=6, fig.height=6}
+```{r warning=FALSE, fig.width=8, fig.height=8}
 chemPlot <- plot_chemical_boxplots(chemicalSummary,
                                  filtered_ep)
 chemPlot
