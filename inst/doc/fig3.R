@@ -52,3 +52,9 @@ classPlot <- plot_group_boxplots(chemicalSummary,
 classPlot
 
 
+## ----warning=FALSE, fig.width=6, fig.height=6-------------
+chemPlot <- plot_chemical_boxplots(chemicalSummary,
+                                 filtered_ep)
+chemPlot
+
+

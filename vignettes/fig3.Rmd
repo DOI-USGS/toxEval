@@ -65,12 +65,21 @@ bioPlot <- plot_group_boxplots(chemicalSummary,
 bioPlot
 ```
 
-Could also easily do chemical classes:
+Could also do chemical classes:
 
 ```{r warning=FALSE, fig.width=6, fig.height=6}
 classPlot <- plot_group_boxplots(chemicalSummary,
                                  filtered_ep,
                                  category = "Chemical Class")
 classPlot
+
+```
+
+Could also or chemicals:
+
+```{r warning=FALSE, fig.width=6, fig.height=6}
+chemPlot <- plot_chemical_boxplots(chemicalSummary,
+                                 filtered_ep)
+chemPlot
 
 ```
