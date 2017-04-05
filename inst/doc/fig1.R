@@ -116,21 +116,17 @@ WQ <- WQ %>%
 
 graphData <- bind_rows(tox_WQ, tox_EEQ, EEQ, WQ) 
 
-orderChem <- tox_WQ %>%
+#Primary ordering needs to be the highest -> lowest class, then order by median
+orderChem <- bind_rows(tox_WQ, 
+                       filter(EEQ, !(CAS %in% unique(tox_WQ$CAS))),
+                       filter(WQ, !(CAS %in% unique(tox_WQ$CAS)))) %>%
   group_by(`Chemical Name`,Class) %>%
   summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
   data.frame() %>%
   mutate(Class = factor(Class, levels=order_Class$Class)) %>%
-  arrange(Class, median)
+  arrange(Class, !is.na(median), median)
 
 orderedLevels <- as.character(orderChem$Chemical.Name) 
-orderedLevels <- c(orderedLevels[1:2], "Isopropylbenzene (cumene)", 
-                   orderedLevels[3:4],"Tribromomethane (bromoform)",
-                   orderedLevels[5:length(orderedLevels)])
-orderedLevels <- c(orderedLevels[1:46], "4-Nonylphenol diethoxylate",             
-                   "4-Nonylphenol monoethoxylate",            
-                   "4-tert-Octylphenol monoethoxylate (OP1EO)",
-                   "4-tert-Octylphenol diethoxylate (OP2EO)", orderedLevels[47:48] )
 
 
 graphData <-graphData %>%
@@ -142,6 +138,45 @@ graphData <-graphData %>%
 levels(graphData$guide_side) <- c("ToxCast\nMaximum EAR Per Site",
                                   "Traditional\nMaximum Quotient Per Site")
 
+#Adding counts to the side:
+countNonZero <- graphData %>%
+  select(SiteID, `Chemical Name`,guide_side,guide_up, maxEAR) %>%
+  group_by(SiteID, `Chemical Name`,guide_side,guide_up) %>%
+  summarise(meanEAR = mean(maxEAR, na.rm=TRUE)) %>%
+  group_by(`Chemical Name`,guide_side,guide_up) %>%
+  summarise(nonZero = as.character(sum(meanEAR>0))) %>%
+  data.frame() %>%
+  select(Chemical.Name, guide_up, nonZero) %>%
+  distinct() %>%
+  mutate(guide_side = factor("ToxCast\nMaximum EAR Per Site", 
+                             levels = levels(graphData$guide_side)),
+         guide_up = factor(guide_up, levels = levels(graphData$guide_up)),
+         `Chemical Name` = factor(Chemical.Name, 
+                                  levels = levels(graphData$`Chemical Name`))) 
+
+# WQ: Astricts to chemicals with no endpoints:
+astrictData_WQ <- countNonZero %>%
+  mutate(guide_side = factor("Traditional\nMaximum Quotient Per Site", 
+                             levels = levels(graphData$guide_side))) %>%
+  filter(guide_up == "Water Quality Guideline") %>%
+  mutate(nonZero = "*") %>%
+  filter(!(`Chemical Name` %in% unique(WQ$`Chemical Name`)))
+
+# EEQ: Astricts to chemicals with no endpoints:
+astrictData_EEQ <- countNonZero %>%
+  mutate(guide_side = factor("ToxCast\nMaximum EAR Per Site", 
+                             levels = levels(graphData$guide_side))) %>%
+  filter(guide_up == "EEQ") %>%
+  mutate(nonZero = "*") %>%
+  filter(!(`Chemical Name` %in% unique(tox_EEQ$`Chemical Name`)))
+
+# Label upper right corner for each facet (probably an easier way...):
+textData <- select(graphData, guide_up, guide_side) %>%
+  distinct() %>%
+  mutate(textExplain = c("A","B","C","D"),
+         y = c(10,10,100,100),
+         `Chemical Name` = factor(rep("4-Nonylphenol",4), levels = levels(graphData$`Chemical Name`)))
+  
 toxPlot_All <- ggplot(data=graphData) +
   scale_y_log10(labels=fancyNumbers)  +
   geom_boxplot(aes(x=`Chemical Name`, y=maxEAR, fill=Class),
@@ -166,6 +201,19 @@ toxPlot_All <- ggplot(data=graphData) +
         legend.key.height = unit(1,"line")) +
   scale_fill_manual(values = cbValues, drop=FALSE) 
 
-toxPlot_All
+ymin <- 10^-6
+ymax <- ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$y.range[2]
+
+toxPlot_All_withLabels <- toxPlot_All +
+  geom_text(data=countNonZero, aes(x= `Chemical Name`, label = nonZero, y=ymin), size=2.5) +
+  geom_text(data = textData, aes(x=`Chemical Name`, label=textExplain, y=y),
+            size = 3) +
+  geom_text(data = astrictData_WQ, aes(x=`Chemical Name`, label=nonZero, y=10^-5),
+            size=5, vjust = 0.70) +
+  geom_text(data = astrictData_EEQ, aes(x=`Chemical Name`, label=nonZero, y=3.3*ymin),
+            size=5, vjust = 0.70)
+
+toxPlot_All_withLabels
+
 
 
