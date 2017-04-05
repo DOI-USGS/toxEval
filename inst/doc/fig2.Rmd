@@ -5,7 +5,7 @@ output:
   rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Figure 3: Biological influence}
+  %\VignetteIndexEntry{Figure 2: Number of individual chemicals}
   \usepackage[utf8]{inputenc}
 ---
 

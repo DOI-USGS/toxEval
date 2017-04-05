@@ -5,7 +5,7 @@ output:
   rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Figure 3: Biological influence}
+  %\VignetteIndexEntry{Figure 1: Exposure activity ratios}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -22,7 +22,7 @@ Exposure activity ratios (EARs) using ToxCast endpoints for screening of potenti
 
 
 
-```{r warning=FALSE, message=FALSE, fig.width=6, fig.height=6}
+```{r warning=FALSE, message=FALSE, fig.width=6, fig.height=10}
 library(readxl)
 library(toxEval)
 library(dplyr)
