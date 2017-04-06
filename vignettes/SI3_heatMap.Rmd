@@ -5,7 +5,7 @@ output:
   rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{SI 3: Heat Map}
+  %\VignetteIndexEntry{SI3}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -84,7 +84,10 @@ chem_site$site_grouping <- factor(chem_site$site_grouping,
 
  chem_site$`Short Name` <- factor(chem_site$`Short Name`,
                levels = sitesOrdered)
- graphData <- graph_chem_data(chemicalSummary)
- plot_heat_chemicals(graphData, chem_site)
+
+   
+ plot_tox_heatmap(chemicalSummary,
+              chem_site,
+              category = "Chemical")
 
 ```

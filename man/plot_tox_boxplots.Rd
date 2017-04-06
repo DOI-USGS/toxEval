@@ -20,6 +20,7 @@ plot_tox_boxplots(chemicalSummary, filtered_ep, category = "Biological",
 Plot boxplot of groups
 }
 \examples{
+library(readxl)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)

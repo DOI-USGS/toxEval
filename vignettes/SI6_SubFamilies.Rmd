@@ -1,0 +1,133 @@
+---
+title: "SI 6: Sub-families"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{SI6}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmarkdown)
+options(continue=" ")
+options(width=60)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.height = 7,
+                      fig.width = 7)
+```
+
+Using the detection levels as concentrations:
+
+
+```{r }
+library(readxl)
+library(toxEval)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringi)
+
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
+
+chem_data <- read_excel(full_path, sheet = "Data")
+chem_info <- read_excel(full_path, sheet = "Chemicals") 
+chem_site <- read_excel(full_path, sheet = "Sites")
+
+#Remove DEET:
+chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
+chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
+
+ACClong <- get_ACC(chem_info$CAS)
+ACClong <- remove_flags(ACClong)
+
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+filtered_ep <- filter_groups(cleaned_ep)
+
+chemicalSummary <- get_chemical_summary(ACClong,
+                                        filtered_ep,
+                                        chem_data, 
+                                        chem_site, 
+                                        chem_info)
+
+chemicalSummary <- chemicalSummary %>%
+  left_join(select(endPointInfo, 
+                   endPoint=assay_component_endpoint_name,
+                   family = intended_target_family,
+                   subFamily = intended_target_family_sub), by="endPoint") 
+
+graphData <- chemicalSummary %>%
+  filter(!is.na(subFamily)) %>%
+  group_by(site, Bio_category, subFamily, date) %>%
+  summarize(sumEAR = sum(EAR)) %>%
+  group_by(site, Bio_category, subFamily) %>%
+  summarize(meanEAR = max(sumEAR)) %>%
+  data.frame() %>%
+  mutate(subFamily = stri_trans_totitle(subFamily))
+
+orderSub <- graphData %>%
+  group_by(Bio_category) %>%
+  summarise(median = median(meanEAR[meanEAR != 0])) %>%
+  data.frame() %>%
+  arrange(desc(median))
+
+orderGroups <- graphData %>%
+  group_by(subFamily, Bio_category) %>%
+  summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+  data.frame() %>%
+  mutate(Bio_category = factor(Bio_category, levels=orderSub$Bio_category)) %>%
+  arrange(Bio_category, desc(median))
+
+graphData$subFamily <- factor(graphData$subFamily, 
+                              levels = rev(orderGroups$subFamily))
+graphData$Bio_category <- factor(graphData$Bio_category, 
+                            levels = orderSub$Bio_category)
+
+cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
+              "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
+              "#FFA500","#F4426e", "#4286f4","red","pink")
+
+countNonZero <- graphData %>%
+  group_by(subFamily) %>%
+  summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
+  data.frame()
+
+subPlot <- ggplot(graphData)+
+  scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers)+
+  geom_boxplot(aes(x=subFamily, 
+                   y=meanEAR, 
+                   fill = Bio_category),lwd=0.1,outlier.size=1) +
+  coord_flip() +
+  theme_bw() +
+  xlab("") +
+  theme(plot.background = element_rect(fill = "transparent",colour = NA),
+        axis.text.y = element_text(size=8, color = "black", vjust = 0.2), 
+        axis.text.x = element_text(size=8, color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
+        axis.title = element_text(size=10)) +
+  scale_fill_manual(values = cbValues, drop=TRUE)  +
+  guides(fill=guide_legend(ncol=6)) +
+  theme(legend.position="bottom",
+        legend.justification = "left",
+        legend.background = element_rect(fill = "transparent", colour = "transparent"),
+        legend.title=element_blank(),
+        legend.text = element_text(size=8),
+        legend.key.height = unit(1,"line")) 
+
+xmin <- 10^(ggplot_build(subPlot)$layout$panel_ranges[[1]]$x.range[1])
+
+subPlot <- subPlot + 
+  geom_text(data=countNonZero, aes(x=subFamily, y=xmin,label=nonZero),size=3) 
+
+subPlot
+
+
+```
+
+The "Xenobiotic Metabolism" has multiple families because we switched some by hand in the clean_endPoint_info function.
