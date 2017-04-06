@@ -30,6 +30,12 @@ sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","Presq
                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
                   "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
 
+great_lakes <- c("Lake Superior",
+                 "Lake Michigan",
+                 "Lake Huron",
+                 "Lake Erie",
+                 "Lake Ontario")
+
 choicesPerGroup <- apply(cleaned_ep[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
@@ -204,246 +210,33 @@ shinyServer(function(input, output,session) {
   
 #############################################################   
   
-#   statsOfColumn <- reactive({
-#     
-#     chemicalSummary <- chemicalSummary()
-#     meanEARlogic <- as.logical(input$meanEAR)
-# 
-#     radio <- input$radioMaxGroup
-#     statsOfColumn <- chemicalSummary 
-# 
-#     siteToFind <- unique(statsOfColumn$site)
-#     
-#     if(length(siteToFind) == 1){
-# 
-#       if(radio == "2"){
-#         statsOfColumn <- mutate(statsOfColumn, site = chnm) 
-#       } else if (radio == "3"){
-#         statsOfColumn <- mutate(statsOfColumn, site = class) 
-#       } else {
-#         statsOfColumn <- mutate(statsOfColumn, site = choices) 
-#       }
-#     } 
-# 
-#     statsOfColumn <- statsOfColumn %>%
-#       group_by(site, date, category) %>%
-#       summarise(sumEAR = sum(EAR),
-#                 nHits = sum(hits)) %>%
-#       group_by(site, category) %>%
-#       summarise(maxEAR = ifelse(meanEARlogic, mean(sumEAR), max(sumEAR)),
-#                 freq = sum(nHits > 0)/n()) %>%
-#       data.frame()
-#     
-#     if(!(length(siteToFind) == 1)){ #  & radio == "1"
-#       statsOfColumn <- statsOfColumn %>%
-#         gather(calc, value, -site, -category) %>%
-#         unite(choice_calc, category, calc, sep=" ") %>%
-#         spread(choice_calc, value)        
-#     }
-# 
-#     statsOfColumn
-#     
-#   })
-#   
-#   statsOfGroupOrdered <- reactive({
-# 
-#     statsOfGroup <- chemicalSummary()   
-#     hitThres <- hitThresValue()
-#     
-#     siteToFind <- unique(statsOfGroup$site)
-#     
-#     statsOfGroupOrdered <- statsOfGroup %>%
-#       group_by(site, date,category) %>%
-#       summarise(sumEAR = sum(EAR)) %>%
-#       group_by(site,category) %>%
-#       summarise(max = sum(sumEAR > hitThres),
-#                 mean = sum(mean(sumEAR) > hitThres),
-#                 hit = as.numeric(any(sumEAR > hitThres)),
-#                 nSamples = n())%>%
-#       data.frame()
-# 
-#     if(length(siteToFind) > 1){
-#       statsOfGroupOrdered <- statsOfGroupOrdered %>%
-#         group_by(site) %>%
-#         summarise(max=sum(max > 0),
-#                   mean=sum(mean > 0),
-#                   # total=sum(hit>=1),
-#                   nSamples = median(nSamples))
-# 
-#     }
-# 
-#     statsOfGroupOrdered
-#       
-#   }) 
-#   
-# # ############################################################# 
-# 
-#   output$tableGroupSumm <- DT::renderDataTable({        
-# 
-#     statsOfGroupOrdered <- statsOfGroupOrdered()
-# 
-#     siteToFind <- unique(statsOfGroupOrdered$site)
-# 
-#     if(length(siteToFind) > 1){
-#       
-#       colToSort <- 1
-#       
-#       meanChem <- grep("mean",names(statsOfGroupOrdered))
-#       maxChem <- grep("max",names(statsOfGroupOrdered))
-# 
-#       tableGroup <- DT::datatable(statsOfGroupOrdered,  extensions = 'Buttons',
-#                                     rownames = FALSE,
-#                                     options = list(
-#                                                   pageLength = nrow(statsOfGroupOrdered), 
-#                                                   order=list(list(colToSort,'desc')),
-#                                                  dom = 'Bfrtip',
-#                                                  buttons =
-#                                                    list('colvis', list(
-#                                                      extend = 'collection',
-#                                                      buttons = list(list(extend='csv',
-#                                                                          filename = 'hitCount'),
-#                                                                     list(extend='excel',
-#                                                                          filename = 'hitCount'),
-#                                                                     list(extend='pdf',
-#                                                                          filename= 'hitCount')),
-#                                                      text = 'Download')
-#                                                    )
-#                                                  ))
-#                                     # options = list(dom = 'ft',
-# 
-# 
-#       tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem], 
-#                                 background = styleColorBar(range(statsOfGroupOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
-#                                 backgroundSize = '100% 90%',
-#                                 backgroundRepeat = 'no-repeat',
-#                                 backgroundPosition = 'center' ) 
-#       
-#       tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[meanChem], 
-#                                 background = styleColorBar(range(statsOfGroupOrdered[,meanChem],na.rm=TRUE), 'wheat'),
-#                                 backgroundSize = '100% 90%',
-#                                 backgroundRepeat = 'no-repeat',
-#                                 backgroundPosition = 'center') 
-# 
-#       } else {
-#         
-#         tableGroup <- DT::datatable(statsOfGroupOrdered[,c("category","max","nSamples")], extensions = 'Buttons', 
-#                                     colnames = c('hits' = 2),
-#                                     rownames = FALSE,
-#                                     options = list(
-#                                       pageLength = nrow(statsOfGroupOrdered), 
-#                                       order=list(list(1,'desc')),
-#                                       dom = 'Bfrtip',
-#                                       buttons =
-#                                         list('colvis', list(
-#                                           extend = 'collection',
-#                                           buttons = list(list(extend='csv',
-#                                                               filename = 'hitCount'),
-#                                                          list(extend='excel',
-#                                                               filename = 'hitCount'),
-#                                                          list(extend='pdf',
-#                                                               filename= 'hitCount')),
-#                                           text = 'Download')
-#                                         )
-#                                     ))
-# 
-#         tableGroup <- formatStyle(tableGroup, "hits", 
-#                                   background = styleColorBar(range(statsOfGroupOrdered[,"max"],na.rm=TRUE), 'goldenrod'),
-#                                   backgroundSize = '100% 90%',
-#                                   backgroundRepeat = 'no-repeat',
-#                                   backgroundPosition = 'center' ) 
-# 
-#       }
-#       
-#       tableGroup
-#     
-#   })
-#   
-#   output$tableSumm <- DT::renderDataTable({
-#     
-#     statCol <- statsOfColumn()
-#     meanEARlogic <- as.logical(input$meanEAR)
-#     
-#     colToSort <- 1
-#     if("nSamples" %in% names(statCol)){
-#       colToSort <- 2
-#     }
-#     freqCol <- grep("freq",names(statCol))
-#     maxEARS <- grep("maxEAR",names(statCol))
-#     
-#     ignoreIndex <- which(names(statCol) %in% c("site","nSamples"))
-#     
-#     statCol <- statCol[,c(ignoreIndex,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-#     
-#     maxEARS <- grep("maxEAR",names(statCol))
-#     
-#     MaxEARSordered <- order(apply(statCol[,maxEARS, drop = FALSE], 2, max),decreasing = TRUE)
-#     
-#     if(length(maxEARS) > 9){
-#       statCol <- statCol[,c(ignoreIndex,interl(maxEARS[MaxEARSordered[1:9]],(maxEARS[MaxEARSordered[1:9]]-1)))]
-#       maxEARS <- maxEARS[1:9]
-#     } else {
-#       if(length(maxEARS) != 1){
-#         statCol <- statCol[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-#       }
-#     }
-#     
-#     freqCol <- grep("freq",names(statCol))
-#     maxEARS <- grep("maxEAR",names(statCol))
-#     
-#     if(meanEARlogic){
-#       names(statCol)[maxEARS] <- gsub("max","mean",names(statCol)[maxEARS])
-#     }
-#     
-#     
-#     colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
-#     tableSumm <- DT::datatable(statCol, extensions = 'Buttons', 
-#                                rownames = FALSE,
-#                                options = list(#dom = 'ft',
-#                                               dom = 'Bfrtip',
-#                                               buttons =
-#                                                 list('colvis', list(
-#                                                   extend = 'collection',
-#                                                   buttons = list(list(extend='csv',
-#                                                                       filename = 'hitStats'),
-#                                                                  list(extend='excel',
-#                                                                       filename = 'hitStats'),
-#                                                                  list(extend='pdf',
-#                                                                       filename= 'hitStats')),
-#                                                   text = 'Download'
-#                                                   )
-#                                                 ),
-#                                               scrollX = TRUE,
-#                                               pageLength = nrow(statCol),
-#                                               order=list(list(colToSort,'desc'))))
-#     
-#     tableSumm <- formatRound(tableSumm, names(statCol)[-ignoreIndex], 2) 
-#     
-#     for(i in 1:length(maxEARS)){
-#       tableSumm <- formatStyle(tableSumm, 
-#                                names(statCol)[maxEARS[i]], 
-#                                backgroundColor = colors[i])
-#       tableSumm <- formatStyle(tableSumm, 
-#                                names(statCol)[freqCol[i]], 
-#                                backgroundColor = colors[i])
-#       
-#       tableSumm <- formatStyle(tableSumm, names(statCol)[maxEARS[i]], 
-#                                background = styleColorBar(range(statCol[,names(statCol)[maxEARS[i]]],na.rm = TRUE), 'goldenrod'),
-#                                backgroundSize = '100% 90%',
-#                                backgroundRepeat = 'no-repeat',
-#                                backgroundPosition = 'center' ) 
-#       tableSumm <- formatStyle(tableSumm, names(statCol)[freqCol[i]], 
-#                                background = styleColorBar(range(statCol[,names(statCol)[freqCol[i]]],na.rm = TRUE), 'wheat'),
-#                                backgroundSize = '100% 90%',
-#                                backgroundRepeat = 'no-repeat',
-#                                backgroundPosition = 'center') 
-#       
-#     }
-#     
-#     tableSumm
-#     
-#   })
-#   
-# # #############################################################
+
+
+############################################################### 
+ 
+  output$tableGroupSumm <- DT::renderDataTable({
+    
+    catType = as.numeric(input$radioMaxGroup)
+    
+    chemicalSummary <- chemicalSummary()
+    hitThres <- hitThresValue()
+
+    tableGroup <- table_tox_sum(chemicalSummary, 
+                              chem_site, 
+                              category = c("Biological","Chemical","Chemical Class")[catType],
+                              mean_logic = FALSE,
+                              hit_threshold = hitThres)
+    tableGroup
+
+  })
+   
+   output$tableSumm <- DT::renderDataTable({
+
+    tableSumm
+
+  })
+   
+###############################################################
 #    
 #   output$stackBarGroup <- renderPlot({ 
 #     
@@ -562,8 +355,16 @@ shinyServer(function(input, output,session) {
     rawData <- rawData()
     chem_site <- rawData$chem_site
     
-    #TODO: add some specialness to our data...
+    if(all(unique(chem_site$site_grouping) %in% great_lakes)){
+      chem_site$site_grouping <- factor(chem_site$site_grouping,
+                                        levels=great_lakes)      
+    }
     
+    if(all(unique(chem_site$`Short Name` %in% sitesOrdered))){
+      chem_site$`Short Name` <- factor(chem_site$`Short Name`,
+                                        levels=sitesOrdered)
+    }
+
     heatMap <- plot_tox_heatmap(chemicalSummary,
                      chem_site,
                      category = c("Biological","Chemical","Chemical Class")[catType])
@@ -593,218 +394,19 @@ shinyServer(function(input, output,session) {
   )
 
 ################################################################  
-#   
-#   output$downloadStackPlot <- downloadHandler(
-#     
-#     filename = function() {
-#       "stackPlot.png"
-#     },
-#     content = function(file) {
-#       file.copy("stackPlot.png", file)
-#     }
-#   )
-#   
+#  
+  
+  output$downloadStackPlot <- downloadHandler(
 
-#   
-#   output$graphHeat <- renderPlot({ 
-#     
-#     graphData <- graphData()
-#     meanEARlogic <- as.logical(input$meanEAR)
-#     catType = as.numeric(input$radioMaxGroup)
-#     
-#     siteToFind <- unique(graphData$site)
-#     
-#     siteLimits <- stationINFO %>%
-#       filter(shortName %in% unique(graphData$site))
-#     
-#     if(all(siteLimits$shortName %in% sitesOrdered)){
-#       graphData <- mutate(graphData, site = factor(site, levels = sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
-#       siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
-#     } else {
-#       graphData <- mutate(graphData, site = factor(site, levels = unique(site)))
-#       siteLimits <- mutate(siteLimits, shortName = factor(shortName))
-#     }
-#     
-#     if(catType == 2 & length(siteToFind) > 1){
-# 
-#       levels(graphData$class)[levels(graphData$class) == "Human Drug, Non Prescription"] <- "Human Drug"
-#       levels(graphData$class)[levels(graphData$class) == "Antimicrobial Disinfectant"] <- "Antimicrobial"
-#       levels(graphData$class)[levels(graphData$class) == "Detergent Metabolites"] <- "Detergent"
-#       
-#       orderClass <- graphData %>%
-#         group_by(class,category) %>%
-#         summarise(median = median(meanEAR[meanEAR != 0])) %>%
-#         data.frame() %>%
-#         arrange(desc(median)) %>%
-#         filter(!duplicated(class)) %>%
-#         arrange(median) 
-#       
-#       orderChem <- graphData %>%
-#         group_by(category,class) %>%
-#         summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-#         data.frame() %>%
-#         mutate(class = factor(class, levels=orderClass$class)) %>%
-#         arrange(class, median)
-#       
-#       orderClass <- mutate(orderClass, class = factor(class, levels=levels(orderChem$class)))
-#       
-#       orderedLevels <- orderChem$category[!is.na(orderChem$median)] 
-#       
-#       graphData$class <- factor(graphData$class, levels=levels(orderClass$class))
-#       graphData$reorderedCat <- factor(graphData$category, levels=orderedLevels)
-#       
-#       heat <- ggplot(data = graphData) +
-#         geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
-#         theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
-#                                          angle = 90,vjust=0.5,hjust = 1)) +
-#         # scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
-#         ylab("") +
-#         xlab("") +
-#         labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
-#         scale_fill_gradient( guide = "legend",
-#                              trans = 'log',
-#                              low = "white", high = "steelblue",
-#                              breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
-#                              na.value = 'lightgrey',labels=fancyNumbers2) +
-#         facet_grid(class ~ .,scales="free_y", space="free_y") +
-#         theme(strip.text.y = element_text(angle=0, hjust=0), 
-#               strip.background = element_rect(fill="white"),
-#               panel.margin.y=unit(0.05, "lines"))
-#       
-#     } else {
-#       
-#       graphData$reorderedCat <- factor(graphData$category, levels=rev(levels(graphData$reorderedCat)))
-#       
-#       heat <- ggplot(data = graphData) +
-#         geom_tile(aes(x = site, y=reorderedCat, fill=meanEAR)) +
-#         theme(axis.text.x = element_text(colour=siteLimits$lakeColor,
-#                                          angle = 90,vjust=0.5,hjust = 1)) +
-#         # scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
-#         ylab("") +
-#         xlab("") +
-#         labs(fill=paste(ifelse(meanEARlogic, "Mean","Maximum")," EAR")) +
-#         scale_fill_gradient( guide = "legend",
-#                              trans = 'log',
-#                              low = "white", high = "steelblue",
-#                              breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
-#                              na.value = 'lightgrey',labels=fancyNumbers2)
-#     }
-# 
-#     ggsave("heatPlot.png",heat,bg = "transparent")
-#     
-#     print(heat)
-#   })
-#   
+    filename = function() {
+      "stackPlot.png"
+    },
+    content = function(file) {
+      file.copy("stackPlot.png", file)
+    }
+  )
 
-#   
 
-#   
-#   graphData <- reactive({
-#     
-#     groupCol <- epDF[["groupColName"]]
-#     assays <- epDF[["assays"]]
-#     
-#     ep <- data.frame(endPoint = endPointInfo[["endPoint"]],
-#                      groupCol = endPointInfo[[groupCol]],
-#                      assaysFull = endPointInfo[["assay_source_name"]],
-#                      stringsAsFactors = FALSE) %>%
-#       filter(assaysFull %in% assays)
-#     
-#     meanEARlogic <- as.logical(input$meanEAR)
-#     catType <- as.numeric(input$radioMaxGroup)
-# 
-#     boxData <- chemicalSummary()
-#     siteToFind <- unique(boxData$site)
-#     
-#     if(catType == 1){
-#       orderNames <- names(table(ep[,"groupCol"]))
-#     }
-#       
-#     if(catType == 2 & length(siteToFind) > 1){
-#         
-#         graphData <- chemicalSummary() %>%
-#           group_by(site,date,category,class) %>%
-#           summarise(sumEAR=sum(EAR)) %>%
-#           data.frame() %>%
-#           group_by(site, category,class) %>%
-#           summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
-#           data.frame() %>%
-#           mutate(category=as.character(category))
-#         
-#         orderClass <- graphData %>%
-#           group_by(class,category) %>%
-#           summarise(median = median(meanEAR[meanEAR != 0])) %>%
-#           data.frame() %>%
-#           arrange(desc(median)) %>%
-#           filter(!duplicated(class)) %>%
-#           arrange(median)
-#         
-#         orderChem <- graphData %>%
-#           group_by(category,class) %>%
-#           summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-#           data.frame() %>%
-#           mutate(class = factor(class, levels=orderClass$class)) %>%
-#           arrange(class, median)
-#         
-#         orderedLevels <<- orderChem$category # [!is.na(orderChem$median)] #The !is.na takes out any category that was all censo
-#         
-#         if(any(is.na(orderChem$median))){
-#           orderedLevels <<- c(orderChem$category[is.na(orderChem$median)],
-#                               orderChem$category[!is.na(orderChem$median)])
-#         }
-#         
-#         
-#         graphData <- mutate(graphData, reorderedCat = factor(as.character(category), levels=orderedLevels)) %>%
-#           mutate(class = factor(class, levels=rev(orderClass$class)))
-#       
-#       } else {
-#         
-#         graphData <- boxData %>%
-#           group_by(site,date,category) %>%
-#           summarise(sumEAR=sum(EAR)) %>%
-#           data.frame() 
-#         
-#         if (length(siteToFind) > 1){
-#     
-#           graphData <- graphData %>%
-#             group_by(site, category) %>%
-#             summarise(meanEAR=ifelse(meanEARlogic,mean(sumEAR),max(sumEAR))) %>%
-#             data.frame() %>%
-#             mutate(category=as.character(category)) 
-#           
-#         } else {
-#         
-#           graphData <- graphData %>%
-#             rename(meanEAR=sumEAR) %>%
-#             mutate(category=as.character(category)) 
-#           
-#         }
-#         
-#         orderColsBy <- graphData %>%
-#           mutate(category = as.character(category)) %>%
-#           group_by(category) %>%
-#           summarise(median = median(meanEAR[meanEAR != 0])) %>%
-#           arrange(median)
-#         
-#         orderedLevels <<- orderColsBy$category
-#         
-#         if(any(is.na(orderColsBy$median))){
-#           orderedLevels <<- c(orderColsBy$category[is.na(orderColsBy$median)],
-#                               orderColsBy$category[!is.na(orderColsBy$median)])
-#         }
-#         
-#         if(catType == 1){
-#           orderedLevels <<- c(orderNames[!(orderNames %in% orderedLevels)],orderedLevels)
-#         }
-#         
-#         graphData$reorderedCat <- factor(as.character(graphData$category), levels=orderedLevels)
-#       
-#       }
-#         
-#     graphData
-#     
-#   })
-# 
 # # #############################################################    
 #    
 #   output$mymap <- leaflet::renderLeaflet({

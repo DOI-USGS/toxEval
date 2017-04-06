@@ -8,13 +8,13 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
   manual_remove = NULL)
 }
 \arguments{
+\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+
 \item{chem_site}{data frame with at least columns SiteID, site_grouping,  and Short Name}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
 \item{manual_remove}{vector of categories to remove}
-
-\item{graphData}{data frame from \code{graph_chem_data}}
 }
 \description{
 Plot heat map

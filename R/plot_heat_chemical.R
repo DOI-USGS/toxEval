@@ -58,6 +58,7 @@
 plot_heat_chemicals <- function(graphData, chem_site){
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
+  site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
   graphData <- graphData %>%
     left_join(select(chem_site, SiteID, site_grouping, `Short Name`),
@@ -96,7 +97,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
 #' plot_tox_heatmap
 #' 
 #' Plot heat map
-#' @param graphData data frame from \code{graph_chem_data}
+#' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
