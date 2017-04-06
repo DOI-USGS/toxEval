@@ -4,7 +4,7 @@
 #' @param graphData data frame from \code{graph_chem_data}
 #' @export
 #' @import ggplot2
-#' @importFrom stats median
+#' @importFrom stats median quantile
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -31,7 +31,8 @@
 plot_chemical_boxplots <- function(graphData){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  
+  chnm <- Class <- maxEAR <- ".dplyr"
+    
   cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
                 "#FFA500","#F4426e")
@@ -104,6 +105,8 @@ plot_chemical_boxplots <- function(graphData){
 #' 
 #' graphData <- graph_chem_data(chemicalSummary)
 graph_chem_data <- function(chemicalSummary, manual_remove=NULL){
+  
+  site <- chnm <- Class <- EAR <- sumEAR <- maxEAR <- ".dplyr"
   
   graphData <- chemicalSummary %>%
     group_by(site,date,chnm, Class) %>%

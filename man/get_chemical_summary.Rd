@@ -21,6 +21,7 @@ get_chemical_summary(ACClong, filtered_ep, chem.data, chem.site, chem.info)
 Get ACC values for vector of CAS's
 }
 \examples{
+library(readxl)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)

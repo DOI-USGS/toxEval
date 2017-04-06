@@ -10,6 +10,7 @@
 #' @importFrom tidyr gather
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
+#' library(readxl)
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
 #' full_path <- file.path(path_to_tox, file_name)

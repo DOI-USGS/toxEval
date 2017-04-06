@@ -29,12 +29,12 @@ Imports:
     shinydashboard,
     data.table,
     RColorBrewer,
-    stringi
+    stringi,
+    readxl
 Suggests:
     rmarkdown,
     testthat,
-    knitr,
-    readxl
+    knitr
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes

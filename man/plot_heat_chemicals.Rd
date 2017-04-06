@@ -8,11 +8,14 @@ plot_heat_chemicals(graphData, chem_site)
 }
 \arguments{
 \item{graphData}{data frame from \code{graph_chem_data}}
+
+\item{chem_site}{data frame with at least columns SiteID, site_grouping,  and Short Name}
 }
 \description{
 Plot heat map
 }
 \examples{
+library(readxl)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)

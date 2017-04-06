@@ -1,16 +1,4 @@
----
-title: "SI 2: Detection Levels"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-  rmarkdown::html_vignette
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{SI2}
-  \usepackage[utf8]{inputenc}
----
-
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE---------------------------------
 library(knitr)
 library(rmarkdown)
 options(continue=" ")
@@ -20,12 +8,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE,
                       fig.height = 7,
                       fig.width = 7)
-```
 
-Using the detection levels as concentrations:
-
-
-```{r }
+## ---------------------------------------------------------
 library(readxl)
 library(toxEval)
 library(dplyr)
@@ -54,25 +38,32 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-# Substitute max LDL or MDL for actual values:
-
-chem_data <- chem_data %>%
-  left_join(select(chem_info,
-                   CAS,
-                   MDL = `Maximum method detection level`,
-                   LDL = `Maximum laboratory reporting level`),
-            by="CAS") %>%
-  rowwise() %>%
-  mutate(Value_new = max(MDL, LDL))
-
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
                                         chem_info)
 
-plot_DL <- plot_tox_boxplots(chemicalSummary, filtered_ep, "Chemical")
+tableData <- chemicalSummary %>%
+  group_by(site, date, chnm) %>% 
+  summarize(sumEAR = sum(EAR)) %>%
+  group_by(site, chnm) %>%
+  summarize(meanEAR = max(sumEAR)) %>%
+  group_by(chnm) %>%
+  summarize(nSites = sum(meanEAR > 10^-3)) %>%
+  data.frame() %>%
+  arrange(desc(nSites)) %>%
+  filter(nSites > 1)
 
-plot_DL
+tableData$chnm <- factor(tableData$chnm, levels = tableData$chnm)
 
-```
+chemPlot <- ggplot(tableData)+
+  geom_bar(aes(x=chnm, y=nSites),stat = "identity",fill = "steelblue") +
+  theme_bw() +
+  xlab("") +
+  ylab("Number of Sites\n with EARmax > 0.001") +
+  theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) 
+
+chemPlot
+
+

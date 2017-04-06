@@ -5,7 +5,7 @@ output:
   rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Figure 1: Exposure activity ratios}
+  %\VignetteIndexEntry{Figure_1}
   \usepackage[utf8]{inputenc}
 ---
 

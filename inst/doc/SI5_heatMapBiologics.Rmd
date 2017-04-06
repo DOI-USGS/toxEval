@@ -1,11 +1,11 @@
 ---
-title: "SI 2: Detection Levels"
+title: "SI 5: Biological Heat Map"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{SI2}
+  %\VignetteIndexEntry{SI5}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -43,10 +43,6 @@ chem_site <- read_excel(full_path, sheet = "Sites")
 #Remove DEET:
 chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
 chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
-#Trim names for graph:
-chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
-chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -54,25 +50,41 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-# Substitute max LDL or MDL for actual values:
-
-chem_data <- chem_data %>%
-  left_join(select(chem_info,
-                   CAS,
-                   MDL = `Maximum method detection level`,
-                   LDL = `Maximum laboratory reporting level`),
-            by="CAS") %>%
-  rowwise() %>%
-  mutate(Value_new = max(MDL, LDL))
-
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
                                         chem_info)
 
-plot_DL <- plot_tox_boxplots(chemicalSummary, filtered_ep, "Chemical")
+# Order the Great Lakes:
+chem_site$site_grouping <- factor(chem_site$site_grouping,
+               levels=c("Lake Superior",
+               "Lake Michigan",
+               "Lake Huron",
+               "Lake Erie",
+               "Lake Ontario"))
 
-plot_DL
+# Order sites:
+ sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+                   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+                   "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+                   "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+                   "Manistee","Fox","Oconto","Peshtigo","Menominee",
+                   "Indian","Cheboygan","Ford","Escanaba","Manistique",
+                   "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+                   "Clinton","Rouge","HuronMI","Raisin","Maumee",
+                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+                   "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+                   "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+                   "Raquette","StRegis")
+
+ chem_site$`Short Name` <- factor(chem_site$`Short Name`,
+               levels = sitesOrdered)
+  
+ plot_tox_heatmap(chemicalSummary,
+              chem_site,
+              category = "Biological",
+              manual_remove = "Undefined")
+
 
 ```

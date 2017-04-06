@@ -27,10 +27,6 @@ chem_site <- read_excel(full_path, sheet = "Sites")
 #Remove DEET:
 chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
 chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
-#Trim names for graph:
-chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
-chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -68,10 +64,11 @@ chem_site$site_grouping <- factor(chem_site$site_grouping,
 
  chem_site$`Short Name` <- factor(chem_site$`Short Name`,
                levels = sitesOrdered)
-
-   
+  
  plot_tox_heatmap(chemicalSummary,
               chem_site,
-              category = "Chemical")
+              category = "Biological",
+              manual_remove = "Undefined")
+
 
 
