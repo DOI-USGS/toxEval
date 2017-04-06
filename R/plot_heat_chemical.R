@@ -164,7 +164,7 @@ plot_tox_heatmap <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
-  
+  site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   if(category == "Chemical"){
     graphData <- graph_chem_data(chemicalSummary)
     plot_back <- plot_heat_chemicals(graphData=graphData, chem_site=chem_site)

@@ -111,7 +111,12 @@ plot_tox_boxplots <- function(chemicalSummary,
   
 }
 
-
+#' fancyNumbers2
+#' 
+#' Just another fancy ggplot2 axis labeler.
+#' @param n vectore
+#' @export
+#' @keywords internal
 fancyNumbers2 <- function(n){
   textReturn <-  signif(n,digits = 2)
   textReturn <- as.character(textReturn)
@@ -125,6 +130,7 @@ fancyNumbers2 <- function(n){
 #' Plot fancyNumbers of groups
 #' @param n vector
 #' @export
+#' 
 fancyNumbers <- function(n){
   nNoNA <- n[!is.na(n)]
   x <-gsub(pattern = "1e",replacement = "10^",x = format(nNoNA, scientific = TRUE))

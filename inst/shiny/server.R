@@ -220,26 +220,52 @@ shinyServer(function(input, output,session) {
     
     chemicalSummary <- chemicalSummary()
     hitThres <- hitThresValue()
-
+    mean_logic <- as.logical(input$meanEAR)
+    
     tableGroup <- table_tox_sum(chemicalSummary, 
                               chem_site, 
                               category = c("Biological","Chemical","Chemical Class")[catType],
-                              mean_logic = FALSE,
+                              mean_logic = mean_logic,
                               hit_threshold = hitThres)
     tableGroup
 
   })
    
    output$tableSumm <- DT::renderDataTable({
-
-    tableSumm
+     catType = as.numeric(input$radioMaxGroup)
+     
+     chemicalSummary <- chemicalSummary()
+     hitThres <- hitThresValue()
+     mean_logic <- as.logical(input$meanEAR)
+     
+     tableGroup <- table_tox_rank(chemicalSummary, 
+                                 chem_site, 
+                                 category = c("Biological","Chemical","Chemical Class")[catType],
+                                 mean_logic = mean_logic,
+                                 hit_threshold = hitThres)
+     tableGroup
 
   })
    
 ###############################################################
-#    
-#   output$stackBarGroup <- renderPlot({ 
-#     
+   output$downloadStackPlot <- downloadHandler(
+     
+     filename = function() {
+       "stackPlot.png"
+     },
+     content = function(file) {
+       file.copy("stackPlot.png", file)
+     }
+   )
+   
+   
+      
+  output$stackBarGroup <- renderPlot({
+     
+    catType = as.numeric(input$radioMaxGroup)
+    
+    chemicalSummary <- chemicalSummary()
+    
 #     graphData <- graphData()
 #     meanEARlogic <- as.logical(input$meanEAR)
 #     catType = as.numeric(input$radioMaxGroup)
@@ -301,8 +327,8 @@ shinyServer(function(input, output,session) {
 #     ggsave("stackPlot.png",upperPlot,bg = "transparent")
 #     
 #     print(upperPlot)
-#   })
-# 
+  })
+
 ################################################################
   output$graphGroup <- renderPlot({ 
     
@@ -360,9 +386,9 @@ shinyServer(function(input, output,session) {
                                         levels=great_lakes)      
     }
     
-    if(all(unique(chem_site$`Short Name` %in% sitesOrdered))){
+    if(all(unique(chem_site$`Short Name`) %in% sitesOrdered)){
       chem_site$`Short Name` <- factor(chem_site$`Short Name`,
-                                        levels=sitesOrdered)
+                                        levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
     }
 
     heatMap <- plot_tox_heatmap(chemicalSummary,
@@ -396,15 +422,6 @@ shinyServer(function(input, output,session) {
 ################################################################  
 #  
   
-  output$downloadStackPlot <- downloadHandler(
-
-    filename = function() {
-      "stackPlot.png"
-    },
-    content = function(file) {
-      file.copy("stackPlot.png", file)
-    }
-  )
 
 
 # # #############################################################    
