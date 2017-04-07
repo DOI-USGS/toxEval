@@ -2,7 +2,6 @@
 #' 
 #' Table of ranks
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
@@ -31,11 +30,10 @@
 #'                                        chem_data, 
 #'                                         chem_site, 
 #'                                         chem_info)
-#' table_tox_rank(chemicalSummary, chem_site, category = "Biological")
-#' table_tox_rank(chemicalSummary, chem_site, category = "Chemical Class")
-#' table_tox_rank(chemicalSummary, chem_site, category = "Chemical")
+#' table_tox_rank(chemicalSummary, category = "Biological")
+#' table_tox_rank(chemicalSummary, category = "Chemical Class")
+#' table_tox_rank(chemicalSummary, category = "Chemical")
 table_tox_rank <- function(chemicalSummary, 
-                          chem_site, 
                           category = "Biological",
                           mean_logic = FALSE,
                           hit_threshold = 0.1){
@@ -46,37 +44,10 @@ table_tox_rank <- function(chemicalSummary,
   
   siteToFind <- unique(chemicalSummary$shortName)
 
-  if(category == "Chemical"){
-    chemicalSummary <- mutate(chemicalSummary, category = chnm)
-  } else if (category == "Chemical Class"){
-    chemicalSummary <- mutate(chemicalSummary, category = Class)
-  } else {
-    chemicalSummary <- mutate(chemicalSummary, category = Bio_category)
-  }
-  
-  chemicalSummary <- select(chemicalSummary, -Class, -Bio_category, -chnm)
-  
-  if(length(siteToFind) == 1){
-    chemicalSummary$site <- chemicalSummary$category
-  } else {
-    chemicalSummary$site <- chemicalSummary$shortName
-  }
-  
-  statsOfColumn <- chemicalSummary %>%
-    group_by(site, date, category) %>%
-    summarise(sumEAR = sum(EAR),
-              nHits = sum(EAR > hit_threshold)) %>%
-    group_by(site, category) %>%
-    summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
-              freq = sum(nHits > 0)/n()) %>%
-    data.frame()
-  
-  if(!(length(siteToFind) == 1)){
-    statsOfColumn <- statsOfColumn %>%
-      gather(calc, value, -site, -category) %>%
-      unite(choice_calc, category, calc, sep=" ") %>%
-      spread(choice_calc, value)        
-  }
+  statsOfColumn <- statsOfColumns(chemicalSummary=chemicalSummary,
+                                   category = category,
+                                   hit_threshold = hit_threshold,
+                                   mean_logic = mean_logic)
 
   colToSort <- 1
   if("nSamples" %in% names(statsOfColumn)){
@@ -155,6 +126,59 @@ table_tox_rank <- function(chemicalSummary,
   }
   
   return(tableSumm)
+}
+
+#' statsOfColumns
+#' 
+#' Summarize data for most graphs/tables
+#' @param chemicalSummary data frame
+#' @param category character
+#' @param hit_threshold numeric
+#' @param mean_logic logical
+#' @export
+#' @keywords internal
+statsOfColumns <- function(chemicalSummary, 
+                           category, 
+                           hit_threshold, 
+                           mean_logic){
+  
+  sumEAR <- nHits <- n <- calc <- value <- choice_calc <- ".dplyr"
+  
+  siteToFind <- unique(chemicalSummary$shortName)
+  
+  if(category == "Chemical"){
+    chemicalSummary <- mutate(chemicalSummary, category = chnm)
+  } else if (category == "Chemical Class"){
+    chemicalSummary <- mutate(chemicalSummary, category = Class)
+  } else {
+    chemicalSummary <- mutate(chemicalSummary, category = Bio_category)
+  }
+  
+  chemicalSummary <- select(chemicalSummary, -Class, -Bio_category, -chnm)
+  
+  if(length(siteToFind) == 1){
+    chemicalSummary$site <- chemicalSummary$category
+  } else {
+    chemicalSummary$site <- chemicalSummary$shortName
+  }
+  
+  statsOfColumn <- chemicalSummary %>%
+    group_by(site, date, category) %>%
+    summarise(sumEAR = sum(EAR),
+              nHits = sum(EAR > hit_threshold)) %>%
+    group_by(site, category) %>%
+    summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
+              freq = sum(nHits > 0)/n()) %>%
+    data.frame()
+  
+  if(!(length(siteToFind) == 1)){
+    statsOfColumn <- statsOfColumn %>%
+      gather(calc, value, -site, -category) %>%
+      unite(choice_calc, category, calc, sep=" ") %>%
+      spread(choice_calc, value)        
+  }
+  
+  return(statsOfColumn)
 }
 
 #' interl

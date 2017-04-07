@@ -11,7 +11,6 @@ output$tableSumm <- DT::renderDataTable({
   mean_logic <- as.logical(input$meanEAR)
   
   tableGroup <- table_tox_rank(chemicalSummary, 
-                               chem_site, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
                                hit_threshold = hitThres)

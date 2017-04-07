@@ -165,7 +165,8 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
-            plotOutput("endpointGraph",  height = "1000px")
+            plotOutput("endpointGraph",  height = "1000px"),
+            downloadButton('downloadEndpoint', 'Download PNG')
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",

@@ -2,7 +2,6 @@
 #' 
 #' Table of sums
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
@@ -30,11 +29,10 @@
 #'                                        chem_data, 
 #'                                         chem_site, 
 #'                                         chem_info)
-#' table_tox_sum(chemicalSummary, chem_site, category = "Biological")
-#' table_tox_sum(chemicalSummary, chem_site, category = "Chemical Class")
-#' table_tox_sum(chemicalSummary, chem_site, category = "Chemical")
+#' table_tox_sum(chemicalSummary, category = "Biological")
+#' table_tox_sum(chemicalSummary, category = "Chemical Class")
+#' table_tox_sum(chemicalSummary, category = "Chemical")
 table_tox_sum <- function(chemicalSummary, 
-                          chem_site, 
                           category = "Biological",
                           mean_logic = FALSE,
                           hit_threshold = 0.1){
@@ -43,35 +41,11 @@ table_tox_sum <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
+  statsOfGroupOrdered <- statsOfGroup(chemicalSummary = chemicalSummary,
+               category = category,
+               hit_threshold = hit_threshold)
   siteToFind <- unique(chemicalSummary$site)
   
-  if(category == "Chemical"){
-    chemicalSummary <- mutate(chemicalSummary, category = chnm)
-  } else if (category == "Chemical Class"){
-    chemicalSummary <- mutate(chemicalSummary, category = Class)
-  } else {
-    chemicalSummary <- mutate(chemicalSummary, category = Bio_category)
-  }
-  
-  chemicalSummary <- select(chemicalSummary, -Class, -Bio_category, -chnm)
-  
-  if(length(siteToFind) == 1){
-    chemicalSummary$site <- chemicalSummary$category
-  } else {
-    chemicalSummary$site <- chemicalSummary$shortName
-  }
-
-  statsOfGroupOrdered <- chemicalSummary %>%
-      group_by(site, date,category) %>%
-      summarise(sumEAR = sum(EAR),
-                hits = sum(EAR > hit_threshold)) %>%
-      group_by(site,category) %>%
-      summarise(`Hits per Sample` = sum(sumEAR > hit_threshold),
-                # `Mean(n) of hits` = sum(mean(sumEAR) > hit_threshold),
-                `Individual Hits` = sum(hits),
-                nSamples = n()) %>%
-      data.frame()
-
   if(length(siteToFind) > 1){
     meanChem <- grep("Individual.Hits",names(statsOfGroupOrdered))
     maxChem <- grep("Hits.per.Sample",names(statsOfGroupOrdered))
@@ -141,4 +115,49 @@ table_tox_sum <- function(chemicalSummary,
   }
 
   return(tableGroup)
+}
+
+
+#' statsOfGroup
+#' 
+#' Summarize data for most graphs/tables
+#' @param chemicalSummary data frame
+#' @param category character
+#' @param hit_threshold numeric
+#' @export
+#' @keywords internal
+statsOfGroup <- function(chemicalSummary, category, hit_threshold){
+  
+  Class <- Bio_category <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
+  
+  siteToFind <- unique(chemicalSummary$site)
+  
+  if(category == "Chemical"){
+    chemicalSummary <- mutate(chemicalSummary, category = chnm)
+  } else if (category == "Chemical Class"){
+    chemicalSummary <- mutate(chemicalSummary, category = Class)
+  } else {
+    chemicalSummary <- mutate(chemicalSummary, category = Bio_category)
+  }
+  
+  chemicalSummary <- select(chemicalSummary, -Class, -Bio_category, -chnm)
+  
+  if(length(siteToFind) == 1){
+    chemicalSummary$site <- chemicalSummary$category
+  } else {
+    chemicalSummary$site <- chemicalSummary$shortName
+  }
+  
+  statsOfGroup <- chemicalSummary %>%
+    group_by(site, date,category) %>%
+    summarise(sumEAR = sum(EAR),
+              hits = sum(EAR > hit_threshold)) %>%
+    group_by(site,category) %>%
+    summarise(`Hits per Sample` = sum(sumEAR > hit_threshold),
+              # `Mean(n) of hits` = sum(mean(sumEAR) > hit_threshold),
+              `Individual Hits` = sum(hits),
+              nSamples = n()) %>%
+    data.frame()
+  
+  return(statsOfGroup)
 }

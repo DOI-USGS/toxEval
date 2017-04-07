@@ -4,13 +4,11 @@
 \alias{table_tox_sum}
 \title{table_tox_sum}
 \usage{
-table_tox_sum(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE, hit_threshold = 0.1)
+table_tox_sum(chemicalSummary, category = "Biological", mean_logic = FALSE,
+  hit_threshold = 0.1)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
-
-\item{chem_site}{data frame with at least columns SiteID, site_grouping,  and Short Name}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
@@ -41,7 +39,7 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                        chem_data, 
                                         chem_site, 
                                         chem_info)
-table_tox_sum(chemicalSummary, chem_site, category = "Biological")
-table_tox_sum(chemicalSummary, chem_site, category = "Chemical Class")
-table_tox_sum(chemicalSummary, chem_site, category = "Chemical")
+table_tox_sum(chemicalSummary, category = "Biological")
+table_tox_sum(chemicalSummary, category = "Chemical Class")
+table_tox_sum(chemicalSummary, category = "Chemical")
 }

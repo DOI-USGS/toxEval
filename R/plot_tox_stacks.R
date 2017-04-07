@@ -9,6 +9,7 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
+#' @importFrom grDevices colorRampPalette
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' library(readxl)
@@ -42,7 +43,8 @@ plot_tox_stacks <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  
+  SiteID <- site_grouping <- `Short Name` <- ".dplyr"
+    
   graphData <- graphData(chemicalSummary = chemicalSummary,
                          category = category,
                          manual_remove = manual_remove,
