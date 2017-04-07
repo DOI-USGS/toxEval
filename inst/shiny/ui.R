@@ -37,10 +37,6 @@ dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
 
 selChoices <- df$orderNames
 
-# flags <- c("Noisy data",
-#            "Only one conc above baseline, active",
-#            "Hit-call potentially confounded by overfitting")
-
 flagsALL <- c("Borderline active",
               "Only highest conc above baseline, active" ,      
               "Only one conc above baseline, active",
@@ -61,16 +57,7 @@ header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   # selectInput("data", label = "Data",
-   #                   choices = c("Water Sample",
-   #                               "Passive Samples",
-   #                               "Duluth",
-   #                               "NPS",
-   #                               "TSHP",
-   #                               "App State",
-   #                               "Birds"),
-   #                               # ,"Detection Limits"),
-   #                   selected = "Water Sample", multiple = FALSE),
+
    fileInput("data", "Load Excel File",multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
@@ -82,8 +69,8 @@ sidebar <- dashboardSidebar(
                  multiple = FALSE,
                  selected = "All")     
    ),
-   radioButtons("meanEAR",choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
-                inline = TRUE, label = "",selected = "MaxEAR"),
+   radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
+                inline = TRUE, label = "", selected = FALSE),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
             checkboxGroupInput("assay", "Assays:",
                                c("Apredica" = "APR",

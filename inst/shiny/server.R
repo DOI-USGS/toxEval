@@ -234,10 +234,14 @@ shinyServer(function(input, output,session) {
     
     chemicalSummary <- chemicalSummary()
     
-    statsOfGroupOrdered <- chemicalSummary %>%
-      group_by(site, date,category) %>%
-      summarise(sumEAR = sum(EAR),
-                hits = sum(EAR > hit_threshold)) %>%
+    graphData <- graphData(chemicalSummary = chemicalSummary,
+                           category = c("Biological","Chemical","Chemical Class")[catType])
+    
+    graphData <- graphData %>%
+      left_join(select(chem_site, SiteID, site_grouping, `Short Name`),
+                by=c("site"="SiteID"))
+    
+    statsOfGroupOrdered <- graphData %>%
       group_by(site,category) %>%
       summarise(mean = sum(mean(sumEAR) > hit_threshold),
                 max = sum(max(sumEAR) > hit_threshold)) %>%

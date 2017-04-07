@@ -4,12 +4,19 @@
 \alias{graphData}
 \title{graphData}
 \usage{
-graphData(chemicalSummary, category = "Biological", manual_remove = NULL)
+graphData(chemicalSummary, category = "Biological", manual_remove = NULL,
+  mean_logic = FALSE)
 }
 \arguments{
 \item{chemicalSummary}{data frame}
+
+\item{category}{character}
+
+\item{manual_remove}{vector}
+
+\item{mean_logic}{logical}
 }
 \description{
-Just another fancy ggplot2 axis labeler.
+Summarize data for most graphs/tables
 }
 \keyword{internal}

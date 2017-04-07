@@ -5,7 +5,7 @@
 \title{plot_tox_heatmap}
 \usage{
 plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
-  manual_remove = NULL)
+  manual_remove = NULL, mean_logic = FALSE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -15,6 +15,8 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
 \item{manual_remove}{vector of categories to remove}
+
+\item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 }
 \description{
 Plot heat map

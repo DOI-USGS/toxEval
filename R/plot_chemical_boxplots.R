@@ -81,6 +81,7 @@ plot_chemical_boxplots <- function(graphData){
 #' Get chemical data summarized for plots
 #' @param chemicalSummary data frame from \code{graph_chem_data}
 #' @param manual_remove vector of categories to remove
+#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @export
 #' @importFrom stats median
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -106,7 +107,9 @@ plot_chemical_boxplots <- function(graphData){
 #'                                         chem_info)
 #' 
 #' graphData <- graph_chem_data(chemicalSummary)
-graph_chem_data <- function(chemicalSummary, manual_remove=NULL){
+graph_chem_data <- function(chemicalSummary, 
+                            manual_remove=NULL,
+                            mean_logic = FALSE){
   
   site <- chnm <- Class <- EAR <- sumEAR <- maxEAR <- ".dplyr"
   
@@ -115,7 +118,7 @@ graph_chem_data <- function(chemicalSummary, manual_remove=NULL){
     summarise(sumEAR=sum(EAR)) %>%
     data.frame() %>%
     group_by(site, chnm, Class) %>%
-    summarise(maxEAR=max(sumEAR)) %>%
+    summarise(maxEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
     data.frame() 
   
   if(!is.null(manual_remove)){

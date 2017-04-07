@@ -4,12 +4,14 @@
 \alias{graph_chem_data}
 \title{graph_chem_data}
 \usage{
-graph_chem_data(chemicalSummary, manual_remove = NULL)
+graph_chem_data(chemicalSummary, manual_remove = NULL, mean_logic = FALSE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{graph_chem_data}}
 
 \item{manual_remove}{vector of categories to remove}
+
+\item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 }
 \description{
 Get chemical data summarized for plots

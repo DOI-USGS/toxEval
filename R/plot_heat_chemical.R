@@ -101,6 +101,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
+#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -159,23 +160,23 @@ plot_heat_chemicals <- function(graphData, chem_site){
 plot_tox_heatmap <- function(chemicalSummary, 
                              chem_site, 
                              category = "Biological",
-                             manual_remove = NULL){
+                             manual_remove = NULL,
+                             mean_logic = FALSE){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   if(category == "Chemical"){
-    graphData <- graph_chem_data(chemicalSummary)
+    graphData <- graph_chem_data(chemicalSummary, mean_logic=mean_logic)
     plot_back <- plot_heat_chemicals(graphData=graphData, chem_site=chem_site)
     
   } else {
     
-
-    
     graphData <- graphData(chemicalSummary = chemicalSummary,
                            category = category,
-                           manual_remove = manual_remove)
+                           manual_remove = manual_remove,
+                           mean_logic = mean_logic)
     
     graphData <- graphData %>%
       left_join(select(chem_site, SiteID, site_grouping, `Short Name`),

@@ -9,7 +9,8 @@ output$graphGroup <- renderPlot({
   )
   
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
-                               category = c("Biological","Chemical","Chemical Class")[catType])
+                               category = c("Biological","Chemical","Chemical Class")[catType],
+                               mean_logic = as.logical(input$meanEAR))
   
   if(catType == 2){
     ggsave("boxPlot.png",

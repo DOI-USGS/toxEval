@@ -45,7 +45,8 @@ plot_tox_stacks <- function(chemicalSummary,
   
   graphData <- graphData(chemicalSummary = chemicalSummary,
                          category = category,
-                         manual_remove = manual_remove)
+                         manual_remove = manual_remove,
+                         mean_logic = mean_logic)
 
   siteToFind <- unique(chemicalSummary$shortName)
 

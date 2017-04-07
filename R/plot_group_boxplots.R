@@ -4,6 +4,7 @@
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
+#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -33,7 +34,8 @@
 #' plot_tox_boxplots(chemicalSummary, "Chemical") 
 plot_tox_boxplots <- function(chemicalSummary, 
                               category = "Biological",
-                              manual_remove = NULL){
+                              manual_remove = NULL,
+                              mean_logic = FALSE){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -41,7 +43,7 @@ plot_tox_boxplots <- function(chemicalSummary,
 
   if(category == "Chemical"){
     
-    graphData <- graph_chem_data(chemicalSummary)
+    graphData <- graph_chem_data(chemicalSummary, mean_logic = mean_logic)
     chemPlot <- plot_chemical_boxplots(graphData)
     return(chemPlot)
     
@@ -49,7 +51,8 @@ plot_tox_boxplots <- function(chemicalSummary,
     
     graphData <- graphData(chemicalSummary = chemicalSummary,
                            category = category,
-                           manual_remove = manual_remove)
+                           manual_remove = manual_remove,
+                           mean_logic = mean_logic)
     
     countNonZero <- graphData %>%
       group_by(category) %>%
@@ -81,16 +84,18 @@ plot_tox_boxplots <- function(chemicalSummary,
 
 #' graphData
 #' 
-#' Just another fancy ggplot2 axis labeler.
+#' Summarize data for most graphs/tables
 #' @param chemicalSummary data frame
-#' @param category
-#' @param manual_remove
+#' @param category character
+#' @param manual_remove vector
+#' @param mean_logic logical
 #' @export
 #' @keywords internal
 graphData <- function(chemicalSummary, 
                       # filtered_ep,
                       category = "Biological",
-                      manual_remove = NULL){
+                      manual_remove = NULL, 
+                      mean_logic = FALSE){
   
   match.arg(category, c("Biological","Chemical Class"))
   
@@ -108,7 +113,7 @@ graphData <- function(chemicalSummary,
     summarise(sumEAR=sum(EAR)) %>%
     data.frame() %>%
     group_by(site, category) %>%
-    summarise(meanEAR=max(sumEAR)) %>%
+    summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
     data.frame() 
   
   if(!is.null(manual_remove)){
