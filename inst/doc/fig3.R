@@ -46,14 +46,12 @@ chemicalSummary$Class[chemicalSummary$Class == "Detergent Metabolites"] <- "Dete
 #' plot_tox_boxplots(chemicalSummary, "Chemical Class")
 #' plot_tox_boxplots(chemicalSummary, "Chemical") 
 bioPlot <- plot_tox_boxplots(chemicalSummary, 
-                               filtered_ep, 
                                category = "Biological", 
                                manual_remove = c("Transferase","Undefined"))
 bioPlot
 
 ## ---------------------------------------------------------
 classPlot <- plot_tox_boxplots(chemicalSummary, 
-                               filtered_ep, 
                                category = "Chemical Class")
 classPlot
 
@@ -61,7 +59,6 @@ classPlot
 ## ---------------------------------------------------------
 
 chemPlot <- plot_tox_boxplots(chemicalSummary, 
-                               filtered_ep, 
                                category = "Chemical")
 chemPlot
 

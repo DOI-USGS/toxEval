@@ -71,7 +71,7 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_site, 
                                         chem_info)
 
-plot_DL <- plot_tox_boxplots(chemicalSummary, filtered_ep, "Chemical")
+plot_DL <- plot_tox_boxplots(chemicalSummary, "Chemical")
 
 plot_DL
 

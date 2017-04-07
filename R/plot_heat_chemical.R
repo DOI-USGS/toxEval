@@ -171,41 +171,16 @@ plot_tox_heatmap <- function(chemicalSummary,
     
   } else {
     
-    if(category == "Biological"){
-      chemicalSummary$category <- chemicalSummary$Bio_category
-    } else {
-      chemicalSummary$category <- chemicalSummary$Class
-    }
+
     
-    graphData <- chemicalSummary %>%
-      group_by(site,date,category) %>%
-      summarise(sumEAR=sum(EAR)) %>%
-      data.frame() %>%
-      group_by(site, category) %>%
-      summarise(meanEAR=max(sumEAR)) %>%
-      data.frame() 
-    
-    if(!is.null(manual_remove)){
-      graphData <- filter(graphData, !(category %in% manual_remove))
-    }
+    graphData <- graphData(chemicalSummary = chemicalSummary,
+                           category = category,
+                           manual_remove = manual_remove)
     
     graphData <- graphData %>%
       left_join(select(chem_site, SiteID, site_grouping, `Short Name`),
                 by=c("site"="SiteID"))
     
-    orderColsBy <- graphData %>%
-      group_by(category) %>%
-      summarise(median = median(meanEAR[meanEAR != 0])) %>%
-      arrange(median)
-    
-    orderedLevels <- orderColsBy$category
-    
-    if(any(is.na(orderColsBy$median))){
-      orderedLevels <- c(orderColsBy$category[is.na(orderColsBy$median)],
-                         orderColsBy$category[!is.na(orderColsBy$median)])
-    }
-    
-    graphData$category <- factor(as.character(graphData$category), levels=orderedLevels)
     
     plot_back <- ggplot(data = graphData) +
       geom_tile(aes(x = `Short Name`, y=category, fill=meanEAR)) +

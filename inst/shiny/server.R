@@ -20,13 +20,13 @@ choicesPerGroup <- which(cleaned_ep > 6 & cleaned_ep < 100)
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
                   "Burns","IndianaHC","StJoseph","PawPaw",        
-                  "Kalamazoo2","Kalamazoo","GrandMI","MilwaukeeMouth","Muskegon",      
+                  "Kalamazoo","GrandMI","Milwaukee","Muskegon",      
                   "WhiteMI","Sheboygan","PereMarquette","Manitowoc",    
                   "Manistee","Fox","Oconto","Peshtigo",      
-                  "Menominee","Indian","Cheboygan2","Cheboygan","Ford",         
+                  "Menominee","Indian","Cheboygan","Ford",         
                   "Escanaba","Manistique",
                   "ThunderBay","AuSable","Rifle",
-                  "Saginaw","Saginaw2","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
+                  "Saginaw","BlackMI","Clinton","Rouge","HuronMI","Raisin","Maumee",
                   "Portage","Sandusky","HuronOH","Vermilion","BlackOH","Rocky","Cuyahoga","GrandOH",
                   "Cattaraugus","Tonawanda","Genesee","Oswego","BlackNY","Oswegatchie","Grass","Raquette","StRegis")
 
@@ -51,27 +51,7 @@ createLink <- function(cas,ep, hits) {
 
 shinyServer(function(input, output,session) {
   
-  rawData <- reactive({
-    if(!is.null(input$data)){
-      
-      path <- file.path(input$data$datapath)
-      newPath <- paste0(input$data$datapath,"_",input$data$name)
-      newPath <- gsub(", ","_",newPath)
-      file.rename(from = path, to = newPath)
-      
-      chem_data <- read_excel(newPath, sheet = "Data")
-      chem_info <- read_excel(newPath, sheet = "Chemicals") 
-      chem_site <- read_excel(newPath, sheet = "Sites")
-      stationINFO <<- chem_site
-      
-      rawData <- list(chem_data=chem_data,
-                      chem_info=chem_info,
-                      chem_site=chem_site)
-    } else {
-      rawData <- NULL
-    }
-    
-  })
+  source("getData.R",local=TRUE)$value
   
   chemicalSummary <- reactive({
     
@@ -105,6 +85,17 @@ shinyServer(function(input, output,session) {
                                               chem_data, 
                                               chem_site, 
                                               chem_info)  
+    } else {
+      chemicalSummary <- data.frame(casrn = character(),
+                       chnm = character(),
+                       endPoint = character(),
+                       site = character(),
+                       date = numeric(),
+                       EAR = numeric(),
+                       shortName = character(),
+                       Class = character(),
+                       Bio_category = character(),
+                       stringsAsFactors = FALSE)
     }
     
   })
@@ -209,232 +200,70 @@ shinyServer(function(input, output,session) {
   })
   
 #############################################################   
+# DT tables:
+  source("tableGroupSumm.R",local=TRUE)$value
+  source("tableSum.R",local=TRUE)$value
   
-
-
-############################################################### 
- 
-  output$tableGroupSumm <- DT::renderDataTable({
-    
-    catType = as.numeric(input$radioMaxGroup)
-    
-    chemicalSummary <- chemicalSummary()
-    hitThres <- hitThresValue()
-    mean_logic <- as.logical(input$meanEAR)
-    
-    tableGroup <- table_tox_sum(chemicalSummary, 
-                              chem_site, 
-                              category = c("Biological","Chemical","Chemical Class")[catType],
-                              mean_logic = mean_logic,
-                              hit_threshold = hitThres)
-    tableGroup
-
-  })
-   
-   output$tableSumm <- DT::renderDataTable({
-     catType = as.numeric(input$radioMaxGroup)
-     
-     chemicalSummary <- chemicalSummary()
-     hitThres <- hitThresValue()
-     mean_logic <- as.logical(input$meanEAR)
-     
-     tableGroup <- table_tox_rank(chemicalSummary, 
-                                 chem_site, 
-                                 category = c("Biological","Chemical","Chemical Class")[catType],
-                                 mean_logic = mean_logic,
-                                 hit_threshold = hitThres)
-     tableGroup
-
-  })
+###################################################################
    
 ###############################################################
-   output$downloadStackPlot <- downloadHandler(
-     
-     filename = function() {
-       "stackPlot.png"
-     },
-     content = function(file) {
-       file.copy("stackPlot.png", file)
-     }
-   )
-   
-   
-      
-  output$stackBarGroup <- renderPlot({
-     
-    catType = as.numeric(input$radioMaxGroup)
-    
-    chemicalSummary <- chemicalSummary()
-    
-#     graphData <- graphData()
-#     meanEARlogic <- as.logical(input$meanEAR)
-#     catType = as.numeric(input$radioMaxGroup)
-#     siteToFind <- unique(graphData$site)
-#     
-#     cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-#     cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$reorderedCat)))
-#     set.seed(4)
-#     cbValues <- sample(cbValues)
-#     
-#     siteLimits <- stationINFO %>%
-#       filter(shortName %in% unique(graphData$site))
-#     
-#     if(length(siteToFind) > 1){
-#       
-#       if(all(siteLimits$shortName %in% sitesOrdered)){
-#         siteLimits <- mutate(siteLimits, shortName = factor(shortName, levels=sitesOrdered[sitesOrdered %in% siteLimits$shortName]))
-#       } else {
-#         siteLimits <- mutate(siteLimits, shortName = factor(shortName))
-#       }
-#       
-#       if(catType != 2){
-#         upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = reorderedCat))
-#       } else {
-#         upperPlot <- ggplot(graphData, aes(x=site, y=meanEAR, fill = class))
-#       }
-#       
-#       upperPlot <- upperPlot +
-#         geom_bar(stat="identity") +
-#         theme_minimal() +
-#         theme(axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.25,
-#                                          colour=siteLimits$lakeColor),
-#               legend.title = element_blank()) +
-#         scale_x_discrete(limits=levels(siteLimits$shortName),drop=FALSE) +
-#         xlab("") +
-#         ylab(paste(ifelse(meanEARlogic,"Mean","Maximum"), "EAR Per Site")) +
-#         scale_fill_manual(values = cbValues, drop=FALSE) 
-# 
-#       
-#     } else {
-#       
-#       chemGroupBPOneSite <- chemicalSummary() %>%
-#         select(-site) 
-#       
-#       chemGroupBPOneSite <- mutate(chemGroupBPOneSite, category = factor(category,levels=orderedLevels))
-#       
-#       upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = category)) +
-#         geom_bar(stat="identity")+
-#         theme_minimal() +
-#         theme(axis.text.x=element_blank(),
-#               axis.ticks=element_blank(),
-#               legend.title = element_blank())+
-#         xlab("Individual Samples") + 
-#         ylab("EAR") +
-#         scale_fill_discrete("", drop=FALSE) +
-#         scale_fill_manual(values = cbValues, drop=FALSE) 
-# 
-#     }
-#     ggsave("stackPlot.png",upperPlot,bg = "transparent")
-#     
-#     print(upperPlot)
-  })
-
+# Graphs:   
+  source("stackPlot.R",local=TRUE)$value
+  source("boxPlot.R",local=TRUE)$value
+  source("heatMap.R",local=TRUE)$value
 ################################################################
-  output$graphGroup <- renderPlot({ 
-    
-    catType = as.numeric(input$radioMaxGroup)
-
-    chemicalSummary <- chemicalSummary()
-    
-    bioPlot <- plot_tox_boxplots(chemicalSummary, 
-                                 filtered_ep, 
-                                 category = c("Biological","Chemical","Chemical Class")[catType])
-    
-    if(catType == 2){
-      ggsave("boxPlot.png",
-             bioPlot,
-             bg = "transparent", 
-             height = 12, width = 9)
-    } else {
-      ggsave("boxPlot.png",
-             bioPlot,
-             bg = "transparent", 
-             height = 6, width = 8)
-    }
-    
-    bioPlot
-  })
-   
-  output$graphGroup.ui <- renderUI({
-    heightOfGraph <- 500
-    if(as.numeric(input$radioMaxGroup) == 2){
-      heightOfGraph <- 800
-    }
-    plotOutput("graphGroup", height = heightOfGraph)
-  })
-  
-  output$downloadBoxPlot <- downloadHandler(
-
-    filename = function() {
-      "boxPlot.png"
-    },
-    content = function(file) {
-      file.copy("boxPlot.png", file)
-    }
-  )
-  
-################################################################
-  output$graphHeat <- renderPlot({
-    catType = as.numeric(input$radioMaxGroup)
-    
-    chemicalSummary <- chemicalSummary()
-    rawData <- rawData()
-    chem_site <- rawData$chem_site
-    
-    if(all(unique(chem_site$site_grouping) %in% great_lakes)){
-      chem_site$site_grouping <- factor(chem_site$site_grouping,
-                                        levels=great_lakes)      
-    }
-    
-    if(all(unique(chem_site$`Short Name`) %in% sitesOrdered)){
-      chem_site$`Short Name` <- factor(chem_site$`Short Name`,
-                                        levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
-    }
-
-    heatMap <- plot_tox_heatmap(chemicalSummary,
-                     chem_site,
-                     category = c("Biological","Chemical","Chemical Class")[catType])
-    
-    ggsave("heatPlot.png",heatMap,bg = "transparent")
-    
-    heatMap
-    
-  })
-  
-  output$graphHeat.ui <- renderUI({
-    heightOfGraph <- 500
-    if(as.numeric(input$radioMaxGroup) == 2){
-      heightOfGraph <- 800
-    }
-    plotOutput("graphHeat", height = heightOfGraph)
-  })
-  
-  output$downloadHeatPlot <- downloadHandler(
-
-    filename = function() {
-      "heatPlot.png"
-    },
-    content = function(file) {
-      file.copy("heatPlot.png", file)
-    }
-  )
-
-################################################################  
-#  
-  
 
 
 # # #############################################################    
 #    
-#   output$mymap <- leaflet::renderLeaflet({
-#     
-#     map <- leaflet(height = "50px") %>%
-#       addProviderTiles("CartoDB.Positron") %>%
-#       setView(lng = -83.5, lat = 44.5, zoom=6) 
-#     
-#     map
-#     
-#   })
+  output$mymap <- leaflet::renderLeaflet({
+
+    map <- leaflet(height = "50px") %>%
+      addProviderTiles("CartoDB.Positron") %>%
+      setView(lng = -83.5, lat = 44.5, zoom=6)
+
+    map
+
+  })
+  
+  output$mapFooter <- renderUI({
+    
+    validate(
+      need(!is.null(input$data), "Please select a data set")
+    )
+    
+    chemicalSummary <- chemicalSummary()
+    
+    statsOfGroupOrdered <- chemicalSummary %>%
+      group_by(site, date,category) %>%
+      summarise(sumEAR = sum(EAR),
+                hits = sum(EAR > hit_threshold)) %>%
+      group_by(site,category) %>%
+      summarise(mean = sum(mean(sumEAR) > hit_threshold),
+                max = sum(max(sumEAR) > hit_threshold)) %>%
+      data.frame()
+    
+    meanEARlogic <- input$meanEAR
+    
+    if(as.logical(meanEARlogic)){
+      counts <- statsOfGroupOrdered$mean
+    } else {
+      counts <- statsOfGroupOrdered$max
+    }
+    
+    if(input$radioMaxGroup == "1"){
+      word <- "groups"
+    } else if (input$radioMaxGroup == "2"){
+      word <- "chemicals"
+    } else {
+      word <- "classes"
+    }
+    
+    HTML(paste0("<h5>Size range represents number of ",word,
+                " with hits. Ranges from ", min(counts,na.rm = TRUE)," - ", max(counts,na.rm = TRUE),"</h5>"))
+    
+  })
+  
 #   
 #   observe({
 #     
@@ -544,30 +373,8 @@ shinyServer(function(input, output,session) {
   output$TableHeader <- renderUI({
     HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
   })
-  # 
-  # output$mapFooter <- renderUI({
-  # 
-  #   statsOfGroupOrdered <- statsOfGroupOrdered()
-  #   meanEARlogic <- input$meanEAR
-  # 
-  #   if(as.logical(meanEARlogic)){
-  #     counts <- statsOfGroupOrdered$mean
-  #   } else {
-  #     counts <- statsOfGroupOrdered$max
-  #   }
-  # 
-  #   if(input$radioMaxGroup == "1"){
-  #     word <- "groups"
-  #   } else if (input$radioMaxGroup == "2"){
-  #     word <- "chemicals"
-  #   } else {
-  #     word <- "classes"
-  #   }
-  # 
-  #   HTML(paste0("<h5>Size range represents number of ",word,
-  #               " with hits. Ranges from ", min(counts,na.rm = TRUE)," - ", max(counts,na.rm = TRUE),"</h5>"))
-  # 
-  # })
+
+
 
   output$BoxHeader <- renderUI({
     HTML(paste("<h4>", input$group,"-",input$data,": ",input$sites, "</h4>"))
@@ -586,7 +393,7 @@ shinyServer(function(input, output,session) {
     }
 
   })
-# 
+ 
   output$nGroup <- renderUI({
 
     radio <- input$radioMaxGroup
