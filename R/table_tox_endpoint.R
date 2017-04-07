@@ -39,7 +39,7 @@ table_tox_endpoint <- function(chemicalSummary,
                            hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
-  
+  meanEAR <- nSites <- ".dplyr"
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   if(category == "Biological"){

@@ -143,6 +143,7 @@ statsOfColumns <- function(chemicalSummary,
                            mean_logic){
   
   sumEAR <- nHits <- n <- calc <- value <- choice_calc <- ".dplyr"
+  chnm <- Class <- Bio_category <- site <- EAR <- ".dplyr"
   
   siteToFind <- unique(chemicalSummary$shortName)
   
