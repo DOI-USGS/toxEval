@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 6: Sub-families</h1>
-<h4 class="date"><em>07 April, 2017</em></h4>
+<h4 class="date"><em>10 April, 2017</em></h4>
 
 
 
@@ -131,8 +131,13 @@ orderGroups &lt;-<span class="st"> </span>graphData %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Bio_category =</span> <span class="kw">factor</span>(Bio_category, <span class="dt">levels=</span>orderSub$Bio_category)) %&gt;%
 <span class="st">  </span><span class="kw">arrange</span>(Bio_category, <span class="kw">desc</span>(median))
 
+orderedSub &lt;-<span class="st"> </span><span class="kw">rev</span>(orderGroups$subFamily)[<span class="kw">rev</span>(orderGroups$subFamily) %in%
+<span class="st">                                           </span><span class="kw">unique</span>(graphData$subFamily)]
+orderedSub &lt;-<span class="st"> </span><span class="kw">unique</span>(orderedSub)
+
 graphData$subFamily &lt;-<span class="st"> </span><span class="kw">factor</span>(graphData$subFamily, 
-                              <span class="dt">levels =</span> <span class="kw">rev</span>(orderGroups$subFamily))
+                              <span class="dt">levels =</span> orderedSub)
+
 graphData$Bio_category &lt;-<span class="st"> </span><span class="kw">factor</span>(graphData$Bio_category, 
                             <span class="dt">levels =</span> orderSub$Bio_category)
 

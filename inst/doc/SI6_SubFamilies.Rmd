@@ -85,8 +85,13 @@ orderGroups <- graphData %>%
   mutate(Bio_category = factor(Bio_category, levels=orderSub$Bio_category)) %>%
   arrange(Bio_category, desc(median))
 
+orderedSub <- rev(orderGroups$subFamily)[rev(orderGroups$subFamily) %in%
+                                           unique(graphData$subFamily)]
+orderedSub <- unique(orderedSub)
+
 graphData$subFamily <- factor(graphData$subFamily, 
-                              levels = rev(orderGroups$subFamily))
+                              levels = orderedSub)
+
 graphData$Bio_category <- factor(graphData$Bio_category, 
                             levels = orderSub$Bio_category)
 
