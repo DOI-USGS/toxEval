@@ -4,7 +4,7 @@
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
+#' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
@@ -63,7 +63,7 @@ getMapInfo <- function(chemicalSummary,
                             mean_logic = mean_logic)
   
   mapData <- left_join(sumStat, distinct(select(statsOfGroupOrdered, site, nSamples)), by="site")
-  mapData <- left_join(mapData, chem_site[,c("Short Name", "Fullname", "dec_lat", "dec_lon")], by=c("site"="Short Name"))
+  mapData <- left_join(mapData, chem_site[,c("Short Name", "dec_lat", "dec_lon")], by=c("site"="Short Name"))
   
   col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
   

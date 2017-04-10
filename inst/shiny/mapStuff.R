@@ -72,7 +72,7 @@ observe({
     clearMarkers() %>%
     clearControls() %>%
     addCircleMarkers(lat=~dec_lat, lng=~dec_lon,
-                     popup=paste0('<b>',mapData$Fullname,"</b><br/><table>",
+                     popup=paste0('<b>',mapData$`Short Name`,"</b><br/><table>",
                                   "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanMax),'</td></tr>',
                                   "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
                                   # "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr>',
