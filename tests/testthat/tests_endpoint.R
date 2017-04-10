@@ -50,5 +50,44 @@ test_that("Removing flags", {
 
 test_that("Cleaning up endpoints", {
   testthat::skip_on_cran()
+  # This function rejiggers some intended target family and sub-family
+  # based on first paper:
+  cleaned_ep <- clean_endPoint_info(endPointInfo)
+  expect_equal(names(cleaned_ep), names(endPointInfo))
+  expect_lt(nrow(cleaned_ep), nrow(endPointInfo))
+  
+  cleanedNames <- c("Cell Cycle","Nuclear Receptor",
+                    "Cell Morphology","DNA Binding",
+                    "Background Measurement","Growth Factor",
+                    "Cell Adhesion Molecules","Cytokine",
+                    "GPCR","Kinase",
+                    "Protease","Misc Protein",
+                    "Protease Inhibitor","CYP",
+                    "Esterase","Phosphatase",
+                    "Hydrolase","Oxidoreductase",
+                    "Lyase","Methyltransferase",
+                    "Ion Channel","Transporter",
+                    "Steroid Hormone","Transferase",
+                    "Zebrafish","Undefined")
+
+    expect_true(all(cleanedNames %in% cleaned_ep$intended_target_family))
+    expect_false(all(cleanedNames %in% endPointInfo$intended_target_family))
+})
+
+test_that("Filtering endpoints", {
+  testthat::skip_on_cran()
+  
+  cleaned_ep <- clean_endPoint_info(endPointInfo)
+  
+  assays <- c("ATG","NVS", "OT")
+  groups <- c("Background Measurement","Undefined","Cell Cycle")
+  
+  filtered_ep <- filter_groups(cleaned_ep, 
+                               groupCol = "intended_target_family",
+                               assays = assays,
+                               remove_groups = groups)
+  
+  expect_true(all(unique(filtered_ep$assaysFull) %in% assays))
+  expect_true(!(any(unique(filtered_ep$groupCol) %in% groups)))
   
 })
