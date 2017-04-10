@@ -6,7 +6,7 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
-#' @importFrom dplyr full_join filter mutate select left_join right_join
+#' @importFrom dplyr full_join filter mutate left_join right_join
 #' @examples
 #' library(readxl)
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -61,7 +61,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
   graphData <- graphData %>%
-    left_join(select(chem_site, SiteID, site_grouping, `Short Name`),
+    left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
               by=c("site"="SiteID"))
   
   heat <- ggplot(data = graphData) +
@@ -105,7 +105,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
-#' @importFrom dplyr full_join filter mutate select left_join right_join
+#' @importFrom dplyr full_join filter mutate left_join right_join
 #' @examples
 #' library(readxl)
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -179,7 +179,7 @@ plot_tox_heatmap <- function(chemicalSummary,
                            mean_logic = mean_logic)
     
     graphData <- graphData %>%
-      left_join(select(chem_site, SiteID, site_grouping, `Short Name`),
+      left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
     
     

@@ -62,7 +62,7 @@ plot_tox_stacks <- function(chemicalSummary,
 
   if(length(siteToFind) > 1){
     graphData <- graphData %>%
-      left_join(select(chem_site, SiteID, site_grouping, `Short Name`),
+      left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
 
     upperPlot <- ggplot(graphData, 

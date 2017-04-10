@@ -78,11 +78,14 @@ table_tox_endpoint <- function(chemicalSummary,
       spread(Bio_category, nSites)
     
     sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
-    orderData <- order(sumOfColumns,decreasing = TRUE)
-    orderData <- orderData[sumOfColumns[orderData] != 0] + 1
-
-    tableData <- tableData[,c(1,orderData)]
     
+    if(!all(sumOfColumns == 0)){
+      orderData <- order(sumOfColumns,decreasing = TRUE)
+      orderData <- orderData[sumOfColumns[orderData] != 0] + 1
+      
+      tableData <- tableData[,c(1,orderData)]      
+    }
+
     colors <- brewer.pal(9,"Blues") #"RdYlBu"
 
     groups <- tableData$category

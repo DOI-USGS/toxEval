@@ -73,10 +73,10 @@ shinyServer(function(input, output,session) {
       remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% input$group)]
       # So maybe do this in clean?:
       cleaned_ep <- rename(cleaned_ep, assay_component_endpoint_name = endPoint)
-      filtered_ep <<- filter_groups(cleaned_ep, 
+      filtered_ep <- filter_groups(cleaned_ep, 
                                     groupCol = groupCol, 
                                     remove_groups = remove_groups)
-      
+
       chemicalSummary <- get_chemical_summary(ACClong,
                                               filtered_ep,
                                               chem_data, 
@@ -109,6 +109,7 @@ shinyServer(function(input, output,session) {
   source("tableGroupSumm.R",local=TRUE)$value
   source("tableSum.R",local=TRUE)$value
   source("hitTable.R",local=TRUE)$value
+  source("hitsTableEP.R",local=TRUE)$value
 ###################################################################
    
 ###############################################################
@@ -125,23 +126,6 @@ shinyServer(function(input, output,session) {
 ############################################################## 
 
   
-   output$hitsTableEPs <- DT::renderDataTable({
-     
-     validate(
-       need(!is.null(input$data), "Please select a data set")
-     )
-     
-     chemicalSummary <- chemicalSummary()
-     meanEARlogic <- as.logical(input$meanEAR)
-     catType <- as.numeric(input$radioMaxGroup)
-     mean_logic <- as.logical(input$meanEAR)
-     hitThres <- hitThresValue()
- 
-     tableEPs <- table_endpoint_hits(chemicalSummary, 
-                                 category = c("Biological","Chemical","Chemical Class")[catType],
-                                 mean_logic = mean_logic,
-                                 hit_threshold = hitThres)
-     tableEPs
-   })
+
 
 })

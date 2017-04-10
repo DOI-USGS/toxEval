@@ -39,6 +39,7 @@ table_endpoint_hits <- function(chemicalSummary,
                            hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
+  endPoint <- meanEAR <- nSites <- casrn <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -88,7 +89,7 @@ table_endpoint_hits <- function(chemicalSummary,
   } else {
   
     for(i in unique(chemicalSummary$category)){
-      dataSub <- boxData %>%
+      dataSub <- chemicalSummary %>%
         filter(category == i) %>%
         group_by(category, endPoint, date) %>%
         summarise(sumEAR=sum(EAR)) %>%
@@ -116,10 +117,13 @@ table_endpoint_hits <- function(chemicalSummary,
   }
 
   sumOfColumns <- colSums(fullData[c(-1)],na.rm = TRUE)
-  orderData <- order(sumOfColumns,decreasing = TRUE)
-  orderData <- orderData[sumOfColumns[orderData] != 0] + 1
-  
-  fullData <- fullData[,c(1,orderData)]
+  if(!all(sumOfColumns == 0)){
+    orderData <- order(sumOfColumns,decreasing = TRUE)
+    orderData <- orderData[sumOfColumns[orderData] != 0] + 1
+    
+    fullData <- fullData[,c(1,orderData)]   
+  }
+
   colors <- brewer.pal(9,"Blues") #"RdYlBu"
 
   if(category == "Chemical"){

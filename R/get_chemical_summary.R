@@ -38,7 +38,7 @@ get_chemical_summary <- function(ACClong, filtered_ep,
   
   chemicalSummary <- full_join(select(ACClong, 
                                       casn, chnm, MlWt, endPoint, ACC_value), 
-                               chem.data, by=c("casn"="CAS")) %>%
+                               chem.data[,c("CAS", "SiteID", "Value", "Sample Date")], by=c("casn"="CAS")) %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
@@ -47,11 +47,12 @@ get_chemical_summary <- function(ACClong, filtered_ep,
            casrn = casn) %>%
     select(casrn, chnm, endPoint, site, date, EAR) %>%
     filter(endPoint %in% filtered_ep$endPoint) %>%
-    left_join(select(chem.site, SiteID, shortName = `Short Name`),
+    left_join(chem.site[,c("SiteID", "Short Name")],
               by=c("site"="SiteID")) %>%
-    left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS")) %>%
+    left_join(chem.info[, c("CAS", "Class")], by=c("casrn"="CAS")) %>%
     left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
-    rename(Bio_category = groupCol)
+    rename(Bio_category = groupCol,
+           shortName = `Short Name`)
 
   return(chemicalSummary)
 }

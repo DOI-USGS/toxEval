@@ -63,7 +63,7 @@ getMapInfo <- function(chemicalSummary,
                             mean_logic = mean_logic)
   
   mapData <- left_join(sumStat, distinct(select(statsOfGroupOrdered, site, nSamples)), by="site")
-  mapData <- left_join(mapData, select(chem_site, `Short Name`, Fullname, dec_lat, dec_lon), by=c("site"="Short Name"))
+  mapData <- left_join(mapData, chem_site[,c("Short Name", "Fullname", "dec_lat", "dec_lon")], by=c("site"="Short Name"))
   
   col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
   
