@@ -69,12 +69,16 @@ getMapInfo <- function(chemicalSummary,
   
   earCols <- grep("EAR", names(mapData))
   
-  if(mean_logic){
-    mapData$meanMax <- rowMeans(mapData[,earCols], na.rm = TRUE)
+  if(length(earCols) > 1){
+    if(mean_logic){
+      mapData$meanMax <- rowMeans(mapData[,earCols], na.rm = TRUE)
+    } else {
+      mapData$meanMax <- apply(mapData[,earCols], 1, function(x) max(x, na.rm = TRUE))
+    }    
   } else {
-    mapData$meanMax <- apply(mapData[,earCols], 1, function(x) max(x, na.rm = TRUE))
+    mapData$meanMax <- mapData[,earCols]
   }
-  
+
   counts <- mapData$nSamples       
   
   if(length(siteToFind) > 1){
