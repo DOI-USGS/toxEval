@@ -10,61 +10,19 @@ library(RColorBrewer)
 library(grid)
 library(stringi)
 
-
-endPointInfo <- endPointInfo
-
-endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "ATG" & endPointInfo$signal_direction == "loss"),]
-endPointInfo <- endPointInfo[!(endPointInfo$assay_source_name == "NVS" & endPointInfo$signal_direction == "gain"),]
-endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p3_ratio",]
-endPointInfo <- endPointInfo[endPointInfo$assay_component_endpoint_name != "TOX21_p53_BLA_p2_viability",]
-
-endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("CLD_CYP1A1_24hr","CLD_CYP1A1_48hr","CLD_CYP1A1_6hr",
-                                        "CLD_CYP1A2_24hr","CLD_CYP1A2_48hr","CLD_CYP1A2_6hr")] <- "dna binding"
-
-endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("CLD_CYP2B6_24hr","CLD_CYP2B6_48hr","CLD_CYP2B6_6hr",
-                                        "CLD_CYP3A4_24hr","CLD_CYP3A4_48hr","CLD_CYP3A4_6hr",
-                                        "CLD_SULT2A_48hr","CLD_UGT1A1_48hr","NVS_NR_bER",
-                                        "NVS_NR_bPR","NVS_NR_cAR")] <- "nuclear receptor"
-
-endPointInfo$intended_target_family[endPointInfo$assay_component_endpoint_name %in% 
-                                      c("Tanguay_ZF_120hpf_ActivityScore",
-                                        "Tanguay_ZF_120hpf_AXIS_up",
-                                        "Tanguay_ZF_120hpf_BRAI_up",
-                                        "Tanguay_ZF_120hpf_CFIN_up",
-                                        "Tanguay_ZF_120hpf_EYE_up",
-                                        "Tanguay_ZF_120hpf_JAW_up",
-                                        "Tanguay_ZF_120hpf_MORT_up",
-                                        "Tanguay_ZF_120hpf_OTIC_up",
-                                        "Tanguay_ZF_120hpf_PE_up",
-                                        "Tanguay_ZF_120hpf_PFIN_up",
-                                        "Tanguay_ZF_120hpf_PIG_up",
-                                        "Tanguay_ZF_120hpf_SNOU_up",
-                                        "Tanguay_ZF_120hpf_SOMI_up",
-                                        "Tanguay_ZF_120hpf_SWIM_up",
-                                        "Tanguay_ZF_120hpf_TR_up",
-                                        "Tanguay_ZF_120hpf_TRUN_up",
-                                        "Tanguay_ZF_120hpf_YSE_up")] <- "zebrafish"
-
-choicesPerGroup <- apply(endPointInfo, 2, function(x) length(unique(x[!is.na(x)])))
-choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
-
-endPointInfo <- endPointInfo[,c("assay_component_endpoint_name",names(choicesPerGroup))] %>%
+cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
   rename(endPoint = assay_component_endpoint_name)
 
-choicesPerGroup <- apply(endPointInfo[,-1], 2, function(x) length(unique(x[!is.na(x)])))
+trimmed_ep <- cleaned_ep
+choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
+choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
+
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-pathToApp <- system.file("extdata", package="toxEval")
-summaryFile <- readRDS(file.path(pathToApp,"summary.rds"))
+named_choices <- names(choicesPerGroup)
+names(named_choices) <- groupChoices
 
-endPointInfo$intended_target_family <- stri_trans_totitle(endPointInfo$intended_target_family)
-endPointInfo$intended_target_family[grep("Dna",endPointInfo$intended_target_family)] <- "DNA Binding"
-endPointInfo$intended_target_family[grep("Cyp",endPointInfo$intended_target_family)] <- "CYP"
-endPointInfo$intended_target_family[grep("Gpcr",endPointInfo$intended_target_family)] <- "GPCR"
-
-ep <- data.frame(endPointInfo[,c("endPoint", "intended_target_family")])
+ep <- data.frame(cleaned_ep[,c("endPoint", "intended_target_family")])
 ep <- ep[!is.na(ep[,2]),]
 ep <- ep[ep[,2] != "NA",]
 
@@ -79,31 +37,28 @@ dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
 
 selChoices <- df$orderNames
 
-# flags <- unique(AC50gain$flags[!is.na(AC50gain$flags)])
-# flags <- unique(unlist(strsplit(flags, "\\|")))
-flags <- c("Noisy data",
-           "Only one conc above baseline, active",
-           "Hit-call potentially confounded by overfitting")
-
-flagsALL <- c("Borderline active","Only highest conc above baseline, active" ,      
-              "Only one conc above baseline, active","Noisy data",                                 
-              "Hit-call potentially confounded by overfitting","Gain AC50 < lowest conc & loss AC50 < mean conc",
+flagsALL <- c("Borderline active",
+              "Only highest conc above baseline, active" ,      
+              "Only one conc above baseline, active",
+              "Noisy data",                                 
+              "Hit-call potentially confounded by overfitting",
+              "Gain AC50 < lowest conc & loss AC50 < mean conc",
               "Biochemical assay with < 50% efficacy")
 
+shortFlags <- c("Borderline",
+                "OnlyHighest",
+                "OneAbove",
+                "Noisy",
+                "HitCall",
+                "GainAC50",
+                "Biochemical")
+names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   selectInput("data", label = "Data",
-                     choices = c("Water Sample",
-                                 "Passive Samples",
-                                 "Duluth",
-                                 "NPS",
-                                 "TSHP",
-                                 "App State",
-                                 "Birds"),
-                                 # ,"Detection Limits"),
-                     selected = "Water Sample", multiple = FALSE),
+
+   fileInput("data", "Load Excel File",multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
@@ -114,8 +69,8 @@ sidebar <- dashboardSidebar(
                  multiple = FALSE,
                  selected = "All")     
    ),
-   radioButtons("meanEAR",choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
-                inline = TRUE, label = "",selected = "MaxEAR"),
+   radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
+                inline = TRUE, label = "", selected = FALSE),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
             checkboxGroupInput("assay", "Assays:",
                                c("Apredica" = "APR",
@@ -136,8 +91,8 @@ sidebar <- dashboardSidebar(
               actionButton("pickAssay", label="Switch Assays")),
    menuItem("Annotation", icon = icon("th"), tabName = "annotation",
             selectInput("groupCol", label = "Annotation (# Groups)", 
-                        choices = setNames(names(endPointInfo)[-1],groupChoices),
-                        selected = names(endPointInfo)[names(endPointInfo) == "intended_target_family"], 
+                        choices = named_choices,
+                        selected = "intended_target_family", 
                         multiple = FALSE),
             actionButton("changeAnn", label="Switch Annotation")
             ),
@@ -148,11 +103,11 @@ sidebar <- dashboardSidebar(
             actionButton("allGroup", label="Select All/Deselect")),
    menuItem("Sites", icon = icon("th"), tabName = "siteMenu",
             selectInput("sites", label = "Site", 
-                        choices = c("All","2016 GLRI SP sites",summaryFile$site),
+                        choices = c("All"),
                         selected = "All", multiple = FALSE)
    ),
    menuItem("Flags", icon = icon("th"), tabName = "flagMenu",
-            checkboxGroupInput("flags", "Include Flags",choices = flagsALL, selected = flags),
+            checkboxGroupInput("flags", "Include Flags",choices = shortFlags, selected = shortFlags[3:5]),
             actionButton("pickFlags", label="Switch flags")),
    menuItem("Hit Threshold",icon = icon("th"), tabName = "hitThresTab",
             numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),
@@ -210,7 +165,8 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
-            plotOutput("endpointGraph",  height = "1000px")
+            plotOutput("endpointGraph",  height = "1000px"),
+            downloadButton('downloadEndpoint', 'Download PNG')
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
@@ -225,7 +181,7 @@ body <- dashboardBody(
     ),
     column(11,
            h4("Disclaimer"),
-           h5("This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at http://www.usgs.gov/visual-id/credit_usgs.html#copyright
+           h5("This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at https://www.usgs.gov/visual-id/credit_usgs.html#copyright
               Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
               This software is provided 'AS IS.'"))
   

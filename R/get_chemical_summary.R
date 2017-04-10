@@ -10,22 +10,35 @@
 #' @importFrom tidyr gather
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
-#' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
-#' ACClong <- get_ACC(CAS)
+#' library(readxl)
+#' path_to_tox <-  system.file("extdata", package="toxEval")
+#' file_name <- "OWC_data_fromSup.xlsx"
+#' full_path <- file.path(path_to_tox, file_name)
+#' 
+#' chem_data <- read_excel(full_path, sheet = "Data")
+#' chem_info <- read_excel(full_path, sheet = "Chemicals") 
+#' chem_site <- read_excel(full_path, sheet = "Sites")
+#' ACClong <- get_ACC(chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
+#' 
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
+#' chemicalSummary <- get_chemical_summary(ACClong,
+#'                                         filtered_ep,
+#'                                        chem_data, 
+#'                                         chem_site, 
+#'                                         chem_info)
 get_chemical_summary <- function(ACClong, filtered_ep,
                                  chem.data, chem.site, chem.info){
 
   # Getting rid of NSE warnings:
   casn <- chnm <- MlWt <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
-  EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- ".dplyr"
+  EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
   
   chemicalSummary <- full_join(select(ACClong, 
                                       casn, chnm, MlWt, endPoint, ACC_value), 
-                               chem.data, by=c("casn"="CAS")) %>%
+                               chem.data[,c("CAS", "SiteID", "Value", "Sample Date")], by=c("casn"="CAS")) %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
@@ -34,13 +47,12 @@ get_chemical_summary <- function(ACClong, filtered_ep,
            casrn = casn) %>%
     select(casrn, chnm, endPoint, site, date, EAR) %>%
     filter(endPoint %in% filtered_ep$endPoint) %>%
-    left_join(select(chem.site, SiteID, shortName = `Short Name`),
+    left_join(chem.site[,c("SiteID", "Short Name")],
               by=c("site"="SiteID")) %>%
-    left_join(select(chem.info, CAS, Class), by=c("casrn"="CAS")) %>%
+    left_join(chem.info[, c("CAS", "Class")], by=c("casrn"="CAS")) %>%
     left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
-    rename(Bio_category = groupCol)
-  
-  chemicalSummary <- 
+    rename(Bio_category = groupCol,
+           shortName = `Short Name`)
 
   return(chemicalSummary)
 }
