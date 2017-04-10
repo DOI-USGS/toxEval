@@ -17,6 +17,8 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
 
 \item{manual_remove}{vector of categories to remove}
 
+\item{hit_threshold}{numeric threshold defining a "hit"}
+
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 }
 \description{

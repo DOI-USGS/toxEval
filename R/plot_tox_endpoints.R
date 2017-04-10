@@ -6,6 +6,7 @@
 #' @param filterBy character either "All" or one of the filtered categories.
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param hit_threshold numeric threshold defining a "hit"
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
