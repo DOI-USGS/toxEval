@@ -121,3 +121,13 @@ test_that("Internal chem plotting functions", {
   expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuel")
 })
+
+test_that("Map stuff functions", {
+  testthat::skip_on_cran()
+  
+  mapDataList <- getMapInfo(chemicalSummary, 
+                            chem_site = chem_site, 
+                            category = "Biological")
+  expect_type(mapDataList, "list")
+  expect_equal(length(mapDataList), 2)
+})
