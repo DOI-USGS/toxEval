@@ -10,7 +10,7 @@ getMapInfo(chemicalSummary, chem_site, category = "Biological",
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
 
-\item{chem_site}{data frame with at least columns SiteID, site_grouping,  and Short Name}
+\item{chem_site}{data frame with at least columns SiteID, site_grouping, and Short Name}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 

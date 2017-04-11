@@ -11,6 +11,8 @@ library(RColorBrewer)
 library(stringi)
 library(readxl)
 
+options(shiny.maxRequestSize=10*1024^2)
+
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
   rename(endPoint = assay_component_endpoint_name)
 

@@ -112,3 +112,12 @@ test_that("Internal table functions", {
   
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
 })
+
+test_that("Internal chem plotting functions", {
+  testthat::skip_on_cran()
+  
+  graphData <- graph_chem_data(chemicalSummary)
+  expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
+  expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
+  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuel")
+})
