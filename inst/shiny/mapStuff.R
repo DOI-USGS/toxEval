@@ -53,7 +53,7 @@ observe({
   
   chemicalSummary <- chemicalSummary()
   catType = as.numeric(input$radioMaxGroup)
-  siteToFind <- chem_site$`Short Name`
+  siteToFind <- unique(chemicalSummary$site)
   
   meanEARlogic <- as.logical(input$meanEAR)
   
@@ -67,6 +67,14 @@ observe({
   
   mapData <- mapDataList$mapData
   pal <- mapDataList$pal
+  
+  if(length(siteToFind) == 1){
+
+    mapData <- filter(chem_site, SiteID == siteToFind) %>%
+      mutate(nSamples = median(mapData$nSamples),
+             meanMax = median(mapData$meanMax),
+             sizes = median(mapData$sizes))
+  }
 
   map <- leafletProxy("mymap", data=mapData) %>%
     clearMarkers() %>%

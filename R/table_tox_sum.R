@@ -45,74 +45,41 @@ table_tox_sum <- function(chemicalSummary,
                category = category,
                hit_threshold = hit_threshold)
   siteToFind <- unique(chemicalSummary$site)
+
+  meanChem <- grep("Individual.Hits",names(statsOfGroupOrdered))
+  maxChem <- grep("Hits.per.Sample",names(statsOfGroupOrdered))
   
-  if(length(siteToFind) > 1){
-    meanChem <- grep("Individual.Hits",names(statsOfGroupOrdered))
-    maxChem <- grep("Hits.per.Sample",names(statsOfGroupOrdered))
-    
-    colToSort <- maxChem-1
+  colToSort <- maxChem-1
 
-    tableGroup <- DT::datatable(statsOfGroupOrdered,  extensions = 'Buttons',
-                                rownames = FALSE,
-                                options = list(pageLength = nrow(statsOfGroupOrdered),
-                                              order=list(list(colToSort,'desc')),
-                                              dom = 'Bfrtip',
-                                              buttons =
-                                               list('colvis', list(
-                                                 extend = 'collection',
-                                                 buttons = list(list(extend='csv',
-                                                                     filename = 'hitCount'),
-                                                                list(extend='excel',
-                                                                     filename = 'hitCount'),
-                                                                list(extend='pdf',
-                                                                     filename= 'hitCount')),
-                                                 text = 'Download')
-                                               )
-                                             ))
-                                # options = list(dom = 'ft',
-
-
-    tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem],
-                              background = styleColorBar(range(statsOfGroupOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
-                              backgroundSize = '100% 90%',
-                              backgroundRepeat = 'no-repeat',
-                              backgroundPosition = 'center' )
+  tableGroup <- DT::datatable(statsOfGroupOrdered,  extensions = 'Buttons',
+                              rownames = FALSE,
+                              options = list(pageLength = nrow(statsOfGroupOrdered),
+                                            order=list(list(colToSort,'desc')),
+                                            dom = 'Bfrtip',
+                                            buttons =
+                                             list('colvis', list(
+                                               extend = 'collection',
+                                               buttons = list(list(extend='csv',
+                                                                   filename = 'hitCount'),
+                                                              list(extend='excel',
+                                                                   filename = 'hitCount'),
+                                                              list(extend='pdf',
+                                                                   filename= 'hitCount')),
+                                               text = 'Download')
+                                             )
+                                           ))
   
-    tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[meanChem],
-                              background = styleColorBar(range(statsOfGroupOrdered[,meanChem],na.rm=TRUE), 'wheat'),
-                              backgroundSize = '100% 90%',
-                              backgroundRepeat = 'no-repeat',
-                              backgroundPosition = 'center')
-
-  } else {
-
-    tableGroup <- DT::datatable(statsOfGroupOrdered[,c("category","max","nSamples")], extensions = 'Buttons',
-                                colnames = c('hits' = 2),
-                                rownames = FALSE,
-                                options = list(
-                                  pageLength = nrow(statsOfGroupOrdered),
-                                  order=list(list(1,'desc')),
-                                  dom = 'Bfrtip',
-                                  buttons =
-                                    list('colvis', list(
-                                      extend = 'collection',
-                                      buttons = list(list(extend='csv',
-                                                          filename = 'hitCount'),
-                                                     list(extend='excel',
-                                                          filename = 'hitCount'),
-                                                     list(extend='pdf',
-                                                          filename= 'hitCount')),
-                                      text = 'Download')
-                                    )
-                                ))
-
-    tableGroup <- formatStyle(tableGroup, "hits",
-                              background = styleColorBar(range(statsOfGroupOrdered[,"max"],na.rm=TRUE), 'goldenrod'),
-                              backgroundSize = '100% 90%',
-                              backgroundRepeat = 'no-repeat',
-                              backgroundPosition = 'center' )
+  tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem],
+                            background = styleColorBar(range(statsOfGroupOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
+                            backgroundSize = '100% 90%',
+                            backgroundRepeat = 'no-repeat',
+                            backgroundPosition = 'center' )
   
-  }
+  tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[meanChem],
+                            background = styleColorBar(range(statsOfGroupOrdered[,meanChem],na.rm=TRUE), 'wheat'),
+                            backgroundSize = '100% 90%',
+                            backgroundRepeat = 'no-repeat',
+                            backgroundPosition = 'center')
 
   return(tableGroup)
 }

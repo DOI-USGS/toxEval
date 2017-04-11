@@ -111,7 +111,7 @@ table_endpoint_hits <- function(chemicalSummary,
           dataSub <- dataSub[which(dataSub[,-1] != 0 ),]
         }
 
-        fullData <- full_join(fullData,dataSub)
+        fullData <- full_join(fullData,dataSub, by="endPoint")
       }
     }
   }

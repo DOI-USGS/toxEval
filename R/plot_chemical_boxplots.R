@@ -1,7 +1,7 @@
 #' plot_chemical_boxplots
 #' 
 #' Plot boxplot of chemicals
-#' @param graphData data frame from \code{graph_chem_data}
+#' @param chemicalSummary data frame from \code{graph_chem_data}
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @export

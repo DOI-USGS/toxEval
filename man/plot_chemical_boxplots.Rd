@@ -8,11 +8,11 @@ plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
   mean_logic = FALSE)
 }
 \arguments{
+\item{chemicalSummary}{data frame from \code{graph_chem_data}}
+
 \item{manual_remove}{vector of categories to remove}
 
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
-
-\item{graphData}{data frame from \code{graph_chem_data}}
 }
 \description{
 Plot boxplot of chemicals
