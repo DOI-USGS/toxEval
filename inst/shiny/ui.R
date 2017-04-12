@@ -57,7 +57,13 @@ header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-
+   tags$button(
+      id = 'close',
+      type = "button",
+      class = "btn action-button",
+      onclick = "setTimeout(function(){window.close();},500);",  # close browser
+      "Stop ToxEval"
+    ),
    fileInput("data", "Load Excel File",multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
