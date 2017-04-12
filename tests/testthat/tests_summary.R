@@ -99,6 +99,26 @@ test_that("Plotting stacked summaries", {
   
 })
 
+test_that("Plotting endpoints", {
+  testthat::skip_on_cran()
+  
+  bioStackPlot <- plot_tox_endpoints(chemicalSummary, 
+                                  category = "Biological",
+                                  filterBy = "Cell Cycle")
+  expect_true(all(names(bioStackPlot$data) %in% c("site","category","endPoint",
+                                                  "meanEAR")))
+  
+  classStackPlot <- plot_tox_endpoints(chemicalSummary, 
+                                    category = "Chemical Class", filterBy = "PAH")
+  expect_true(all(names(classStackPlot$data) %in% c("site","category","endPoint",
+                                                    "meanEAR")))
+  
+  chemStackPlot <- plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+  expect_true(all(names(chemStackPlot$data) %in% c("site","category","endPoint",
+                                                   "meanEAR")))
+  
+})
+
 
 test_that("Internal table functions", {
   testthat::skip_on_cran()
@@ -181,6 +201,26 @@ test_that("table_tox_endpoint", {
                                            "Zebrafish")))
 })
 
+
+test_that("table_tox_sum", {
+  testthat::skip_on_cran()
+  
+  bt <- table_tox_sum(chemicalSummary, category = "Biological")
+  expect_type(bt, "list")
+  expect_true(all(c("site","category","Hits.per.Sample","Individual.Hits","nSamples") %in% names(bt$x$data)))
+  
+  expect_error(table_tox_sum(chemicalSummary, category = "Class"))
+  
+  ct <- table_tox_sum(chemicalSummary, category = "Chemical Class")
+  expect_type(ct, "list")
+  
+  expect_true(all(names(ct$x$data) %in% c("site","category","Hits.per.Sample","Individual.Hits","nSamples")))
+  
+  cht <- table_tox_sum(chemicalSummary, category = "Chemical")
+  expect_type(cht, "list")
+  
+  expect_true(all(names(cht$x$data) %in% c("site","category","Hits.per.Sample","Individual.Hits","nSamples")))
+})
 
 test_that("table_tox_rank", {
   testthat::skip_on_cran()
