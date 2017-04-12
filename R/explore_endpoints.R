@@ -5,6 +5,7 @@
 #' @param browse use browser for map rendering
 #' @export
 #' @importFrom shiny runApp
+#' @importFrom tools file_ext
 #' @importFrom leaflet leaflet
 #' @importFrom leaflet addLegend
 #' @importFrom leaflet addCircles

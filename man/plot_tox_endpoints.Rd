@@ -45,4 +45,6 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_site, 
                                         chem_info)
  plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+ plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAH")
+ plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
 }

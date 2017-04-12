@@ -32,6 +32,8 @@
 #'                                         chem_site, 
 #'                                         chem_info)
 #'  plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+#'  plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAH")
+#'  plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
 plot_tox_endpoints <- function(chemicalSummary, 
                               category = "Biological",
                               filterBy = "All",

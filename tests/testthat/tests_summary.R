@@ -99,6 +99,26 @@ test_that("Plotting stacked summaries", {
   
 })
 
+test_that("Plotting endpoints", {
+  testthat::skip_on_cran()
+  
+  bioStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, 
+                                  category = "Biological",
+                                  filterBy = "Cell Cycle"))
+  expect_true(all(names(bioStackPlot$data) %in% c("site","category","endPoint",
+                                                  "meanEAR")))
+  
+  classStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, 
+                                    category = "Chemical Class", filterBy = "PAH"))
+  expect_true(all(names(classStackPlot$data) %in% c("site","category","endPoint",
+                                                    "meanEAR")))
+  
+  chemStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine"))
+  expect_true(all(names(chemStackPlot$data) %in% c("site","category","endPoint",
+                                                   "meanEAR")))
+  
+})
+
 
 test_that("Internal table functions", {
   testthat::skip_on_cran()
@@ -130,4 +150,97 @@ test_that("Map stuff functions", {
                             category = "Biological")
   expect_type(mapDataList, "list")
   expect_equal(length(mapDataList), 2)
+})
+
+test_that("Table endpoint hits", {
+  testthat::skip_on_cran()
+
+  bt <- table_endpoint_hits(chemicalSummary, category = "Biological")
+  expect_type(bt, "list")
+  expect_true(all(names(bt$x$data) %in% c("endPoint","Nuclear Receptor","DNA Binding",
+                                  "Phosphatase","Steroid Hormone","Esterase")))
+  
+  expect_error(table_endpoint_hits(chemicalSummary, category = "Class"))
+  
+  ct <- table_endpoint_hits(chemicalSummary, category = "Chemical Class")
+  expect_type(ct, "list")
+  
+  expect_true(all(names(ct$x$data) %in% c("endPoint","Antioxidant",
+                                          "Detergent Metabolites","Herbicide",
+                                          "Plasticizer")))
+  
+  cht <- table_endpoint_hits(chemicalSummary, category = "Chemical")
+  expect_type(cht, "list")
+  
+  expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A",
+                                           "4-Nonylphenol, branched","Triphenyl phosphate",
+                                           "Metolachlor","Atrazine")))
+})
+
+test_that("table_tox_endpoint", {
+  testthat::skip_on_cran()
+  
+  bt <- table_tox_endpoint(chemicalSummary, category = "Biological")
+  expect_type(bt, "list")
+  expect_true("nSites" %in% names(bt$x$data))
+  
+  expect_error(table_tox_endpoint(chemicalSummary, category = "Class"))
+  
+  ct <- table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+  expect_type(ct, "list")
+  
+  expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
+                                          "Phosphatase","Esterase","Steroid Hormone",
+                                          "Zebrafish")))
+  
+  cht <- table_tox_endpoint(chemicalSummary, category = "Chemical")
+  expect_type(cht, "list")
+  
+  expect_true(all(names(cht$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
+                                           "Phosphatase","Esterase","Steroid Hormone",
+                                           "Zebrafish")))
+})
+
+
+test_that("table_tox_sum", {
+  testthat::skip_on_cran()
+  
+  bt <- table_tox_sum(chemicalSummary, category = "Biological")
+  expect_type(bt, "list")
+  expect_true(all(c("site","category","Hits.per.Sample","Individual.Hits","nSamples") %in% names(bt$x$data)))
+  
+  expect_error(table_tox_sum(chemicalSummary, category = "Class"))
+  
+  ct <- table_tox_sum(chemicalSummary, category = "Chemical Class")
+  expect_type(ct, "list")
+  
+  expect_true(all(names(ct$x$data) %in% c("site","category","Hits.per.Sample","Individual.Hits","nSamples")))
+  
+  cht <- table_tox_sum(chemicalSummary, category = "Chemical")
+  expect_type(cht, "list")
+  
+  expect_true(all(names(cht$x$data) %in% c("site","category","Hits.per.Sample","Individual.Hits","nSamples")))
+})
+
+test_that("table_tox_rank", {
+  testthat::skip_on_cran()
+  
+  bt <- table_tox_rank(chemicalSummary, category = "Biological")
+  expect_type(bt, "list")
+  expect_true("site" %in% names(bt$x$data))
+  
+  expect_error(table_tox_rank(chemicalSummary, category = "Class"))
+  
+  ct <- table_tox_rank(chemicalSummary, category = "Chemical Class")
+  expect_type(ct, "list")
+  
+  expect_true(all(c("site","Antioxidant maxEAR","Antioxidant freq",
+                    "Herbicide maxEAR","Herbicide freq",
+                    "Detergent Metabolites maxEAR","Detergent Metabolites freq") %in% names(ct$x$data)))
+  
+  cht <- table_tox_rank(chemicalSummary, category = "Chemical")
+  expect_type(cht, "list")
+  
+  expect_true(all(c("site","Bisphenol A maxEAR","Bisphenol A freq",
+                    "4-Nonylphenol, branched maxEAR") %in% names(cht$x$data)))
 })

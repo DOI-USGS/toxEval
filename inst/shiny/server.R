@@ -50,6 +50,10 @@ flags <- c( "OneAbove","Noisy","HitCall")
 
 shinyServer(function(input, output,session) {
   
+  observe({
+    if (input$close > 0) stopApp()    
+  })
+  
   source("getData.R",local=TRUE)$value
   
   chemicalSummary <- reactive({
