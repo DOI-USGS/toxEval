@@ -60,6 +60,7 @@ table_tox_endpoint <- function(chemicalSummary,
       summarize(nSites = sum(meanEAR >  hit_threshold)) %>%
       data.frame()
   } else {
+    
     tableData <- chemicalSummary %>%
       group_by(Bio_category, category, date)
 
@@ -99,6 +100,10 @@ table_tox_endpoint <- function(chemicalSummary,
     tableData <- select(tableData, Bio_category, nSites)
     rownames(tableData) <- tableData$Bio_category
     tableData <- tableData[,-1,drop=FALSE]
+  }
+  
+  if(length(unique(chemicalSummary$site)) == 1){
+    names(tableData)[names(tableData) == "nSites"] <- "nSamples" 
   }
 
   tableData1 <- DT::datatable(tableData, extensions = 'Buttons',

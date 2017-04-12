@@ -11,7 +11,8 @@ observe({
 
 epDF <- reactiveValues(assays = initAssay,
                        groupColName = "intended_target_family",
-                       flags = flags)
+                       flags = flags,
+                       sites = "All")
 
 observeEvent(input$pickAssay, {
   epDF[["assays"]] <- NULL
@@ -22,6 +23,11 @@ observeEvent(input$pickAssay, {
 observeEvent(input$pickFlags, {
   epDF[["flags"]] <- NULL
   epDF[["flags"]] <- input$flags
+})
+
+observeEvent(input$sites, {
+  epDF[["sites"]] <- NULL
+  epDF[["sites"]] <- input$sites
 })
 
 observeEvent(input$changeAnn, {

@@ -4,10 +4,15 @@
 \alias{plot_chemical_boxplots}
 \title{plot_chemical_boxplots}
 \usage{
-plot_chemical_boxplots(graphData)
+plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
+  mean_logic = FALSE)
 }
 \arguments{
-\item{graphData}{data frame from \code{graph_chem_data}}
+\item{chemicalSummary}{data frame from \code{graph_chem_data}}
+
+\item{manual_remove}{vector of categories to remove}
+
+\item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 }
 \description{
 Plot boxplot of chemicals
@@ -32,7 +37,6 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                        chem_data, 
                                         chem_site, 
                                         chem_info)
-
-graphData <- graph_chem_data(chemicalSummary)
-plot_chemical_boxplots(graphData)
+                                        
+plot_chemical_boxplots(chemicalSummary)
 }

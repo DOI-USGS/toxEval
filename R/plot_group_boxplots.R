@@ -42,26 +42,15 @@ plot_tox_boxplots <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
 
   if(category == "Chemical"){
-    
-    graphData <- graph_chem_data(chemicalSummary, mean_logic = mean_logic)
-    chemPlot <- plot_chemical_boxplots(graphData)
+
+    chemPlot <- plot_chemical_boxplots(chemicalSummary, mean_logic = mean_logic)
     return(chemPlot)
     
   } else {
     
-    graphData <- graphData(chemicalSummary = chemicalSummary,
-                           category = category,
-                           manual_remove = manual_remove,
-                           mean_logic = mean_logic)
+    single_site <- length(unique(chemicalSummary$site)) == 1
     
-    countNonZero <- graphData %>%
-      group_by(category) %>%
-      summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
-      data.frame() 
-  
-    bioPlot <- ggplot(graphData)+
-      scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers)+
-      geom_boxplot(aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
+    bioPlot <- ggplot()+
       coord_flip() +
       theme_bw() +
       xlab("") +
@@ -69,6 +58,60 @@ plot_tox_boxplots <- function(chemicalSummary,
             axis.text.y = element_text(size=10, color = "black", vjust = 0.2), 
             axis.text.x = element_text(size=10, color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
             axis.title = element_text(size=10))
+    
+    if(single_site){
+      
+      if(category == "Biological"){
+        chemicalSummary$category <- chemicalSummary$Bio_category
+      } else {
+        chemicalSummary$category <- chemicalSummary$Class
+      }
+      
+      countNonZero <- chemicalSummary %>%
+        group_by(category) %>%
+        summarise(nonZero = as.character(sum(EAR>0))) %>%
+        data.frame() 
+      
+      if(!is.null(manual_remove)){
+        chemicalSummary <- filter(chemicalSummary, !(category %in% manual_remove))
+      }
+      
+      orderColsBy <- chemicalSummary %>%
+        group_by(category) %>%
+        summarise(median = median(EAR[EAR != 0])) %>%
+        arrange(median)
+      
+      orderedLevels <- orderColsBy$category
+      
+      if(any(is.na(orderColsBy$median))){
+        orderedLevels <- c(orderColsBy$category[is.na(orderColsBy$median)],
+                           orderColsBy$category[!is.na(orderColsBy$median)])
+      }
+      
+      chemicalSummary$category <- factor(chemicalSummary$category,
+                                         levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
+      
+      bioPlot <- bioPlot + geom_boxplot(data = chemicalSummary,
+                                      aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
+        scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
+      
+    } else {
+      graphData <- graphData(chemicalSummary = chemicalSummary,
+                             category = category,
+                             manual_remove = manual_remove,
+                             mean_logic = mean_logic)
+      
+      countNonZero <- graphData %>%
+        group_by(category) %>%
+        summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
+        data.frame() 
+      
+      bioPlot <- bioPlot + geom_boxplot(data = graphData, 
+                                        aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
+        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
+    }
+    
+    bioPlot <- bioPlot 
     
     xmin <- suppressWarnings(10^(ggplot_build(bioPlot)$layout$panel_ranges[[1]]$x.range[1]))
     xmax <- suppressWarnings(10^(ggplot_build(bioPlot)$layout$panel_ranges[[1]]$x.range[2]))
@@ -132,11 +175,8 @@ graphData <- function(chemicalSummary,
                        orderColsBy$category[!is.na(orderColsBy$median)])
   }
   
-  # orderNames <- names(table(select(filtered_ep, groupCol)))
-  # 
-  # orderedLevels <- c(orderNames[!(orderNames %in% orderedLevels)],orderedLevels)
-  # 
-  graphData$category <- factor(as.character(graphData$category), levels=orderedLevels)
+  graphData$category <- factor(as.character(graphData$category), 
+                               levels=orderedLevels[orderedLevels %in% unique(as.character(graphData$category))])
   
   return(graphData)
 }

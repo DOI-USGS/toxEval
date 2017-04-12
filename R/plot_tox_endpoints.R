@@ -51,7 +51,51 @@ plot_tox_endpoints <- function(chemicalSummary,
     chemicalSummary$category <- chemicalSummary$chnm
   }
       
-  graphData <- chemicalSummary %>%
+  single_site <- length(unique(chemicalSummary$site)) == 1
+  
+  if(single_site){
+    
+    if(filterBy != "All"){
+      chemicalSummary <- chemicalSummary %>%
+        filter_(paste0("category == '", filterBy,"'"))
+      
+      countNonZero <- chemicalSummary %>%
+        group_by(endPoint) %>%
+        summarise(nonZero = as.character(sum(EAR>0)),
+                  hits = as.character(sum(EAR > hit_threshold)))
+      
+      countNonZero$hits[countNonZero$hits == "0"] <- ""
+      
+      namesToPlotEP <- as.character(countNonZero$endPoint)
+      nSamplesEP <- countNonZero$nonZero
+      nHitsEP <- countNonZero$hits
+    }
+    
+    orderColsBy <- chemicalSummary %>%
+      group_by(endPoint) %>%
+      summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
+      arrange(median)
+    
+    orderedLevelsEP <- orderColsBy$endPoint
+    
+    if(any(is.na(orderColsBy$median))){
+      orderedLevelsEP <- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
+                           orderColsBy$endPoint[!is.na(orderColsBy$median)])
+    }
+    
+    chemicalSummary$endPoint <- factor(chemicalSummary$endPoint, levels = orderedLevelsEP)
+    
+    
+    stackedPlot <- ggplot(chemicalSummary)+
+      scale_y_log10("EAR per Sample",labels=fancyNumbers) +
+      geom_boxplot(aes(x=endPoint, y=EAR), fill = "steelblue") +
+      theme_minimal() +
+      xlab("") +
+      theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
+      geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+    
+  } else {
+    graphData <- chemicalSummary %>%
       group_by(site,date,category,endPoint) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
@@ -60,43 +104,46 @@ plot_tox_endpoints <- function(chemicalSummary,
       data.frame() %>%
       mutate(category=as.character(category))
   
-  if(filterBy != "All"){
-    graphData <- graphData %>%
-      filter_(paste0("category == '", filterBy,"'"))
-
-    countNonZero <- graphData %>%
+    if(filterBy != "All"){
+      graphData <- graphData %>%
+        filter_(paste0("category == '", filterBy,"'"))
+  
+      countNonZero <- graphData %>%
+        group_by(endPoint) %>%
+        summarise(nonZero = as.character(sum(meanEAR>0)),
+                  hits = as.character(sum(meanEAR > hit_threshold)))
+  
+      countNonZero$hits[countNonZero$hits == "0"] <- ""
+  
+      namesToPlotEP <- as.character(countNonZero$endPoint)
+      nSamplesEP <- countNonZero$nonZero
+      nHitsEP <- countNonZero$hits
+    }
+  
+    orderColsBy <- graphData %>%
       group_by(endPoint) %>%
-      summarise(nonZero = as.character(sum(meanEAR>0)),
-                hits = as.character(sum(meanEAR > hit_threshold)))
-
-    countNonZero$hits[countNonZero$hits == "0"] <- ""
-
-    namesToPlotEP <- as.character(countNonZero$endPoint)
-    nSamplesEP <- countNonZero$nonZero
-    nHitsEP <- countNonZero$hits
+      summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+      arrange(median)
+  
+    orderedLevelsEP <- orderColsBy$endPoint
+  
+    if(any(is.na(orderColsBy$median))){
+      orderedLevelsEP <- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
+                          orderColsBy$endPoint[!is.na(orderColsBy$median)])
+    }
+  
+    graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
+    
+    stackedPlot <- ggplot(graphData)+
+      scale_y_log10(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
+      geom_boxplot(aes(x=endPoint, y=meanEAR), fill = "steelblue") +
+      theme_minimal() +
+      xlab("") +
+      theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
+      geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+    
   }
-
-  orderColsBy <- graphData %>%
-    group_by(endPoint) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-    arrange(median)
-
-  orderedLevelsEP <- orderColsBy$endPoint
-
-  if(any(is.na(orderColsBy$median))){
-    orderedLevelsEP <- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
-                        orderColsBy$endPoint[!is.na(orderColsBy$median)])
-  }
-
-  graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
-
-  stackedPlot <- ggplot(graphData)+
-    scale_y_log10(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
-    geom_boxplot(aes(x=endPoint, y=meanEAR), fill = "steelblue") +
-    theme_minimal() +
-    xlab("") +
-    theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-    geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+  
 
   if(filterBy != "All"){
 
@@ -110,20 +157,20 @@ plot_tox_endpoints <- function(chemicalSummary,
       geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5) +
       geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5)
 
-    df1 <- data.frame(y = c(ymin,hit_threshold,ymax), 
-                      text = c("# Non Zero",
-                               "Hit Threshold",
-                               "# Hits"), stringsAsFactors = FALSE)
-
-    for(i in 1:3){
-      stackedPlot <- stackedPlot +
-        annotation_custom(
-          grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
-          ymin = log10(df1$y[i]),      # Vertical position of the textGrob
-          ymax = log10(df1$y[i]),
-          xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
-          xmax = xmax+0.05)
-    }
+    # df1 <- data.frame(y = c(ymin,hit_threshold,ymax), 
+    #                   text = c("# Non Zero",
+    #                            "Hit Threshold",
+    #                            "# Hits"), stringsAsFactors = FALSE)
+    # 
+    # for(i in 1:3){
+    #   stackedPlot <- stackedPlot +
+    #     annotation_custom(
+    #       grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
+    #       ymin = log10(df1$y[i]),      # Vertical position of the textGrob
+    #       ymax = log10(df1$y[i]),
+    #       xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
+    #       xmax = xmax+0.05)
+    # }
   }
       
   stackedPlot <- stackedPlot +

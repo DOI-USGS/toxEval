@@ -36,6 +36,10 @@ get_chemical_summary <- function(ACClong, filtered_ep,
   casn <- chnm <- MlWt <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
   EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
   
+  if(class(chem.data$Value) == "character"){
+    chem.data$Value <- as.numeric(chem.data$Value)
+  }
+  
   chemicalSummary <- full_join(select(ACClong, 
                                       casn, chnm, MlWt, endPoint, ACC_value), 
                                chem.data[,c("CAS", "SiteID", "Value", "Sample Date")], by=c("casn"="CAS")) %>%

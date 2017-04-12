@@ -11,6 +11,8 @@ library(RColorBrewer)
 library(stringi)
 library(readxl)
 
+options(shiny.maxRequestSize=10*1024^2)
+
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
   rename(endPoint = assay_component_endpoint_name)
 
@@ -55,6 +57,7 @@ shinyServer(function(input, output,session) {
     groupCol <- epDF[["groupColName"]]
     assays <- epDF[["assays"]]
     flags <- epDF[["flags"]]
+    sites <- epDF[["sites"]]
     
     rawData <- rawData()
     if(!is.null(rawData)){
@@ -62,9 +65,12 @@ shinyServer(function(input, output,session) {
       chem_info <- rawData$chem_info
       chem_site <- rawData$chem_site
       
-      #Remove DEET:
-      chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
-      chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
+      if(sites != "All"){
+        chem_site <- chem_site[chem_site$`Short Name` == sites,]
+        siteID <- chem_site$SiteID
+        chem_data <- chem_data[chem_data$SiteID == siteID,]
+        
+      }
       
       ACClong <- get_ACC(chem_info$CAS)
       

@@ -1,7 +1,9 @@
 #' plot_chemical_boxplots
 #' 
 #' Plot boxplot of chemicals
-#' @param graphData data frame from \code{graph_chem_data}
+#' @param chemicalSummary data frame from \code{graph_chem_data}
+#' @param manual_remove vector of categories to remove
+#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @export
 #' @import ggplot2
 #' @importFrom stats median quantile
@@ -26,27 +28,72 @@
 #'                                        chem_data, 
 #'                                         chem_site, 
 #'                                         chem_info)
-#' 
-#' graphData <- graph_chem_data(chemicalSummary)
-#' plot_chemical_boxplots(graphData)
-plot_chemical_boxplots <- function(graphData){
+#'                                         
+#' plot_chemical_boxplots(chemicalSummary)
+plot_chemical_boxplots <- function(chemicalSummary, 
+                                   manual_remove=NULL,
+                                   mean_logic = FALSE){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- ".dplyr"
     
   cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
-                "#FFA500","#F4426e")
-
-  countNonZero <- graphData %>%
-    select(chnm, Class, maxEAR) %>%
-    group_by(chnm, Class) %>%
-    summarize(nonZero = as.character(sum(maxEAR>0)))
+                "#FFA500","#F4426e", "#800000", "#808000")
   
-  toxPlot_All <- ggplot(data=graphData) +
+  if(length(unique(chemicalSummary$site)) == 1){
+    
+    orderClass <- chemicalSummary %>%
+      group_by(Class,chnm) %>%
+      summarise(median = median(EAR[EAR != 0])) %>%
+      data.frame() %>%
+      arrange(desc(median)) %>%
+      filter(!duplicated(Class)) %>%
+      arrange(median)
+    
+    orderChem <- chemicalSummary %>%
+      group_by(chnm,Class) %>%
+      summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
+      data.frame() %>%
+      mutate(Class = factor(Class, levels=orderClass$Class)) %>%
+      arrange(Class, !is.na(median), median)
+    
+    orderedLevels <- as.character(orderChem$chnm)
+    orderedLevels <- orderedLevels[orderedLevels %in% chemicalSummary$chnm]
+    orderedLevels <- unique(orderedLevels)
+    
+    chemicalSummary$chnm <- factor(chemicalSummary$chnm,
+                                    levels = orderedLevels)    
+    
+    chemicalSummary$Class <- factor(chemicalSummary$Class,
+                                    levels = orderClass$Class)
+    
+    countNonZero <- chemicalSummary %>%
+      select(chnm, Class, EAR) %>%
+      group_by(chnm, Class) %>%
+      summarize(nonZero = as.character(sum(EAR>0)))
+    
+    toxPlot_All <- ggplot(data=chemicalSummary) +
+      geom_boxplot(aes(x=chnm, y=EAR, fill=Class),
+                   lwd=0.1,outlier.size=1)  
+    
+  } else {
+    graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
+                                 manual_remove=manual_remove,
+                                 mean_logic=mean_logic)
+    
+    countNonZero <- graphData %>%
+      select(chnm, Class, maxEAR) %>%
+      group_by(chnm, Class) %>%
+      summarize(nonZero = as.character(sum(maxEAR>0)))
+    
+    toxPlot_All <- ggplot(data=graphData) +
+      geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
+                   lwd=0.1,outlier.size=1)  
+  }
+  
+  toxPlot_All <- toxPlot_All +
     scale_y_log10(labels=fancyNumbers)  +
-    geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
-                 lwd=0.1,outlier.size=1)  +
     theme_bw() +
     scale_x_discrete(drop=TRUE) +
     coord_flip() +
@@ -65,13 +112,12 @@ plot_chemical_boxplots <- function(graphData){
           legend.text = element_text(size=8),
           legend.key.height = unit(1,"line")) +
     scale_fill_manual(values = cbValues, drop=FALSE) 
-  
-  ymin <- 0.3*10^-6
-  ymax <- ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$y.range[2]
+
+  ymin <- 10^(ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$x.range[1])
   
   toxPlot_All_withLabels <- toxPlot_All +
-    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size=2.5) 
-  
+    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size=2.5)
+
   return(toxPlot_All_withLabels)
   
 }
@@ -112,7 +158,7 @@ graph_chem_data <- function(chemicalSummary,
                             mean_logic = FALSE){
   
   site <- chnm <- Class <- EAR <- sumEAR <- maxEAR <- ".dplyr"
-  
+
   graphData <- chemicalSummary %>%
     group_by(site,date,chnm, Class) %>%
     summarise(sumEAR=sum(EAR)) %>%
@@ -141,6 +187,8 @@ graph_chem_data <- function(chemicalSummary,
     arrange(Class, !is.na(median), median)
   
   orderedLevels <- as.character(orderChem$chnm)
+  orderedLevels <- orderedLevels[orderedLevels %in% graphData$chnm]
+  orderedLevels <- unique(orderedLevels)
   
   graphData <- graphData %>%
     mutate(chnm = factor(chnm, levels=orderedLevels)) %>%

@@ -65,33 +65,47 @@ plot_tox_stacks <- function(chemicalSummary,
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
 
+    if(category == "Chemical"){
+      graphData$category <- graphData$chnm
+    } 
+    
     upperPlot <- ggplot(graphData, 
                         aes(x=`Short Name`, y=meanEAR, fill = category)) +
-      geom_bar(stat="identity") +
       theme_minimal() +
-      theme(legend.title = element_blank(),
-            axis.text.x = element_text(angle = 90, hjust = 1)) +
       xlab("") +
       ylab(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site")) +
-      scale_fill_manual(values = cbValues, drop=FALSE) +
-      facet_grid(. ~ site_grouping, scales="free", space="free") 
+      facet_grid(. ~ site_grouping, scales="free", space="free") +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
   } else {
 
-    chemGroupBPOneSite <- chemicalSummary %>%
+    graphData <- chemicalSummary %>%
       select(-site)
 
-    upperPlot <- ggplot(chemGroupBPOneSite, aes(x=date, y=EAR, fill = category)) +
-      geom_bar(stat="identity")+
+    if(category == "Biological"){
+      graphData$category <- graphData$Bio_category
+    } else if (category == "Chemical Class"){
+      graphData$category <- graphData$Class
+    } else {
+      graphData$category <- graphData$chnm
+    }
+    
+    upperPlot <- ggplot(graphData, aes(x=date, y=EAR, fill = category)) +
       theme_minimal() +
       theme(axis.text.x=element_blank(),
-            axis.ticks=element_blank(),
-            legend.title = element_blank())+
+            axis.ticks.x=element_blank()) +
       xlab("Individual Samples") +
-      ylab("EAR") +
-      scale_fill_discrete("", drop=FALSE) +
-      scale_fill_manual(values = cbValues, drop=FALSE)
+      ylab("EAR") 
 
+  }
+  
+  upperPlot <- upperPlot +
+    geom_bar(stat="identity") +
+    theme(legend.title = element_blank()) 
+  
+  if(length(unique(graphData$category)) <= length(cbValues)){
+    upperPlot <- upperPlot + 
+      scale_fill_manual(values = cbValues, drop=FALSE)
   }
   
   return(upperPlot)
