@@ -30,7 +30,8 @@ Imports:
     data.table,
     RColorBrewer,
     stringi,
-    readxl
+    readxl,
+    tools
 Suggests:
     rmarkdown,
     testthat,

@@ -131,3 +131,11 @@ test_that("Map stuff functions", {
   expect_type(mapDataList, "list")
   expect_equal(length(mapDataList), 2)
 })
+
+# test_that("Test app", {
+#   testthat::skip_on_cran()
+#   
+#   explore_endpoints()
+#   
+#   stopApp(system.file('shiny', package='toxEval'))
+# })
