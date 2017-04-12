@@ -102,18 +102,18 @@ test_that("Plotting stacked summaries", {
 test_that("Plotting endpoints", {
   testthat::skip_on_cran()
   
-  bioStackPlot <- plot_tox_endpoints(chemicalSummary, 
+  bioStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, 
                                   category = "Biological",
-                                  filterBy = "Cell Cycle")
+                                  filterBy = "Cell Cycle"))
   expect_true(all(names(bioStackPlot$data) %in% c("site","category","endPoint",
                                                   "meanEAR")))
   
-  classStackPlot <- plot_tox_endpoints(chemicalSummary, 
-                                    category = "Chemical Class", filterBy = "PAH")
+  classStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, 
+                                    category = "Chemical Class", filterBy = "PAH"))
   expect_true(all(names(classStackPlot$data) %in% c("site","category","endPoint",
                                                     "meanEAR")))
   
-  chemStackPlot <- plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+  chemStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine"))
   expect_true(all(names(chemStackPlot$data) %in% c("site","category","endPoint",
                                                    "meanEAR")))
   
