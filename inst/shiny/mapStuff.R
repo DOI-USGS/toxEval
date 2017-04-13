@@ -15,29 +15,15 @@ output$mapFooter <- renderUI({
   )
   
   chemicalSummary <- chemicalSummary()
-  catType = as.numeric(input$radioMaxGroup)
-  meanEARlogic <- as.logical(input$meanEAR)  
-  hit_threshold <- hitThresValue()
   
-  statsOfGroupOrdered <- statsOfGroup(chemicalSummary = chemicalSummary,
-                                      category = c("Biological","Chemical","Chemical Class")[catType],
-                                      hit_threshold = hit_threshold)
-  statsOfGroupOrdered <- statsOfGroupOrdered %>%
+  nSamples <- select(chemicalSummary,site,date) %>%
+    distinct() %>%
     group_by(site) %>%
-    summarize(nSamples = median(nSamples, na.rm = TRUE))
+    summarize(count = n())
   
-  if(input$radioMaxGroup == "1"){
-    word <- "groups"
-  } else if (input$radioMaxGroup == "2"){
-    word <- "chemicals"
-  } else {
-    word <- "classes"
-  }
-  
-  HTML(paste0("<h5>Size range represents number of ",word,
-              " with hits. Ranges from ", min(statsOfGroupOrdered$nSamples,na.rm = TRUE),
+  HTML(paste0("<h5>Size range represents number of samples. Ranges from ", min(nSamples$count,na.rm = TRUE),
               " - ", 
-              max(statsOfGroupOrdered$nSamples,na.rm = TRUE),"</h5>"))
+              max(nSamples$count,na.rm = TRUE),"</h5>"))
   
 })
 
@@ -62,8 +48,7 @@ observe({
   mapDataList <- getMapInfo(chemicalSummary, 
                      chem_site = chem_site, 
                      category = c("Biological","Chemical","Chemical Class")[catType],
-                     mean_logic = meanEARlogic,
-                     hit_threshold = hitThresValue())
+                     mean_logic = meanEARlogic)
   
   mapData <- mapDataList$mapData
   pal <- mapDataList$pal
@@ -71,7 +56,7 @@ observe({
   if(length(siteToFind) == 1){
 
     mapData <- filter(chem_site, SiteID == siteToFind) %>%
-      mutate(nSamples = median(mapData$nSamples),
+      mutate(nSamples = median(mapData$count),
              meanMax = median(mapData$meanMax),
              sizes = median(mapData$sizes))
   }
@@ -79,10 +64,16 @@ observe({
   map <- leafletProxy("mymap", data=mapData) %>%
     clearMarkers() %>%
     clearControls() %>%
+    setView(lng = mean(mapData$dec_lon, na.rm = TRUE), 
+            lat = mean(mapData$dec_lat, na.rm = TRUE), zoom=6) %>%
+    fitBounds(lng1 = min(mapData$dec_lon, na.rm = TRUE), 
+              lat1 = min(mapData$dec_lat, na.rm = TRUE), 
+              lng2 = max(mapData$dec_lon, na.rm = TRUE), 
+              lat2 = max(mapData$dec_lat, na.rm = TRUE)) %>%
     addCircleMarkers(lat=~dec_lat, lng=~dec_lon,
                      popup=paste0('<b>',mapData$site,"</b><br/><table>",
                                   "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanMax),'</td></tr>',
-                                  "<tr><td>Number of Samples: </td><td>",mapData$nSamples,'</td></tr>',
+                                  "<tr><td>Number of Samples: </td><td>",mapData$count,'</td></tr>',
                                   # "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr>',
                                   # "<tr><td>Number of ",typeWords," with hits: </td><td>",counts,'</td></tr>',
                                   '</table>') ,

@@ -6,10 +6,10 @@
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @param hit_threshold numeric threshold defining a "hit"
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
+#' @importFrom dplyr n
 #' @importFrom grDevices colorRampPalette
 #' @importFrom leaflet colorBin
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -37,12 +37,11 @@
 getMapInfo <- function(chemicalSummary,
                     chem_site,
                     category = "Biological",
-                    mean_logic = FALSE,
-                    hit_threshold = 0.1){
+                    mean_logic = FALSE){
 
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  site <- nSamples <- `Short Name` <- Fullname <- dec_lat <- dec_lon <- ".dplyr"
+  site <- meanEAR <- nSamples <- `Short Name` <- Fullname <- dec_lat <- dec_lon <- ".dplyr"
   
   siteToFind <- chem_site$`Short Name`
   
@@ -54,42 +53,34 @@ getMapInfo <- function(chemicalSummary,
     typeWords <- "chemical classes"
   }
   
-  statsOfGroupOrdered <- statsOfGroup(chemicalSummary = chemicalSummary,
-                                      category = category,
-                                      hit_threshold = hit_threshold)
-  sumStat <- statsOfColumns(chemicalSummary = chemicalSummary,
-                            category = category,
-                            hit_threshold = hit_threshold,
-                            mean_logic = mean_logic)
+  mapData <- chem_site[,c("Short Name", "dec_lat", "dec_lon", "SiteID")]
   
-  mapData <- left_join(sumStat, distinct(select(statsOfGroupOrdered, site, nSamples)), by="site")
-  mapData <- left_join(mapData, chem_site[,c("Short Name", "dec_lat", "dec_lon")], by=c("site"="Short Name"))
+  nSamples <- select(chemicalSummary,site,date) %>%
+    distinct() %>%
+    group_by(site) %>%
+    summarize(count = n())
+  
+  meanStuff <- graphData(chemicalSummary = chemicalSummary, 
+            category = category, mean_logic = mean_logic) %>%
+    group_by(site) %>%
+    summarize(meanMax = max(meanEAR)) %>%
+    left_join(nSamples, by="site")
+  
+  mapData <- left_join(mapData, meanStuff, by=c("SiteID"="site"))
   
   col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
-  
-  earCols <- grep("EAR", names(mapData))
-  
-  if(length(earCols) > 1){
-    if(mean_logic){
-      mapData$meanMax <- rowMeans(mapData[,earCols], na.rm = TRUE)
-    } else {
-      mapData$meanMax <- apply(mapData[,earCols], 1, function(x) max(x, na.rm = TRUE))
-    }    
-  } else {
-    mapData$meanMax <- mapData[,earCols]
-  }
 
-  counts <- mapData$nSamples       
+  counts <- mapData$count       
   
   if(length(siteToFind) > 1){
     leg_vals <- unique(as.numeric(quantile(mapData$meanMax, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
     pal = colorBin(col_types, mapData$meanMax, bins = leg_vals)
     rad <-3*seq(1,4,length.out = 16)
     
-    if(sum(mapData$nSamples) == 0){
+    if(sum(mapData$count, na.rm = TRUE) == 0){
       mapData$sizes <- rad[1]
     } else {
-      mapData$sizes <- rad[as.numeric(cut(mapData$nSamples, breaks=16))]
+      mapData$sizes <- rad[as.numeric(cut(mapData$count, breaks=16))]
     }
     
   } else {
