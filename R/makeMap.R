@@ -9,6 +9,7 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
+#' @importFrom dplyr n
 #' @importFrom grDevices colorRampPalette
 #' @importFrom leaflet colorBin
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -40,7 +41,7 @@ getMapInfo <- function(chemicalSummary,
 
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  site <- nSamples <- `Short Name` <- Fullname <- dec_lat <- dec_lon <- ".dplyr"
+  site <- meanEAR <- nSamples <- `Short Name` <- Fullname <- dec_lat <- dec_lon <- ".dplyr"
   
   siteToFind <- chem_site$`Short Name`
   
