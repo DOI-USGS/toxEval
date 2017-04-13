@@ -5,7 +5,7 @@
 \title{getMapInfo}
 \usage{
 getMapInfo(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE, hit_threshold = 0.1)
+  mean_logic = FALSE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -15,8 +15,6 @@ getMapInfo(chemicalSummary, chem_site, category = "Biological",
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
-
-\item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
 getMapInfo
