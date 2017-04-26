@@ -56,6 +56,7 @@ names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
+  tags$head(tags$style(".shiny-plot-output{height:80vh !important;}")),
   sidebarMenu(
    tags$button(
       id = 'close',
