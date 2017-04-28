@@ -75,7 +75,7 @@ plot_tox_stacks <- function(chemicalSummary,
       xlab("") +
       ylab(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site")) +
       facet_grid(. ~ site_grouping, scales="free", space="free") +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
   } else {
 

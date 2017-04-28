@@ -98,7 +98,6 @@ plot_chemical_boxplots <- function(chemicalSummary,
     scale_x_discrete(drop=TRUE) +
     coord_flip() +
     theme(axis.text = element_text( color = "black"),
-          axis.text.y = element_text(size=7),
           axis.title=element_blank(),
           panel.background = element_blank(),
           plot.background = element_rect(fill = "transparent",colour = NA),
@@ -109,7 +108,6 @@ plot_chemical_boxplots <- function(chemicalSummary,
           legend.justification = "left",
           legend.background = element_rect(fill = "transparent", colour = "transparent"),
           legend.title=element_blank(),
-          legend.text = element_text(size=8),
           legend.key.height = unit(1,"line")) +
     scale_fill_manual(values = cbValues, drop=FALSE) 
 

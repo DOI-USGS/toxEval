@@ -55,9 +55,8 @@ plot_tox_boxplots <- function(chemicalSummary,
       theme_bw() +
       xlab("") +
       theme(plot.background = element_rect(fill = "transparent",colour = NA),
-            axis.text.y = element_text(size=10, color = "black", vjust = 0.2), 
-            axis.text.x = element_text(size=10, color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
-            axis.title = element_text(size=10))
+            axis.text.y = element_text(color = "black", vjust = 0.2), 
+            axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)))
     
     if(single_site){
       

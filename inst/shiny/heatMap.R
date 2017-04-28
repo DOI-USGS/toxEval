@@ -31,11 +31,11 @@ output$graphHeat <- renderPlot({
 })
 
 output$graphHeat.ui <- renderUI({
-  heightOfGraph <- 500
-  if(as.numeric(input$radioMaxGroup) == 2){
-    heightOfGraph <- 800
-  }
-  plotOutput("graphHeat", height = heightOfGraph)
+  # heightOfGraph <- 500
+  # if(as.numeric(input$radioMaxGroup) == 2){
+  #   heightOfGraph <- 800
+  # }
+  plotOutput("graphHeat", width = "100%")
 })
 
 output$downloadHeatPlot <- downloadHandler(

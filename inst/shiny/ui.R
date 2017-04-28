@@ -146,7 +146,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
-             plotOutput("stackBarGroup"),
+             plotOutput("stackBarGroup", width = "100%"),
              downloadButton('downloadStackPlot', 'Download PNG')
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
@@ -172,7 +172,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
-            plotOutput("endpointGraph",  height = "1000px"),
+            plotOutput("endpointGraph",  width = "100%"),
             downloadButton('downloadEndpoint', 'Download PNG')
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
