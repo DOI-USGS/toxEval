@@ -140,7 +140,8 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
-             div(style = 'overflow-y: scroll', uiOutput("graphGroup.ui")),
+             uiOutput("graphGroup.ui"),
+             # div(style = 'overflow-y: scroll', uiOutput("graphGroup.ui")),
             downloadButton('downloadBoxPlot', 'Download PNG')
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
@@ -166,7 +167,6 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
-             # htmlOutput("siteHitText"),
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%")
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
