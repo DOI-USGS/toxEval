@@ -77,16 +77,12 @@ plot_heat_chemicals <- function(graphData, chem_site){
                          breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
                          na.value = 'transparent',labels=fancyNumbers2) +
     facet_grid(Class ~ site_grouping, scales="free", space="free") +
-    theme(strip.text.y = element_text(angle=0, hjust=0, size=7), 
-          strip.text.x = element_text(size = 8),
+    theme(strip.text.y = element_text(angle=0, hjust=0), 
           strip.background = element_rect(fill="transparent", colour = NA),
-          axis.text = element_text(size=9),
           # axis.text.y = element_text(face=ifelse(levels(graphData$category) %in% c("Total"),"bold","italic")),
           panel.spacing = unit(0.05, "lines"),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
-          legend.text = element_text(size=8),
-          legend.title = element_text(size =8),
           plot.background = element_rect(fill = "transparent",colour = NA))
   
   return(heat)
@@ -196,15 +192,11 @@ plot_tox_heatmap <- function(chemicalSummary,
                            breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
                            na.value = 'transparent',labels=fancyNumbers2) +
       facet_grid(. ~ site_grouping, scales="free", space="free") +
-      theme(strip.text.y = element_text(angle=0, hjust=0, size=7), 
-            strip.text.x = element_text(size = 7),
+      theme(strip.text.y = element_text(angle=0, hjust=0), 
             strip.background = element_rect(fill="transparent", colour = NA),
-            axis.text = element_text(size=7),
             panel.spacing = unit(0.05, "lines"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
-            legend.text = element_text(size=8),
-            legend.title = element_text(size =8),
             plot.background = element_rect(fill = "transparent",colour = NA))
 
   }

@@ -40,4 +40,4 @@ output$stackBarGroup <- renderPlot({
   ggsave("stackPlot.png",upperPlot,bg = "transparent")
   
   upperPlot
-})
+}, height = 600, width = 1000)

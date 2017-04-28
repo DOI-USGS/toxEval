@@ -15,25 +15,24 @@ output$graphGroup <- renderPlot({
   if(catType == 2){
     ggsave("boxPlot.png",
            bioPlot,
-           bg = "transparent", 
-           height = 12, width = 9)
+           bg = "transparent")
   } else {
     ggsave("boxPlot.png",
            bioPlot,
-           bg = "transparent", 
-           height = 6, width = 8)
+           bg = "transparent")
   }
   
   bioPlot
   
-})
+}, height = 600, width = 1000)
 
 output$graphGroup.ui <- renderUI({
-  heightOfGraph <- 500
-  if(as.numeric(input$radioMaxGroup) == 2){
-    heightOfGraph <- 800
-  }
-  plotOutput("graphGroup", height = heightOfGraph)
+  # heightOfGraph <- 500
+  # if(as.numeric(input$radioMaxGroup) == 2){
+  #   heightOfGraph <- 800
+  # }
+  # plotOutput("graphGroup", height = heightOfGraph)
+  plotOutput("graphGroup",  width = "100%")
 })
 
 output$downloadBoxPlot <- downloadHandler(
