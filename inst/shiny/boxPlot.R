@@ -7,9 +7,11 @@ output$graphGroup <- renderPlot({
   validate(
     need(!is.null(input$data), "Please select a data set")
   )
-  
+
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
-                               category = c("Biological","Chemical","Chemical Class")[catType],
+                               category = category,
                                mean_logic = as.logical(input$meanEAR))
   
   if(catType == 2){
@@ -24,15 +26,29 @@ output$graphGroup <- renderPlot({
   
   bioPlot
   
-}, height = 600, width = 1000)
+})
+
+PlotHeight = reactive({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  cat_col <- c("Bio_category","chnm","Class")[catType]
+  chemicalSummary <- chemicalSummary()
+  
+  n <- 35*length(unique(chemicalSummary[[cat_col]]))
+
+  if(n < 500){
+    return(500)
+  } else {
+    return(n)
+  }
+
+})
 
 output$graphGroup.ui <- renderUI({
-  # heightOfGraph <- 500
-  # if(as.numeric(input$radioMaxGroup) == 2){
-  #   heightOfGraph <- 800
-  # }
-  # plotOutput("graphGroup", height = heightOfGraph)
-  plotOutput("graphGroup",  width = "100%")
+  
+  height <- PlotHeight()
+
+  plotOutput("graphGroup", height = height, width = 1000)
 })
 
 output$downloadBoxPlot <- downloadHandler(

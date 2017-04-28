@@ -41,6 +41,22 @@ plot_chemical_boxplots <- function(chemicalSummary,
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
                 "#FFA500","#F4426e", "#800000", "#808000")
   
+  if(length(unique(chemicalSummary$Class)) > length(cbValues)){
+    n <- length(unique(chemicalSummary$Class))
+    
+    if(n > 20 & n<30){
+      cbValues <- c(brewer.pal(n = 12, name = "Set3"),
+                    brewer.pal(n = 8, name = "Set2"),
+                    brewer.pal(n = n-20, name = "Set1"))
+    } else if (n <= 20){
+      cbValues <- c(brewer.pal(n = 12, name = "Set3"),
+                    brewer.pal(n = n-12, name = "Set2"))     
+    } else {
+      cbValues <- colorRampPalette(brewer.pal(11,"Spectral"))(n)
+    }
+
+  }
+  
   if(length(unique(chemicalSummary$site)) == 1){
     
     orderClass <- chemicalSummary %>%

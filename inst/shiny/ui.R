@@ -56,7 +56,6 @@ names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "toxEval")
 
 sidebar <- dashboardSidebar(
-  tags$head(tags$style(".shiny-plot-output{height:80vh !important;}")),
   sidebarMenu(
    tags$button(
       id = 'close',
@@ -136,12 +135,13 @@ body <- dashboardBody(
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-            leaflet::leafletOutput("mymap"),
+             leaflet::leafletOutput("mymap"),
             htmlOutput("mapFooter")
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
-            uiOutput("graphGroup.ui"),
+             uiOutput("graphGroup.ui"),
+             # div(style = 'overflow-y: scroll', uiOutput("graphGroup.ui")),
             downloadButton('downloadBoxPlot', 'Download PNG')
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
@@ -167,12 +167,11 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
-             # htmlOutput("siteHitText"),
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%")
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
-            plotOutput("endpointGraph",  width = "100%"),
+             div(style = 'overflow-y: scroll', uiOutput("endpointGraph.ui")),
             downloadButton('downloadEndpoint', 'Download PNG')
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
