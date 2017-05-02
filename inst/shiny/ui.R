@@ -140,8 +140,8 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
+             checkboxInput("plot_ND", "Plot ND's?", TRUE),
              uiOutput("graphGroup.ui"),
-             # div(style = 'overflow-y: scroll', uiOutput("graphGroup.ui")),
             downloadButton('downloadBoxPlot', 'Download PNG')
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
@@ -176,6 +176,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
+             checkboxInput("plot_ND_heat", "Plot ND's?", TRUE),
                    uiOutput("graphHeat.ui"),
              downloadButton('downloadHeatPlot', 'Download PNG')
     )
