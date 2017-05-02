@@ -3,7 +3,7 @@ output$graphHeat <- renderPlot({
   validate(
     need(!is.null(input$data), "Please select a data set")
   )
-  
+  plot_ND = input$plot_ND_heat
   catType = as.numeric(input$radioMaxGroup)
   
   chemicalSummary <- chemicalSummary()
@@ -22,7 +22,8 @@ output$graphHeat <- renderPlot({
   
   heatMap <- plot_tox_heatmap(chemicalSummary,
                               chem_site,
-                              category = c("Biological","Chemical","Chemical Class")[catType])
+                              category = c("Biological","Chemical","Chemical Class")[catType],
+                              plot_ND = plot_ND)
   
   ggsave("heatPlot.png",heatMap,bg = "transparent")
   
@@ -31,11 +32,9 @@ output$graphHeat <- renderPlot({
 })
 
 output$graphHeat.ui <- renderUI({
-  # heightOfGraph <- 500
-  # if(as.numeric(input$radioMaxGroup) == 2){
-  #   heightOfGraph <- 800
-  # }
-  plotOutput("graphHeat", width = "100%")
+  height <- PlotHeight()
+  
+  plotOutput("graphHeat", height = height, width = 800)
 })
 
 output$downloadHeatPlot <- downloadHandler(

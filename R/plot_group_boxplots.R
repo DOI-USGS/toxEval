@@ -5,6 +5,7 @@
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param plot_ND logical whether or not to plot the non-detects
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -35,7 +36,8 @@
 plot_tox_boxplots <- function(chemicalSummary, 
                               category = "Biological",
                               manual_remove = NULL,
-                              mean_logic = FALSE){
+                              mean_logic = FALSE,
+                              plot_ND = TRUE){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -43,11 +45,14 @@ plot_tox_boxplots <- function(chemicalSummary,
 
   if(category == "Chemical"){
 
-    chemPlot <- plot_chemical_boxplots(chemicalSummary, mean_logic = mean_logic)
+    chemPlot <- plot_chemical_boxplots(chemicalSummary, mean_logic = mean_logic, plot_ND = plot_ND)
     return(chemPlot)
     
   } else {
     
+    if(!plot_ND){
+      chemicalSummary <- chemicalSummary[chemicalSummary$EAR > 0,]
+    }
     single_site <- length(unique(chemicalSummary$site)) == 1
     
     bioPlot <- ggplot()+

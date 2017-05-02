@@ -1,6 +1,8 @@
 output$graphGroup <- renderPlot({ 
   
   catType = as.numeric(input$radioMaxGroup)
+
+  plot_ND = input$plot_ND
   
   chemicalSummary <- chemicalSummary()
   
@@ -12,7 +14,8 @@ output$graphGroup <- renderPlot({
 
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
-                               mean_logic = as.logical(input$meanEAR))
+                               mean_logic = as.logical(input$meanEAR),
+                               plot_ND = plot_ND)
   
   if(catType == 2){
     ggsave("boxPlot.png",
