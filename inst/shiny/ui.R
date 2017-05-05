@@ -15,7 +15,7 @@ cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
 
 trimmed_ep <- cleaned_ep
 choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
-choicesPerGroup <- which(choicesPerGroup > 6 & choicesPerGroup < 100)
+choicesPerGroup <- choicesPerGroup[which(as.numeric(choicesPerGroup) > 6)]
 
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 

@@ -44,7 +44,7 @@ observe({
   meanEARlogic <- as.logical(input$meanEAR)
   
   maxEARWords <- ifelse(meanEARlogic,"meanEAR","maxEAR")
-  
+
   mapDataList <- getMapInfo(chemicalSummary, 
                      chem_site = chem_site, 
                      category = c("Biological","Chemical","Chemical Class")[catType],

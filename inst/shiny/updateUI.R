@@ -11,6 +11,14 @@ observe({
 
 epDF <- reactiveValues(assays = initAssay,
                        groupColName = "intended_target_family",
+                       group = c("Nuclear Receptor","GPCR","Cell Morphology", 
+                                 "Cell Cycle","Kinase","DNA Binding",
+                                 "CYP","Transporter",      
+                                 "Ion Channel","Steroid Hormone","Phosphatase",    
+                                 "Zebrafish","Protease","Oxidoreductase",
+                                 "Transferase","Esterase","Hydrolase",   
+                                 "Lyase","Misc Protein","Growth Factor", 
+                                 "Methyltransferase"),
                        flags = flags,
                        sites = "All")
 
@@ -36,18 +44,18 @@ observeEvent(input$changeAnn, {
   
 })
 
-
+observeEvent(input$allGroup, {
+  epDF[["group"]] <- NULL
+  epDF[["group"]] <- input$group
+  
+})
 
 observe({
   
   groupCol <- epDF[["groupColName"]]
   assays <- epDF[["assays"]]
   
-  ep <- data.frame(endPoint = cleaned_ep[["endPoint"]],
-                   groupCol = cleaned_ep[[groupCol]],
-                   assaysFull = cleaned_ep[["assay_source_name"]],
-                   stringsAsFactors = FALSE) %>%
-    filter(assaysFull %in% assays)
+  ep <- filter_groups(ep = cleaned_ep, assays = assays, groupCol = groupCol)
   
   orderBy <- ep[,"groupCol"]
   orderNames <- names(table(orderBy))
@@ -63,7 +71,8 @@ observe({
   if(epDF[["groupColName"]] == "intended_target_family"){
     selChoices <- selChoices[!(selChoices %in% c("Background Measurement"))]
   }
-  
+  epDF[["group"]] <- NULL
+  epDF[["group"]] <- selChoices
   updateCheckboxGroupInput(session, "group", 
                            choices = setNames(df$orderNames,dropDownHeader),
                            selected = selChoices)
