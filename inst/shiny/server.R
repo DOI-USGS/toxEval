@@ -14,10 +14,10 @@ library(readxl)
 options(shiny.maxRequestSize=10*1024^2)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
-  rename(endPoint = assay_component_endpoint_name)
+  mutate(endPoint = assay_component_endpoint_name)
 
 choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
-choicesPerGroup <- which(cleaned_ep > 6 & cleaned_ep < 100)
+choicesPerGroup <- choicesPerGroup[which(as.numeric(choicesPerGroup) > 6)]
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
@@ -77,12 +77,11 @@ shinyServer(function(input, output,session) {
       }
       
       ACClong <- get_ACC(chem_info$CAS)
-      
       ACClong <- remove_flags(ACClong, flagsShort = epDF[["flags"]])
       
-      remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% input$group)]
-      # So maybe do this in clean?:
-      cleaned_ep <- rename(cleaned_ep, assay_component_endpoint_name = endPoint)
+      remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% epDF[["group"]])]
+      remove_groups <- remove_groups[!is.na(remove_groups)]
+
       filtered_ep <- filter_groups(cleaned_ep, 
                                     groupCol = groupCol, 
                                     remove_groups = remove_groups)
@@ -134,8 +133,6 @@ shinyServer(function(input, output,session) {
 # Map Stuff:
   source("mapStuff.R",local=TRUE)$value
 ############################################################## 
-
-  
 
 
 })

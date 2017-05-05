@@ -44,7 +44,7 @@ observe({
   meanEARlogic <- as.logical(input$meanEAR)
   
   maxEARWords <- ifelse(meanEARlogic,"meanEAR","maxEAR")
-  
+
   mapDataList <- getMapInfo(chemicalSummary, 
                      chem_site = chem_site, 
                      category = c("Biological","Chemical","Chemical Class")[catType],
@@ -71,7 +71,7 @@ observe({
               lng2 = max(mapData$dec_lon, na.rm = TRUE), 
               lat2 = max(mapData$dec_lat, na.rm = TRUE)) %>%
     addCircleMarkers(lat=~dec_lat, lng=~dec_lon,
-                     popup=paste0('<b>',mapData$site,"</b><br/><table>",
+                     popup=paste0('<b>',mapData$`Short Name`,"</b><br/><table>",
                                   "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanMax),'</td></tr>',
                                   "<tr><td>Number of Samples: </td><td>",mapData$count,'</td></tr>',
                                   # "<tr><td>Frequency: </td><td>",sprintf("%.1f",mapData$freq),'</td></tr>',

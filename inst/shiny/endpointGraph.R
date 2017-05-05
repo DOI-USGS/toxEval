@@ -1,30 +1,32 @@
-output$endpointGraph <- renderPlot({ 
-  
+endpointGraph_create <- reactive({
   filterBy <- input$epGroup
   meanEARlogic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   chemicalSummary <- chemicalSummary()
   catType = as.numeric(input$radioMaxGroup)
-
+  
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
                                       category = c("Biological","Chemical","Chemical Class")[catType],
                                       mean_logic = as.logical(input$meanEAR),
                                       hit_threshold = hitThresValue(),
                                       filterBy = filterBy) 
+  return(endpointGraph)
+})
+
+output$endpointGraph <- renderPlot({ 
   
-  ggsave("endPoint.png",
-         endpointGraph,
-         bg = "transparent", 
-         height = 12, width = 9)
+  validate(
+    need(!is.null(input$data), "Please select a data set")
+  )
   
-  endpointGraph
+  print(endpointGraph_create())
 })
 
 output$endpointGraph.ui <- renderUI({
   
   height <- PlotHeight_ep()
   
-  plotOutput("endpointGraph", height = height, width = 1000)
+  plotOutput("endpointGraph", height = height, width = "100%")
 })
 
 PlotHeight_ep = reactive({
@@ -52,10 +54,13 @@ PlotHeight_ep = reactive({
 
 output$downloadEndpoint <- downloadHandler(
   
-  filename = function() {
-    "endPoint.png"
-  },
+  filename = "endPoint.png",
+  
   content = function(file) {
-    file.copy("endPoint.png", file)
+    device <- function(..., width, height) {
+      grDevices::png(..., width = width, height = height,
+                     res = 300, units = "in")
+    }
+    ggsave(file, plot = endpointGraph_create(), device = device)
   }
 )

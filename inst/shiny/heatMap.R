@@ -1,8 +1,4 @@
-output$graphHeat <- renderPlot({
-  
-  validate(
-    need(!is.null(input$data), "Please select a data set")
-  )
+heatMap_create <- reactive({
   plot_ND = input$plot_ND_heat
   catType = as.numeric(input$radioMaxGroup)
   
@@ -24,25 +20,34 @@ output$graphHeat <- renderPlot({
                               chem_site,
                               category = c("Biological","Chemical","Chemical Class")[catType],
                               plot_ND = plot_ND)
+  return(heatMap)
+})
+
+output$graphHeat <- renderPlot({
   
-  ggsave("heatPlot.png",heatMap,bg = "transparent")
+  validate(
+    need(!is.null(input$data), "Please select a data set")
+  )
   
-  heatMap
+  print(heatMap_create())
   
 })
 
 output$graphHeat.ui <- renderUI({
   height <- PlotHeight()
   
-  plotOutput("graphHeat", height = height, width = 800)
+  plotOutput("graphHeat", height = height, width="100%")
 })
 
 output$downloadHeatPlot <- downloadHandler(
   
-  filename = function() {
-    "heatPlot.png"
-  },
+  filename = "heatPlot.png",
+
   content = function(file) {
-    file.copy("heatPlot.png", file)
+    device <- function(..., width, height) {
+      grDevices::png(..., width = width, height = height,
+                     res = 300, units = "in")
+    }
+    ggsave(file, plot = heatMap_create(), device = device)
   }
 )
