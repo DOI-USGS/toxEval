@@ -1,33 +1,27 @@
-output$graphGroup <- renderPlot({ 
+boxPlots_create <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
-
+  
   plot_ND = input$plot_ND
   
   chemicalSummary <- chemicalSummary()
-  
-  validate(
-    need(!is.null(input$data), "Please select a data set")
-  )
-
   category <- c("Biological","Chemical","Chemical Class")[catType]
-
+  
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
                                mean_logic = as.logical(input$meanEAR),
                                plot_ND = plot_ND)
+  return(bioPlot)
   
-  if(catType == 2){
-    ggsave("boxPlot.png",
-           bioPlot,
-           bg = "transparent")
-  } else {
-    ggsave("boxPlot.png",
-           bioPlot,
-           bg = "transparent")
-  }
-  
-  bioPlot
+})
+
+output$graphGroup <- renderPlot({ 
+
+  validate(
+    need(!is.null(input$data), "Please select a data set")
+  )
+
+  print(boxPlots_create())
   
 })
 
@@ -51,15 +45,19 @@ output$graphGroup.ui <- renderUI({
   
   height <- PlotHeight()
 
-  plotOutput("graphGroup", height = height, width = 1000)
+  plotOutput("graphGroup", height = height, width="100%")
 })
 
 output$downloadBoxPlot <- downloadHandler(
   
-  filename = function() {
-    "boxPlot.png"
-  },
+  filename = "boxPlot.png",
+  
   content = function(file) {
-    file.copy("boxPlot.png", file)
+    device <- function(..., width, height) {
+      grDevices::png(..., width = width, height = height,
+                     res = 300, units = "in")
+    }
+    ggsave(file, plot = boxPlots_create(), device = device)
   }
+    
 )
