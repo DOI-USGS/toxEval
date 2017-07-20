@@ -117,9 +117,18 @@ plot_tox_boxplots <- function(chemicalSummary,
     
     bioPlot <- bioPlot 
     
-    xmin <- suppressWarnings(10^(ggplot_build(bioPlot)$layout$panel_ranges[[1]]$x.range[1]))
-    xmax <- suppressWarnings(10^(ggplot_build(bioPlot)$layout$panel_ranges[[1]]$x.range[2]))
-    ymax <- suppressWarnings(ggplot_build(bioPlot)$layout$panel_ranges[[1]]$y.range[1])
+    plot_info <- ggplot_build(bioPlot)
+    layout_stuff <- plot_info$layout
+    
+    if(packageVersion("ggplot2") >= "2.2.1.9000"){
+      xmin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
+      xmax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
+      ymax <- layout_stuff$panel_scales_x[[1]]$range$range[2]
+    } else {
+      xmin <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[1]))
+      xmax <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[2]))
+      ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[1])
+    }
     
     bioPlot <- bioPlot + 
       geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=3) 
