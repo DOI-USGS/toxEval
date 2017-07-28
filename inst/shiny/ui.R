@@ -135,7 +135,7 @@ body <- dashboardBody(
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-             leaflet::leafletOutput("mymap"),
+             leaflet::leafletOutput("mymap",height = "750px"),
             htmlOutput("mapFooter")
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
@@ -146,7 +146,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
-             plotOutput("stackBarGroup", width = "100%"),
+             plotOutput("stackBarGroup", width = "100%", height = "750px"),
              downloadButton('downloadStackPlot', 'Download PNG')
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),

@@ -8,7 +8,6 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median quantile
-#' @importFrom magrittr `%>%`
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' library(readxl)

@@ -149,12 +149,21 @@ plot_tox_endpoints <- function(chemicalSummary,
 
   if(filterBy != "All"){
 
-    ymin <- 10^(ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$y.range)[1]
-    ymax <- 10^(ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$y.range)[2]
-
-    xmax <- ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$x.range[2]
-    xmin <- ggplot_build(stackedPlot)$layout$panel_ranges[[1]]$x.range[1]
-
+    plot_layout <- ggplot_build(stackedPlot)$layout    
+    
+    if(packageVersion("ggplot2") >= "2.2.1.9000"){
+      ymin <- 10^(plot_layout$panel_scales_y[[1]]$range$range[1])
+      ymax <- 10^(plot_layout$panel_scales_y[[1]]$range$range[2])
+      
+      xmax <- plot_layout$plot_layout$panel_scales_x[[1]]$range$range[1]
+      xmin <- plot_layout$plot_layout$panel_scales_x[[1]]$range$range[2]
+    } else {
+      ymin <- 10^(plot_layout$panel_ranges[[1]]$y.range)[1]
+      ymax <- 10^(plot_layout$panel_ranges[[1]]$y.range)[2]
+  
+      xmax <- plot_layout$panel_ranges[[1]]$x.range[2]
+      xmin <- plot_layout$panel_ranges[[1]]$x.range[1]
+    }
     stackedPlot <- stackedPlot +
       geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5) +
       geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5)
