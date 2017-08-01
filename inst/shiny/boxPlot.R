@@ -33,8 +33,8 @@ PlotHeight = reactive({
   
   n <- 35*length(unique(chemicalSummary[[cat_col]]))
 
-  if(n < 500){
-    return(500)
+  if(n < 750){
+    return(750)
   } else {
     return(n)
   }

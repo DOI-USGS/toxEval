@@ -117,7 +117,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
   toxPlot_All <- toxPlot_All +
     scale_y_log10(labels=fancyNumbers)  +
     theme_bw() +
-    scale_x_discrete(drop=TRUE) +
+    scale_x_discrete(drop = TRUE) +
     coord_flip() +
     theme(axis.text = element_text( color = "black"),
           axis.title=element_blank(),
@@ -131,9 +131,16 @@ plot_chemical_boxplots <- function(chemicalSummary,
           legend.background = element_rect(fill = "transparent", colour = "transparent"),
           legend.title=element_blank(),
           legend.key.height = unit(1,"line")) +
-    scale_fill_manual(values = cbValues, drop=FALSE) 
+    scale_fill_manual(values = cbValues, drop=FALSE)
 
-  ymin <- 10^(ggplot_build(toxPlot_All)$layout$panel_ranges[[1]]$x.range[1])
+  plot_info <- ggplot_build(toxPlot_All)
+  layout_stuff <- plot_info$layout
+  
+  if(packageVersion("ggplot2") >= "2.2.1.9000"){
+    ymin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
+  } else {
+    ymin <- 10^(layout_stuff$panel_ranges[[1]]$x.range[1])
+  }
   
   toxPlot_All_withLabels <- toxPlot_All +
     geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size=2.5)

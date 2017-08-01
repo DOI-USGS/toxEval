@@ -64,15 +64,10 @@ table_tox_rank <- function(chemicalSummary,
 
   MaxEARSordered <- order(apply(statsOfColumn[,maxEARS, drop = FALSE], 2, max),decreasing = TRUE)
 
-  if(length(maxEARS) > 9){
-    statsOfColumn <- statsOfColumn[,c(ignoreIndex,interl(maxEARS[MaxEARSordered[1:9]],(maxEARS[MaxEARSordered[1:9]]-1)))]
-    maxEARS <- maxEARS[1:9]
-  } else {
-    if(length(maxEARS) != 1){
-      statsOfColumn <- statsOfColumn[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-    }
+  if(length(maxEARS) != 1){
+    statsOfColumn <- statsOfColumn[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
   }
-
+  
   freqCol <- grep("freq",names(statsOfColumn))
   maxEARS <- grep("maxEAR",names(statsOfColumn))
 
@@ -80,7 +75,18 @@ table_tox_rank <- function(chemicalSummary,
     names(statsOfColumn)[maxEARS] <- gsub("max","mean",names(statsOfColumn)[maxEARS])
   }
 
-  colors <- brewer.pal(length(maxEARS),"Blues") #"RdYlBu"
+  n <- length(maxEARS)
+
+  if(n > 20 & n<30){
+    colors <- c(brewer.pal(n = 12, name = "Set3"),
+                  brewer.pal(n = 8, name = "Set2"),
+                  brewer.pal(n = max(c(3,n-20)), name = "Set1"))
+  } else if (n <= 20){
+    colors <- c(brewer.pal(n = 12, name = "Set3"),
+                  brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
+  } else {
+    colors <- colorRampPalette(brewer.pal(11,"Spectral"))(n)
+  }
   
   tableSumm <- DT::datatable(statsOfColumn, extensions = 'Buttons',
                              rownames = FALSE,
