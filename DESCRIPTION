@@ -1,7 +1,7 @@
 Package: toxEval
 Type: Package
 Title: ToxCast Evaluations
-Version: 0.3.5
+Version: 0.3.6
 Date: 2017-05-05
 Authors@R: c( person("Steven", "Corsi", role = c("aut"),
     email = "srcorsi@usgs.gov"),
@@ -36,6 +36,7 @@ Suggests:
     rmarkdown,
     testthat,
     knitr
+BugReports: https://github.com/USGS-R/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
