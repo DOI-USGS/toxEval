@@ -22,6 +22,16 @@ Follow `@USGS_R` on Twitter for updates on USGS R packages:
 
 We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/toxEval/blob/master/CONDUCT.md) for more information.
 
+### Package Support
+
+The Water and Enviornmental Health  Mission Areas of the USGS, as well as the Great Lakes Restoration Initivitive (GLRI) has supported the development of the `toxEval` R-package. Further maintenance is expected to be stable through September 2018. Resources are available primarily for maintenance and responding to user questions. Priorities on the development of new features are determined by the `toxEval` development team.
+
+![USGS](http://usgs-r.github.io/images/usgs.png)
+
+### Sunset date 
+
+Funding for `toxEval` currently expires summer 2018, after which bug fixes & new features will be minimal.
+
 ## Installation of R and RStudio
 
 This section should only need to be done once per computer.
