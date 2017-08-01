@@ -124,8 +124,6 @@ table_endpoint_hits <- function(chemicalSummary,
     fullData <- fullData[,c(1,orderData)]   
   }
 
-  colors <- brewer.pal(9,"Blues") #"RdYlBu"
-
   if(category == "Chemical"){
     casKey <- select(chemicalSummary, chnm, casrn) %>%
       distinct()
