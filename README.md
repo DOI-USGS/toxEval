@@ -24,9 +24,9 @@ We want to encourage a warm, welcoming, and safe environment for contributing to
 
 ### Package Support
 
-The Water and Enviornmental Health  Mission Areas of the USGS, as well as the Great Lakes Restoration Initivitive (GLRI) has supported the development of the `toxEval` R-package. Further maintenance is expected to be stable through September 2018. Resources are available primarily for maintenance and responding to user questions. Priorities on the development of new features are determined by the `toxEval` development team.
+The Water and Environmental Health  Mission Areas of the USGS, as well as the Great Lakes Restoration Initiative (GLRI) has supported the development of the `toxEval` R-package. Further maintenance is expected to be stable through September 2018. Resources are available primarily for maintenance and responding to user questions. Priorities on the development of new features are determined by the `toxEval` development team.
 
-![USGS](http://usgs-r.github.io/images/usgs.png)
+[![USGS](http://usgs-r.github.io/images/usgs.png)](https://www.usgs.gov/)
 
 ### Sunset date 
 
