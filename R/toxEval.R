@@ -9,7 +9,7 @@ liable for any damages resulting from the authorized
 or unauthorized use of the information.
                         
 Funding for toxEval expires summer 2018, 
-after which bugfixes & new features will be minimal")
+after which bug fixes & new features will be minimal")
 }
 
 
