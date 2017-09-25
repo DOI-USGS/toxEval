@@ -10,6 +10,7 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
+#' @importFrom utils packageVersion
 #' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' library(readxl)

@@ -46,10 +46,6 @@ clean_endPoint_info <- function(endPointInfo){
   
   endPointInfo$intended_target_family[is.na(endPointInfo$intended_target_family)] <- "Undefined"
   
-  assays <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", # only "BSK" is out
-              "CLD","TANGUAY","NHEERL_PADILLA",
-              "NCCT_SIMMONS","ACEA")
-  
   cleanUpNames <- endPointInfo$intended_target_family
   cleanUpNames <- stringi::stri_trans_totitle(cleanUpNames)
   cleanUpNames[grep("Dna",cleanUpNames)] <- "DNA Binding"
