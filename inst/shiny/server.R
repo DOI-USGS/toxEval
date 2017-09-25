@@ -83,7 +83,7 @@ shinyServer(function(input, output,session) {
       remove_groups <- remove_groups[!is.na(remove_groups)]
 
       filtered_ep <- filter_groups(cleaned_ep, 
-                                    groupCol = groupCol, 
+                                    groupCol = groupCol, assays = assays,
                                     remove_groups = remove_groups)
 
       chemicalSummary <- get_chemical_summary(ACClong,
