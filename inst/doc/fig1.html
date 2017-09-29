@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Figure 1. Exposure activity ratios (EARs)</h1>
-<h4 class="date"><em>05 May, 2017</em></h4>
+<h4 class="date"><em>29 September, 2017</em></h4>
 
 
 
@@ -88,14 +88,14 @@ chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
 
 <span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 <span class="co">#Trim names for graph:</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info$CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
@@ -109,74 +109,74 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
 
 
 <span class="co"># Make a &quot;summary&quot; of EAR's using Water Quality Guidelines instead of toxCast:</span>
-guideline_sum &lt;-<span class="st"> </span>chem_info %&gt;%
-<span class="st">  </span><span class="kw">gather</span>(endPoint, WQ_value, -CAS) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(WQ_value !=<span class="st"> &quot;-&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">WQ_value =</span> <span class="kw">as.numeric</span>(WQ_value)) %&gt;%
+guideline_sum &lt;-<span class="st"> </span>chem_info <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(endPoint, WQ_value, <span class="op">-</span>CAS) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(WQ_value <span class="op">!=</span><span class="st"> &quot;-&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">WQ_value =</span> <span class="kw">as.numeric</span>(WQ_value)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">right_join</span>(chem_data, <span class="dt">by=</span><span class="st">&quot;CAS&quot;</span>)
 
-WQ &lt;-<span class="st">  </span>guideline_sum %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(endPoint %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AqT_EPA_acute&quot;</span>,<span class="st">&quot;AqT_EPA_chronic&quot;</span>,
-                         <span class="st">&quot;AqT_other_chronic&quot;</span>,<span class="st">&quot;AqT_other_acute&quot;</span>)) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR =</span> Value/WQ_value) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(SiteID,<span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>,CAS) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">sumEAR=</span><span class="kw">sum</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(SiteID, CAS) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">maxEAR=</span><span class="kw">max</span>(sumEAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_up =</span> <span class="st">&quot;Water Quality Guideline&quot;</span>) %&gt;%
+WQ &lt;-<span class="st">  </span>guideline_sum <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(endPoint <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AqT_EPA_acute&quot;</span>,<span class="st">&quot;AqT_EPA_chronic&quot;</span>,
+                         <span class="st">&quot;AqT_other_chronic&quot;</span>,<span class="st">&quot;AqT_other_acute&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR =</span> Value<span class="op">/</span>WQ_value) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(SiteID,<span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>,CAS) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">sumEAR=</span><span class="kw">sum</span>(EAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(SiteID, CAS) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">maxEAR=</span><span class="kw">max</span>(sumEAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_up =</span> <span class="st">&quot;Water Quality Guideline&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="st">&quot;Traditional&quot;</span>)
 
-EEQ &lt;-<span class="st"> </span>guideline_sum %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(endPoint %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EEF_avg_in.vitro&quot;</span>,<span class="st">&quot;EEF_max_in.vitro_or_in.vivo&quot;</span>)) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR =</span> Value*WQ_value*<span class="dv">1000</span>) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(SiteID,<span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>,CAS) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">sumEAR=</span><span class="kw">sum</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(SiteID, CAS) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">maxEAR=</span><span class="kw">max</span>(sumEAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_up =</span> <span class="st">&quot;EEQ&quot;</span>) %&gt;%
+EEQ &lt;-<span class="st"> </span>guideline_sum <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(endPoint <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EEF_avg_in.vitro&quot;</span>,<span class="st">&quot;EEF_max_in.vitro_or_in.vivo&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EAR =</span> Value<span class="op">*</span>WQ_value<span class="op">*</span><span class="dv">1000</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(SiteID,<span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>,CAS) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">sumEAR=</span><span class="kw">sum</span>(EAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(SiteID, CAS) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">maxEAR=</span><span class="kw">max</span>(sumEAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_up =</span> <span class="st">&quot;EEQ&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="st">&quot;Traditional&quot;</span>)
 
 <span class="co"># Make a &quot;summary&quot; of EAR's using toxCast:</span>
 
-toxCast &lt;-<span class="st"> </span>chemicalSummary %&gt;%
-<span class="st">  </span><span class="kw">select</span>(-Bio_category, -shortName, -chnm) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site,date,casrn, Class) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">sumEAR=</span><span class="kw">sum</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, casrn, Class) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">maxEAR=</span><span class="kw">max</span>(sumEAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
+toxCast &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Bio_category, <span class="op">-</span>shortName, <span class="op">-</span>chnm) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site,date,casrn, Class) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">sumEAR=</span><span class="kw">sum</span>(EAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, casrn, Class) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">maxEAR=</span><span class="kw">max</span>(sumEAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">SiteID =</span> site,
-         <span class="dt">CAS =</span> casrn) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="st">&quot;ToxCast&quot;</span>) %&gt;%
+         <span class="dt">CAS =</span> casrn) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="st">&quot;ToxCast&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(chem_info, CAS, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>), <span class="dt">by=</span><span class="st">&quot;CAS&quot;</span>) 
 
 <span class="co"># We need extra rows for comparing tox with WQG and EEQ:</span>
-tox_WQ &lt;-<span class="st"> </span>toxCast %&gt;%
+tox_WQ &lt;-<span class="st"> </span>toxCast <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_up =</span> <span class="st">&quot;Water Quality Guideline&quot;</span>)
 
-tox_EEQ &lt;-<span class="st"> </span><span class="kw">filter</span>(toxCast, CAS %in%<span class="st"> </span><span class="kw">unique</span>(EEQ$CAS)) %&gt;%
+tox_EEQ &lt;-<span class="st"> </span><span class="kw">filter</span>(toxCast, CAS <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(EEQ<span class="op">$</span>CAS)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_up =</span> <span class="st">&quot;EEQ&quot;</span>)
 
 cbValues &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;#DCDA4B&quot;</span>,<span class="st">&quot;#999999&quot;</span>,<span class="st">&quot;#00FFFF&quot;</span>,<span class="st">&quot;#CEA226&quot;</span>,<span class="st">&quot;#CC79A7&quot;</span>,<span class="st">&quot;#4E26CE&quot;</span>,
               <span class="st">&quot;#FFFF00&quot;</span>,<span class="st">&quot;#78C15A&quot;</span>,<span class="st">&quot;#79AEAE&quot;</span>,<span class="st">&quot;#FF0000&quot;</span>,<span class="st">&quot;#00FF00&quot;</span>,<span class="st">&quot;#B1611D&quot;</span>,
               <span class="st">&quot;#FFA500&quot;</span>,<span class="st">&quot;#F4426e&quot;</span>)
 
-order_Class &lt;-<span class="st"> </span>toxCast %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(Class,<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">median</span>(maxEAR[maxEAR !=<span class="st"> </span><span class="dv">0</span>])) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(median)) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">duplicated</span>(Class)) %&gt;%
+order_Class &lt;-<span class="st"> </span>toxCast <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(Class,<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">median</span>(maxEAR[maxEAR <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>])) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(median)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">duplicated</span>(Class)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">arrange</span>(median) 
 
-EEQ &lt;-<span class="st"> </span>EEQ %&gt;%
+EEQ &lt;-<span class="st"> </span>EEQ <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(chem_info, CAS, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, Class), <span class="dt">by=</span><span class="st">&quot;CAS&quot;</span>)
-WQ &lt;-<span class="st"> </span>WQ %&gt;%
+WQ &lt;-<span class="st"> </span>WQ <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(chem_info, CAS, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, Class), <span class="dt">by=</span><span class="st">&quot;CAS&quot;</span>)
 
 
@@ -184,99 +184,99 @@ graphData &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(tox_WQ
 
 <span class="co">#Primary ordering needs to be the highest -&gt; lowest class, then order by median</span>
 orderChem &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(tox_WQ, 
-                       <span class="kw">filter</span>(EEQ, !(CAS %in%<span class="st"> </span><span class="kw">unique</span>(tox_WQ$CAS))),
-                       <span class="kw">filter</span>(WQ, !(CAS %in%<span class="st"> </span><span class="kw">unique</span>(tox_WQ$CAS)))) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,Class) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">quantile</span>(maxEAR[maxEAR !=<span class="st"> </span><span class="dv">0</span>],<span class="fl">0.5</span>)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Class =</span> <span class="kw">factor</span>(Class, <span class="dt">levels=</span>order_Class$Class)) %&gt;%
-<span class="st">  </span><span class="kw">arrange</span>(Class, !<span class="kw">is.na</span>(median), median)
+                       <span class="kw">filter</span>(EEQ, <span class="op">!</span>(CAS <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(tox_WQ<span class="op">$</span>CAS))),
+                       <span class="kw">filter</span>(WQ, <span class="op">!</span>(CAS <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(tox_WQ<span class="op">$</span>CAS)))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,Class) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">quantile</span>(maxEAR[maxEAR <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>],<span class="fl">0.5</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Class =</span> <span class="kw">factor</span>(Class, <span class="dt">levels=</span>order_Class<span class="op">$</span>Class)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">arrange</span>(Class, <span class="op">!</span><span class="kw">is.na</span>(median), median)
 
-orderedLevels &lt;-<span class="st"> </span><span class="kw">as.character</span>(orderChem$Chemical.Name) 
+orderedLevels &lt;-<span class="st"> </span><span class="kw">as.character</span>(orderChem<span class="op">$</span>Chemical.Name) 
 
 
-graphData &lt;-graphData %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Class =</span> <span class="kw">factor</span>(Class, <span class="dt">levels=</span><span class="kw">rev</span>(order_Class$Class)),
+graphData &lt;-graphData <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Class =</span> <span class="kw">factor</span>(Class, <span class="dt">levels=</span><span class="kw">rev</span>(order_Class<span class="op">$</span>Class)),
          <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">levels=</span>orderedLevels),
          <span class="dt">guide_side =</span> <span class="kw">factor</span>(guide_side),
          <span class="dt">guide_up =</span> <span class="kw">factor</span>(guide_up, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Water Quality Guideline&quot;</span>,<span class="st">&quot;EEQ&quot;</span>)))  
   
-<span class="kw">levels</span>(graphData$guide_side) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ToxCast</span><span class="ch">\n</span><span class="st">Maximum EAR Per Site&quot;</span>,
+<span class="kw">levels</span>(graphData<span class="op">$</span>guide_side) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ToxCast</span><span class="ch">\n</span><span class="st">Maximum EAR Per Site&quot;</span>,
                                   <span class="st">&quot;Traditional</span><span class="ch">\n</span><span class="st">Maximum Quotient Per Site&quot;</span>)
 
 <span class="co">#Adding counts to the side:</span>
-countNonZero &lt;-<span class="st"> </span>graphData %&gt;%
-<span class="st">  </span><span class="kw">select</span>(SiteID, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,guide_side,guide_up, maxEAR) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(SiteID, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,guide_side,guide_up) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">meanEAR =</span> <span class="kw">mean</span>(maxEAR, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,guide_side,guide_up) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">nonZero =</span> <span class="kw">as.character</span>(<span class="kw">sum</span>(meanEAR&gt;<span class="dv">0</span>))) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">select</span>(Chemical.Name, guide_up, nonZero) %&gt;%
-<span class="st">  </span><span class="kw">distinct</span>() %&gt;%
+countNonZero &lt;-<span class="st"> </span>graphData <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(SiteID, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,guide_side,guide_up, maxEAR) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(SiteID, <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,guide_side,guide_up) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">meanEAR =</span> <span class="kw">mean</span>(maxEAR, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>,guide_side,guide_up) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">nonZero =</span> <span class="kw">as.character</span>(<span class="kw">sum</span>(meanEAR<span class="op">&gt;</span><span class="dv">0</span>))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(Chemical.Name, guide_up, nonZero) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">distinct</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="kw">factor</span>(<span class="st">&quot;ToxCast</span><span class="ch">\n</span><span class="st">Maximum EAR Per Site&quot;</span>, 
-                             <span class="dt">levels =</span> <span class="kw">levels</span>(graphData$guide_side)),
-         <span class="dt">guide_up =</span> <span class="kw">factor</span>(guide_up, <span class="dt">levels =</span> <span class="kw">levels</span>(graphData$guide_up)),
+                             <span class="dt">levels =</span> <span class="kw">levels</span>(graphData<span class="op">$</span>guide_side)),
+         <span class="dt">guide_up =</span> <span class="kw">factor</span>(guide_up, <span class="dt">levels =</span> <span class="kw">levels</span>(graphData<span class="op">$</span>guide_up)),
          <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(Chemical.Name, 
-                                  <span class="dt">levels =</span> <span class="kw">levels</span>(graphData$<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>))) 
+                                  <span class="dt">levels =</span> <span class="kw">levels</span>(graphData<span class="op">$</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>))) 
 
 <span class="co"># WQ: Astricts to chemicals with no endpoints:</span>
-astrictData_WQ &lt;-<span class="st"> </span>countNonZero %&gt;%
+astrictData_WQ &lt;-<span class="st"> </span>countNonZero <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="kw">factor</span>(<span class="st">&quot;Traditional</span><span class="ch">\n</span><span class="st">Maximum Quotient Per Site&quot;</span>, 
-                             <span class="dt">levels =</span> <span class="kw">levels</span>(graphData$guide_side))) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(guide_up ==<span class="st"> &quot;Water Quality Guideline&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">nonZero =</span> <span class="st">&quot;*&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> %in%<span class="st"> </span><span class="kw">unique</span>(WQ$<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>)))
+                             <span class="dt">levels =</span> <span class="kw">levels</span>(graphData<span class="op">$</span>guide_side))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(guide_up <span class="op">==</span><span class="st"> &quot;Water Quality Guideline&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">nonZero =</span> <span class="st">&quot;*&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(WQ<span class="op">$</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>)))
 
 <span class="co"># EEQ: Astricts to chemicals with no endpoints:</span>
-astrictData_EEQ &lt;-<span class="st"> </span>countNonZero %&gt;%
+astrictData_EEQ &lt;-<span class="st"> </span>countNonZero <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">guide_side =</span> <span class="kw">factor</span>(<span class="st">&quot;ToxCast</span><span class="ch">\n</span><span class="st">Maximum EAR Per Site&quot;</span>, 
-                             <span class="dt">levels =</span> <span class="kw">levels</span>(graphData$guide_side))) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(guide_up ==<span class="st"> &quot;EEQ&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">nonZero =</span> <span class="st">&quot;*&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> %in%<span class="st"> </span><span class="kw">unique</span>(tox_EEQ$<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>)))
+                             <span class="dt">levels =</span> <span class="kw">levels</span>(graphData<span class="op">$</span>guide_side))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(guide_up <span class="op">==</span><span class="st"> &quot;EEQ&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">nonZero =</span> <span class="st">&quot;*&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">unique</span>(tox_EEQ<span class="op">$</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>)))
 
 <span class="co"># Label upper right corner for each facet (probably an easier way...):</span>
-textData &lt;-<span class="st"> </span><span class="kw">select</span>(graphData, guide_up, guide_side) %&gt;%
-<span class="st">  </span><span class="kw">distinct</span>() %&gt;%
+textData &lt;-<span class="st"> </span><span class="kw">select</span>(graphData, guide_up, guide_side) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">distinct</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">textExplain =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>),
          <span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">100</span>,<span class="dv">100</span>),
-         <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="st">&quot;4-Nonylphenol&quot;</span>,<span class="dv">4</span>), <span class="dt">levels =</span> <span class="kw">levels</span>(graphData$<span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>)))
+         <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="st">&quot;4-Nonylphenol&quot;</span>,<span class="dv">4</span>), <span class="dt">levels =</span> <span class="kw">levels</span>(graphData<span class="op">$</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>)))
   
-toxPlot_All &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>graphData) +
-<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">labels=</span>fancyNumbers)  +
+toxPlot_All &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data=</span>graphData) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="dt">labels=</span>fancyNumbers)  <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">y=</span>maxEAR, <span class="dt">fill=</span>Class),
-               <span class="dt">lwd=</span><span class="fl">0.1</span>,<span class="dt">outlier.size=</span><span class="dv">1</span>) +
-<span class="st">  </span><span class="kw">facet_grid</span>(guide_up ~<span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="dt">space =</span> <span class="st">&quot;free&quot;</span>) +
-<span class="st">  </span><span class="kw">theme_bw</span>() +
-<span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">drop=</span><span class="ot">TRUE</span>) +
-<span class="st">  </span><span class="kw">coord_flip</span>() +
+               <span class="dt">lwd=</span><span class="fl">0.1</span>,<span class="dt">outlier.size=</span><span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(guide_up <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="dt">space =</span> <span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">drop=</span><span class="ot">TRUE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_text</span>( <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>),
         <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">7</span>),
         <span class="dt">axis.title=</span><span class="kw">element_blank</span>(),
         <span class="dt">panel.background =</span> <span class="kw">element_blank</span>(),
         <span class="dt">plot.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>,<span class="dt">colour =</span> <span class="ot">NA</span>),
         <span class="dt">strip.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>,<span class="dt">colour =</span> <span class="ot">NA</span>),
-        <span class="dt">strip.text.y =</span> <span class="kw">element_blank</span>()) +
-<span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="kw">guide_legend</span>(<span class="dt">ncol=</span><span class="dv">6</span>)) +
+        <span class="dt">strip.text.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="kw">guide_legend</span>(<span class="dt">ncol=</span><span class="dv">6</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,
         <span class="dt">legend.justification =</span> <span class="st">&quot;left&quot;</span>,
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>, <span class="dt">colour =</span> <span class="st">&quot;transparent&quot;</span>),
         <span class="dt">legend.title=</span><span class="kw">element_blank</span>(),
         <span class="dt">legend.text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">8</span>),
-        <span class="dt">legend.key.height =</span> <span class="kw">unit</span>(<span class="dv">1</span>,<span class="st">&quot;line&quot;</span>)) +
+        <span class="dt">legend.key.height =</span> <span class="kw">unit</span>(<span class="dv">1</span>,<span class="st">&quot;line&quot;</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> cbValues, <span class="dt">drop=</span><span class="ot">FALSE</span>) 
 
-ymin &lt;-<span class="st"> </span><span class="dv">10</span>^-<span class="dv">6</span>
-ymax &lt;-<span class="st"> </span><span class="kw">ggplot_build</span>(toxPlot_All)$layout$panel_ranges[[<span class="dv">1</span>]]$y.range[<span class="dv">2</span>]
+ymin &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^-</span><span class="dv">6</span>
+ymax &lt;-<span class="st"> </span><span class="kw">ggplot_build</span>(toxPlot_All)<span class="op">$</span>layout<span class="op">$</span>panel_ranges[[<span class="dv">1</span>]]<span class="op">$</span>y.range[<span class="dv">2</span>]
 
-toxPlot_All_withLabels &lt;-<span class="st"> </span>toxPlot_All +
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data=</span>countNonZero, <span class="kw">aes</span>(<span class="dt">x=</span> <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label =</span> nonZero, <span class="dt">y=</span>ymin), <span class="dt">size=</span><span class="fl">2.5</span>) +
+toxPlot_All_withLabels &lt;-<span class="st"> </span>toxPlot_All <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data=</span>countNonZero, <span class="kw">aes</span>(<span class="dt">x=</span> <span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label =</span> nonZero, <span class="dt">y=</span>ymin), <span class="dt">size=</span><span class="fl">2.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> textData, <span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label=</span>textExplain, <span class="dt">y=</span>y),
-            <span class="dt">size =</span> <span class="dv">3</span>) +
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> astrictData_WQ, <span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label=</span>nonZero, <span class="dt">y=</span><span class="dv">10</span>^-<span class="dv">5</span>),
-            <span class="dt">size=</span><span class="dv">5</span>, <span class="dt">vjust =</span> <span class="fl">0.70</span>) +
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> astrictData_EEQ, <span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label=</span>nonZero, <span class="dt">y=</span><span class="fl">3.3</span>*ymin),
+            <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> astrictData_WQ, <span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label=</span>nonZero, <span class="dt">y=</span><span class="dv">10</span><span class="op">^-</span><span class="dv">5</span>),
+            <span class="dt">size=</span><span class="dv">5</span>, <span class="dt">vjust =</span> <span class="fl">0.70</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> astrictData_EEQ, <span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Chemical Name</span><span class="st">`</span>, <span class="dt">label=</span>nonZero, <span class="dt">y=</span><span class="fl">3.3</span><span class="op">*</span>ymin),
             <span class="dt">size=</span><span class="dv">5</span>, <span class="dt">vjust =</span> <span class="fl">0.70</span>)
 
 toxPlot_All_withLabels</code></pre></div>

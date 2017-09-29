@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Figure 2. Number of individual chemicals</h1>
-<h4 class="date"><em>05 May, 2017</em></h4>
+<h4 class="date"><em>29 September, 2017</em></h4>
 
 
 
@@ -86,10 +86,10 @@ chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
 
 <span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info$CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
@@ -116,33 +116,33 @@ sitesOrdered &lt;-<span class="st"> </span><span class="kw">c</span>(<span class
                   <span class="st">&quot;Raquette&quot;</span>,<span class="st">&quot;StRegis&quot;</span>)
 
 
-threshold &lt;-<span class="st"> </span><span class="dv">10</span>^-<span class="dv">3</span>
+threshold &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^-</span><span class="dv">3</span>
 
-graphData &lt;-<span class="st"> </span>chemicalSummary %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, date, chnm) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sumEAR =</span> <span class="kw">sum</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, chnm) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">maxEAR =</span> <span class="kw">max</span>(sumEAR)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">nChem =</span> <span class="kw">sum</span>(maxEAR &gt;<span class="st"> </span>threshold)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(chem_site, <span class="dt">site=</span>SiteID, <span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>, site_grouping)) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>, <span class="dt">levels =</span> sitesOrdered)) %&gt;%
+graphData &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, date, chnm) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sumEAR =</span> <span class="kw">sum</span>(EAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, chnm) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">maxEAR =</span> <span class="kw">max</span>(sumEAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">nChem =</span> <span class="kw">sum</span>(maxEAR <span class="op">&gt;</span><span class="st"> </span>threshold)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(chem_site, <span class="dt">site=</span>SiteID, <span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>, site_grouping)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>, <span class="dt">levels =</span> sitesOrdered)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">site_grouping =</span> <span class="kw">factor</span>(site_grouping, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Lake Superior&quot;</span>,
                                                           <span class="st">&quot;Lake Michigan&quot;</span>,
                                                           <span class="st">&quot;Lake Huron&quot;</span>,
                                                           <span class="st">&quot;Lake Erie&quot;</span>,
                                                           <span class="st">&quot;Lake Ontario&quot;</span>)))
 
-countPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(graphData)+
+countPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(graphData)<span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>, <span class="dt">y=</span>nChem),
            <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,
-           <span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>) +
-<span class="st">  </span><span class="kw">theme_bw</span>() +
-<span class="st">  </span><span class="kw">facet_grid</span>(. ~<span class="st"> </span>site_grouping, <span class="dt">scales=</span><span class="st">&quot;free&quot;</span>, <span class="dt">space=</span><span class="st">&quot;free&quot;</span>) +
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) +
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of Chemicals</span><span class="ch">\n</span><span class="st"> with EARmax &gt; 0.001&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>( <span class="dt">angle =</span> <span class="dv">90</span>,<span class="dt">vjust=</span><span class="fl">0.5</span>,<span class="dt">hjust =</span> <span class="dv">1</span>)) +
+           <span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(. <span class="op">~</span><span class="st"> </span>site_grouping, <span class="dt">scales=</span><span class="st">&quot;free&quot;</span>, <span class="dt">space=</span><span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of Chemicals</span><span class="ch">\n</span><span class="st"> with EARmax &gt; 0.001&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>( <span class="dt">angle =</span> <span class="dv">90</span>,<span class="dt">vjust=</span><span class="fl">0.5</span>,<span class="dt">hjust =</span> <span class="dv">1</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">strip.text.y =</span> <span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">0</span>, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">size=</span><span class="dv">7</span>), 
         <span class="dt">strip.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">8</span>),
         <span class="dt">strip.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="dt">colour =</span> <span class="ot">NA</span>),

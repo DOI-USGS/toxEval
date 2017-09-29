@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 6: Sub-families</h1>
-<h4 class="date"><em>05 May, 2017</em></h4>
+<h4 class="date"><em>29 September, 2017</em></h4>
 
 
 
@@ -88,10 +88,10 @@ chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
 
 <span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info$CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
@@ -103,67 +103,67 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
                                         chem_site, 
                                         chem_info)
 
-chemicalSummary &lt;-<span class="st"> </span>chemicalSummary %&gt;%
+chemicalSummary &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(endPointInfo, 
                    <span class="dt">endPoint=</span>assay_component_endpoint_name,
                    <span class="dt">family =</span> intended_target_family,
                    <span class="dt">subFamily =</span> intended_target_family_sub), <span class="dt">by=</span><span class="st">&quot;endPoint&quot;</span>) 
 
-graphData &lt;-<span class="st"> </span>chemicalSummary %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(subFamily)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, Bio_category, subFamily, date) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sumEAR =</span> <span class="kw">sum</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, Bio_category, subFamily) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">meanEAR =</span> <span class="kw">max</span>(sumEAR)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
+graphData &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(subFamily)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, Bio_category, subFamily, date) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sumEAR =</span> <span class="kw">sum</span>(EAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, Bio_category, subFamily) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">meanEAR =</span> <span class="kw">max</span>(sumEAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">subFamily =</span> <span class="kw">stri_trans_totitle</span>(subFamily))
 
-orderSub &lt;-<span class="st"> </span>graphData %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(Bio_category) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">median</span>(meanEAR[meanEAR !=<span class="st"> </span><span class="dv">0</span>])) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
+orderSub &lt;-<span class="st"> </span>graphData <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(Bio_category) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">median</span>(meanEAR[meanEAR <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>])) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(median))
 
-orderGroups &lt;-<span class="st"> </span>graphData %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(subFamily, Bio_category) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">quantile</span>(meanEAR[meanEAR !=<span class="st"> </span><span class="dv">0</span>],<span class="fl">0.5</span>)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Bio_category =</span> <span class="kw">factor</span>(Bio_category, <span class="dt">levels=</span>orderSub$Bio_category)) %&gt;%
+orderGroups &lt;-<span class="st"> </span>graphData <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(subFamily, Bio_category) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">median =</span> <span class="kw">quantile</span>(meanEAR[meanEAR <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>],<span class="fl">0.5</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Bio_category =</span> <span class="kw">factor</span>(Bio_category, <span class="dt">levels=</span>orderSub<span class="op">$</span>Bio_category)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">arrange</span>(Bio_category, <span class="kw">desc</span>(median))
 
-orderedSub &lt;-<span class="st"> </span><span class="kw">rev</span>(orderGroups$subFamily)[<span class="kw">rev</span>(orderGroups$subFamily) %in%
-<span class="st">                                           </span><span class="kw">unique</span>(graphData$subFamily)]
+orderedSub &lt;-<span class="st"> </span><span class="kw">rev</span>(orderGroups<span class="op">$</span>subFamily)[<span class="kw">rev</span>(orderGroups<span class="op">$</span>subFamily) <span class="op">%in%</span>
+<span class="st">                                           </span><span class="kw">unique</span>(graphData<span class="op">$</span>subFamily)]
 orderedSub &lt;-<span class="st"> </span><span class="kw">unique</span>(orderedSub)
 
-graphData$subFamily &lt;-<span class="st"> </span><span class="kw">factor</span>(graphData$subFamily, 
+graphData<span class="op">$</span>subFamily &lt;-<span class="st"> </span><span class="kw">factor</span>(graphData<span class="op">$</span>subFamily, 
                               <span class="dt">levels =</span> orderedSub)
 
-graphData$Bio_category &lt;-<span class="st"> </span><span class="kw">factor</span>(graphData$Bio_category, 
-                            <span class="dt">levels =</span> orderSub$Bio_category)
+graphData<span class="op">$</span>Bio_category &lt;-<span class="st"> </span><span class="kw">factor</span>(graphData<span class="op">$</span>Bio_category, 
+                            <span class="dt">levels =</span> orderSub<span class="op">$</span>Bio_category)
 
 cbValues &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;#DCDA4B&quot;</span>,<span class="st">&quot;#999999&quot;</span>,<span class="st">&quot;#00FFFF&quot;</span>,<span class="st">&quot;#CEA226&quot;</span>,<span class="st">&quot;#CC79A7&quot;</span>,<span class="st">&quot;#4E26CE&quot;</span>,
               <span class="st">&quot;#FFFF00&quot;</span>,<span class="st">&quot;#78C15A&quot;</span>,<span class="st">&quot;#79AEAE&quot;</span>,<span class="st">&quot;#FF0000&quot;</span>,<span class="st">&quot;#00FF00&quot;</span>,<span class="st">&quot;#B1611D&quot;</span>,
               <span class="st">&quot;#FFA500&quot;</span>,<span class="st">&quot;#F4426e&quot;</span>, <span class="st">&quot;#4286f4&quot;</span>,<span class="st">&quot;red&quot;</span>,<span class="st">&quot;pink&quot;</span>)
 
-countNonZero &lt;-<span class="st"> </span>graphData %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(subFamily) %&gt;%
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">nonZero =</span> <span class="kw">as.character</span>(<span class="kw">length</span>(<span class="kw">unique</span>(site[meanEAR&gt;<span class="dv">0</span>])))) %&gt;%
+countNonZero &lt;-<span class="st"> </span>graphData <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(subFamily) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">nonZero =</span> <span class="kw">as.character</span>(<span class="kw">length</span>(<span class="kw">unique</span>(site[meanEAR<span class="op">&gt;</span><span class="dv">0</span>])))) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">data.frame</span>()
 
-subPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(graphData)+
-<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="st">&quot;Maximum EAR Per Site&quot;</span>,<span class="dt">labels=</span>fancyNumbers)+
+subPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(graphData)<span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_log10</span>(<span class="st">&quot;Maximum EAR Per Site&quot;</span>,<span class="dt">labels=</span>fancyNumbers)<span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>subFamily, 
                    <span class="dt">y=</span>meanEAR, 
-                   <span class="dt">fill =</span> Bio_category),<span class="dt">lwd=</span><span class="fl">0.1</span>,<span class="dt">outlier.size=</span><span class="dv">1</span>) +
-<span class="st">  </span><span class="kw">coord_flip</span>() +
-<span class="st">  </span><span class="kw">theme_bw</span>() +
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) +
+                   <span class="dt">fill =</span> Bio_category),<span class="dt">lwd=</span><span class="fl">0.1</span>,<span class="dt">outlier.size=</span><span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>,<span class="dt">colour =</span> <span class="ot">NA</span>),
         <span class="dt">axis.text.y =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">8</span>, <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">vjust =</span> <span class="fl">0.2</span>), 
-        <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">8</span>, <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">margin =</span> <span class="kw">margin</span>(-<span class="fl">0.5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)),
-        <span class="dt">axis.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">10</span>)) +
-<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> cbValues, <span class="dt">drop=</span><span class="ot">TRUE</span>)  +
-<span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="kw">guide_legend</span>(<span class="dt">ncol=</span><span class="dv">6</span>)) +
+        <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">8</span>, <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">vjust =</span> <span class="dv">0</span>, <span class="dt">margin =</span> <span class="kw">margin</span>(<span class="op">-</span><span class="fl">0.5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)),
+        <span class="dt">axis.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">10</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> cbValues, <span class="dt">drop=</span><span class="ot">TRUE</span>)  <span class="op">+</span>
+<span class="st">  </span><span class="kw">guides</span>(<span class="dt">fill=</span><span class="kw">guide_legend</span>(<span class="dt">ncol=</span><span class="dv">6</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,
         <span class="dt">legend.justification =</span> <span class="st">&quot;left&quot;</span>,
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>, <span class="dt">colour =</span> <span class="st">&quot;transparent&quot;</span>),
@@ -171,9 +171,9 @@ subPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(graphData)+
         <span class="dt">legend.text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">8</span>),
         <span class="dt">legend.key.height =</span> <span class="kw">unit</span>(<span class="dv">1</span>,<span class="st">&quot;line&quot;</span>)) 
 
-xmin &lt;-<span class="st"> </span><span class="dv">10</span>^(<span class="kw">ggplot_build</span>(subPlot)$layout$panel_ranges[[<span class="dv">1</span>]]$x.range[<span class="dv">1</span>])
+xmin &lt;-<span class="st"> </span><span class="dv">10</span><span class="op">^</span>(<span class="kw">ggplot_build</span>(subPlot)<span class="op">$</span>layout<span class="op">$</span>panel_ranges[[<span class="dv">1</span>]]<span class="op">$</span>x.range[<span class="dv">1</span>])
 
-subPlot &lt;-<span class="st"> </span>subPlot +<span class="st"> </span>
+subPlot &lt;-<span class="st"> </span>subPlot <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data=</span>countNonZero, <span class="kw">aes</span>(<span class="dt">x=</span>subFamily, <span class="dt">y=</span>xmin,<span class="dt">label=</span>nonZero),<span class="dt">size=</span><span class="dv">3</span>) 
 
 subPlot</code></pre></div>
