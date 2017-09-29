@@ -16,11 +16,13 @@ stackBarGroup_create <- reactive({
     chem_site$`Short Name` <- factor(chem_site$`Short Name`,
                                      levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
   }
-  
+
+  include_legend <- !(catType == 2)
   upperPlot <- plot_tox_stacks(chemicalSummary, 
                                chem_site, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
-                               mean_logic = mean_logic)
+                               mean_logic = mean_logic,
+                               include_legend = include_legend)
   return(upperPlot)
 })
 

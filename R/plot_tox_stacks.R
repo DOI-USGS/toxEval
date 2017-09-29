@@ -33,22 +33,34 @@
 #'                                         chem_info)
 #' plot_tox_stacks(chemicalSummary, chem_site, "Biological")   
 #' plot_tox_stacks(chemicalSummary, chem_site, "Chemical Class")
-#' plot_tox_stacks(chemicalSummary, chem_site, "Chemical") 
+#' plot_tox_stacks(chemicalSummary, chem_site, "Chemical", include_legend = FALSE) 
 plot_tox_stacks <- function(chemicalSummary, 
                             chem_site,
                             category = "Biological",
                             mean_logic = FALSE,
-                            manual_remove = NULL){
+                            manual_remove = NULL,
+                            include_legend = TRUE){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   SiteID <- site_grouping <- `Short Name` <- ".dplyr"
     
-  graphData <- graphData(chemicalSummary = chemicalSummary,
-                         category = category,
-                         manual_remove = manual_remove,
-                         mean_logic = mean_logic)
+  if(include_legend & category == "Chemical"){
+    graphData <- graph_chem_data(chemicalSummary = chemicalSummary,
+                           manual_remove = manual_remove,
+                           mean_logic = mean_logic)   
+    names(graphData)[names(graphData) == "maxEAR"] <- "meanEAR"
+    names(graphData)[names(graphData) == "chnm"] <- "category"
+  } else {
+    graphData <- graphData(chemicalSummary = chemicalSummary,
+                           category = category,
+                           manual_remove = manual_remove,
+                           mean_logic = mean_logic) 
+    if(category == "Chemical"){
+      graphData$category <- graphData$chnm
+    } 
+  }
 
   siteToFind <- unique(chemicalSummary$shortName)
 
@@ -65,10 +77,6 @@ plot_tox_stacks <- function(chemicalSummary,
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
 
-    if(category == "Chemical"){
-      graphData$category <- graphData$chnm
-    } 
-    
     upperPlot <- ggplot(graphData, 
                         aes(x=`Short Name`, y=meanEAR, fill = category)) +
       theme_minimal() +
@@ -100,12 +108,15 @@ plot_tox_stacks <- function(chemicalSummary,
   }
   
   upperPlot <- upperPlot +
-    geom_bar(stat="identity") +
-    theme(legend.title = element_blank()) 
+    geom_bar(stat="identity") 
   
-  if(length(unique(graphData$category)) <= length(cbValues)){
+  if(include_legend && length(unique(graphData$category)) <= length(cbValues)){
     upperPlot <- upperPlot + 
-      scale_fill_manual(values = cbValues, drop=FALSE)
+      scale_fill_manual(name = category,values = cbValues, drop=FALSE)
+
+  } else {
+    upperPlot <- upperPlot +
+      theme(legend.position="none")
   }
   
   return(upperPlot)
