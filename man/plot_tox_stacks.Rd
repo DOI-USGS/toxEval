@@ -17,6 +17,8 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{manual_remove}{vector of categories to remove}
+
+\item{include_legend}{logical to include legend or not}
 }
 \description{
 Plot boxplot of groups

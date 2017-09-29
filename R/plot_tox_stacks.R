@@ -6,6 +6,7 @@
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param manual_remove vector of categories to remove
+#' @param include_legend logical to include legend or not
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
