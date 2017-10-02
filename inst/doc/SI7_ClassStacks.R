@@ -14,6 +14,7 @@ library(readxl)
 library(toxEval)
 library(dplyr)
 library(ggplot2)
+library(grid)
 
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
@@ -76,6 +77,9 @@ for(class in unique(chemicalSummary$Class)){
     ggtitle(class)
     
   print(upperPlot)
+  grid.text("# Samples:", 
+          x = unit(.03, "npc"), 
+          y = unit(.205, "npc"), gp=gpar(fontsize=7))
 }
 
 
