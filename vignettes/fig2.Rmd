@@ -114,7 +114,7 @@ countPlot <- ggplot(graphData, aes(x=`Short Name`))+
         plot.background = element_rect(fill = "transparent",colour = NA))
 
 countPlot
-grid.text("N Samples:", 
+grid.text("# Samples:", 
           x = unit(.04, "npc"), 
           y = unit(.19, "npc"), gp=gpar(fontsize=7))
 ```

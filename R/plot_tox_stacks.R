@@ -63,6 +63,14 @@ plot_tox_stacks <- function(chemicalSummary,
     } 
   }
 
+  counts <- chemicalSummary %>%
+    select(site, date) %>%
+    distinct() %>%
+    group_by(site) %>%
+    summarize(count = n()) %>%
+    left_join(select(chem_site, site=SiteID, `Short Name`, site_grouping), by="site") %>%
+    select(-site)
+
   siteToFind <- unique(chemicalSummary$shortName)
 
   cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -108,8 +116,14 @@ plot_tox_stacks <- function(chemicalSummary,
 
   }
   
+  placement <- -0.05*diff(range(graphData$meanEAR))
+  
   upperPlot <- upperPlot +
-    geom_bar(stat="identity") 
+    geom_col() +
+    geom_text(data = counts, 
+              aes(label = count, x=`Short Name`,y = placement), 
+              size=2,inherit.aes = FALSE)  +
+    theme(plot.margin = unit(c(5.5,5.5,5.5,12), "pt"))
   
   if(include_legend && length(unique(graphData$category)) <= length(cbValues)){
     upperPlot <- upperPlot + 

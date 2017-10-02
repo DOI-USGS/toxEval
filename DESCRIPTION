@@ -34,7 +34,7 @@ Imports:
     tools
 Suggests:
     rmarkdown,
-    grid
+    grid,
     testthat,
     knitr
 BugReports: https://github.com/USGS-R/toxEval/issues
