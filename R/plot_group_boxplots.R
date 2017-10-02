@@ -98,7 +98,7 @@ plot_tox_boxplots <- function(chemicalSummary,
       bioPlot <- bioPlot + 
         geom_boxplot(data = chemicalSummary,
                                       aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
-        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
+        scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
       
     } else {
       graphData <- graphData(chemicalSummary = chemicalSummary,
@@ -113,7 +113,7 @@ plot_tox_boxplots <- function(chemicalSummary,
       
       bioPlot <- bioPlot + geom_boxplot(data = graphData, 
                                         aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
-        scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
+        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
     }
     
     plot_info <- ggplot_build(bioPlot)
