@@ -102,31 +102,42 @@ Table 5: Site Counts:
 chemicalSummary <- chemicalSummary %>%
   left_join(select(endPointInfo, 
                    endPoint=assay_component_endpoint_name,
-                   intended_target_family_sub), by="endPoint") %>%
-  rename(subFamily = intended_target_family_sub) 
+                   subFamily=intended_target_family_sub,
+                   gene_symbol=intended_target_gene_symbol), by="endPoint")
   
 tableData <- chemicalSummary %>%
-  group_by(site, endPoint, Family=Bio_category, subFamily, date, Chemical=chnm) %>%
+  group_by(site, endPoint, Family=Bio_category, subFamily, gene_symbol, date, Chemical=chnm) %>%
   summarize(sumEAR = sum(EAR)) %>%
-  group_by(site, endPoint, Family, subFamily, Chemical) %>%
+  group_by(site, endPoint, Family, subFamily, gene_symbol, Chemical) %>%
   summarize(meanEAR = max(sumEAR)) %>%
-  group_by(endPoint, Family, subFamily, Chemical) %>%
+  group_by(endPoint, Family, subFamily, gene_symbol, Chemical) %>%
   summarize(nSites = sum(meanEAR > 10^-3)) %>%
   data.frame() %>%
+  filter(nSites > 0) %>%
   spread(Chemical, nSites) %>%
-  arrange(Family, subFamily) %>%
-  select(endPoint, Family, subFamily, everything())
+  arrange(Family, subFamily, gene_symbol) %>%
+  select(endPoint, Family, subFamily, gene_symbol, everything())
 
-sortedCols <- sort(colSums(tableData[,4:length(tableData)], na.rm = TRUE), 
-     decreasing = TRUE)
-tableData <- tableData[,c("endPoint","Family","subFamily", names(sortedCols))]
+chem_info$Class <- factor(chem_info$Class) 
+chem_info$Class <- factor(chem_info$Class, 
+                          levels = c("Detergent","Herbicide","Insecticide",
+                              "Antioxidant",
+                              "Plasticizer","Human Drug","Antimicrobial",
+                              "Fire Retardant","PAH","Flavor/Fragrance",
+                              "Solvent","Dye/pigment","Fuel","Other"))
 
-tableData2 <- select(tableData, -endPoint, -Family, -subFamily) 
+chem_info <- chem_info %>%
+  left_join(distinct(select(chemicalSummary, casrn, chnm)), by=c("CAS"="casrn")) %>%
+  arrange(Class, chnm)
 
+
+tableData2 <- select(tableData, -endPoint, -Family, -subFamily, -gene_symbol)
 tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
 
-tableData <- tableData %>%
-  select(Family, subFamily, endPoint, nChems, everything())   
-datatable(tableData,  rownames = FALSE)
+tableData <- tableData[,c("Family", "subFamily","gene_symbol",
+                          "endPoint", "nChems",
+                          chem_info$chnm[chem_info$chnm %in% names(tableData)])] 
 
+datatable(tableData,  rownames = FALSE)
+# write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "")
 ```
