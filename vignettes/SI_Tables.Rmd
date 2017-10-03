@@ -1,0 +1,132 @@
+---
+title: "SI Table 5: SI-5 Site Counts"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{SI Table 5}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmarkdown)
+options(continue=" ")
+options(width=60)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.height = 7,
+                      fig.width = 7)
+```
+
+Get data ready:
+
+
+```{r }
+library(readxl)
+library(toxEval)
+
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
+
+chem_data <- read_excel(full_path, sheet = "Data")
+chem_info <- read_excel(full_path, sheet = "Chemicals") 
+chem_site <- read_excel(full_path, sheet = "Sites")
+
+#Remove DEET:
+chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
+chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
+#Trim names for graph:
+chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
+chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
+chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
+
+ACClong <- get_ACC(chem_info$CAS)
+ACClong <- remove_flags(ACClong)
+
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+filtered_ep <- filter_groups(cleaned_ep)
+
+chemicalSummary <- get_chemical_summary(ACClong,
+                                        filtered_ep,
+                                        chem_data, 
+                                        chem_site, 
+                                        chem_info)
+
+tox_sum <- statsOfGroup(chemicalSummary,category = "Chemical", hit_threshold = 0.001)
+
+tox_ranks <- statsOfColumns(chemicalSummary, "Chemical", mean_logic = FALSE,  hit_threshold = 0.001)
+
+tox_endpoints <- endpoint_table(chemicalSummary, "Chemical", mean_logic = FALSE,  hit_threshold = 0.001)
+
+```
+
+SI Table 3: Intended Target Family 
+
+```{r }
+
+library(dplyr)
+library(tidyr)
+
+intended_target <- select(endPointInfo, intended_target_family, intended_target_family_sub, endPoint = assay_component_endpoint_name, source = assay_source_long_name) %>%
+  right_join(select(filtered_ep, endPoint), by = "endPoint") %>%
+  arrange(intended_target_family, intended_target_family_sub) 
+
+intended_target$intended_target_family_sub["Zebrafish" == intended_target$intended_target_family] <- "Zebrafish"
+
+intended_target <- intended_target %>%
+  rename(`Intended Target Family`=intended_target_family,
+         `Intended Target Family Sub-Family` = intended_target_family_sub) %>%
+  data.frame()
+  
+library(DT)
+
+datatable(intended_target,  rownames = FALSE)
+
+```
+
+
+Table 4: Endpoint Counts
+
+```{r }
+
+```
+
+
+Table 5: Site Counts:
+```{r }
+chemicalSummary <- chemicalSummary %>%
+  left_join(select(endPointInfo, 
+                   endPoint=assay_component_endpoint_name,
+                   intended_target_family_sub), by="endPoint") %>%
+  rename(subFamily = intended_target_family_sub) 
+  
+tableData <- chemicalSummary %>%
+  group_by(site, endPoint, Family=Bio_category, subFamily, date, Chemical=chnm) %>%
+  summarize(sumEAR = sum(EAR)) %>%
+  group_by(site, endPoint, Family, subFamily, Chemical) %>%
+  summarize(meanEAR = max(sumEAR)) %>%
+  group_by(endPoint, Family, subFamily, Chemical) %>%
+  summarize(nSites = sum(meanEAR > 10^-3)) %>%
+  data.frame() %>%
+  spread(Chemical, nSites) %>%
+  arrange(Family, subFamily) %>%
+  select(endPoint, Family, subFamily, everything())
+
+sortedCols <- sort(colSums(tableData[,4:length(tableData)], na.rm = TRUE), 
+     decreasing = TRUE)
+tableData <- tableData[,c("endPoint","Family","subFamily", names(sortedCols))]
+
+tableData2 <- select(tableData, -endPoint, -Family, -subFamily) 
+
+tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
+
+tableData <- tableData %>%
+  select(Family, subFamily, endPoint, nChems, everything())   
+datatable(tableData,  rownames = FALSE)
+
+```
