@@ -93,7 +93,7 @@ test_that("Plotting stacked summaries", {
                                                    "site_grouping","Short Name")))
   
   chemStackPlot <- plot_tox_stacks(chemicalSummary, chem_site,
-                                   category = "Chemical")
+                                   category = "Chemical",include_legend = FALSE)
   expect_true(all(names(chemStackPlot$data) %in% c("site","category","meanEAR",
                                                   "site_grouping","Short Name")))
   

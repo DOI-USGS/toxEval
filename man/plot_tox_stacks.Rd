@@ -5,7 +5,7 @@
 \title{plot_tox_boxplots}
 \usage{
 plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE, manual_remove = NULL)
+  mean_logic = FALSE, manual_remove = NULL, include_legend = TRUE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -17,6 +17,8 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{manual_remove}{vector of categories to remove}
+
+\item{include_legend}{logical to include legend or not}
 }
 \description{
 Plot boxplot of groups
@@ -43,5 +45,5 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_info)
 plot_tox_stacks(chemicalSummary, chem_site, "Biological")   
 plot_tox_stacks(chemicalSummary, chem_site, "Chemical Class")
-plot_tox_stacks(chemicalSummary, chem_site, "Chemical") 
+plot_tox_stacks(chemicalSummary, chem_site, "Chemical", include_legend = FALSE) 
 }

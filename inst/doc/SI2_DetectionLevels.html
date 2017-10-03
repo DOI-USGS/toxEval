@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 2: Detection Levels</h1>
-<h4 class="date"><em>05 May, 2017</em></h4>
+<h4 class="date"><em>02 October, 2017</em></h4>
 
 
 
@@ -87,14 +87,14 @@ chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
 
 <span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 <span class="co">#Trim names for graph:</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info$CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
@@ -102,13 +102,13 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw">filter_groups</span>(
 
 <span class="co"># Substitute max LDL or MDL for actual values:</span>
 
-chem_data &lt;-<span class="st"> </span>chem_data %&gt;%
+chem_data &lt;-<span class="st"> </span>chem_data <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(chem_info,
                    CAS,
                    <span class="dt">MDL =</span> <span class="st">`</span><span class="dt">Maximum method detection level</span><span class="st">`</span>,
                    <span class="dt">LDL =</span> <span class="st">`</span><span class="dt">Maximum laboratory reporting level</span><span class="st">`</span>),
-            <span class="dt">by=</span><span class="st">&quot;CAS&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">rowwise</span>() %&gt;%
+            <span class="dt">by=</span><span class="st">&quot;CAS&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Value_new =</span> <span class="kw">max</span>(MDL, LDL))
 
 chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong,

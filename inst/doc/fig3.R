@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ## ---------------------------------------------------------
 library(readxl)
 library(toxEval)
+library(grid)
 
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
@@ -43,23 +44,28 @@ chemicalSummary$Class[chemicalSummary$Class == "Human Drug, Non Prescription"] <
 chemicalSummary$Class[chemicalSummary$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
 chemicalSummary$Class[chemicalSummary$Class == "Detergent Metabolites"] <- "Detergent"
 
-#' plot_tox_boxplots(chemicalSummary, "Chemical Class")
-#' plot_tox_boxplots(chemicalSummary, "Chemical") 
 bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = "Biological", 
                                manual_remove = c("Transferase","Undefined"))
 bioPlot
+grid.text("# Samples", 
+         x = unit(.22, "npc"), 
+         y = unit(.995, "npc"), gp=gpar(fontsize=7))
 
 ## ---------------------------------------------------------
 classPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = "Chemical Class")
 classPlot
-
+grid.text("# Samples", 
+         x = unit(.22, "npc"), 
+         y = unit(.995, "npc"), gp=gpar(fontsize=7))
 
 ## ---------------------------------------------------------
 
 chemPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = "Chemical")
 chemPlot
-
+grid.text("# Samples", 
+         x = unit(.35, "npc"), 
+         y = unit(.995, "npc"), gp=gpar(fontsize=7))
 

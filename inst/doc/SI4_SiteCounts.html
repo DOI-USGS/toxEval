@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 4: Site Counts</h1>
-<h4 class="date"><em>05 May, 2017</em></h4>
+<h4 class="date"><em>02 October, 2017</em></h4>
 
 
 
@@ -87,14 +87,14 @@ chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
 
 <span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 <span class="co">#Trim names for graph:</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
-chem_info$Class[chem_info$Class ==<span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info$CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
@@ -106,24 +106,24 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
                                         chem_site, 
                                         chem_info)
 
-tableData &lt;-<span class="st"> </span>chemicalSummary %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, date, chnm) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sumEAR =</span> <span class="kw">sum</span>(EAR)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(site, chnm) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">meanEAR =</span> <span class="kw">max</span>(sumEAR)) %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(chnm) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">nSites =</span> <span class="kw">sum</span>(meanEAR &gt;<span class="st"> </span><span class="dv">10</span>^-<span class="dv">3</span>)) %&gt;%
-<span class="st">  </span><span class="kw">data.frame</span>() %&gt;%
-<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(nSites)) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(nSites &gt;<span class="st"> </span><span class="dv">1</span>)
+tableData &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, date, chnm) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sumEAR =</span> <span class="kw">sum</span>(EAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(site, chnm) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">meanEAR =</span> <span class="kw">max</span>(sumEAR)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(chnm) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">nSites =</span> <span class="kw">sum</span>(meanEAR <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span><span class="op">^-</span><span class="dv">3</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">data.frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(nSites)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(nSites <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>)
 
-tableData$chnm &lt;-<span class="st"> </span><span class="kw">factor</span>(tableData$chnm, <span class="dt">levels =</span> tableData$chnm)
+tableData<span class="op">$</span>chnm &lt;-<span class="st"> </span><span class="kw">factor</span>(tableData<span class="op">$</span>chnm, <span class="dt">levels =</span> tableData<span class="op">$</span>chnm)
 
-chemPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tableData)+
-<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>chnm, <span class="dt">y=</span>nSites),<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,<span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>) +
-<span class="st">  </span><span class="kw">theme_bw</span>() +
-<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) +
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of Sites</span><span class="ch">\n</span><span class="st"> with EARmax &gt; 0.001&quot;</span>) +
+chemPlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tableData)<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x=</span>chnm, <span class="dt">y=</span>nSites),<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,<span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of Sites</span><span class="ch">\n</span><span class="st"> with EARmax &gt; 0.001&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>( <span class="dt">angle =</span> <span class="dv">90</span>,<span class="dt">vjust=</span><span class="fl">0.5</span>,<span class="dt">hjust =</span> <span class="dv">1</span>)) 
 
 chemPlot</code></pre></div>

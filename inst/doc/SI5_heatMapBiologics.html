@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 5: Biological Heat Map</h1>
-<h4 class="date"><em>05 May, 2017</em></h4>
+<h4 class="date"><em>02 October, 2017</em></h4>
 
 
 
@@ -87,10 +87,10 @@ chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
 
 <span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info$CAS !=<span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info$CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
@@ -103,7 +103,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
                                         chem_info)
 
 <span class="co"># Order the Great Lakes:</span>
-chem_site$site_grouping &lt;-<span class="st"> </span><span class="kw">factor</span>(chem_site$site_grouping,
+chem_site<span class="op">$</span>site_grouping &lt;-<span class="st"> </span><span class="kw">factor</span>(chem_site<span class="op">$</span>site_grouping,
                <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Lake Superior&quot;</span>,
                <span class="st">&quot;Lake Michigan&quot;</span>,
                <span class="st">&quot;Lake Huron&quot;</span>,
@@ -124,7 +124,7 @@ chem_site$site_grouping &lt;-<span class="st"> </span><span class="kw">factor</s
                    <span class="st">&quot;Genesee&quot;</span>,<span class="st">&quot;Oswego&quot;</span>,<span class="st">&quot;BlackNY&quot;</span>,<span class="st">&quot;Oswegatchie&quot;</span>,<span class="st">&quot;Grass&quot;</span>,
                    <span class="st">&quot;Raquette&quot;</span>,<span class="st">&quot;StRegis&quot;</span>)
 
- chem_site$<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(chem_site$<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>,
+ chem_site<span class="op">$</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">factor</span>(chem_site<span class="op">$</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>,
                <span class="dt">levels =</span> sitesOrdered)
   
  <span class="kw">plot_tox_heatmap</span>(chemicalSummary,

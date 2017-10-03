@@ -1,11 +1,11 @@
 ---
-title: "Figure 2. Number of individual chemicals"
+title: "SI7: Class"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Figure_2}
+  %\VignetteIndexEntry{SI7}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -19,11 +19,10 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE,
                       fig.height = 7,
-                      fig.width = 9)
+                      fig.width = 10)
 ```
 
 
-Number of individual chemicals with at least one sample that resulted in an exposure activity ratio > 10-3 for each site.
 
 
 
@@ -59,7 +58,11 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_site, 
                                         chem_info)
 
-#Ordering the sites to flow "downstream" of the Great Lakes:
+#Trim some names:
+chemicalSummary$Class[chemicalSummary$Class == "Human Drug, Non Prescription"] <- "Human Drug"
+chemicalSummary$Class[chemicalSummary$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
+chemicalSummary$Class[chemicalSummary$Class == "Detergent Metabolites"] <- "Detergent"
+
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
                   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
                   "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
@@ -73,20 +76,7 @@ sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
                   "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
                   "Raquette","StRegis")
 
-
-threshold <- 10^-3
-
-graphData <- chemicalSummary %>%
-  group_by(site, date, chnm) %>% 
-  summarize(sumEAR = sum(EAR)) %>%
-  group_by(site, chnm) %>%
-  summarize(maxEAR = max(sumEAR),
-            count = n()) %>%
-  group_by(site, count) %>%
-  summarize(nChem = sum(maxEAR > threshold)) %>%
-  data.frame() %>%
-  left_join(select(chem_site, site=SiteID, `Short Name`, site_grouping),
-            by = "site") %>%
+chem_site <- chem_site %>%
   mutate(`Short Name` = factor(`Short Name`, levels = sitesOrdered)) %>%
   mutate(site_grouping = factor(site_grouping, levels = c("Lake Superior",
                                                           "Lake Michigan",
@@ -94,29 +84,21 @@ graphData <- chemicalSummary %>%
                                                           "Lake Erie",
                                                           "Lake Ontario")))
 
-countPlot <- ggplot(graphData, aes(x=`Short Name`))+
-  geom_bar(aes(y=nChem),
-           stat = "identity",
-           fill = "steelblue") +
-  geom_text(aes(y=-1, label =  count), size = 2.5) +
-  theme_bw() +
-  facet_grid(. ~ site_grouping, scales="free", space="free") +
-  xlab("") +
-  ylab("Number of Chemicals\n with EARmax > 0.001") +
-  theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
-  theme(strip.text.y = element_text(angle=0, hjust=0, size=7), 
-        strip.text.x = element_text(size = 8),
-        strip.background = element_rect(fill="transparent", colour = NA),
-        axis.text = element_text(size=8),
-        panel.spacing = unit(0.05, "lines"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+for(class in unique(chemicalSummary$Class)){
+  sub_class <- filter(chemicalSummary, Class %in% class)
+  
+  upperPlot <- plot_tox_stacks(sub_class, 
+                               chem_site, 
+                               category = "Chemical")
+  upperPlot <- upperPlot +
+    ggtitle(class)
+    
+  print(upperPlot)
+  grid.text("# Samples:", 
+          x = unit(.03, "npc"), 
+          y = unit(.205, "npc"), gp=gpar(fontsize=7))
+}
 
-countPlot
-grid.text("# Samples:", 
-          x = unit(.04, "npc"), 
-          y = unit(.19, "npc"), gp=gpar(fontsize=7))
+
+
 ```
-
-
