@@ -41,10 +41,18 @@ chem_site <- read_excel(full_path, sheet = "Sites")
 chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
 chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
 
-#Trim names for graph:
+#Trim names and order for graph:
 chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
 chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
 chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
+
+chem_info$Class <- factor(chem_info$Class) 
+chem_info$Class <- factor(chem_info$Class, 
+                          levels =  c("Detergent","Antioxidant","Herbicide",
+                          "Plasticizer","Insecticide","Human Drug",
+                          "Antimicrobial","Fire Retardant","PAH",
+                          "Flavor/Fragrance","Solvent","Dye/pigment","Fuel",
+                          "Other"))
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -96,7 +104,6 @@ datatable(chem_info_SI,  rownames = FALSE) %>%
 
 ```{r }
 
-
 intended_target <- select(endPointInfo, intended_target_family, intended_target_family_sub, endPoint = assay_component_endpoint_name, source = assay_source_long_name) %>%
   right_join(select(filtered_ep, endPoint), by = "endPoint") %>%
   arrange(intended_target_family, intended_target_family_sub) 
@@ -129,6 +136,22 @@ filter
 
 ```{r }
 
+file_name <- "AOP_crosswalk.csv"
+full_path <- file.path(path_to_tox, file_name)
+
+AOP_crosswalk <- read.csv(full_path, stringsAsFactors = FALSE)
+
+AOP_crosswalk <- select(AOP_crosswalk, 
+                        gene_symbol=Target.Gene.Symbol, 
+                        AOP=AOP.name)
+  
+AOP <- data.frame(gene_symbol = unique(AOP_crosswalk$gene_symbol),
+                  AOP = "",
+                  stringsAsFactors = FALSE)
+for(gene in AOP$gene_symbol){
+  AOP$AOP[AOP$gene_symbol %in% gene] <- paste(AOP_crosswalk$AOP[AOP_crosswalk$gene_symbol %in% gene],collapse = ", ")
+}
+
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
@@ -147,22 +170,14 @@ tableData <- chemicalSummary %>%
   group_by(site, endPoint, Family=Bio_category, subFamily, gene_symbol, date, Chemical) %>%
   summarize(sumEAR = sum(EAR)) %>%
   group_by(site, endPoint, Family, subFamily, gene_symbol, Chemical) %>%
-  summarize(meanEAR = max(sumEAR)) %>%
+  summarize(maxEAR = max(sumEAR)) %>%
   group_by(endPoint, Family, subFamily, gene_symbol, Chemical) %>%
-  summarize(nSites = sum(meanEAR > 10^-3)) %>%
+  summarize(nSites = sum(maxEAR > 10^-3)) %>%
   data.frame() %>%
   filter(nSites > 0) %>%
   spread(Chemical, nSites) %>%
   arrange(Family, subFamily, gene_symbol) %>%
   select(endPoint, Family, subFamily, gene_symbol, everything())
-
-chem_info$Class <- factor(chem_info$Class) 
-chem_info$Class <- factor(chem_info$Class, 
-                          levels =  c("Detergent","Antioxidant","Herbicide",
-                          "Plasticizer","Insecticide","Human Drug",
-                          "Antimicrobial","Fire Retardant","PAH",
-                          "Flavor/Fragrance","Solvent","Dye/pigment","Fuel",
-                          "Other"))
 
 chem_info <- chem_info %>%
   left_join(distinct(select(chemicalSummary, casrn, `Chemical Name`)), by=c("CAS"="casrn", "Chemical Name")) %>%
@@ -172,9 +187,14 @@ chem_info <- chem_info %>%
 tableData2 <- select(tableData, -endPoint, -Family, -subFamily, -gene_symbol)
 tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
 
+orderedCols <- chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)]
+
+tableData <- tableData %>%
+  left_join(AOP,by="gene_symbol")
+
 tableData <- tableData[,c("Family", "subFamily","gene_symbol",
-                          "endPoint", "nChems",
-                          chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)])] 
+                          "endPoint","AOP", "nChems",orderedCols)] 
+
 
 datatable(tableData,  rownames = FALSE)
 # write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "")
