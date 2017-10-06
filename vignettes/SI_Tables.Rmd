@@ -36,10 +36,7 @@ full_path <- file.path(path_to_tox, file_name)
 chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals") 
 chem_site <- read_excel(full_path, sheet = "Sites")
-
-#Remove DEET:
-chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
-chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
+exclusion <- read_excel(full_path, sheet = "Exclude")
 
 #Trim names and order for graph:
 chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
@@ -156,7 +153,8 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
 
 chemicalSummary <- chemicalSummary %>%
   left_join(select(endPointInfo, 
@@ -183,11 +181,10 @@ chem_info <- chem_info %>%
   left_join(distinct(select(chemicalSummary, casrn, `Chemical Name`)), by=c("CAS"="casrn", "Chemical Name")) %>%
   arrange(Class, `Chemical Name`)
 
+orderedCols <- chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)]
 
 tableData2 <- select(tableData, -endPoint, -Family, -subFamily, -gene_symbol)
 tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
-
-orderedCols <- chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)]
 
 tableData <- tableData %>%
   left_join(AOP,by="gene_symbol")

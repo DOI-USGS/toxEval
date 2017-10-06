@@ -85,10 +85,8 @@ full_path &lt;-<span class="st"> </span><span class="kw">file.path</span>(path_t
 chem_data &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Data&quot;</span>)
 chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Chemicals&quot;</span>) 
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
+exclusion &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Exclude&quot;</span>)
 
-<span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
 <span class="co">#Trim names for graph:</span>
 chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
 chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
@@ -104,7 +102,8 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
 
 tableData &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(site, date, chnm) <span class="op">%&gt;%</span><span class="st"> </span>

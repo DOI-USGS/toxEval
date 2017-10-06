@@ -19,7 +19,7 @@ filter_groups <- function(ep,
                           assays = c("ATG","NVS","OT","TOX21","CEETOX","APR", 
                                      "CLD","TANGUAY","NHEERL_PADILLA",
                                      "NCCT_SIMMONS","ACEA"),
-                          remove_groups = "Background Measurement"){
+                          remove_groups = c("Background Measurement","Undefined")){
   
   match.arg(assays, c("ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
                       "CLD","TANGUAY","NHEERL_PADILLA",
@@ -35,11 +35,12 @@ filter_groups <- function(ep,
   
   ep <- ep[(ep$assaysFull %in% assays),]
   ep <- ep[!is.na(ep$groupCol),]
-  if(!is.na(remove_groups)){
-    if(remove_groups != ""){
+  if(any(!is.na(remove_groups))){
+    if(any(remove_groups != "")){
       ep <- ep[!(ep$groupCol) %in% remove_groups,]
     }
   }
   
   return(ep)
 }
+

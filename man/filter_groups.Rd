@@ -6,7 +6,8 @@
 \usage{
 filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
   "NVS", "OT", "TOX21", "CEETOX", "APR", "CLD", "TANGUAY", "NHEERL_PADILLA",
-  "NCCT_SIMMONS", "ACEA"), remove_groups = "Background Measurement")
+  "NCCT_SIMMONS", "ACEA"), remove_groups = c("Background Measurement",
+  "Undefined"))
 }
 \arguments{
 \item{ep}{data frame Endpoint information from ToxCast}

@@ -69,6 +69,7 @@ shinyServer(function(input, output,session) {
       chem_data <- rawData$chem_data
       chem_info <- rawData$chem_info
       chem_site <- rawData$chem_site
+      exclusions <- rawData$exclusions
       
       if(sites != "All"){
         chem_site <- chem_site[chem_site$`Short Name` == sites,]
@@ -91,7 +92,8 @@ shinyServer(function(input, output,session) {
                                               filtered_ep,
                                               chem_data, 
                                               chem_site, 
-                                              chem_info)  
+                                              chem_info,
+                                              exclusions)  
     } else {
       chemicalSummary <- data.frame(casrn = character(),
                        chnm = character(),
