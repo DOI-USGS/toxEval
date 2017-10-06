@@ -55,7 +55,7 @@ observe({
   groupCol <- epDF[["groupColName"]]
   assays <- epDF[["assays"]]
   
-  ep <- filter_groups(ep = cleaned_ep, assays = assays, groupCol = groupCol)
+  ep <- filter_groups(ep = cleaned_ep, assays = assays, groupCol = groupCol, remove_groups = "")
   
   orderBy <- ep[,"groupCol"]
   orderNames <- names(table(orderBy))
@@ -69,7 +69,7 @@ observe({
   selChoices <- df$orderNames
   
   if(epDF[["groupColName"]] == "intended_target_family"){
-    selChoices <- selChoices[!(selChoices %in% c("Background Measurement"))]
+    selChoices <- selChoices[!(selChoices %in% c("Background Measurement","Undefined"))]
   }
   epDF[["group"]] <- NULL
   epDF[["group"]] <- selChoices

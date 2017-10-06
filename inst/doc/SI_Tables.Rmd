@@ -183,11 +183,10 @@ chem_info <- chem_info %>%
   left_join(distinct(select(chemicalSummary, casrn, `Chemical Name`)), by=c("CAS"="casrn", "Chemical Name")) %>%
   arrange(Class, `Chemical Name`)
 
+orderedCols <- chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)]
 
 tableData2 <- select(tableData, -endPoint, -Family, -subFamily, -gene_symbol)
 tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
-
-orderedCols <- chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)]
 
 tableData <- tableData %>%
   left_join(AOP,by="gene_symbol")

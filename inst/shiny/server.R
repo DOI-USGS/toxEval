@@ -57,11 +57,12 @@ shinyServer(function(input, output,session) {
   source("getData.R",local=TRUE)$value
   
   chemicalSummary <- reactive({
-    
+
     groupCol <- epDF[["groupColName"]]
     assays <- epDF[["assays"]]
     flags <- epDF[["flags"]]
     sites <- epDF[["sites"]]
+    groups <- epDF[["group"]]
     
     rawData <- rawData()
     if(!is.null(rawData)){
@@ -77,9 +78,9 @@ shinyServer(function(input, output,session) {
       }
       
       ACClong <- get_ACC(chem_info$CAS)
-      ACClong <- remove_flags(ACClong, flagsShort = epDF[["flags"]])
+      ACClong <- remove_flags(ACClong, flagsShort = flags)
       
-      remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% epDF[["group"]])]
+      remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
       remove_groups <- remove_groups[!is.na(remove_groups)]
 
       filtered_ep <- filter_groups(cleaned_ep, 
