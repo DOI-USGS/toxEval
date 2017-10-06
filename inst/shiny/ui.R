@@ -106,7 +106,7 @@ sidebar <- dashboardSidebar(
             checkboxGroupInput("group", "Groups (# End Points)",
                                setNames(df$orderNames,dropDownHeader),
                                selected=df$orderNames[c(-3)]),
-            actionButton("allGroup", label="Select All/Deselect")),
+            actionButton("allGroup", label="Switch Groups")),
    menuItem("Sites", icon = icon("th"), tabName = "siteMenu",
             selectInput("sites", label = "Site", 
                         choices = c("All"),

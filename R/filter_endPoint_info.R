@@ -35,7 +35,11 @@ filter_groups <- function(ep,
   
   ep <- ep[(ep$assaysFull %in% assays),]
   ep <- ep[!is.na(ep$groupCol),]
-  ep <- ep[!(ep$groupCol) %in% remove_groups,]
+  if(!is.na(remove_groups)){
+    if(remove_groups != ""){
+      ep <- ep[!(ep$groupCol) %in% remove_groups,]
+    }
+  }
   
   return(ep)
 }
