@@ -23,10 +23,8 @@ full_path <- file.path(path_to_tox, file_name)
 chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals") 
 chem_site <- read_excel(full_path, sheet = "Sites")
+exclusion <- read_excel(full_path, sheet = "Exclude")
 
-#Remove DEET:
-chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
-chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
 #Trim names for graph:
 chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
 chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
@@ -42,7 +40,8 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
 
 tableData <- chemicalSummary %>%
   group_by(site, date, chnm) %>% 

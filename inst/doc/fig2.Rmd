@@ -42,10 +42,7 @@ full_path <- file.path(path_to_tox, file_name)
 chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals") 
 chem_site <- read_excel(full_path, sheet = "Sites")
-
-#Remove DEET:
-chem_data <- chem_data[chem_data$CAS != "134-62-3",] 
-chem_info <- chem_info[chem_info$CAS != "134-62-3",] 
+exclusion <- read_excel(full_path, sheet = "Exclude")
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -57,7 +54,8 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
 
 #Ordering the sites to flow "downstream" of the Great Lakes:
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",

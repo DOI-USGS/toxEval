@@ -86,10 +86,7 @@ full_path &lt;-<span class="st"> </span><span class="kw">file.path</span>(path_t
 chem_data &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Data&quot;</span>)
 chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Chemicals&quot;</span>) 
 chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
-
-<span class="co">#Remove DEET:</span>
-chem_data &lt;-<span class="st"> </span>chem_data[chem_data<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
-chem_info &lt;-<span class="st"> </span>chem_info[chem_info<span class="op">$</span>CAS <span class="op">!=</span><span class="st"> &quot;134-62-3&quot;</span>,] 
+exclusion &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Exclude&quot;</span>)
 
 ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
@@ -101,7 +98,8 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
                                         filtered_ep,
                                         chem_data, 
                                         chem_site, 
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
 
 <span class="co">#Ordering the sites to flow &quot;downstream&quot; of the Great Lakes:</span>
 sitesOrdered &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;StLouis&quot;</span>,<span class="st">&quot;Nemadji&quot;</span>,<span class="st">&quot;WhiteWI&quot;</span>,<span class="st">&quot;Bad&quot;</span>,<span class="st">&quot;Montreal&quot;</span>,
