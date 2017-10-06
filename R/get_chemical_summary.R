@@ -6,9 +6,10 @@
 #' @param chem.data data frame with (at least) columns: CAS, SiteID, Value
 #' @param chem.site data frame with (at least) columns: SiteID, Short Name
 #' @param chem.info data frame with (at least) columns: CAS, class
+#' @param exclusion data frame with columns "CAS" and "endPoint"
 #' @export
 #' @importFrom tidyr gather
-#' @importFrom dplyr full_join filter mutate select left_join right_join
+#' @importFrom dplyr full_join filter mutate select left_join right_join anti_join
 #' @examples
 #' library(readxl)
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -18,6 +19,7 @@
 #' chem_data <- read_excel(full_path, sheet = "Data")
 #' chem_info <- read_excel(full_path, sheet = "Chemicals") 
 #' chem_site <- read_excel(full_path, sheet = "Sites")
+#' 
 #' ACClong <- get_ACC(chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
 #' 
@@ -29,8 +31,16 @@
 #'                                        chem_data, 
 #'                                         chem_site, 
 #'                                         chem_info)
+#'                                         
+#' exclusion <- read_excel(full_path, sheet = "Exclude")
+#' chemicalSummary1 <- get_chemical_summary(ACClong,
+#'                                         filtered_ep,
+#'                                        chem_data, 
+#'                                         chem_site, 
+#'                                         chem_info,
+#'                                         exclusion)
 get_chemical_summary <- function(ACClong, filtered_ep,
-                                 chem.data, chem.site, chem.info){
+                                 chem.data, chem.site, chem.info,exclusion=NULL){
 
   # Getting rid of NSE warnings:
   casn <- chnm <- MlWt <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
@@ -57,7 +67,11 @@ get_chemical_summary <- function(ACClong, filtered_ep,
     left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
     rename(Bio_category = groupCol,
            shortName = `Short Name`)
-
+  
+  if(!is.null(exclusion)){
+    chemicalSummary <- exclude_points(chemicalSummary, exclusion)
+  }
+  
   return(chemicalSummary)
 }
 
@@ -114,4 +128,56 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
   #   "Only one conc above baseline, active",
   #   "Noisy data")
   
+}
+
+
+#' Exclude endPoint/Chem combos
+#' 
+#' Using a dataframe "exclusion", filter out all chemical/endpoint combos
+#' 
+#' @param chemicalSummary data frame from \code{graph_chem_data}
+#' @param exclusion data frame with columns "CAS" and "endPoint"
+#' 
+#' @export
+#' @importFrom dplyr filter
+#' @importFrom dplyr anti_join
+#' @examples 
+#' library(readxl)
+#' path_to_tox <-  system.file("extdata", package="toxEval")
+#' file_name <- "OWC_data_fromSup.xlsx"
+#' full_path <- file.path(path_to_tox, file_name)
+#' 
+#' chem_data <- read_excel(full_path, sheet = "Data")
+#' chem_info <- read_excel(full_path, sheet = "Chemicals") 
+#' chem_site <- read_excel(full_path, sheet = "Sites")
+#' exclusion <- read_excel(full_path, sheet = "Exclude")
+#' ACClong <- get_ACC(chem_info$CAS)
+#' ACClong <- remove_flags(ACClong)
+#' 
+#' cleaned_ep <- clean_endPoint_info(endPointInfo)
+#' filtered_ep <- filter_groups(cleaned_ep)
+#' 
+#' chemicalSummary <- get_chemical_summary(ACClong,
+#'                                         filtered_ep,
+#'                                        chem_data, 
+#'                                         chem_site, 
+#'                                         chem_info,
+#'                                         exclusion)
+#' chemicalSummary <- exclude_points(chemicalSummary, exclusion)
+exclude_points <- function(chemicalSummary, exclusion){
+  
+  exclude_chem <- exclusion$CAS[is.na(exclusion$endPoint)]
+  exclude_ep <- exclusion$endPoint[is.na(exclusion$CAS)]
+  
+  exclude_combo <- exclusion %>%
+    filter(!is.na(CAS),
+           !is.na(endPoint))
+  
+  chem_filtered <- chemicalSummary %>%
+    filter(!(casrn %in% exclude_chem),
+           !(endPoint %in% exclude_ep)) %>%
+    anti_join(exclude_combo, by=c("casrn"="CAS",
+                                  "endPoint"))
+  
+  return(chem_filtered)
 }

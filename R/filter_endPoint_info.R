@@ -19,7 +19,7 @@ filter_groups <- function(ep,
                           assays = c("ATG","NVS","OT","TOX21","CEETOX","APR", 
                                      "CLD","TANGUAY","NHEERL_PADILLA",
                                      "NCCT_SIMMONS","ACEA"),
-                          remove_groups = "Background Measurement"){
+                          remove_groups = c("Background Measurement","Undefined")){
   
   match.arg(assays, c("ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
                       "CLD","TANGUAY","NHEERL_PADILLA",
@@ -43,3 +43,4 @@ filter_groups <- function(ep,
   
   return(ep)
 }
+
