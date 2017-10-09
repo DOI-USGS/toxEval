@@ -166,6 +166,8 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
 #' chemicalSummary <- exclude_points(chemicalSummary, exclusion)
 exclude_points <- function(chemicalSummary, exclusion){
   
+  CAS <- endPoint <- ".dplyr"
+  
   exclude_chem <- exclusion$CAS[is.na(exclusion$endPoint)]
   exclude_ep <- exclusion$endPoint[is.na(exclusion$CAS)]
   
