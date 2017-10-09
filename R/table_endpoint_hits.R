@@ -80,9 +80,7 @@ table_endpoint_hits <- function(chemicalSummary,
         } else {
           dataSub <- dataSub[which(dataSub[,-1] != 0 ),]
         }
-
         fullData <- full_join(fullData,dataSub, by="endPoint")
-  
       }
     }
   
@@ -134,6 +132,7 @@ table_endpoint_hits <- function(chemicalSummary,
       for(z in 2:ncol(fullData)){
         if(!is.na(fullData[k,z])){
           hits[k,z] <- createLink(cas = casKey$casrn[casKey$chnm == names(fullData)[z]],
+                                  endpoint = fullData[k,1],
                                   hits = fullData[k,z])
         }
       }
@@ -170,6 +169,6 @@ table_endpoint_hits <- function(chemicalSummary,
 #' @param hits character
 #' @export
 #' @keywords internal
-createLink <- function(cas, hits) {
-  paste0('<a href="http://actor.epa.gov/dashboard/#chemical/',cas,'" target="_blank" >',hits,'</a>')
+createLink <- function(cas, endpoint, hits) {
+  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",endpoint,'" target="_blank" >',hits,'</a>')
 }
