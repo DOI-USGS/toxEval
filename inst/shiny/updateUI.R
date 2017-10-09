@@ -19,7 +19,7 @@ epDF <- reactiveValues(assays = initAssay,
                                  "Transferase","Esterase","Hydrolase",   
                                  "Lyase","Misc Protein","Growth Factor", 
                                  "Methyltransferase"),
-                       flags = flags,
+                       flags = initFlags,
                        sites = "All")
 
 observeEvent(input$pickAssay, {
