@@ -18,6 +18,20 @@ cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
 
 choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
 choicesPerGroup <- choicesPerGroup[which(as.numeric(choicesPerGroup) > 6)]
+choicesPerGroup <- apply(cleaned_ep[,-1], 2, function(x) length(unique(x)))
+groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
+
+initAssay <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"BSK"
+               "CLD","TANGUAY","NHEERL_PADILLA",
+               "NCCT_SIMMONS","ACEA")
+
+initFlags <- c("Borderline",
+                "OnlyHighest",
+                "OneAbove",
+                # "Noisy",
+                # "HitCall",
+                # "GainAC50",
+                "Biochemical")
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
@@ -37,16 +51,6 @@ great_lakes <- c("Lake Superior",
                  "Lake Huron",
                  "Lake Erie",
                  "Lake Ontario")
-
-choicesPerGroup <- apply(cleaned_ep[,-1], 2, function(x) length(unique(x)))
-groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
-
-initAssay <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"BSK"
-            "CLD","TANGUAY","NHEERL_PADILLA",
-            "NCCT_SIMMONS","ACEA")
-
-flags <- c( "OneAbove","Noisy","HitCall")
-
 
 shinyServer(function(input, output,session) {
   

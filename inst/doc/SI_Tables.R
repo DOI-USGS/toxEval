@@ -68,7 +68,21 @@ chem_info_SI <- chem_info_SI %>%
          AqT_EPA_chronic = as.numeric(AqT_EPA_chronic),
          AqT_other_acute = as.numeric(AqT_other_acute))
   
-datatable(chem_info_SI,  rownames = FALSE) %>%
+datatable(chem_info_SI,
+          rownames = FALSE, 
+          extensions = 'Buttons',
+          options = list(
+             dom = 'Bfrtip',
+             buttons = list('colvis', list(
+                           extend = 'collection',
+                           buttons = list(list(extend='csv',
+                                               filename = 'siteTable'),
+                                          list(extend='excel',
+                                               filename = 'siteTable'),
+                                          list(extend='pdf',
+                                               filename= 'fullTable')),
+                           text = 'Download')
+                         ))) %>%
   formatRound(columns=c('EEF_max_in.vitro_or_in.vivo',
                      'EEF_avg_in.vitro',
                      'AqT_EPA_acute',
@@ -89,7 +103,21 @@ intended_target <- intended_target %>%
          `Intended Target Family Sub-Family` = intended_target_family_sub) %>%
   data.frame()
 
-datatable(intended_target,  rownames = FALSE)
+datatable(intended_target,
+          rownames = FALSE, 
+          extensions = 'Buttons',
+          options = list(
+             dom = 'Bfrtip',
+             buttons = list('colvis', list(
+                           extend = 'collection',
+                           buttons = list(list(extend='csv',
+                                               filename = 'siteTable'),
+                                          list(extend='excel',
+                                               filename = 'siteTable'),
+                                          list(extend='pdf',
+                                               filename= 'fullTable')),
+                           text = 'Download')
+                         )))
 # write.csv(intended_target, file="intended_target.csv", row.names = FALSE, na = "") 
 
 ## ---------------------------------------------------------
@@ -162,6 +190,20 @@ tableData <- tableData[,c("Family", "subFamily","gene_symbol",
                           "endPoint","AOP", "nChems",orderedCols)] 
 
 
-datatable(tableData,  rownames = FALSE)
+datatable(tableData,  
+          rownames = FALSE, 
+          extensions = 'Buttons',
+          options = list(
+             dom = 'Bfrtip',
+             buttons = list('colvis', list(
+                           extend = 'collection',
+                           buttons = list(list(extend='csv',
+                                               filename = 'siteTable'),
+                                          list(extend='excel',
+                                               filename = 'siteTable'),
+                                          list(extend='pdf',
+                                               filename= 'fullTable')),
+                           text = 'Download')
+                         )))
 # write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "")
 
