@@ -4,10 +4,12 @@
 \alias{createLink}
 \title{createLink}
 \usage{
-createLink(cas, hits)
+createLink(cas, endpoint, hits)
 }
 \arguments{
 \item{cas}{character}
+
+\item{endpoint}{character}
 
 \item{hits}{character}
 }
