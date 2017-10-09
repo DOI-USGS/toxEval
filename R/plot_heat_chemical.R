@@ -60,6 +60,10 @@ plot_heat_chemicals <- function(graphData, chem_site){
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
+  if(!("site_grouping" %in% names(chem_site))){
+    chem_site$site_grouping <- ""
+  }
+  
   graphData <- graphData %>%
     left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
               by=c("site"="SiteID"))

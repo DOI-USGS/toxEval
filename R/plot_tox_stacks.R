@@ -47,6 +47,10 @@ plot_tox_stacks <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   SiteID <- site_grouping <- `Short Name` <- count <- ".dplyr"
     
+  if(!("site_grouping" %in% names(chem_site))){
+    chem_site$site_grouping <- ""
+  }
+  
   if(include_legend & category == "Chemical"){
     graphData <- graph_chem_data(chemicalSummary = chemicalSummary,
                            manual_remove = manual_remove,

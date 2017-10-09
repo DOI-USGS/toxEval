@@ -166,6 +166,7 @@ table_endpoint_hits <- function(chemicalSummary,
 #' 
 #' Create links
 #' @param cas character
+#' @param endpoint character
 #' @param hits character
 #' @export
 #' @keywords internal
