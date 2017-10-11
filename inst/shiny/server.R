@@ -24,14 +24,21 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 initAssay <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"BSK"
                "CLD","TANGUAY","NHEERL_PADILLA",
                "NCCT_SIMMONS","ACEA")
-
-initFlags <- c("Borderline",
+all_flags <- c("Borderline",
                 "OnlyHighest",
                 "OneAbove",
-                # "Noisy",
-                # "HitCall",
-                # "GainAC50",
+                "Noisy",
+                "HitCall",
+                "GainAC50",
                 "Biochemical")
+
+initFlags <- c(#"Borderline",
+                #"OnlyHighest",
+                #"OneAbove",
+                "Noisy",
+                "HitCall",
+                "GainAC50")
+                #"Biochemical")
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
@@ -68,6 +75,8 @@ shinyServer(function(input, output,session) {
     sites <- epDF[["sites"]]
     groups <- epDF[["group"]]
     
+    removeFlags <- all_flags[!(all_flags %in% flags)]
+    
     rawData <- rawData()
     if(!is.null(rawData)){
       chem_data <- rawData$chem_data
@@ -83,7 +92,7 @@ shinyServer(function(input, output,session) {
       }
       
       ACClong <- get_ACC(chem_info$CAS)
-      ACClong <- remove_flags(ACClong, flagsShort = flags)
+      ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
       
       remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
       remove_groups <- remove_groups[!is.na(remove_groups)]
