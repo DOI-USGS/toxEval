@@ -113,7 +113,7 @@ sidebar <- dashboardSidebar(
                         selected = "All", multiple = FALSE)
    ),
    menuItem("Flags", icon = icon("th"), tabName = "flagMenu",
-            checkboxGroupInput("flags", "Include Flags",choices = shortFlags, selected = shortFlags[-3:-5]),
+            checkboxGroupInput("flags", "Include Flags",choices = shortFlags, selected = shortFlags[3:5]),
             actionButton("pickFlags", label="Switch flags")),
    menuItem("Hit Threshold",icon = icon("th"), tabName = "hitThresTab",
             numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),
