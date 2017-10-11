@@ -11,14 +11,7 @@ observe({
 
 epDF <- reactiveValues(assays = initAssay,
                        groupColName = "intended_target_family",
-                       group = c("Nuclear Receptor","GPCR","Cell Morphology", 
-                                 "Cell Cycle","Kinase","DNA Binding",
-                                 "CYP","Transporter",      
-                                 "Ion Channel","Steroid Hormone","Phosphatase",    
-                                 "Zebrafish","Protease","Oxidoreductase",
-                                 "Transferase","Esterase","Hydrolase",   
-                                 "Lyase","Misc Protein","Growth Factor", 
-                                 "Methyltransferase"),
+                       group = init_Groups,
                        flags = initFlags,
                        sites = "All")
 

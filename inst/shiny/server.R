@@ -24,6 +24,11 @@ groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 initAssay <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"BSK"
                "CLD","TANGUAY","NHEERL_PADILLA",
                "NCCT_SIMMONS","ACEA")
+
+init_Groups <- unique(cleaned_ep$intended_target_family)
+init_Groups <- init_Groups[!is.na(init_Groups)]
+init_Groups <- init_Groups[!(init_Groups %in% c("Background Measurement","Undefined"))]
+
 all_flags <- c("Borderline",
                 "OnlyHighest",
                 "OneAbove",
@@ -34,10 +39,10 @@ all_flags <- c("Borderline",
 
 initFlags <- c(#"Borderline",
                 #"OnlyHighest",
-                #"OneAbove",
+                "OneAbove",
                 "Noisy",
-                "HitCall",
-                "GainAC50")
+                "HitCall")
+                #"GainAC50",
                 #"Biochemical")
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
@@ -76,7 +81,7 @@ shinyServer(function(input, output,session) {
     groups <- epDF[["group"]]
     
     removeFlags <- all_flags[!(all_flags %in% flags)]
-    
+
     rawData <- rawData()
     if(!is.null(rawData)){
       chem_data <- rawData$chem_data
