@@ -39,11 +39,6 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_info,
                                         exclusion)
 
-#Trim some names:
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectants"] <- "Antimicrobial"
-chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
-chem_info$Class[chem_info$Class == "Flavors and Fragrances"] <- "Flavor/Fragrance"
-
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
                   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
                   "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",

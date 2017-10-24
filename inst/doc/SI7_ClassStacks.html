@@ -100,11 +100,6 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
                                         chem_info,
                                         exclusion)
 
-<span class="co">#Trim some names:</span>
-chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectants&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
-chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
-chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Flavors and Fragrances&quot;</span>] &lt;-<span class="st"> &quot;Flavor/Fragrance&quot;</span>
-
 sitesOrdered &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;StLouis&quot;</span>,<span class="st">&quot;Nemadji&quot;</span>,<span class="st">&quot;WhiteWI&quot;</span>,<span class="st">&quot;Bad&quot;</span>,<span class="st">&quot;Montreal&quot;</span>,
                   <span class="st">&quot;PresqueIsle&quot;</span>,<span class="st">&quot;Ontonagon&quot;</span>,<span class="st">&quot;Sturgeon&quot;</span>,<span class="st">&quot;Tahquamenon&quot;</span>,<span class="st">&quot;Burns&quot;</span>,
                   <span class="st">&quot;IndianaHC&quot;</span>,<span class="st">&quot;StJoseph&quot;</span>,<span class="st">&quot;PawPaw&quot;</span>,<span class="st">&quot;Kalamazoo&quot;</span>,<span class="st">&quot;GrandMI&quot;</span>,
