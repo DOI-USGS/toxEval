@@ -39,7 +39,7 @@ table_endpoint_hits <- function(chemicalSummary,
                            hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
-  endPoint <- meanEAR <- nSites <- ".dplyr"
+  endPoint <- meanEAR <- nSites <- CAS <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
