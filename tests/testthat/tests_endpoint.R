@@ -19,14 +19,13 @@ test_that("Getting ACC values", {
  testthat::skip_on_cran()
  
  ACClong <- get_ACC(CAS)
- expect_true(all(names(ACClong) %in% c("casn","chnm","flags","endPoint","ACC","MlWt", "ACC_value")))
+ expect_true(all(names(ACClong) %in% c("CAS","chnm","flags","endPoint","ACC", "ACC_value","MlWt")))
    
- expect_type(ACClong$MlWt, "double")
  expect_type(ACClong$ACC_value, "double")
  expect_type(ACClong$endPoint, "character")
- expect_type(ACClong$casn, "character")
+ expect_type(ACClong$CAS, "character")
  
- expect_lt(length(unique(ACClong$casn)), length(CAS))
+ expect_lt(length(unique(ACClong$CAS)), length(CAS))
  expect_gt(length(unique(ACClong$endPoint)), length(CAS))
  
 })

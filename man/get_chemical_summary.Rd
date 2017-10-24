@@ -8,7 +8,7 @@ get_chemical_summary(ACClong, filtered_ep, chem.data, chem.site, chem.info,
   exclusion = NULL)
 }
 \arguments{
-\item{ACClong}{data frame with columns: casn, chnm, MlWt, endPoint, ACC_value}
+\item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value}
 
 \item{filtered_ep}{data frame with colums: endPoints, groupCol}
 

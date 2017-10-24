@@ -90,10 +90,10 @@ chemicalSummary <- chemicalSummary %>%
                    endPoint=assay_component_endpoint_name,
                    subFamily=intended_target_family_sub,
                    gene_symbol=intended_target_gene_symbol), by="endPoint") %>%
-  left_join(select(chem_info, casrn=CAS, `Chemical Name`), by="casrn")
+  left_join(select(chem_info, CAS, `Chemical Name`), by="CAS")
   
 chem_info <- chem_info %>%
-  left_join(distinct(select(chemicalSummary, casrn, `Chemical Name`)), by=c("CAS"="casrn", "Chemical Name")) %>%
+  left_join(distinct(select(chemicalSummary, CAS, `Chemical Name`)), by=c("CAS", "Chemical Name")) %>%
   arrange(Class, `Chemical Name`)
 
 

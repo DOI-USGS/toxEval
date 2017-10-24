@@ -8,7 +8,7 @@ remove_flags(ACClong, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
   "Biochemical"))
 }
 \arguments{
-\item{ACClong}{data frame with columns: casn, chnm, MlWt, endPoint, ACC_value}
+\item{ACClong}{data frame with columns: casn, chnm, endPoint, ACC_value}
 
 \item{flagsShort}{vector of flags to TAKE OUT. Possible values are 
 "Borderline", "OnlyHighest", "OneAbove","Noisy", "HitCall", "GainAC50", "Biochemical"}

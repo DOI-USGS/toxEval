@@ -82,14 +82,13 @@ EEQ <- guideline_sum %>%
 
 toxCast <- chemicalSummary %>%
   select(-Bio_category, -shortName, -chnm) %>%
-  group_by(site,date,casrn, Class) %>%
+  group_by(site,date,CAS, Class) %>%
   summarise(sumEAR=sum(EAR)) %>%
   data.frame() %>%
-  group_by(site, casrn, Class) %>%
+  group_by(site, CAS, Class) %>%
   summarise(maxEAR=max(sumEAR)) %>%
   data.frame() %>%
-  rename(SiteID = site,
-         CAS = casrn) %>%
+  rename(SiteID = site) %>%
   mutate(guide_side = "ToxCast") %>%
   left_join(select(chem_info, CAS, `Chemical Name`), by="CAS") 
 

@@ -43,7 +43,7 @@ plot_tox_boxplots(chemicalSummary, category = "Biological")
 
 
 ## ----fig.height=14----------------------------------------
-CAS_NR <- unique(chemicalSummary$casrn[chemicalSummary$Bio_category == "Nuclear Receptor"])
+CAS_NR <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "Nuclear Receptor"])
 
 chem_data_NR <- filter(chem_data, CAS %in% CAS_NR)
 chem_info_NR <- filter(chem_info, CAS %in% CAS_NR)
@@ -60,7 +60,7 @@ plot_tox_boxplots(chemicalSummary, category = "Biological")
 
 ## ---------------------------------------------------------
 
-CAS_PTEN <- unique(chemicalSummary$casrn[chemicalSummary$Bio_category == "PTEN"])
+CAS_PTEN <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "PTEN"])
 
 chem_data_PTEN <- filter(chem_data_NR, CAS %in% CAS_PTEN)
 chem_info_PTEN <- filter(chem_info_NR, CAS %in% CAS_PTEN)

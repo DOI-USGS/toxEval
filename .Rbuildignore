@@ -13,6 +13,13 @@ mixtures_Org_and_Inorg.xlsx
 TCuster data set_birds_toxcast.xlsx
 WolfCreek.xlsx
 images
+alternative_benchmark.R
+neonic_bench.xlsx
+neonic.xlsx
+ILCarp_R2_toxEval_input.xlsx
+SESQA MIX.TOXEVAL.NO DEGRADATES.4-COL.2017 06 23.xlsx
+Neonic_data_GLRI_Maumee.xlsx
+Neonic_data_GLRI.xlsx
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.md
