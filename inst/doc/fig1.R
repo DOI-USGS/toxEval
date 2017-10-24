@@ -25,11 +25,12 @@ chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals") 
 chem_site <- read_excel(full_path, sheet = "Sites")
 exclusion <- read_excel(full_path, sheet = "Exclude")
- 
+
 #Trim names for graph:
-chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
+
+chem_info$Class[chem_info$Class == "Antimicrobial Disinfectants"] <- "Antimicrobial"
 chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
+chem_info$Class[chem_info$Class == "Flavors and Fragrances"] <- "Flavor/Fragrance"
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -66,7 +67,7 @@ WQ <-  guideline_sum %>%
   mutate(guide_side = "Traditional")
 
 EEQ <- guideline_sum %>%
-  filter(endPoint %in% c("EEF_avg_in.vitro","EEF_max_in.vitro_or_in.vivo")) %>%
+  filter(endPoint %in% c("EEF_max_in.vitro_or_in.vivo")) %>%
   mutate(EAR = Value*WQ_value*1000) %>%
   group_by(SiteID,`Sample Date`,CAS) %>%
   summarise(sumEAR=sum(EAR)) %>%
@@ -137,7 +138,7 @@ graphData <-graphData %>%
          `Chemical Name` = factor(`Chemical Name`, levels=orderedLevels),
          guide_side = factor(guide_side),
          guide_up = factor(guide_up, levels = c("Water Quality Guideline","EEQ")))  
-  
+
 levels(graphData$guide_side) <- c("ToxCast\nMaximum EAR Per Site",
                                   "Traditional\nMaximum Quotient Per Site")
 
@@ -177,9 +178,12 @@ astrictData_EEQ <- countNonZero %>%
 textData <- select(graphData, guide_up, guide_side) %>%
   distinct() %>%
   mutate(textExplain = c("A","B","C","D"),
-         y = c(10,10,100,100),
-         `Chemical Name` = factor(rep("4-Nonylphenol",4), levels = levels(graphData$`Chemical Name`)))
-  
+         y = c(500,500,100,100),
+         `Chemical Name` = factor(c("Tris(2-chloroethyl) phosphate",
+                                   "4-Nonylphenol (sum of all isomers)",
+                                   "4-Nonylphenol (sum of all isomers)",
+                                   "Tris(2-chloroethyl) phosphate"), levels = levels(graphData$`Chemical Name`)))
+
 toxPlot_All <- ggplot(data=graphData) +
   scale_y_log10(labels=fancyNumbers)  +
   geom_boxplot(aes(x=`Chemical Name`, y=maxEAR, fill=Class),
@@ -217,6 +221,5 @@ toxPlot_All_withLabels <- toxPlot_All +
             size=5, vjust = 0.70)
 
 toxPlot_All_withLabels
-
 
 

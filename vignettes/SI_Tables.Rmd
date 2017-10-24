@@ -39,17 +39,11 @@ chem_site <- read_excel(full_path, sheet = "Sites")
 exclusion <- read_excel(full_path, sheet = "Exclude")
 
 #Trim names and order for graph:
-chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
+chem_info$Class[chem_info$Class == "Antimicrobial Disinfectants"] <- "Antimicrobial"
 chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
+chem_info$Class[chem_info$Class == "Flavors and Fragrances"] <- "Flavor/Fragrance"
 
 chem_info$Class <- factor(chem_info$Class) 
-chem_info$Class <- factor(chem_info$Class, 
-                          levels =  c("Detergent","Antioxidant","Herbicide",
-                          "Plasticizer","Insecticide","Human Drug",
-                          "Antimicrobial","Fire Retardant","PAH",
-                          "Flavor/Fragrance","Solvent","Dye/pigment","Fuel",
-                          "Other"))
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -70,8 +64,6 @@ chem_info_SI <- chem_info %>%
   select(`OWC Class`=Class, 
          `Compound Name` = `Chemical Name`,
          `CAS Registry Number` = CAS,
-         `Molecular Weight` = MlWt,
-         EEF_avg_in.vitro,
          EEF_max_in.vitro_or_in.vivo,
          AqT_EPA_acute,
          AqT_EPA_chronic,
@@ -81,8 +73,7 @@ chem_info_SI <- chem_info %>%
 # write.csv(chem_info_SI, file="chem_info_SI.csv", row.names = FALSE, na = "")
 
 chem_info_SI <- chem_info_SI %>%
-  mutate(EEF_avg_in.vitro = as.numeric(EEF_avg_in.vitro),
-         EEF_max_in.vitro_or_in.vivo = as.numeric(EEF_max_in.vitro_or_in.vivo),
+  mutate(EEF_max_in.vitro_or_in.vivo = as.numeric(EEF_max_in.vitro_or_in.vivo),
          AqT_EPA_acute = as.numeric(AqT_EPA_acute),
          AqT_EPA_chronic = as.numeric(AqT_EPA_chronic),
          AqT_other_acute = as.numeric(AqT_other_acute))
@@ -103,7 +94,6 @@ datatable(chem_info_SI,
                            text = 'Download')
                          ))) %>%
   formatRound(columns=c('EEF_max_in.vitro_or_in.vivo',
-                     'EEF_avg_in.vitro',
                      'AqT_EPA_acute',
                      'AqT_EPA_chronic',
                      'AqT_other_acute'), digits=3)
