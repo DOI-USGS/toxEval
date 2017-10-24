@@ -178,11 +178,8 @@ astrictData_EEQ <- countNonZero %>%
 textData <- select(graphData, guide_up, guide_side) %>%
   distinct() %>%
   mutate(textExplain = c("A","B","C","D"),
-         y = c(500,500,100,100),
-         `Chemical Name` = factor(c("Tris(2-chloroethyl) phosphate",
-                                   "4-Nonylphenol (sum of all isomers)",
-                                   "4-Nonylphenol (sum of all isomers)",
-                                   "Tris(2-chloroethyl) phosphate"), levels = levels(graphData$`Chemical Name`)))
+         y = c(10,10,100,100),
+         `Chemical Name` = factor(rep("4-Nonylphenol (sum of all isomers)",4), levels = levels(graphData$`Chemical Name`)))
 
 toxPlot_All <- ggplot(data=graphData) +
   scale_y_log10(labels=fancyNumbers)  +
