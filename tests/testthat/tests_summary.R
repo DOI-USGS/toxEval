@@ -8,6 +8,8 @@ full_path <- file.path(path_to_tox, file_name)
 chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals")
 chem_site <- read_excel(full_path, sheet = "Sites")
+exclusion <- read_excel(full_path, sheet = "Exclude")
+
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
@@ -18,7 +20,8 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                         chem_data,
                                         chem_site,
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
 
 test_that("Calculating summaries", {
   testthat::skip_on_cran()
@@ -109,7 +112,7 @@ test_that("Plotting endpoints", {
                                                   "meanEAR")))
   
   classStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, 
-                                    category = "Chemical Class", filterBy = "PAH"))
+                                    category = "Chemical Class", filterBy = "PAHs"))
   expect_true(all(names(classStackPlot$data) %in% c("site","category","endPoint",
                                                     "meanEAR")))
   
@@ -139,7 +142,7 @@ test_that("Internal chem plotting functions", {
   graphData <- graph_chem_data(chemicalSummary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
   expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
-  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuel")
+  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
 })
 
 test_that("Map stuff functions", {
@@ -165,9 +168,9 @@ test_that("Table endpoint hits", {
   ct <- table_endpoint_hits(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
-  expect_true(all(names(ct$x$data) %in% c("endPoint","Antioxidant",
-                                          "Detergent Metabolites","Herbicide",
-                                          "Plasticizer")))
+  expect_true(all(names(ct$x$data) %in% c("endPoint","Antioxidants",
+                                          "Detergent Metabolites","Herbicides",
+                                          "Plasticizers")))
   
   cht <- table_endpoint_hits(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
@@ -234,8 +237,8 @@ test_that("table_tox_rank", {
   ct <- table_tox_rank(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
-  expect_true(all(c("site","Antioxidant maxEAR","Antioxidant freq",
-                    "Herbicide maxEAR","Herbicide freq",
+  expect_true(all(c("site","Antioxidants maxEAR","Antioxidants freq",
+                    "Herbicides maxEAR","Herbicides freq",
                     "Detergent Metabolites maxEAR","Detergent Metabolites freq") %in% names(ct$x$data)))
   
   cht <- table_tox_rank(chemicalSummary, category = "Chemical")

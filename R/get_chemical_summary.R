@@ -177,9 +177,14 @@ exclude_points <- function(chemicalSummary, exclusion){
   
   chem_filtered <- chemicalSummary %>%
     filter(!(casrn %in% exclude_chem),
-           !(endPoint %in% exclude_ep)) %>%
-    anti_join(exclude_combo, by=c("casrn"="CAS",
-                                  "endPoint"))
+           !(endPoint %in% exclude_ep)) 
+  
+  if(nrow(exclude_combo) > 0){
+    chem_filtered <- chem_filtered %>%
+      anti_join(exclude_combo, by=c("casrn"="CAS",
+                                    "endPoint"))
+  }
+
   
   return(chem_filtered)
 }

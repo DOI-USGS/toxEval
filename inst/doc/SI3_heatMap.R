@@ -7,7 +7,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE,
                       fig.height = 7,
-                      fig.width = 7)
+                      fig.width = 10)
 
 ## ---------------------------------------------------------
 library(readxl)
@@ -26,9 +26,9 @@ chem_site <- read_excel(full_path, sheet = "Sites")
 exclusion <- read_excel(full_path, sheet = "Exclude")
 
 #Trim names for graph:
-chem_info$Class[chem_info$Class == "Human Drug, Non Prescription"] <- "Human Drug"
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
+chem_info$Class[chem_info$Class == "Antimicrobial Disinfectants"] <- "Antimicrobial"
 chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
+chem_info$Class[chem_info$Class == "Flavors and Fragrances"] <- "Flavor/Fragrance"
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)

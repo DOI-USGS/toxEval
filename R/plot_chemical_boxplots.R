@@ -18,6 +18,8 @@
 #' chem_data <- read_excel(full_path, sheet = "Data")
 #' chem_info <- read_excel(full_path, sheet = "Chemicals") 
 #' chem_site <- read_excel(full_path, sheet = "Sites")
+#' exclusion <- read_excel(full_path, sheet = "Exclude")
+#' 
 #' ACClong <- get_ACC(chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
 #' 
@@ -28,7 +30,8 @@
 #'                                         filtered_ep,
 #'                                        chem_data, 
 #'                                         chem_site, 
-#'                                         chem_info)
+#'                                         chem_info,
+#'                                         exclusion)
 #'                                         
 #' plot_chemical_boxplots(chemicalSummary)
 plot_chemical_boxplots <- function(chemicalSummary, 

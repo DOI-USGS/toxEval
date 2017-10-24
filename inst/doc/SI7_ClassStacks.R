@@ -39,11 +39,6 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_info,
                                         exclusion)
 
-#Trim some names:
-chemicalSummary$Class[chemicalSummary$Class == "Human Drug, Non Prescription"] <- "Human Drug"
-chemicalSummary$Class[chemicalSummary$Class == "Antimicrobial Disinfectant"] <- "Antimicrobial"
-chemicalSummary$Class[chemicalSummary$Class == "Detergent Metabolites"] <- "Detergent"
-
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
                   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
                   "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",

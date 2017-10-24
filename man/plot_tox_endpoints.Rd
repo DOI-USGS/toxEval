@@ -33,6 +33,8 @@ full_path <- file.path(path_to_tox, file_name)
 chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals") 
 chem_site <- read_excel(full_path, sheet = "Sites")
+exclusion <- read_excel(full_path, sheet = "Exclude")
+
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
@@ -43,8 +45,9 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
                                        chem_data, 
                                         chem_site, 
-                                        chem_info)
+                                        chem_info,
+                                        exclusion)
  plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
- plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAH")
+ plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
  plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
 }

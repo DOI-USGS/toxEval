@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 4: Site Counts</h1>
-<h4 class="date"><em>09 October, 2017</em></h4>
+<h4 class="date"><em>24 October, 2017</em></h4>
 
 
 
@@ -88,9 +88,9 @@ chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_
 exclusion &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Exclude&quot;</span>)
 
 <span class="co">#Trim names for graph:</span>
-chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Human Drug, Non Prescription&quot;</span>] &lt;-<span class="st"> &quot;Human Drug&quot;</span>
-chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectant&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Antimicrobial Disinfectants&quot;</span>] &lt;-<span class="st"> &quot;Antimicrobial&quot;</span>
 chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Detergent Metabolites&quot;</span>] &lt;-<span class="st"> &quot;Detergent&quot;</span>
+chem_info<span class="op">$</span>Class[chem_info<span class="op">$</span>Class <span class="op">==</span><span class="st"> &quot;Flavors and Fragrances&quot;</span>] &lt;-<span class="st"> &quot;Flavor/Fragrance&quot;</span>
 
 ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
