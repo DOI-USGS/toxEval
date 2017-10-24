@@ -26,7 +26,7 @@ chemicalSummary <- get_chemical_summary(ACClong,
 test_that("Calculating summaries", {
   testthat::skip_on_cran()
  
-  expect_true(all(names(chemicalSummary) %in% c("casrn","chnm","endPoint","site","date",
+  expect_true(all(names(chemicalSummary) %in% c("CAS","chnm","endPoint","site","date",
                                                 "EAR","shortName","Class","Bio_category")))
   
   expect_gte(min(chemicalSummary$EAR), 0)

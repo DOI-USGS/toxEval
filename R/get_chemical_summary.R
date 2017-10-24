@@ -1,7 +1,7 @@
 #' get_chemical_summary
 #' 
 #' Get ACC values for vector of CAS's
-#' @param ACClong data frame with columns: casn, chnm, MlWt, endPoint, ACC_value
+#' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value
 #' @param filtered_ep data frame with colums: endPoints, groupCol
 #' @param chem.data data frame with (at least) columns: CAS, SiteID, Value
 #' @param chem.site data frame with (at least) columns: SiteID, Short Name
@@ -43,7 +43,7 @@ get_chemical_summary <- function(ACClong, filtered_ep,
                                  chem.data, chem.site, chem.info,exclusion=NULL){
 
   # Getting rid of NSE warnings:
-  casn <- chnm <- MlWt <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
+  chnm <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
   EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
   
   if(class(chem.data$Value) == "character"){
@@ -51,19 +51,18 @@ get_chemical_summary <- function(ACClong, filtered_ep,
   }
   
   chemicalSummary <- full_join(select(ACClong, 
-                                      casn, chnm, MlWt, endPoint, ACC_value), 
-                               chem.data[,c("CAS", "SiteID", "Value", "Sample Date")], by=c("casn"="CAS")) %>%
+                                      CAS, chnm, endPoint, ACC_value), 
+                               select(chem.data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
     rename(site = SiteID,
-           date = `Sample Date`,
-           casrn = casn) %>%
-    select(casrn, chnm, endPoint, site, date, EAR) %>%
+           date = `Sample Date`) %>%
+    select(CAS, chnm, endPoint, site, date, EAR) %>%
     filter(endPoint %in% filtered_ep$endPoint) %>%
-    left_join(chem.site[,c("SiteID", "Short Name")],
-              by=c("site"="SiteID")) %>%
-    left_join(chem.info[, c("CAS", "Class")], by=c("casrn"="CAS")) %>%
+    left_join(select(chem.site, site=SiteID, `Short Name`),
+              by="site") %>%
+    left_join(select(chem.info, CAS, Class), by="CAS") %>%
     left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
     rename(Bio_category = groupCol,
            shortName = `Short Name`)
@@ -79,7 +78,7 @@ get_chemical_summary <- function(ACClong, filtered_ep,
 #' 
 #' Remove endpoints with specific flags from data
 #' 
-#' @param ACClong data frame with columns: casn, chnm, MlWt, endPoint, ACC_value
+#' @param ACClong data frame with columns: casn, chnm, endPoint, ACC_value
 #' @param flagsShort vector of flags to TAKE OUT. Possible values are 
 #' "Borderline", "OnlyHighest", "OneAbove","Noisy", "HitCall", "GainAC50", "Biochemical"
 #' @export

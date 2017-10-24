@@ -39,7 +39,7 @@ table_endpoint_hits <- function(chemicalSummary,
                            hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
-  endPoint <- meanEAR <- nSites <- casrn <- ".dplyr"
+  endPoint <- meanEAR <- nSites <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -123,7 +123,7 @@ table_endpoint_hits <- function(chemicalSummary,
   }
 
   if(category == "Chemical"){
-    casKey <- select(chemicalSummary, chnm, casrn) %>%
+    casKey <- select(chemicalSummary, chnm, CAS) %>%
       distinct()
 
     hits <- sapply(fullData, function(x) as.character(x))
@@ -131,7 +131,7 @@ table_endpoint_hits <- function(chemicalSummary,
     for(k in 1:nrow(fullData)){
       for(z in 2:ncol(fullData)){
         if(!is.na(fullData[k,z])){
-          hits[k,z] <- createLink(cas = casKey$casrn[casKey$chnm == names(fullData)[z]],
+          hits[k,z] <- createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]],
                                   endpoint = fullData[k,1],
                                   hits = fullData[k,z])
         }

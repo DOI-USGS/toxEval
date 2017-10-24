@@ -27,7 +27,8 @@ get_ACC <- function(CAS){
     data.frame() %>%
     mutate(ACC_value = 10^ACC) %>%
     mutate(ACC_value = ACC_value * MlWt) %>%
-    filter(!is.na(ACC_value)) 
+    filter(!is.na(ACC_value)) %>%
+    rename(CAS = casn)
 
   if(any(is.na(ACClong$MlWt))){
     warning("Some chemicals are missing molecular weights")
