@@ -112,7 +112,7 @@ test_that("Plotting endpoints", {
                                                   "meanEAR")))
   
   classStackPlot <- suppressWarnings(plot_tox_endpoints(chemicalSummary, 
-                                    category = "Chemical Class", filterBy = "PAH"))
+                                    category = "Chemical Class", filterBy = "PAHs"))
   expect_true(all(names(classStackPlot$data) %in% c("site","category","endPoint",
                                                     "meanEAR")))
   
