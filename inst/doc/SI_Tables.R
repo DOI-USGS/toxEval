@@ -164,20 +164,20 @@ tableData <- chemicalSummary %>%
   arrange(Family, subFamily, gene_symbol) %>%
   select(endPoint, Family, subFamily, gene_symbol, everything())
 
-chem_info <- chem_info %>%
-  left_join(distinct(select(chemicalSummary, CAS, `Chemical Name`)), by=c("CAS", "Chemical Name")) %>%
-  arrange(Class, `Chemical Name`)
-
-orderedCols <- chem_info$`Chemical Name`[chem_info$`Chemical Name` %in% names(tableData)]
-
 tableData2 <- select(tableData, -endPoint, -Family, -subFamily, -gene_symbol)
 tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
 
 tableData <- tableData %>%
   left_join(AOP,by="gene_symbol")
 
+orderedCols <- data.frame(chnm = levels(chemicalSummary$chnm),
+                          stringsAsFactors = FALSE) %>%
+  left_join(distinct(select(chemicalSummary, chnm, `Chemical Name`)), by = "chnm")
+
+orderedCols <- orderedCols$`Chemical Name`[which(orderedCols$`Chemical Name` %in% names(tableData))]
+
 tableData <- tableData[,c("Family", "subFamily","gene_symbol",
-                          "endPoint","AOP", "nChems",orderedCols)] 
+                          "endPoint","AOP", "nChems",rev(orderedCols))] 
 
 
 datatable(tableData,  

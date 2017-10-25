@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.height = 7,
                       fig.width = 10)
 
-## -------------------------------------------------------------------------
+## ---------------------------------------------------------
 library(readxl)
 library(toxEval)
 library(dplyr)
