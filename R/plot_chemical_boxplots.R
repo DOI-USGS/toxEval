@@ -176,29 +176,6 @@ graph_chem_data <- function(chemicalSummary,
     graphData <- filter(graphData, !(chnm %in% manual_remove))
   }
   
-  orderClass <- graphData %>%
-    group_by(Class,chnm) %>%
-    summarise(median = median(maxEAR[maxEAR != 0])) %>%
-    data.frame() %>%
-    arrange(desc(median)) %>%
-    filter(!duplicated(Class)) %>%
-    arrange(median)
-  
-  orderChem <- graphData %>%
-    group_by(chnm,Class) %>%
-    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
-    data.frame() %>%
-    mutate(Class = factor(Class, levels=orderClass$Class)) %>%
-    arrange(Class, !is.na(median), median)
-  
-  orderedLevels <- as.character(orderChem$chnm)
-  orderedLevels <- orderedLevels[orderedLevels %in% graphData$chnm]
-  orderedLevels <- unique(orderedLevels)
-  
-  graphData <- graphData %>%
-    mutate(chnm = factor(chnm, levels=orderedLevels)) %>%
-    mutate(Class = factor(Class, levels = rev(levels(orderChem$Class))))
-  
   return(graphData)
 }
 

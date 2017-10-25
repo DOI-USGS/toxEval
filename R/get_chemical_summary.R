@@ -71,30 +71,30 @@ get_chemical_summary <- function(ACClong, filtered_ep,
     chemicalSummary <- exclude_points(chemicalSummary, exclusion)
   }
   
-  orderClass <- chemicalSummary %>%
-    group_by(Class,chnm) %>%
-    summarise(median = median(EAR[EAR != 0])) %>%
-    data.frame() %>%
-    arrange(desc(median)) %>%
-    filter(!duplicated(Class)) %>%
-    arrange(median)
+  graphData <- graph_chem_data(chemicalSummary)
   
-  orderChem <- chemicalSummary %>%
+  orderClass <- graphData %>%
+    group_by(chnm, Class) %>%
+    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
+    group_by(Class) %>%
+    summarise(max_med = max(median, na.rm = TRUE)) %>%
+    arrange(desc(max_med))
+ 
+  orderChem <- graphData %>%
     group_by(chnm,Class) %>%
-    summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
+    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
     data.frame() %>%
-    mutate(Class = factor(Class, levels=orderClass$Class)) %>%
-    arrange(Class, !is.na(median), median)
+    mutate(Class = factor(Class, levels = rev(as.character(orderClass$Class))))
   
-  orderedLevels <- as.character(orderChem$chnm)
-  orderedLevels <- orderedLevels[orderedLevels %in% chemicalSummary$chnm]
-  orderedLevels <- unique(orderedLevels)
+  orderChem$median[is.na(orderChem$median)] <- 0
   
+  orderChem <- arrange(orderChem, Class, median)
+
   chemicalSummary$chnm <- factor(chemicalSummary$chnm,
-                                 levels = orderedLevels)    
+                                 levels = orderChem$chnm)    
   
   chemicalSummary$Class <- factor(chemicalSummary$Class,
-                                  levels = orderClass$Class)
+                                  levels = rev(levels(orderChem$Class)))
   
   return(chemicalSummary)
 }
