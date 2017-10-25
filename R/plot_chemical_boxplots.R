@@ -68,31 +68,6 @@ plot_chemical_boxplots <- function(chemicalSummary,
   
   if(length(unique(chemicalSummary$site)) == 1){
     
-    orderClass <- chemicalSummary %>%
-      group_by(Class,chnm) %>%
-      summarise(median = median(EAR[EAR != 0])) %>%
-      data.frame() %>%
-      arrange(desc(median)) %>%
-      filter(!duplicated(Class)) %>%
-      arrange(median)
-    
-    orderChem <- chemicalSummary %>%
-      group_by(chnm,Class) %>%
-      summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
-      data.frame() %>%
-      mutate(Class = factor(Class, levels=orderClass$Class)) %>%
-      arrange(Class, !is.na(median), median)
-    
-    orderedLevels <- as.character(orderChem$chnm)
-    orderedLevels <- orderedLevels[orderedLevels %in% chemicalSummary$chnm]
-    orderedLevels <- unique(orderedLevels)
-    
-    chemicalSummary$chnm <- factor(chemicalSummary$chnm,
-                                    levels = orderedLevels)    
-    
-    chemicalSummary$Class <- factor(chemicalSummary$Class,
-                                    levels = orderClass$Class)
-    
     countNonZero <- chemicalSummary %>%
       select(chnm, Class, EAR) %>%
       group_by(chnm, Class) %>%

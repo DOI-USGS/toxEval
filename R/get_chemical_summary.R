@@ -71,6 +71,31 @@ get_chemical_summary <- function(ACClong, filtered_ep,
     chemicalSummary <- exclude_points(chemicalSummary, exclusion)
   }
   
+  orderClass <- chemicalSummary %>%
+    group_by(Class,chnm) %>%
+    summarise(median = median(EAR[EAR != 0])) %>%
+    data.frame() %>%
+    arrange(desc(median)) %>%
+    filter(!duplicated(Class)) %>%
+    arrange(median)
+  
+  orderChem <- chemicalSummary %>%
+    group_by(chnm,Class) %>%
+    summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
+    data.frame() %>%
+    mutate(Class = factor(Class, levels=orderClass$Class)) %>%
+    arrange(Class, !is.na(median), median)
+  
+  orderedLevels <- as.character(orderChem$chnm)
+  orderedLevels <- orderedLevels[orderedLevels %in% chemicalSummary$chnm]
+  orderedLevels <- unique(orderedLevels)
+  
+  chemicalSummary$chnm <- factor(chemicalSummary$chnm,
+                                 levels = orderedLevels)    
+  
+  chemicalSummary$Class <- factor(chemicalSummary$Class,
+                                  levels = orderClass$Class)
+  
   return(chemicalSummary)
 }
 
@@ -175,13 +200,12 @@ exclude_points <- function(chemicalSummary, exclusion){
            !is.na(endPoint))
   
   chem_filtered <- chemicalSummary %>%
-    filter(!(casrn %in% exclude_chem),
-           !(endPoint %in% exclude_ep)) 
+    filter(!(CAS %in% exclude_chem)) %>%
+    filter(!(endPoint %in% exclude_ep)) 
   
   if(nrow(exclude_combo) > 0){
     chem_filtered <- chem_filtered %>%
-      anti_join(exclude_combo, by=c("casrn"="CAS",
-                                    "endPoint"))
+      anti_join(exclude_combo, by=c("CAS","endPoint"))
   }
 
   
