@@ -97,13 +97,15 @@ observe({
   chemicalSummary <- chemicalSummary()
   valueText <- "All"
   
-  if (input$radioMaxGroup == 2){
-    valueText <- c("All",unique(as.character(chemicalSummary$chnm)))
-  } else if(input$radioMaxGroup == 3){
-    valueText <- c("All",unique(as.character(chemicalSummary$Class)))
-  } else if(input$radioMaxGroup == 1){
-    valueText <- c("All",unique(as.character(chemicalSummary$Bio_category)))
-  } 
+  if(nrow(chemicalSummary) > 0){
+    if (input$radioMaxGroup == 2){
+      valueText <- c("All",unique(as.character(chemicalSummary$chnm)))
+    } else if(input$radioMaxGroup == 3){
+      valueText <- c("All",unique(as.character(chemicalSummary$Class)))
+    } else if(input$radioMaxGroup == 1){
+      valueText <- c("All",unique(as.character(chemicalSummary$Bio_category)))
+    } 
+  }
   
   epDF[["epGroup"]] <- NULL
   

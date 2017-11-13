@@ -78,7 +78,7 @@ get_chemical_summary <- function(ACClong, filtered_ep,
   orderChem_df <- orderChem(graphData, orderClass_df)
   
   chemicalSummary$chnm <- factor(chemicalSummary$chnm,
-                                 levels = orderChem_df$chnm)    
+                                 levels = unique(orderChem_df$chnm))
   
   chemicalSummary$Class <- factor(chemicalSummary$Class,
                                   levels = rev(levels(orderChem_df$Class)))
