@@ -42,7 +42,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- ".dplyr"
     
-  cbValues <- c("#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
+  cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
+                "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
                 "#FFA500","#F4426e", "#800000", "#808000")
   

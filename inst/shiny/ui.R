@@ -172,7 +172,10 @@ body <- dashboardBody(
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
              div(style = 'overflow-y: scroll', uiOutput("endpointGraph.ui")),
-            downloadButton('downloadEndpoint', 'Download PNG')
+            fluidRow(
+             column(3, downloadButton('downloadEndpoint', 'Download PNG')),
+             column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
+            )
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
