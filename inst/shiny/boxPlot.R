@@ -49,9 +49,7 @@ output$graphGroup.ui <- renderUI({
 })
 
 output$downloadBoxPlot <- downloadHandler(
-  
   filename = "boxPlot.png",
-  
   content = function(file) {
     device <- function(..., width, height) {
       grDevices::png(..., width = width, height = height,
@@ -59,5 +57,13 @@ output$downloadBoxPlot <- downloadHandler(
     }
     ggsave(file, plot = boxPlots_create(), device = device)
   }
-    
+)
+
+output$downloadBoxPlot_csv <- downloadHandler(
+  
+  filename = "boxPlot.csv",
+  
+  content = function(file) {
+    write.csv(boxPlots_create()[['data']], file, row.names = FALSE)
+  }
 )

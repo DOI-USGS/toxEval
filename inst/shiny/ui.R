@@ -142,7 +142,10 @@ body <- dashboardBody(
              value="summary",
              checkboxInput("plot_ND", "Plot ND's?", TRUE),
              uiOutput("graphGroup.ui"),
-            downloadButton('downloadBoxPlot', 'Download PNG')
+             fluidRow(
+               column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
+               column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
+             )
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
