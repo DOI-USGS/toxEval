@@ -61,7 +61,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
   if(!("site_grouping" %in% names(chem_site))){
-    chem_site$site_grouping <- ""
+    chem_site$site_grouping <- "Sites"
   }
   
   graphData <- graphData %>%
@@ -170,6 +170,10 @@ plot_tox_heatmap <- function(chemicalSummary,
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
+  if(!("site_grouping" %in% names(chem_site))){
+    chem_site$site_grouping <- "Sites"
+  }
+  
   if(!plot_ND){
     chemicalSummary <- chemicalSummary[chemicalSummary$EAR > 0,]
   }
@@ -184,7 +188,7 @@ plot_tox_heatmap <- function(chemicalSummary,
                            category = category,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic)
-    
+
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))

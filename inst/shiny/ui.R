@@ -184,7 +184,10 @@ body <- dashboardBody(
                    value="heat",
              checkboxInput("plot_ND_heat", "Plot ND's?", TRUE),
                    uiOutput("graphHeat.ui"),
-             downloadButton('downloadHeatPlot', 'Download PNG')
+             fluidRow(
+               column(3, downloadButton('downloadHeatPlot', 'Download PNG')),
+               column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))
+             )
     )
   ),
 
