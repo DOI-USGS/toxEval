@@ -83,6 +83,7 @@ shinyServer(function(input, output,session) {
     removeFlags <- all_flags[!(all_flags %in% flags)]
 
     rawData <- rawData()
+
     if(!is.null(rawData)){
       chem_data <- rawData$chem_data
       chem_info <- rawData$chem_info

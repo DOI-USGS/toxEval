@@ -131,7 +131,7 @@ plot_tox_stacks <- function(chemicalSummary,
   
   if(include_legend && length(unique(graphData$category)) <= length(cbValues)){
     upperPlot <- upperPlot + 
-      scale_fill_manual(name = category,values = cbValues, drop=FALSE)
+      scale_fill_manual(name = category,values = cbValues, drop=TRUE)
 
   } else {
     upperPlot <- upperPlot +

@@ -6,8 +6,8 @@ stackBarGroup_create <- reactive({
   
   rawData <- rawData()
   chem_site <- rawData$chem_site
-  
-  if(all(unique(chem_site$site_grouping) %in% great_lakes)){
+
+  if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
   }
@@ -18,6 +18,7 @@ stackBarGroup_create <- reactive({
   }
 
   include_legend <- !(catType == 2)
+
   upperPlot <- plot_tox_stacks(chemicalSummary, 
                                chem_site, 
                                category = c("Biological","Chemical","Chemical Class")[catType],

@@ -142,7 +142,10 @@ body <- dashboardBody(
              value="summary",
              checkboxInput("plot_ND", "Plot ND's?", TRUE),
              uiOutput("graphGroup.ui"),
-            downloadButton('downloadBoxPlot', 'Download PNG')
+             fluidRow(
+               column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
+               column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
+             )
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
@@ -172,13 +175,19 @@ body <- dashboardBody(
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
              div(style = 'overflow-y: scroll', uiOutput("endpointGraph.ui")),
-            downloadButton('downloadEndpoint', 'Download PNG')
+            fluidRow(
+             column(3, downloadButton('downloadEndpoint', 'Download PNG')),
+             column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
+            )
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
              checkboxInput("plot_ND_heat", "Plot ND's?", TRUE),
                    uiOutput("graphHeat.ui"),
-             downloadButton('downloadHeatPlot', 'Download PNG')
+             fluidRow(
+               column(3, downloadButton('downloadHeatPlot', 'Download PNG')),
+               column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))
+             )
     )
   ),
 

@@ -43,6 +43,12 @@ observeEvent(input$allGroup, {
   
 })
 
+observeEvent(input$epGroup, {
+  epDF[["epGroup"]] <- NULL
+  epDF[["epGroup"]] <- input$epGroup
+  
+})
+
 observe({
   
   groupCol <- epDF[["groupColName"]]
@@ -87,17 +93,28 @@ observe({
 })
 
 observe({
-  valueText <- "All"
+
   chemicalSummary <- chemicalSummary()
+  valueText <- "All"
   
-  if (input$radioMaxGroup == 2){
-    uniqueChems <- c("All",unique(chemicalSummary$chnm))
-    valueText <- uniqueChems
-  } else if(input$radioMaxGroup == 3){
-    valueText <- c("All",unique(chemicalSummary$Class))
-  } else if(input$radioMaxGroup == 1){
-    valueText <- c("All",unique(chemicalSummary$Bio_category))
+  if(nrow(chemicalSummary) > 0){
+    if (input$radioMaxGroup == 2){
+      valueText <- c("All",unique(as.character(chemicalSummary$chnm)))
+    } else if(input$radioMaxGroup == 3){
+      valueText <- c("All",unique(as.character(chemicalSummary$Class)))
+    } else if(input$radioMaxGroup == 1){
+      valueText <- c("All",unique(as.character(chemicalSummary$Bio_category)))
+    } 
   }
   
-  updateSelectInput(session, "epGroup", choices = valueText, selected = valueText[2])
+  epDF[["epGroup"]] <- NULL
+  
+  if(length(valueText) > 1){
+    epDF[["epGroup"]] <- valueText[2]
+  } else {
+    epDF[["epGroup"]] <- "All"
+  }
+
+  updateSelectInput(session, "epGroup", choices = valueText, selected = epDF[["epGroup"]])
 })
+

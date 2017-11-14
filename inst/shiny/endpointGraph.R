@@ -1,10 +1,11 @@
 endpointGraph_create <- reactive({
-  filterBy <- input$epGroup
+
+  filterBy <- epDF[['epGroup']]
   meanEARlogic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   chemicalSummary <- chemicalSummary()
   catType = as.numeric(input$radioMaxGroup)
-  
+
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
                                       category = c("Biological","Chemical","Chemical Class")[catType],
                                       mean_logic = as.logical(input$meanEAR),
@@ -31,7 +32,7 @@ output$endpointGraph.ui <- renderUI({
 
 PlotHeight_ep = reactive({
   
-  filterBy <- input$epGroup
+  filterBy <- epDF[['epGroup']]
   catType = as.numeric(input$radioMaxGroup)
   cat_col <- c("Bio_category","chnm","Class")[catType]
   
@@ -62,5 +63,14 @@ output$downloadEndpoint <- downloadHandler(
                      res = 300, units = "in")
     }
     ggsave(file, plot = endpointGraph_create(), device = device)
+  }
+)
+
+output$downloadEndpoint_csv <- downloadHandler(
+  
+  filename = "endPoint.csv",
+  
+  content = function(file) {
+    write.csv(endpointGraph_create()[['data']], file, row.names = FALSE)
   }
 )

@@ -5,8 +5,8 @@ heatMap_create <- reactive({
   chemicalSummary <- chemicalSummary()
   rawData <- rawData()
   chem_site <- rawData$chem_site
-  
-  if(all(unique(chem_site$site_grouping) %in% great_lakes)){
+  browser()
+  if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
   }
@@ -49,5 +49,14 @@ output$downloadHeatPlot <- downloadHandler(
                      res = 300, units = "in")
     }
     ggsave(file, plot = heatMap_create(), device = device)
+  }
+)
+
+output$downloadHeatPlot_csv <- downloadHandler(
+  
+  filename = "heatPlot.csv",
+  
+  content = function(file) {
+    write.csv(heatMap_create()[['data']], file = file, row.names = FALSE)
   }
 )

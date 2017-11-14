@@ -55,14 +55,6 @@ plot_tox_boxplots <- function(chemicalSummary,
     }
     single_site <- length(unique(chemicalSummary$site)) == 1
     
-    bioPlot <- ggplot()+
-      coord_flip() +
-      theme_bw() +
-      xlab("") +
-      theme(plot.background = element_rect(fill = "transparent",colour = NA),
-            axis.text.y = element_text(color = "black", vjust = 0.2), 
-            axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)))
-    
     if(single_site){
       
       if(category == "Biological"){
@@ -95,9 +87,14 @@ plot_tox_boxplots <- function(chemicalSummary,
       chemicalSummary$category <- factor(chemicalSummary$category,
                                          levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
       
-      bioPlot <- bioPlot + 
-        geom_boxplot(data = chemicalSummary,
-                                      aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
+      bioPlot <- ggplot(data = chemicalSummary)+
+        coord_flip() +
+        theme_bw() +
+        xlab("") +
+        theme(plot.background = element_rect(fill = "transparent",colour = NA),
+              axis.text.y = element_text(color = "black", vjust = 0.2), 
+              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0))) + 
+        geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
         scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
       
     } else {
@@ -111,8 +108,14 @@ plot_tox_boxplots <- function(chemicalSummary,
         summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
         data.frame() 
       
-      bioPlot <- bioPlot + geom_boxplot(data = graphData, 
-                                        aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
+      bioPlot <- ggplot(data = graphData)+
+        coord_flip() +
+        theme_bw() +
+        xlab("") +
+        theme(plot.background = element_rect(fill = "transparent",colour = NA),
+              axis.text.y = element_text(color = "black", vjust = 0.2), 
+              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0))) +  
+        geom_boxplot(aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
         scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
     }
     
@@ -129,11 +132,10 @@ plot_tox_boxplots <- function(chemicalSummary,
       ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[1])
     }
     
-    bioPlot <- bioPlot + 
+    bioPlot_w_labels <- bioPlot + 
       geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=3)  
     
-    
-    return(bioPlot)
+    return(bioPlot_w_labels)
   }
   
 }

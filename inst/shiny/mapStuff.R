@@ -36,7 +36,7 @@ observe({
   
   rawData <- rawData()
   chem_site <- rawData$chem_site
-  
+
   chemicalSummary <- chemicalSummary()
   catType = as.numeric(input$radioMaxGroup)
   siteToFind <- unique(chemicalSummary$site)
