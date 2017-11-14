@@ -67,8 +67,7 @@ orderGroups <- graphData %>%
   mutate(Bio_category = factor(Bio_category, levels=orderSub$Bio_category)) %>%
   arrange(Bio_category, desc(median))
 
-orderedSub <- rev(orderGroups$subFamily)[rev(orderGroups$subFamily) %in%
-                                           unique(graphData$subFamily)]
+orderedSub <- rev(orderGroups$subFamily)[rev(orderGroups$subFamily) %in%                                unique(graphData$subFamily)]
 orderedSub <- unique(orderedSub)
 
 graphData$subFamily <- factor(graphData$subFamily, 
@@ -95,8 +94,9 @@ subPlot <- ggplot(graphData)+
   theme_bw() +
   xlab("") +
   theme(plot.background = element_rect(fill = "transparent",colour = NA),
-        axis.text.y = element_text(size=8, color = "black", vjust = 0.2), 
-        axis.text.x = element_text(size=8, color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
+        axis.text = element_text(size=8, color = "black"),
+        axis.text.y = element_text(vjust = 0.2), 
+        axis.text.x = element_text(vjust = 0, margin = margin(-0.5,0,0,0)),
         axis.title = element_text(size=10)) +
   scale_fill_manual(values = cbValues, drop=TRUE)  +
   guides(fill=guide_legend(ncol=6)) +
@@ -107,7 +107,15 @@ subPlot <- ggplot(graphData)+
         legend.text = element_text(size=8),
         legend.key.height = unit(1,"line")) 
 
-xmin <- 10^(ggplot_build(subPlot)$layout$panel_ranges[[1]]$x.range[1])
+plot_info <- ggplot_build(subPlot)
+layout_stuff <- plot_info$layout
+
+if(packageVersion("ggplot2") >= "2.2.1.9000"){
+  xmin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
+} else {
+  xmin <- 10^(layout_stuff$panel_ranges[[1]]$x.range[1])
+}
+
 
 subPlot <- subPlot + 
   geom_text(data=countNonZero, aes(x=subFamily, y=xmin,label=nonZero),size=3) 
