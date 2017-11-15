@@ -190,7 +190,6 @@ tableData <- chemicalSummary %>%
   group_by(endPoint, Family, subFamily, gene_symbol, Chemical) %>%
   summarize(nSites = sum(maxEAR > 10^-3)) %>%
   data.frame() %>%
-  filter(nSites > 0) %>%
   spread(Chemical, nSites) %>%
   arrange(Family, subFamily, gene_symbol) %>%
   select(endPoint, Family, subFamily, gene_symbol, everything())
@@ -226,5 +225,5 @@ datatable(tableData,
                                                filename= 'fullTable')),
                            text = 'Download')
                          )))
-# write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "")
+# write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "-")
 ```
