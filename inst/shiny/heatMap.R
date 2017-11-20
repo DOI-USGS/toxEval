@@ -5,7 +5,7 @@ heatMap_create <- reactive({
   chemicalSummary <- chemicalSummary()
   rawData <- rawData()
   chem_site <- rawData$chem_site
-  browser()
+
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
