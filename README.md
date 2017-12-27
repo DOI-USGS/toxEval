@@ -38,7 +38,7 @@ This section should only need to be done once per computer.
 
 The following link walks you through an installation of R and RStudio:
 
-[Installation Instructions](https://owi.usgs.gov/R/training-curriculum/intro-curriculum/Before/)
+[Installation Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
 
 If you follow those instructions exactly, you should have the USGS R repository (GRAN) added to your R profile. If that step doesn't ring a bell, paste the following into your R console:
 
@@ -73,7 +73,7 @@ install.packages("toxEval")
 
 Regularly, it is a good idea to update *ALL* your packages in R. If using RStudio, this is quite easy, there's an Update button in the "Packages" tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.
 
-![update](images/update.png)
+![update](vignettes/update.png)
 
 ## Run toxEval
 
