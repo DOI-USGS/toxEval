@@ -18,6 +18,7 @@ filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
+                                        tox_list = NULL,
                                         chem_data,
                                         chem_site,
                                         chem_info,
