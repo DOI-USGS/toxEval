@@ -15,6 +15,7 @@ ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
+tox_list <- create_toxEval(full_path)
 
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
@@ -23,6 +24,18 @@ chemicalSummary <- get_chemical_summary(ACClong,
                                         chem_site,
                                         chem_info,
                                         exclusion)
+
+chemicalSummary1 <- get_chemical_summary(ACClong,
+                                        filtered_ep,
+                                        tox_list = tox_list)
+
+test_that("Calculating tox_list", {
+  
+  expect_type(tox_list, "list")
+  expect_length(tox_list, 5)
+  expect_equivalent(chemicalSummary, chemicalSummary1)
+  
+})
 
 test_that("Calculating summaries", {
   testthat::skip_on_cran()
