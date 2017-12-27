@@ -59,12 +59,11 @@ for(gene in AOP$gene_symbol){
   AOP$AOP[AOP$gene_symbol %in% gene] <- paste(AOP_crosswalk$AOP[AOP_crosswalk$gene_symbol %in% gene],collapse = ", ")
 }
 
-chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
+                                        chem.data = chem_data, 
+                                        chem.site = chem_site, 
+                                        chem.info = chem_info,
+                                        exclusion = exclusion)
 
 chemicalSummary <- chemicalSummary %>%
   left_join(select(endPointInfo, 

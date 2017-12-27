@@ -22,25 +22,20 @@ plot_tox_boxplots(chemicalSummary, category = "Biological",
 Plot boxplot of groups
 }
 \examples{
-library(readxl)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
-chem_data <- read_excel(full_path, sheet = "Data")
-chem_info <- read_excel(full_path, sheet = "Chemicals") 
-chem_site <- read_excel(full_path, sheet = "Sites")
-ACClong <- get_ACC(chem_info$CAS)
+tox_list <- create_toxEval(full_path)
+
+ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                       chem_data, 
-                                        chem_site, 
-                                        chem_info)
+chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
+                                        tox_list)
 plot_tox_boxplots(chemicalSummary, "Biological")   
 plot_tox_boxplots(chemicalSummary, "Chemical Class")
 plot_tox_boxplots(chemicalSummary, "Chemical") 

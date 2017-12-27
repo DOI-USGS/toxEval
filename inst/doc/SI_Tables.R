@@ -114,8 +114,7 @@ datatable(intended_target,
 
 ACC <- ACC
 
-ACC_OWC <- ACC %>%
-filter
+
 
 
 ## ---------------------------------------------------------
@@ -138,10 +137,10 @@ for(gene in AOP$gene_symbol){
 
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+                                        chem.data = chem_data, 
+                                        chem.site = chem_site, 
+                                        chem.info = chem_info,
+                                        exclusion = exclusion)
 
 chemicalSummary <- chemicalSummary %>%
   left_join(select(endPointInfo, 

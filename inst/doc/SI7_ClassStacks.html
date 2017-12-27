@@ -67,38 +67,29 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI7: Class</h1>
-<h4 class="date"><em>14 November, 2017</em></h4>
+<h4 class="date"><em>27 December, 2017</em></h4>
 
 
 
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readxl)
-<span class="kw">library</span>(toxEval)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
 <span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(grid)
 
 path_to_tox &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;toxEval&quot;</span>)
 file_name &lt;-<span class="st"> &quot;OWC_data_fromSup.xlsx&quot;</span>
-
 full_path &lt;-<span class="st"> </span><span class="kw">file.path</span>(path_to_tox, file_name)
 
-chem_data &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Data&quot;</span>)
-chem_info &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Chemicals&quot;</span>) 
-chem_site &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Sites&quot;</span>)
-exclusion &lt;-<span class="st"> </span><span class="kw">read_excel</span>(full_path, <span class="dt">sheet =</span> <span class="st">&quot;Exclude&quot;</span>)
+tox_list &lt;-<span class="st"> </span><span class="kw">create_toxEval</span>(full_path)
 
-ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(chem_info<span class="op">$</span>CAS)
+ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
 filtered_ep &lt;-<span class="st"> </span><span class="kw">filter_groups</span>(cleaned_ep)
 
-chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong,
-                                        filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong, filtered_ep,
+                                        tox_list)
 
 sitesOrdered &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;StLouis&quot;</span>,<span class="st">&quot;Nemadji&quot;</span>,<span class="st">&quot;WhiteWI&quot;</span>,<span class="st">&quot;Bad&quot;</span>,<span class="st">&quot;Montreal&quot;</span>,
                   <span class="st">&quot;PresqueIsle&quot;</span>,<span class="st">&quot;Ontonagon&quot;</span>,<span class="st">&quot;Sturgeon&quot;</span>,<span class="st">&quot;Tahquamenon&quot;</span>,<span class="st">&quot;Burns&quot;</span>,
@@ -113,7 +104,7 @@ sitesOrdered &lt;-<span class="st"> </span><span class="kw">c</span>(<span class
                   <span class="st">&quot;Genesee&quot;</span>,<span class="st">&quot;Oswego&quot;</span>,<span class="st">&quot;BlackNY&quot;</span>,<span class="st">&quot;Oswegatchie&quot;</span>,<span class="st">&quot;Grass&quot;</span>,
                   <span class="st">&quot;Raquette&quot;</span>,<span class="st">&quot;StRegis&quot;</span>)
 
-chem_site &lt;-<span class="st"> </span>chem_site <span class="op">%&gt;%</span>
+chem_site &lt;-<span class="st"> </span>tox_list<span class="op">$</span>chem_site <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> =<span class="st"> </span><span class="kw">factor</span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>, <span class="dt">levels =</span> sitesOrdered)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">site_grouping =</span> <span class="kw">factor</span>(site_grouping, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Lake Superior&quot;</span>,
                                                           <span class="st">&quot;Lake Michigan&quot;</span>,

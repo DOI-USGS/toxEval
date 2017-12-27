@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 2: Detection Levels</h1>
-<h4 class="date"><em>14 November, 2017</em></h4>
+<h4 class="date"><em>27 December, 2017</em></h4>
 
 
 
@@ -110,11 +110,11 @@ chem_data &lt;-<span class="st"> </span>chem_data <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Value_new =</span> <span class="kw">max</span>(MDL, LDL))
 
 chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong,
-                                        filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+                                        filtered_ep, 
+                                        <span class="dt">chem.data =</span> chem_data, 
+                                        <span class="dt">chem.site =</span> chem_site, 
+                                        <span class="dt">chem.info =</span> chem_info,
+                                        <span class="dt">exclusion =</span> exclusion)
 
 plot_DL &lt;-<span class="st"> </span><span class="kw">plot_tox_boxplots</span>(chemicalSummary, <span class="st">&quot;Chemical&quot;</span>)
 

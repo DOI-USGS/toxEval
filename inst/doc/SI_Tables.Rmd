@@ -141,8 +141,7 @@ Table 4: Endpoint Counts
 
 ACC <- ACC
 
-ACC_OWC <- ACC %>%
-filter
+
 
 ```
 
@@ -169,10 +168,10 @@ for(gene in AOP$gene_symbol){
 
 chemicalSummary <- get_chemical_summary(ACClong,
                                         filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+                                        chem.data = chem_data, 
+                                        chem.site = chem_site, 
+                                        chem.info = chem_info,
+                                        exclusion = exclusion)
 
 chemicalSummary <- chemicalSummary %>%
   left_join(select(endPointInfo, 
@@ -190,6 +189,7 @@ tableData <- chemicalSummary %>%
   group_by(endPoint, Family, subFamily, gene_symbol, Chemical) %>%
   summarize(nSites = sum(maxEAR > 10^-3)) %>%
   data.frame() %>%
+  filter(nSites > 0) %>%
   spread(Chemical, nSites) %>%
   arrange(Family, subFamily, gene_symbol) %>%
   select(endPoint, Family, subFamily, gene_symbol, everything())
@@ -225,5 +225,5 @@ datatable(tableData,
                                                filename= 'fullTable')),
                            text = 'Download')
                          )))
-# write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "-")
+# write.csv(tableData, file="wholeEnchilada.csv", row.names = FALSE, na = "")
 ```

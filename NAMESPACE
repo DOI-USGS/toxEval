@@ -3,6 +3,7 @@
 export(ACC)
 export(clean_endPoint_info)
 export(createLink)
+export(create_toxEval)
 export(endPointInfo)
 export(endpoint_table)
 export(exclude_points)
