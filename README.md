@@ -88,6 +88,14 @@ explore_endpoints()
 
 ```
 
+## Citing toxEval
+
+This package has not been reviewed and approved as a USGS-product. The implication is that `toxEval` cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:
+
+```r
+citation(package = "toxEval")
+```
+
 ## Disclaimer
 
 This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [https://www.usgs.gov/visual-id/credit_usgs.html#copyright](https://www.usgs.gov/visual-id/credit_usgs.html#copyright)
@@ -96,6 +104,7 @@ Although this software program has been used by the USGS, no warranty, expressed
 
 This software is provided "AS IS."
 
+Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
 
  [
    ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
