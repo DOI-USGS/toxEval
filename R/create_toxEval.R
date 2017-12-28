@@ -134,10 +134,10 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
 #' excel_file_path <- file.path(path_to_tox, file_name)
 #' tox_list <- create_toxEval(excel_file_path)
 #' summary(tox_list) 
-summary.toxEval <- function(x, ...){
+summary.toxEval <- function(object, ...){
   
   ACClong <- ACC %>%
-    filter(casn %in% unique(x$chem_info$CAS)) %>%
+    filter(casn %in% unique(object$chem_info$CAS)) %>%
     gather(endPoint, ACC, -casn, -chnm, -flags) 
   
   CAS_tots <- select(ACClong, casn) %>% distinct() %>% pull(casn)
@@ -150,5 +150,5 @@ summary.toxEval <- function(x, ...){
   message(length(CAS_tots)," chemicals have ToxCast information")
   message(length(CAS_w_data), " chemicals have reported ACC values")
   message("Chemicals returned from this function are NOT in ToxCast")
-  return(unique(x$chem_info$CAS)[!(unique(x$chem_info$CAS) %in% CAS_tots)])
+  return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_tots)])
 }
