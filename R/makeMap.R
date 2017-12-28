@@ -41,7 +41,7 @@ getMapInfo <- function(chemicalSummary,
 
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  site <- meanEAR <- nSamples <- `Short Name` <- Fullname <- dec_lat <- dec_lon <- ".dplyr"
+  site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- ".dplyr"
   
   siteToFind <- chem_site$`Short Name`
   

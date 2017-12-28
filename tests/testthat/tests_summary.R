@@ -15,6 +15,7 @@ ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
+
 tox_list <- create_toxEval(full_path)
 
 chemicalSummary <- get_chemical_summary(ACClong,
@@ -34,6 +35,12 @@ test_that("Calculating tox_list", {
   expect_type(tox_list, "list")
   expect_length(tox_list, 5)
   expect_equivalent(chemicalSummary, chemicalSummary1)
+  
+  expect_warning(tox_list_2 <- create_toxEval(file.path(path_to_tox, "test_data.xlsx")))
+  expect_true(all(c("SiteID","Sample Date","CAS","Value") %in% names(tox_list_2$chem_data)))
+  expect_true(all(c("Class","CAS") %in% names(tox_list_2$chem_info)))
+  expect_true(all(c("SiteID","dec_lat","dec_lon","Short Name") %in% names(tox_list_2$chem_site)))
+  
   
 })
 
