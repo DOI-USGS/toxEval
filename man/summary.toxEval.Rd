@@ -7,9 +7,9 @@
 \method{summary}{toxEval}(object, ...)
 }
 \arguments{
-\item{\dots}{additional parameters}
+\item{object}{toxEval object with "chem_info" data frame included.}
 
-\item{x}{toxEval object with "chem_info" data frame included.}
+\item{\dots}{additional parameters}
 }
 \description{
 summary of tox_list

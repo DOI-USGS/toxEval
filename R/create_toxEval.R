@@ -124,7 +124,7 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
 #' summary of tox_list
 #' 
 #' 
-#' @param x toxEval object with "chem_info" data frame included. 
+#' @param object toxEval object with "chem_info" data frame included. 
 #' @param \dots additional parameters
 #'
 #' @export
