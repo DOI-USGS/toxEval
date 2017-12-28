@@ -136,6 +136,8 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
 #' summary(tox_list) 
 summary.toxEval <- function(object, ...){
   
+  casn <- endPoint <- chnm <- flags <- ".dplyr"
+  
   ACClong <- ACC %>%
     dplyr::filter(casn %in% unique(object$chem_info$CAS)) %>%
     tidyr::gather(endPoint, ACC, -casn, -chnm, -flags) 
