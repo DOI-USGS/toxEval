@@ -64,11 +64,11 @@ chem_data <- chem_data %>%
   mutate(Value_new = max(MDL, LDL))
 
 chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+                                        filtered_ep, 
+                                        chem.data = chem_data, 
+                                        chem.site = chem_site, 
+                                        chem.info = chem_info,
+                                        exclusion = exclusion)
 
 plot_DL <- plot_tox_boxplots(chemicalSummary, "Chemical")
 

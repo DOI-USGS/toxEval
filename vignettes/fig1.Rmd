@@ -56,11 +56,11 @@ cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
+                                        filtered_ep, 
+                                        chem.data = chem_data, 
+                                        chem.site = chem_site, 
+                                        chem.info = chem_info,
+                                        exclusion = exclusion)
 
 
 # Make a "summary" of EAR's using Water Quality Guidelines instead of toxCast:
@@ -200,7 +200,7 @@ textData <- select(graphData, guide_up, guide_side) %>%
 toxPlot_All <- ggplot(data=graphData) +
   scale_y_log10(labels=fancyNumbers)  +
   geom_boxplot(aes(x=`Chemical Name`, y=maxEAR, fill=Class),
-               lwd=0.1,outlier.size=1) +
+               lwd=0.1,outlier.size=1, position = position_dodge2(preserve = "total")) +
   facet_grid(guide_up ~ guide_side, scales = "free", space = "free") +
   theme_bw() +
   scale_x_discrete(drop=TRUE) +

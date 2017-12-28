@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width = 7)
 
 ## ---------------------------------------------------------
-library(readxl)
 library(toxEval)
 library(dplyr)
 library(tidyr)
@@ -21,40 +20,32 @@ path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
-chem_data <- read_excel(full_path, sheet = "Data")
-chem_info <- read_excel(full_path, sheet = "Chemicals") 
-chem_site <- read_excel(full_path, sheet = "Sites")
-exclusion <- read_excel(full_path, sheet = "Exclude")
+tox_list <- create_toxEval(full_path)
 
-ACClong <- get_ACC(chem_info$CAS)
+ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        chem_data, 
-                                        chem_site, 
-                                        chem_info,
-                                        exclusion)
-plot_tox_boxplots(chemicalSummary, category = "Biological")
+chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
+                                        tox_list)
 
+plot_tox_boxplots(chemicalSummary, category = "Biological")
 
 
 ## ----fig.height=14----------------------------------------
 CAS_NR <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "Nuclear Receptor"])
 
-chem_data_NR <- filter(chem_data, CAS %in% CAS_NR)
-chem_info_NR <- filter(chem_info, CAS %in% CAS_NR)
+chem_data_NR <- filter(tox_list$chem_data, CAS %in% CAS_NR)
+chem_info_NR <- filter(tox_list$chem_info, CAS %in% CAS_NR)
 
 filtered_ep <- filter_groups(cleaned_ep, groupCol = "intended_target_gene_symbol")
 
-chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        chem_data_NR, 
-                                        chem_site, 
-                                        chem_info_NR)
+chemicalSummary <- get_chemical_summary(ACClong, filtered_ep, tox_list,
+                                        chem.data = chem_data_NR,
+                                        chem.info = chem_info_NR)
+
 plot_tox_boxplots(chemicalSummary, category = "Biological")
 
 
@@ -65,11 +56,9 @@ CAS_PTEN <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "PTEN"])
 chem_data_PTEN <- filter(chem_data_NR, CAS %in% CAS_PTEN)
 chem_info_PTEN <- filter(chem_info_NR, CAS %in% CAS_PTEN)
 
-chemicalSummary <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        chem_data_PTEN, 
-                                        chem_site, 
-                                        chem_info_PTEN)
+chemicalSummary <- get_chemical_summary(ACClong, filtered_ep, tox_list,
+                                        chem.data = chem_data_PTEN, 
+                                        chem.info = chem_info_PTEN)
 plot_tox_endpoints(chemicalSummary)
 
 

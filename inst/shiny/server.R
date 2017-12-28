@@ -109,9 +109,10 @@ shinyServer(function(input, output,session) {
 
       chemicalSummary <- get_chemical_summary(ACClong,
                                               filtered_ep,
-                                              chem_data, 
-                                              chem_site, 
-                                              chem_info,
+                                              tox_list = NULL,
+                                              chem.data = chem_data, 
+                                              chem.site = chem_site, 
+                                              chem.info = chem_info,
                                               exclusions)  
     } else {
       chemicalSummary <- data.frame(casrn = character(),
