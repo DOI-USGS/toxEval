@@ -137,15 +137,15 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
 summary.toxEval <- function(object, ...){
   
   ACClong <- ACC %>%
-    filter(casn %in% unique(object$chem_info$CAS)) %>%
-    gather(endPoint, ACC, -casn, -chnm, -flags) 
+    dplyr::filter(casn %in% unique(object$chem_info$CAS)) %>%
+    tidyr::gather(endPoint, ACC, -casn, -chnm, -flags) 
   
-  CAS_tots <- select(ACClong, casn) %>% distinct() %>% pull(casn)
+  CAS_tots <- dplyr::select(ACClong, casn) %>% dplyr::distinct() %>% dplyr::pull(casn)
   
-  CAS_w_data <- ACClong %>% select(ACC, casn) %>%
-    filter(!is.na(ACC)) %>%
-    select(casn) %>%
-    distinct() %>% pull(casn)
+  CAS_w_data <- ACClong %>% dplyr::select(ACC, casn) %>%
+    dplyr::filter(!is.na(ACC)) %>%
+    dplyr::select(casn) %>%
+    dplyr::distinct() %>% dplyr::pull(casn)
   
   message(length(CAS_tots)," chemicals have ToxCast information")
   message(length(CAS_w_data), " chemicals have reported ACC values")
