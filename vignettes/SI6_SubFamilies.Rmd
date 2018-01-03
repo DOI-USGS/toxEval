@@ -96,8 +96,7 @@ countNonZero <- graphData %>%
 subPlot <- ggplot(graphData)+
   scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers)+
   geom_boxplot(aes(x=subFamily, y=meanEAR,fill = Bio_category),
-               lwd=0.1,outlier.size=1, 
-               position = position_dodge2(preserve = "total")) +
+               lwd=0.1,outlier.size=1) +
   coord_flip() +
   theme_bw() +
   xlab("") +
