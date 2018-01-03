@@ -1,0 +1,189 @@
+---
+title: "toxEval Shiny Application"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+    fig_caption: yes
+    fig_height: 10
+    fig_width: 7
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Figure_1}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmarkdown)
+options(continue=" ")
+options(width=60)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package. There is less customization from the application, but it is a convenient way to explore the data. 
+
+This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is not on CRAN. 
+
+# Preparing the data
+
+The data should be prepared in a Microsoft\textregistered\ Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear like this (although the order is not important):
+
+![Organize Sheets](tabs.png)
+
+Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns is important. Additional columns can be included but will be ignored. The top row of each sheet should contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data. 
+
+## Data
+
+The "Data" tab needs to have at a minimum 4 columns: "CAS", "SiteID", "Value", and "Sample Date". They can be in any order, but the first row of sheet should be the header (column names).
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Chemicals" sheet.
+
+* SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Sites" sheet. There is no requirements on formatting for this column.
+
+* Value: This column is numeric. It should be the concentration of the chemical in $\mu$g/L.
+
+* Sample Date: Currently this column only serves to identify unique samples.  Dates and times as formatted in Excel, as well as integer values are acceptable. The actual date and times are not currently used to perform any time series analysis. 
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+As an example, the first several rows of a minimal example would look like this:
+
+![Example Data](data.png)
+
+## Chemicals
+
+The "Chemicals" tab needs to have at a minimum 2 columns: "CAS" and "Class". They can be in any order, but the first row of sheet should be the header (column names).
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
+
+* Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping (will be discussed in section TODO:XXXXXXXX)
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+## Sites
+
+The "Sites" tab needs to have at a minimum 4 columns: "SiteID", "Short Name", "dec_lon", and "dec_lat". They can be in any order, but the first row of sheet should be the header (column names).
+
+* SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Data" sheet. There is no requirements on formatting for this column.
+
+* Short Name: This character column is the name associated with the SiteID that will be used in the graphs and tables. The names should be sufficiently descriptive, but as short as possible to optimize the area on the graph devoted to the data and not the labels.
+
+* dec_lon: This numeric column is the decimal longitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most `toxEval` functions will not require this column.
+
+* dec_lat: This numeric column is the decimal latitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most `toxEval` functions will not require this column.
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+## Exclude
+
+The "Exclude" tab is an optional tab. If used, the "Exclude" tab needs to have at a minimum 2 columns: "CAS" and "endPoint". They can be in any order, but the first row of sheet should be the header (column names).
+
+* endPoint: A character column define a specific ToxCast endpoint to ignore. IF the "CAS" in the corresponding row is empty, the endPoint will be completely excluded from the `toxEval` analysis. For example, maybe it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider in the analysis. We can exclude all TOX21_p53_BLA_p3_ratio endPoints by adding it to the Exclude tab. IF the "CAS" in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis. 
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. IF the "endPoint" in the corresponding row is empty, the chemical will be completely excluded from the `toxEval` analysis. For example, maybe it was discovered that DEET was contaminated in the sampling method. We can exclude all DEET measurments by adding 134-62-3 to the Exclude tab. IF the "endPoint" in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.
+
+There could be a variety of reasons to exclude chemical/endpoint combinations. This will be discussed further in section TODO: XXXXXXXXX.
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+## Benchmarks
+
+The "Benchmarks" tab is an optional tab. If used, the "Benchmarks" tab needs to have at a minimum 2 columns: "CAS" and "endPoint". They can be in any order, but the first row of sheet should be the header (column names).
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+# Checking the data
+
+## Alternative method
+
+
+# Using the Shiny Application
+
+## Loading data
+
+## Sidebar
+
+# Getting Started
+
+## Installation of R and RStudio
+
+This section should only need to be done once per computer. The following link walks you through an installation of R and RStudio:
+
+[Installation Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
+
+If you follow those instructions exactly, you should have the USGS R repository (GRAN) added to your R profile. If that step doesn't ring a bell, paste the following into your R console:
+
+```{r, eval=FALSE}
+rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
+write('\noptions(repos=c(getOption(\'repos\'),
+    CRAN=\'https://cloud.r-project.org\',
+    USGS=\'https://owi.usgs.gov/R\'))\n',
+      rprofile_path, 
+      append =  TRUE)
+
+cat('Your Rprofile has been updated to include GRAN.
+    Please restart R for changes to take effect.')
+```
+
+*RESTART RSTUDIO!*
+
+Useful links:
+
+* [Download R Windows](https://cran.r-project.org/bin/windows/base/)
+* [Download R Mac](https://cran.r-project.org/bin/macosx/)
+* [Download RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+
+## Installation of toxEval
+
+This section should also only have to be done once. It assumes the USGS R repository (GRAN) was added to your R profile as described above.
+
+```{r, eval=FALSE}
+install.packages("toxEval")
+```
+
+## Update toxEval
+
+Regularly, it is a good idea to update *ALL* your packages in R. If using RStudio, this is quite easy, there's an Update button in the "Packages" tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.
+
+![update](update.png)
+
+Within the R-console, packages can be update with the command:
+```{r eval=FALSE}
+update.packages()
+```
+
+## Reporting bugs
+
+Please consider reporting bugs and asking questions on the Issues page:
+[https://github.com/USGS-R/toxEval/issues](https://github.com/USGS-R/toxEval/issues)
+
+## Citing toxEval
+
+This package has not been reviewed and approved as a USGS-product. The implication is that `toxEval` cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:
+
+```{r, eval=FALSE}
+citation(package = "toxEval")
+```
+
+
+# Disclaimer
+
+This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [https://www.usgs.gov/visual-id/credit_usgs.html#copyright](https://www.usgs.gov/visual-id/credit_usgs.html#copyright)
+
+Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
+
+This software is provided "AS IS."
+
+Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
+
+ [
+   ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
+ ](http://creativecommons.org/publicdomain/zero/1.0/)
+
+
