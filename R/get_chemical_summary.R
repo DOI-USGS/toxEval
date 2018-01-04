@@ -76,17 +76,19 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
     rename(site = SiteID,
-           date = `Sample Date`) %>%
-    select(CAS, chnm, endPoint, site, date, EAR) 
+           date = `Sample Date`) 
   
   if(all(filtered_ep != "All")){
     chemicalSummary <- chemicalSummary %>%
+      select(CAS, chnm, endPoint, site, date, EAR) %>%
       filter(endPoint %in% filtered_ep$endPoint) %>%
       left_join(select(filtered_ep, endPoint, groupCol), by="endPoint")
     
   } else {
+    
     chemicalSummary <- chemicalSummary %>%
-      mutate(groupCol = "")
+      select(CAS, chnm, endPoint, site, date, EAR, groupCol)       
+  
   }
   
   chemicalSummary <- chemicalSummary  %>%

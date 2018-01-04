@@ -72,7 +72,7 @@ create_toxEval <- function(excel_file_path){
     names(benchmarks)[names(benchmarks) %in% c("chemical", "chnm","Chemical","Compound")] <- "chnm"
     
     benchmarks <- check_cols(req_cols, benchmarks)
-    if(!("groupCol" %in% benchmarks)){
+    if(!("groupCol" %in% names(benchmarks))){
       benchmarks$groupCol <- "Benchmarks"
     }
   }
