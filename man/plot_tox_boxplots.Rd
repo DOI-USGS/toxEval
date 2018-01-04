@@ -22,20 +22,26 @@ plot_tox_boxplots(chemicalSummary, category = "Biological",
 Plot boxplot of groups
 }
 \examples{
+# This is the example workflow:
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
+
 full_path <- file.path(path_to_tox, file_name)
 
+\dontrun{
 tox_list <- create_toxEval(full_path)
-
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
-
 chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
                                         tox_list)
+}
+# The example workflow takes a bit of time to load and compute, 
+# so an example chemicalSummary is included pre-calculated in the package. 
+
+chemicalSummary <- ex_chemSum #loading example data
 plot_tox_boxplots(chemicalSummary, "Biological")   
 plot_tox_boxplots(chemicalSummary, "Chemical Class")
 plot_tox_boxplots(chemicalSummary, "Chemical") 
