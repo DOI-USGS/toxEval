@@ -53,7 +53,7 @@ shortFlags <- c("Borderline",
                 "GainAC50",
                 "Biochemical")
 names(shortFlags) <- flagsALL
-header <- dashboardHeader(title = "toxEval")
+header <- dashboardHeader(title = "BETA: toxEval")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
