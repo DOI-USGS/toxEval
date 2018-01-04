@@ -162,7 +162,7 @@ test_that("Internal chem plotting functions", {
   
   graphData <- graph_chem_data(chemicalSummary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
-  expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
+  expect_equal(levels(graphData$Class)[1], "Plasticizers")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
 })
 
@@ -189,14 +189,14 @@ test_that("Table endpoint hits", {
   ct <- table_endpoint_hits(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
-  expect_true(all(names(ct$x$data) %in% c("endPoint","Antioxidants",
+  expect_true(all(names(ct$x$data) %in% c("endPoint","Antioxidants","PAHs",
                                           "Detergent Metabolites","Herbicides",
                                           "Plasticizers")))
   
   cht <- table_endpoint_hits(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
-  expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A",
+  expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A","Fluoranthene","Tris(2-chloroethyl) phosphate",
                                            "4-Nonylphenol, branched","Triphenyl phosphate",
                                            "Metolachlor","Atrazine")))
 })

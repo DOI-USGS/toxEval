@@ -183,7 +183,7 @@ textData <- select(graphData, guide_up, guide_side) %>%
 toxPlot_All <- ggplot(data=graphData) +
   scale_y_log10(labels=fancyNumbers)  +
   geom_boxplot(aes(x=`Chemical Name`, y=maxEAR, fill=Class),
-               lwd=0.1,outlier.size=1, position = position_dodge2(preserve = "total")) +
+               lwd=0.1,outlier.size=1) +
   facet_grid(guide_up ~ guide_side, scales = "free", space = "free") +
   theme_bw() +
   scale_x_discrete(drop=TRUE) +

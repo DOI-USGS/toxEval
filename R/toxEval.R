@@ -97,3 +97,17 @@ NULL
 #'@examples
 #'head(tox_chemicals)
 NULL
+
+
+#' Example chemicalSummary
+#'
+#' Example data representing data from the sample Excel file found in
+#' \code{system.file("extdata", package="toxEval")}, OWC_data_fromSup.xlsx
+#'
+#' @name ex_chemSum
+#' @rdname ex_chemSum
+#' @docType data
+#' @keywords water quality data
+#' @examples 
+#' head(ex_chemSum)
+NULL
