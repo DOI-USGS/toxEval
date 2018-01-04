@@ -21,8 +21,7 @@
 #' 
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-#'                                         tox_list)
+#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #' }
 #' # The example workflow takes a bit of time to load and compute, 
 #' # so an example chemicalSummary is included pre-calculated in the package. 
@@ -125,8 +124,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
-#' chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-#'                                         tox_list)
+#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'                                         
 #' #Order the site_groupings:
 #' tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,

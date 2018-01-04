@@ -24,17 +24,19 @@ path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
+\dontrun{
 tox_list <- create_toxEval(full_path)
-
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
-
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-                                        tox_list)
-                                        
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+}
+# The example workflow takes a bit of time to load and compute, 
+# so an example chemicalSummary is included pre-calculated in the package. 
+chemicalSummary <- ex_chemSum #loading example data
+                                          
 bio_table <- endpoint_table(chemicalSummary, category = "Biological")
 class_table <- endpoint_table(chemicalSummary, category = "Chemical Class")
 chem_table <- endpoint_table(chemicalSummary, category = "Chemical")

@@ -4,17 +4,17 @@
 \alias{get_chemical_summary}
 \title{get_chemical_summary}
 \usage{
-get_chemical_summary(ACClong, filtered_ep, tox_list = NULL,
+get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
   chem.data = NULL, chem.site = NULL, chem.info = NULL,
   exclusion = NULL)
 }
 \arguments{
+\item{tox_list}{list with data frames for chem_data, chem_info, chem_site, 
+and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
+
 \item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value}
 
 \item{filtered_ep}{data frame with colums: endPoints, groupCol}
-
-\item{tox_list}{list with data frames for chem_data, chem_info, chem_site, 
-and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
 
 \item{chem.data}{data frame with (at least) columns: CAS, SiteID, Value}
 
@@ -40,15 +40,14 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-                                        tox_list)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
                                         
 library(readxl)
 chem_data <- read_excel(full_path, sheet = "Data")
 chem_info <- read_excel(full_path, sheet = "Chemicals") 
 chem_site <- read_excel(full_path, sheet = "Sites")
                                          
-chemicalSummary1 <- get_chemical_summary(ACClong, filtered_ep,
+chemicalSummary1 <- get_chemical_summary(tox_list = NULL, ACClong, filtered_ep,
                                          chem.data = chem_data, 
                                          chem.site = chem_site, 
                                         chem.info = chem_info)

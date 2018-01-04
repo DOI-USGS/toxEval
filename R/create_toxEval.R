@@ -2,7 +2,7 @@
 #' 
 #' 
 #' @param excel_file_path Path to Excel file that contains at least 3 tabs: Data, Chemicals, and Sites, 
-#' and could optionally contain Exclude and Benchmark
+#' and could optionally contain Exclude and Benchmarks
 #'
 #' @export
 #' @examples 
@@ -49,6 +49,10 @@ create_toxEval <- function(excel_file_path){
   app_cols <- c("dec_lat","dec_lon")
   chem_site <- check_cols(app_cols, chem_site, mandatory = FALSE)
   
+  if(!("site_grouping" %in% names(chem_site))){
+    chem_site$site_grouping <- ""
+  }
+  
   exclusions <- NULL
   benchmarks <- NULL
   
@@ -60,10 +64,17 @@ create_toxEval <- function(excel_file_path){
   }
   
   if("Benchmarks" %in% readxl::excel_sheets(excel_file_path)){
-    req_cols <- c("CAS", "endPoint")
+    req_cols <- c("CAS", "endPoint","ACC_value","chnm")
     benchmarks <- readxl::read_excel(excel_file_path, sheet = "Benchmarks")
+    
     names(benchmarks)[names(benchmarks) %in% c("casrn", "casn","CASRN","CASN")] <- "CAS"
+    names(benchmarks)[names(benchmarks) %in% c("Value", "value","ACC","ACC_value")] <- "ACC_value"
+    names(benchmarks)[names(benchmarks) %in% c("chemical", "chnm","Chemical","Compound")] <- "chnm"
+    
     benchmarks <- check_cols(req_cols, benchmarks)
+    if(!("groupCol" %in% benchmarks)){
+      benchmarks$groupCol <- "Benchmarks"
+    }
   }
   
   #Check that all CAS in Data in Chemical
@@ -138,10 +149,16 @@ summary.toxEval <- function(object, ...){
   
   casn <- endPoint <- chnm <- flags <- ".dplyr"
   
-  ACClong <- ACC %>%
-    dplyr::filter(casn %in% unique(object$chem_info$CAS)) %>%
-    tidyr::gather(endPoint, ACC, -casn, -chnm, -flags) 
-  
+  if(is.null(object[["benchmarks"]])){
+    ACClong <- ACC %>%
+      dplyr::filter(casn %in% unique(object$chem_info$CAS)) %>%
+      tidyr::gather(endPoint, ACC, -casn, -chnm, -flags) 
+    bench_word <- "ToxCast"
+  } else {
+    ACClong <- object[["benchmarks"]] 
+    bench_word <- "benchmark"
+  }
+ 
   CAS_tots <- dplyr::select(ACClong, casn) %>% dplyr::distinct() %>% dplyr::pull(casn)
   
   CAS_w_data <- ACClong %>% dplyr::select(ACC, casn) %>%
@@ -149,8 +166,7 @@ summary.toxEval <- function(object, ...){
     dplyr::select(casn) %>%
     dplyr::distinct() %>% dplyr::pull(casn)
   
-  message(length(CAS_tots)," chemicals have ToxCast information")
-  message(length(CAS_w_data), " chemicals have reported ACC values")
-  message("Chemicals returned from this function are NOT in ToxCast")
+  message(length(CAS_tots)," chemicals have ", bench_word, " information")
+  message("Chemicals returned from this function do NOT have ", bench_word, " information:")
   return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_tots)])
 }

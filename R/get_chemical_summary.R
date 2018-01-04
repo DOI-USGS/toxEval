@@ -25,20 +25,20 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
-#' chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-#'                                         tox_list)
+#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'                                         
 #' library(readxl)
 #' chem_data <- read_excel(full_path, sheet = "Data")
 #' chem_info <- read_excel(full_path, sheet = "Chemicals") 
 #' chem_site <- read_excel(full_path, sheet = "Sites")
 #'                                          
-#' chemicalSummary1 <- get_chemical_summary(ACClong, filtered_ep,
+#' chemicalSummary1 <- get_chemical_summary(tox_list = NULL, ACClong, filtered_ep,
 #'                                          chem.data = chem_data, 
 #'                                          chem.site = chem_site, 
 #'                                         chem.info = chem_info)
-get_chemical_summary <- function(ACClong, filtered_ep, tox_list=NULL, 
-                                 chem.data=NULL, chem.site=NULL, chem.info=NULL,exclusion=NULL){
+get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All", 
+                                 chem.data=NULL, chem.site=NULL, 
+                                 chem.info=NULL, exclusion=NULL){
 
   # Getting rid of NSE warnings:
   chnm <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
@@ -60,24 +60,39 @@ get_chemical_summary <- function(ACClong, filtered_ep, tox_list=NULL,
     exclusion <- tox_list[["exclusions"]]
   }
   
+  if(is.null(ACClong)){
+    ACClong <- tox_list[["benchmarks"]]
+  } else {
+    ACClong <- select(ACClong, CAS, chnm, endPoint, ACC_value)
+  }
+  
   if(class(chem.data$Value) == "character"){
     chem.data$Value <- as.numeric(chem.data$Value)
   }
   
-  chemicalSummary <- full_join(select(ACClong, 
-                                      CAS, chnm, endPoint, ACC_value), 
+  chemicalSummary <- full_join(ACClong, 
                                select(chem.data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
     rename(site = SiteID,
            date = `Sample Date`) %>%
-    select(CAS, chnm, endPoint, site, date, EAR) %>%
-    filter(endPoint %in% filtered_ep$endPoint) %>%
+    select(CAS, chnm, endPoint, site, date, EAR) 
+  
+  if(all(filtered_ep != "All")){
+    chemicalSummary <- chemicalSummary %>%
+      filter(endPoint %in% filtered_ep$endPoint) %>%
+      left_join(select(filtered_ep, endPoint, groupCol), by="endPoint")
+    
+  } else {
+    chemicalSummary <- chemicalSummary %>%
+      mutate(groupCol = "")
+  }
+  
+  chemicalSummary <- chemicalSummary  %>%
     left_join(select(chem.site, site=SiteID, `Short Name`),
               by="site") %>%
     left_join(select(chem.info, CAS, Class), by="CAS") %>%
-    left_join(select(filtered_ep, endPoint, groupCol), by="endPoint") %>%
     rename(Bio_category = groupCol,
            shortName = `Short Name`)
   
@@ -205,26 +220,24 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
 #' @importFrom dplyr filter
 #' @importFrom dplyr anti_join
 #' @examples 
-#' library(readxl)
+#' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
+#'
 #' full_path <- file.path(path_to_tox, file_name)
 #' 
-#' chem_data <- read_excel(full_path, sheet = "Data")
-#' chem_info <- read_excel(full_path, sheet = "Chemicals") 
-#' chem_site <- read_excel(full_path, sheet = "Sites")
-#' exclusion <- read_excel(full_path, sheet = "Exclude")
-#' ACClong <- get_ACC(chem_info$CAS)
+#' tox_list <- create_toxEval(full_path)
+#' \dontrun{
+#' ACClong <- get_ACC(tox_list$chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
 #' 
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' 
-#' chemicalSummary <- get_chemical_summary(ACClong,
-#'                                         filtered_ep,
-#'                                         chem.data = chem_data, 
-#'                                         chem.site = chem_site, 
-#'                                         chem.info = chem_info)
+#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+#' }
+#' # The example workflow takes a bit of time to load and compute, 
+#' # so an example chemicalSummary is included pre-calculated in the package. 
+#' chemicalSummary <- ex_chemSum #loading example data
 #' chemicalSummary <- exclude_points(chemicalSummary, exclusion)
 exclude_points <- function(chemicalSummary, exclusion){
   

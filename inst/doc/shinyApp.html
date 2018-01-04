@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">toxEval Shiny Application</h1>
-<h4 class="date"><em>03 January, 2018</em></h4>
+<h4 class="date"><em>04 January, 2018</em></h4>
 
 
 <div id="TOC">
@@ -148,14 +148,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The “Exclude” tab is an optional tab. If used, the “Exclude” tab needs to have at a minimum 2 columns: “CAS” and “endPoint”. They can be in any order, but the first row of sheet should be the header (column names).</p>
 <ul>
 <li><p>endPoint: A character column define a specific ToxCast endpoint to ignore. IF the “CAS” in the corresponding row is empty, the endPoint will be completely excluded from the <code>toxEval</code> analysis. For example, maybe it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider in the analysis. We can exclude all TOX21_p53_BLA_p3_ratio endPoints by adding it to the Exclude tab. IF the “CAS” in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.</p></li>
-<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. IF the “endPoint” in the corresponding row is empty, the chemical will be completely excluded from the <code>toxEval</code> analysis. For example, maybe it was discovered that DEET was contaminated in the sampling method. We can exclude all DEET measurments by adding 134-62-3 to the Exclude tab. IF the “endPoint” in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.</p></li>
+<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. IF the “endPoint” in the corresponding row is empty, the chemical will be completely excluded from the <code>toxEval</code> analysis. For example, maybe it was discovered that DEET was contaminated in the sampling method. We can exclude all DEET measurements by adding 134-62-3 to the Exclude tab. IF the “endPoint” in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.</p></li>
 </ul>
 <p>There could be a variety of reasons to exclude chemical/endpoint combinations. This will be discussed further in section TODO: XXXXXXXXX.</p>
 <p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
 </div>
 <div id="benchmarks" class="section level2">
 <h2><span class="header-section-number">1.5</span> Benchmarks</h2>
-<p>The “Benchmarks” tab is an optional tab. If used, the “Benchmarks” tab needs to have at a minimum 2 columns: “CAS” and “endPoint”. They can be in any order, but the first row of sheet should be the header (column names).</p>
+<p>The “Benchmarks” tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar <code>ToxEval</code> analysis using EPA benchmarks instead of ToxCast endpoints.</p>
+<p>For the functions to work seamlessly with all <code>toxEval</code> functions, the “Benchmarks” tab needs to have at a minimum 5 columns: “CAS”, “Chemical”, “endPoint”, “Value”, and “groupCol”. They can be in any order, but the first row of sheet should be the header (column names).</p>
+<ul>
+<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry.</p></li>
+<li><p>Chemical: A character column defining the name of the chemicals.</p></li>
+<li><p>endPoint: A character column naming the benchmark</p></li>
+<li><p>Value: The concentration (in identical units as what is reported in the “Data” tab) of the benchmark.</p></li>
+<li><p>groupCol: A character column that groups endpoints. This is analogous to the Biological groupings from the ToxCast analysis.</p></li>
+</ul>
 <p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
 </div>
 </div>

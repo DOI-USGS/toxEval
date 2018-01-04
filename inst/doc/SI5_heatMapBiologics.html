@@ -67,13 +67,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 5: Biological Heat Map</h1>
-<h4 class="date"><em>03 January, 2018</em></h4>
+<h4 class="date"><em>04 January, 2018</em></h4>
 
 
 
 <p>Using the detection levels as concentrations:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readxl)
-<span class="kw">library</span>(toxEval)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
 <span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(tidyr)
 <span class="kw">library</span>(ggplot2)
@@ -90,8 +89,7 @@ ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClo
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
 filtered_ep &lt;-<span class="st"> </span><span class="kw">filter_groups</span>(cleaned_ep)
 
-chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong, filtered_ep,
-                                        tox_list)
+chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(tox_list, ACClong, filtered_ep)
 
 <span class="co"># Order the Great Lakes:</span>
 tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping &lt;-<span class="st"> </span><span class="kw">factor</span>(tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping,
