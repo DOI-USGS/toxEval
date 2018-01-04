@@ -32,7 +32,6 @@
 #' # The example workflow takes a bit of time to load and compute, 
 #' # so an example chemicalSummary is included pre-calculated in the package. 
 #' chemicalSummary <- ex_chemSum #loading example data
-#'                                         tox_list)
 #'  plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
 #'  plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
 #'  plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
