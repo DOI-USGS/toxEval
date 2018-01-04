@@ -21,12 +21,12 @@ rawData <- reactive({
       if(exists("chem_data") & exists("chem_info") & 
          exists("chem_site")) {
         if(exists("exlusions")){
-                  rawData <- list(chem_data=chem_data,
+                  rawData <- create_toxEval(chem_data=chem_data,
                         chem_info=chem_info,
                         chem_site=chem_site,
                         exclusions=exclusions)
         } else {
-          rawData <- list(chem_data=chem_data,
+          rawData <- create_toxEval(chem_data=chem_data,
                           chem_info=chem_info,
                           chem_site=chem_site,
                           exclusions=NULL)

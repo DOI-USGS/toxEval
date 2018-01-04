@@ -85,35 +85,33 @@ shinyServer(function(input, output,session) {
     rawData <- rawData()
 
     if(!is.null(rawData)){
-      chem_data <- rawData$chem_data
-      chem_info <- rawData$chem_info
-      chem_site <- rawData$chem_site
-      exclusions <- rawData$exclusions
-      
+
       if(sites != "All"){
-        chem_site <- chem_site[chem_site$`Short Name` == sites,]
-        siteID <- chem_site$SiteID
-        chem_data <- chem_data[chem_data$SiteID == siteID,]
+        rawData$chem_site <- rawData$chem_site[rawData$chem_site$`Short Name` == sites,]
+        siteID <- rawData$chem_site$SiteID
+        rawData$chem_data <- rawData$chem_data[rawData$chem_data$SiteID == siteID,]
         
       }
       
-      ACClong <- get_ACC(chem_info$CAS)
-      ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
+      if(all(is.null(rawData$benchmarks))){
+
+        ACClong <- get_ACC(rawData$chem_info$CAS)
+        ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
+        
+        remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
+        remove_groups <- remove_groups[!is.na(remove_groups)]
+        
+        filtered_ep <- filter_groups(cleaned_ep, 
+                                     groupCol = groupCol, assays = assays,
+                                     remove_groups = remove_groups)
+        chemicalSummary <- get_chemical_summary(rawData,
+                                                ACClong,
+                                                filtered_ep) 
+      } else {
+        chemicalSummary <- get_chemical_summary(rawData) 
+        #Could disable sidebar dropdowns?
+      }
       
-      remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
-      remove_groups <- remove_groups[!is.na(remove_groups)]
-
-      filtered_ep <- filter_groups(cleaned_ep, 
-                                    groupCol = groupCol, assays = assays,
-                                    remove_groups = remove_groups)
-
-      chemicalSummary <- get_chemical_summary(ACClong,
-                                              filtered_ep,
-                                              tox_list = NULL,
-                                              chem.data = chem_data, 
-                                              chem.site = chem_site, 
-                                              chem.info = chem_info,
-                                              exclusions)  
     } else {
       chemicalSummary <- data.frame(casrn = character(),
                        chnm = character(),
