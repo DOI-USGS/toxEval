@@ -14,15 +14,20 @@ and optionally exclusions and benchmarks. Created with \code{\link{create_toxEva
 
 \item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value}
 
-\item{filtered_ep}{data frame with colums: endPoints, groupCol}
+\item{filtered_ep}{data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
+filtering occurs.}
 
-\item{chem.data}{data frame with (at least) columns: CAS, SiteID, Value}
+\item{chem.data}{OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 
+Will over-ride what is in tox_list.}
 
-\item{chem.site}{data frame with (at least) columns: SiteID, Short Name}
+\item{chem.site}{OPTIONAL data frame with (at least) columns: SiteID, Short Name. Default is \code{NULL}. 
+Will over-ride what is in tox_list.}
 
-\item{chem.info}{data frame with (at least) columns: CAS, class}
+\item{chem.info}{OPTIONAL data frame with (at least) columns: CAS, class. Default is \code{NULL}. 
+Will over-ride what is in tox_list.}
 
-\item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint}
+\item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
+Will over-ride what is in tox_list.}
 }
 \description{
 Get ACC values for vector of CAS's
@@ -42,13 +47,4 @@ filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
                                         
-library(readxl)
-chem_data <- read_excel(full_path, sheet = "Data")
-chem_info <- read_excel(full_path, sheet = "Chemicals") 
-chem_site <- read_excel(full_path, sheet = "Sites")
-                                         
-chemicalSummary1 <- get_chemical_summary(tox_list = NULL, ACClong, filtered_ep,
-                                         chem.data = chem_data, 
-                                         chem.site = chem_site, 
-                                        chem.info = chem_info)
 }

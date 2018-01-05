@@ -1,14 +1,19 @@
 #' get_chemical_summary
 #' 
 #' Get ACC values for vector of CAS's
-#' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value
-#' @param filtered_ep data frame with colums: endPoints, groupCol
 #' @param tox_list list with data frames for chem_data, chem_info, chem_site, 
 #' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}
-#' @param chem.data data frame with (at least) columns: CAS, SiteID, Value
-#' @param chem.site data frame with (at least) columns: SiteID, Short Name
-#' @param chem.info data frame with (at least) columns: CAS, class
-#' @param exclusion OPTIONAL data frame with (at least) columns: CAS and endPoint
+#' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value
+#' @param filtered_ep data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
+#' filtering occurs.
+#' @param chem.data OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 
+#' Will over-ride what is in tox_list.
+#' @param chem.site OPTIONAL data frame with (at least) columns: SiteID, Short Name. Default is \code{NULL}. 
+#' Will over-ride what is in tox_list.
+#' @param chem.info OPTIONAL data frame with (at least) columns: CAS, class. Default is \code{NULL}. 
+#' Will over-ride what is in tox_list.
+#' @param exclusion OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
+#' Will over-ride what is in tox_list.
 #' @export
 #' @importFrom tidyr gather
 #' @importFrom dplyr full_join filter mutate select left_join right_join anti_join
@@ -27,15 +32,6 @@
 #' 
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'                                         
-#' library(readxl)
-#' chem_data <- read_excel(full_path, sheet = "Data")
-#' chem_info <- read_excel(full_path, sheet = "Chemicals") 
-#' chem_site <- read_excel(full_path, sheet = "Sites")
-#'                                          
-#' chemicalSummary1 <- get_chemical_summary(tox_list = NULL, ACClong, filtered_ep,
-#'                                          chem.data = chem_data, 
-#'                                          chem.site = chem_site, 
-#'                                         chem.info = chem_info)
 get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All", 
                                  chem.data=NULL, chem.site=NULL, 
                                  chem.info=NULL, exclusion=NULL){
@@ -240,6 +236,9 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
 #' # The example workflow takes a bit of time to load and compute, 
 #' # so an example chemicalSummary is included pre-calculated in the package. 
 #' chemicalSummary <- ex_chemSum #loading example data
+#' exclusion <- data.frame(CAS = c("134-62-3","486-56-6"),
+#'                         endPoint = c("", "TOX21_p53_BLA_p3_viability"),
+#'                         stringsAsFactors = FALSE)
 #' chemicalSummary <- exclude_points(chemicalSummary, exclusion)
 exclude_points <- function(chemicalSummary, exclusion){
   
