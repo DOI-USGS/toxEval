@@ -52,6 +52,20 @@ shortFlags <- c("Borderline",
                 "HitCall",
                 "GainAC50",
                 "Biochemical")
+
+assay_names <- c("Apredica" = "APR",
+                 "Attagene" = "ATG",
+                 "BioSeek" = "BSK",
+                 "NovaScreen" = "NVS",
+                 "Odyssey Thera" = "OT",
+                 "Toxicity Testing" = "TOX21",
+                 "CEETOX" = "CEETOX",
+                 "CLD" = "CLD",
+                 "TANGUAY" = "TANGUAY",
+                 "NHEERL_PADILLA"="NHEERL_PADILLA",
+                 "NCCT_SIMMONS"="NCCT_SIMMONS",
+                 "ACEA Biosciences" = "ACEA")
+
 names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "BETA: toxEval")
 
@@ -79,23 +93,12 @@ sidebar <- dashboardSidebar(
                 inline = TRUE, label = "", selected = FALSE),
    downloadButton('downloadBenchmarks', 'Download Benchmarks'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
-            checkboxGroupInput("assay", "Assays:",
-                               c("Apredica" = "APR",
-                                 "Attagene" = "ATG",
-                                 "BioSeek" = "BSK",
-                                 "NovaScreen" = "NVS",
-                                 "Odyssey Thera" = "OT",
-                                 "Toxicity Testing" = "TOX21",
-                                 "CEETOX" = "CEETOX",
-                                 "CLD" = "CLD",
-                                 "TANGUAY" = "TANGUAY",
-                                 "NHEERL_PADILLA"="NHEERL_PADILLA",
-                                 "NCCT_SIMMONS"="NCCT_SIMMONS",
-                                 "ACEA Biosciences" = "ACEA"),
-              selected= c("ATG","NVS","OT","TOX21","CEETOX", "APR", 
-                            "CLD","TANGUAY","NHEERL_PADILLA",
-                            "NCCT_SIMMONS","ACEA")),
-              actionButton("pickAssay", label="Switch Assays")),
+        checkboxGroupInput("assay", "Assays:",
+                           assay_names,
+          selected= c("ATG","NVS","OT","TOX21","CEETOX", "APR", 
+                        "CLD","TANGUAY","NHEERL_PADILLA",
+                        "NCCT_SIMMONS","ACEA")),
+          actionButton("pickAssay", label="Switch Assays")),
    menuItem("Annotation", icon = icon("th"), tabName = "annotation",
             selectInput("groupCol", label = "Annotation (# Groups)", 
                         choices = named_choices,
@@ -119,12 +122,6 @@ sidebar <- dashboardSidebar(
    menuItem("Hit Threshold",icon = icon("th"), tabName = "hitThresTab",
             numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),
             actionButton("changeHit", label="Change Hit Threshold")
-   ),
-   conditionalPanel(
-     condition = "input.data == 'Passive Samples'",
-     radioButtons("year", label = "",inline = TRUE,
-                  choices = c("2010", "2014", "Combo"), 
-                  selected = "Combo")   
    ),
    menuItem("Source code", icon = icon("file-code-o"), 
             href = "https://github.com/USGS-R/toxEval/tree/master/inst/shiny")
