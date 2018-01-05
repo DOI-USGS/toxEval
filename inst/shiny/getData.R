@@ -15,13 +15,30 @@ rawData <- reactive({
        
       
     } else if(tools::file_ext(input$data$name) == "RData" | 
-              tools::file_ext(input$data$name) == "rds"){
+              tools::file_ext(input$data$name) == "rda"){
       load(newPath)
       
-      rawData <- list(chem_data=chem_data,
-                      chem_info=chem_info,
-                      chem_site=chem_site,
-                      exclusions=exclusions)
+      if(exists("chem_data") & exists("chem_info") & 
+         exists("chem_site")) {
+        if(exists("exlusions")){
+                  rawData <- create_toxEval(chem_data=chem_data,
+                        chem_info=chem_info,
+                        chem_site=chem_site,
+                        exclusions=exclusions)
+        } else {
+          rawData <- create_toxEval(chem_data=chem_data,
+                          chem_info=chem_info,
+                          chem_site=chem_site,
+                          exclusions=NULL)
+        }
+      } 
+
+      if(any(sapply(ls(), function(x) class(get(x))) == "toxEval")){
+        rawData <- get(ls()[which(sapply(ls(), function(x) class(get(x))) == "toxEval")])
+      }
+      
+    } else if(tools::file_ext(input$data$name) == "rds"){
+      rawData <- readRDS(newPath)
     }
 
 

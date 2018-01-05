@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width = 7)
 
 ## ---------------------------------------------------------
-library(readxl)
 library(toxEval)
 library(dplyr)
 library(tidyr)
@@ -28,8 +27,7 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-                                        tox_list)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 
 # Order the Great Lakes:
 tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,

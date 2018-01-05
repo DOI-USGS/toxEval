@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">SI 6: Sub-families</h1>
-<h4 class="date"><em>03 January, 2018</em></h4>
+<h4 class="date"><em>04 January, 2018</em></h4>
 
 
 
@@ -90,8 +90,7 @@ ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClo
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
 filtered_ep &lt;-<span class="st"> </span><span class="kw">filter_groups</span>(cleaned_ep)
 
-chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong, filtered_ep,
-                                        tox_list)
+chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(tox_list, ACClong, filtered_ep)
 
 chemicalSummary &lt;-<span class="st"> </span>chemicalSummary <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(endPointInfo, 

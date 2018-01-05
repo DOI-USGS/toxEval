@@ -8,7 +8,7 @@ create_toxEval(excel_file_path)
 }
 \arguments{
 \item{excel_file_path}{Path to Excel file that contains at least 3 tabs: Data, Chemicals, and Sites, 
-and could optionally contain Exclude and Benchmark}
+and could optionally contain Exclude and Benchmarks}
 }
 \description{
 create_toxEval

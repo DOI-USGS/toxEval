@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Figure 1. Exposure activity ratios (EARs)</h1>
-<h4 class="date"><em>03 January, 2018</em></h4>
+<h4 class="date"><em>04 January, 2018</em></h4>
 
 
 
@@ -100,7 +100,8 @@ ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClo
 cleaned_ep &lt;-<span class="st"> </span><span class="kw">clean_endPoint_info</span>(endPointInfo)
 filtered_ep &lt;-<span class="st"> </span><span class="kw">filter_groups</span>(cleaned_ep)
 
-chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(ACClong,
+chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summary</span>(<span class="dt">tox_list =</span> <span class="ot">NULL</span>,
+                                        ACClong,
                                         filtered_ep, 
                                         <span class="dt">chem.data =</span> chem_data, 
                                         <span class="dt">chem.site =</span> chem_site, 

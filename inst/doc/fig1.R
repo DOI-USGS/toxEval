@@ -38,7 +38,8 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong,
+chemicalSummary <- get_chemical_summary(tox_list = NULL,
+                                        ACClong,
                                         filtered_ep, 
                                         chem.data = chem_data, 
                                         chem.site = chem_site, 

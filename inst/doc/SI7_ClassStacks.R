@@ -27,8 +27,7 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-                                        tox_list)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
                   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",

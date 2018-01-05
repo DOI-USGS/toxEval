@@ -44,8 +44,7 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep,
-                                        tox_list)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 
 plot_tox_boxplots(chemicalSummary, category = "Biological")
 
@@ -61,7 +60,7 @@ chem_info_NR <- filter(tox_list$chem_info, CAS %in% CAS_NR)
 
 filtered_ep <- filter_groups(cleaned_ep, groupCol = "intended_target_gene_symbol")
 
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep, tox_list,
+chemicalSummary <- get_chemical_summary(tox_list,ACClong, filtered_ep,
                                         chem.data = chem_data_NR,
                                         chem.info = chem_info_NR)
 
@@ -78,7 +77,7 @@ CAS_PTEN <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "PTEN"])
 chem_data_PTEN <- filter(chem_data_NR, CAS %in% CAS_PTEN)
 chem_info_PTEN <- filter(chem_info_NR, CAS %in% CAS_PTEN)
 
-chemicalSummary <- get_chemical_summary(ACClong, filtered_ep, tox_list,
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep, 
                                         chem.data = chem_data_PTEN, 
                                         chem.info = chem_info_PTEN)
 plot_tox_endpoints(chemicalSummary)

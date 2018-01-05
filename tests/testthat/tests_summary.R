@@ -18,17 +18,15 @@ filtered_ep <- filter_groups(cleaned_ep)
 
 tox_list <- create_toxEval(full_path)
 
-chemicalSummary <- get_chemical_summary(ACClong,
+chemicalSummary <- get_chemical_summary(tox_list = NULL,
+                                        ACClong,
                                         filtered_ep,
-                                        tox_list = NULL,
                                         chem_data,
                                         chem_site,
                                         chem_info,
                                         exclusion)
 
-chemicalSummary1 <- get_chemical_summary(ACClong,
-                                        filtered_ep,
-                                        tox_list = tox_list)
+chemicalSummary1 <- get_chemical_summary(tox_list,ACClong,filtered_ep)
 
 test_that("Calculating tox_list", {
   

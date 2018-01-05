@@ -64,6 +64,8 @@ great_lakes <- c("Lake Superior",
                  "Lake Erie",
                  "Lake Ontario")
 
+toxCast_val <<- TRUE
+
 shinyServer(function(input, output,session) {
   
   observe({
@@ -83,37 +85,38 @@ shinyServer(function(input, output,session) {
     removeFlags <- all_flags[!(all_flags %in% flags)]
 
     rawData <- rawData()
-
+    
     if(!is.null(rawData)){
-      chem_data <- rawData$chem_data
-      chem_info <- rawData$chem_info
-      chem_site <- rawData$chem_site
-      exclusions <- rawData$exclusions
-      
+
       if(sites != "All"){
-        chem_site <- chem_site[chem_site$`Short Name` == sites,]
-        siteID <- chem_site$SiteID
-        chem_data <- chem_data[chem_data$SiteID == siteID,]
+        rawData$chem_site <- rawData$chem_site[rawData$chem_site$`Short Name` == sites,]
+        siteID <- rawData$chem_site$SiteID
+        rawData$chem_data <- rawData$chem_data[rawData$chem_data$SiteID == siteID,]
         
       }
       
-      ACClong <- get_ACC(chem_info$CAS)
-      ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
+      if(all(is.null(rawData$benchmarks))){
+
+        ACClong <- get_ACC(rawData$chem_info$CAS)
+        ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
+        
+        remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
+        remove_groups <- remove_groups[!is.na(remove_groups)]
+        
+        filtered_ep <- filter_groups(cleaned_ep, 
+                                     groupCol = groupCol, assays = assays,
+                                     remove_groups = remove_groups)
+        chemicalSummary <- get_chemical_summary(rawData,
+                                                ACClong,
+                                                filtered_ep) 
+        toxCast_val <<- TRUE
+        
+      } else {
+        chemicalSummary <- get_chemical_summary(rawData) 
+
+        toxCast_val <<- FALSE
+      }
       
-      remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
-      remove_groups <- remove_groups[!is.na(remove_groups)]
-
-      filtered_ep <- filter_groups(cleaned_ep, 
-                                    groupCol = groupCol, assays = assays,
-                                    remove_groups = remove_groups)
-
-      chemicalSummary <- get_chemical_summary(ACClong,
-                                              filtered_ep,
-                                              tox_list = NULL,
-                                              chem.data = chem_data, 
-                                              chem.site = chem_site, 
-                                              chem.info = chem_info,
-                                              exclusions)  
     } else {
       chemicalSummary <- data.frame(casrn = character(),
                        chnm = character(),
@@ -127,6 +130,29 @@ shinyServer(function(input, output,session) {
                        stringsAsFactors = FALSE)
     }
     
+    return(chemicalSummary)
+    
+  })
+  
+  toxCast <- reactive({
+    
+    rawData <- rawData()
+    
+    toxCast_val <- all(is.null(rawData$benchmarks))
+    
+    return(toxCast_val)
+  })
+
+  output$title_text <- renderUI({
+
+    if(toxCast()){
+      textUI <- "<h3>Analysis using ToxCast endPoints</h3>"
+    } else {
+      textUI <- "<h3>Analysis using CUSTOM endPoints</h3>
+      <h4>Many dropdowns on sidebar will have no effect</h4>"
+    }
+    
+    HTML(textUI)
   })
   
   hitThresValue <- eventReactive(input$changeHit, ignoreNULL = FALSE, {
@@ -155,6 +181,11 @@ shinyServer(function(input, output,session) {
 ###############################################################    
 # Map Stuff:
   source("mapStuff.R",local=TRUE)$value
+############################################################## 
+
+###############################################################    
+# Benchmark Stuff:
+  source("benchmarks.R",local=TRUE)$value
 ############################################################## 
 
 
