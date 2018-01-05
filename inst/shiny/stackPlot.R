@@ -49,3 +49,12 @@ output$downloadStackPlot <- downloadHandler(
     ggsave(file, plot = stackBarGroup_create(), device = device)
   }
 )
+
+output$downloadStackPlot_csv <- downloadHandler(
+  
+  filename = "stackPlot.csv",
+  
+  content = function(file) {
+    write.csv(stackBarGroup_create()[['data']], file, row.names = FALSE)
+  }
+)

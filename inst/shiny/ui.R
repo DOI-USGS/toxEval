@@ -77,6 +77,7 @@ sidebar <- dashboardSidebar(
    ),
    radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
                 inline = TRUE, label = "", selected = FALSE),
+   downloadButton('downloadBenchmarks', 'Download Benchmarks'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
             checkboxGroupInput("assay", "Assays:",
                                c("Apredica" = "APR",
@@ -131,6 +132,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+
   tags$head(tags$link(rel="shortcut icon", href="favicon.ico")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
@@ -150,7 +152,10 @@ body <- dashboardBody(
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
              plotOutput("stackBarGroup", width = "100%", height = "750px"),
-             downloadButton('downloadStackPlot', 'Download PNG')
+             fluidRow(
+               column(3, downloadButton('downloadStackPlot', 'Download PNG')),
+               column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
+             )
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
