@@ -33,5 +33,8 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 # The example workflow takes a bit of time to load and compute, 
 # so an example chemicalSummary is included pre-calculated in the package. 
 chemicalSummary <- ex_chemSum #loading example data
+exclusion <- data.frame(CAS = c("134-62-3","486-56-6"),
+                        endPoint = c("", "TOX21_p53_BLA_p3_viability"),
+                        stringsAsFactors = FALSE)
 chemicalSummary <- exclude_points(chemicalSummary, exclusion)
 }
