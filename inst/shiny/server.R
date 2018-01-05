@@ -64,6 +64,8 @@ great_lakes <- c("Lake Superior",
                  "Lake Erie",
                  "Lake Ontario")
 
+toxCast_val <<- TRUE
+
 shinyServer(function(input, output,session) {
   
   observe({
@@ -83,7 +85,7 @@ shinyServer(function(input, output,session) {
     removeFlags <- all_flags[!(all_flags %in% flags)]
 
     rawData <- rawData()
-
+    
     if(!is.null(rawData)){
 
       if(sites != "All"){
@@ -107,9 +109,12 @@ shinyServer(function(input, output,session) {
         chemicalSummary <- get_chemical_summary(rawData,
                                                 ACClong,
                                                 filtered_ep) 
+        toxCast_val <<- TRUE
+        
       } else {
         chemicalSummary <- get_chemical_summary(rawData) 
-        #Could disable sidebar dropdowns?
+
+        toxCast_val <<- FALSE
       }
       
     } else {
@@ -125,6 +130,29 @@ shinyServer(function(input, output,session) {
                        stringsAsFactors = FALSE)
     }
     
+    return(chemicalSummary)
+    
+  })
+  
+  toxCast <- reactive({
+    
+    rawData <- rawData()
+    
+    toxCast_val <- all(is.null(rawData$benchmarks))
+    
+    return(toxCast_val)
+  })
+
+  output$title_text <- renderUI({
+
+    if(toxCast()){
+      textUI <- "<h3>Analysis using ToxCast endPoints</h3>"
+    } else {
+      textUI <- "<h3>Analysis using CUSTOM endPoints</h3>
+      <h4>Many dropdowns on sidebar will have no effect</h4>"
+    }
+    
+    HTML(textUI)
   })
   
   hitThresValue <- eventReactive(input$changeHit, ignoreNULL = FALSE, {
@@ -153,6 +181,11 @@ shinyServer(function(input, output,session) {
 ###############################################################    
 # Map Stuff:
   source("mapStuff.R",local=TRUE)$value
+############################################################## 
+
+###############################################################    
+# Benchmark Stuff:
+  source("benchmarks.R",local=TRUE)$value
 ############################################################## 
 
 

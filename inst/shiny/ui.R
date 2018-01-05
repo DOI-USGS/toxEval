@@ -132,7 +132,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
-
+  htmlOutput("title_text"),
   tags$head(tags$link(rel="shortcut icon", href="favicon.ico")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
