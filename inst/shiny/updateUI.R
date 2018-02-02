@@ -92,29 +92,47 @@ observe({
   updateSelectInput(session, "epGroup", label = labelText)
 })
 
+chems <- reactive({
+  chemicalSummary <- chemicalSummary()
+  chems <- ""
+  if(nrow(chemicalSummary) > 0){
+    chems <- levels(chemicalSummary$chnm)
+  }
+  chems
+})
+
+classes <- reactive({
+  chemicalSummary <- chemicalSummary()
+  classes <- ""
+  if(nrow(chemicalSummary) > 0){
+    classes <- levels(chemicalSummary$Class)
+  }
+  classes
+})
+
+Bio_category <- reactive({
+  chemicalSummary <- chemicalSummary()
+  Bio_category <- ""
+  if(nrow(chemicalSummary) > 0){
+    Bio_category <- unique(chemicalSummary$Bio_category)
+  }
+  
+  Bio_category
+})
+
+
 observe({
 
-  chemicalSummary <- chemicalSummary()
   valueText <- "All"
-  
-  if(nrow(chemicalSummary) > 0){
-    if (input$radioMaxGroup == 2){
-      valueText <- c("All",unique(as.character(chemicalSummary$chnm)))
-    } else if(input$radioMaxGroup == 3){
-      valueText <- c("All",unique(as.character(chemicalSummary$Class)))
-    } else if(input$radioMaxGroup == 1){
-      valueText <- c("All",unique(as.character(chemicalSummary$Bio_category)))
-    } 
-  }
-  
-  epDF[["epGroup"]] <- NULL
-  
-  if(length(valueText) > 1){
-    epDF[["epGroup"]] <- valueText[2]
-  } else {
-    epDF[["epGroup"]] <- "All"
+
+  if (input$radioMaxGroup == 2){
+    valueText <- c("All",chems())
+  } else if(input$radioMaxGroup == 3){
+    valueText <- c("All",classes())
+  } else if(input$radioMaxGroup == 1){
+    valueText <- c("All",Bio_category())
   }
 
-  updateSelectInput(session, "epGroup", choices = valueText, selected = epDF[["epGroup"]])
+  updateSelectInput(session, "epGroup", choices = valueText)
 })
 
