@@ -55,27 +55,28 @@ plot_tox_endpoints <- function(chemicalSummary,
       
   single_site <- length(unique(chemicalSummary$site)) == 1
   
+  if(filterBy != "All"){
+    if(!(filterBy %in% unique(chemicalSummary$category))){
+      stop("filterBy argument doesn't match data")
+    }
+    
+    chemicalSummary <- chemicalSummary %>%
+      filter_(paste0("category == '", filterBy,"'"))
+  }
+  
   if(single_site){
     
-    if(filterBy != "All"){
-      if(!(filterBy %in% unique(chemicalSummary$category))){
-        stop("filterBy argument doesn't match data")
-      }
-      
-      chemicalSummary <- chemicalSummary %>%
-        filter_(paste0("category == '", filterBy,"'"))
-      
-      countNonZero <- chemicalSummary %>%
-        group_by(endPoint) %>%
-        summarise(nonZero = as.character(sum(EAR>0)),
-                  hits = as.character(sum(EAR > hit_threshold)))
-      
-      countNonZero$hits[countNonZero$hits == "0"] <- ""
-      
-      namesToPlotEP <- as.character(countNonZero$endPoint)
-      nSamplesEP <- countNonZero$nonZero
-      nHitsEP <- countNonZero$hits
-    }
+    countNonZero <- chemicalSummary %>%
+      group_by(endPoint) %>%
+      summarise(nonZero = as.character(sum(EAR>0)),
+                hits = as.character(sum(EAR > hit_threshold)))
+
+    countNonZero$hits[countNonZero$hits == "0"] <- ""
+
+    namesToPlotEP <- as.character(countNonZero$endPoint)
+    nSamplesEP <- countNonZero$nonZero
+    nHitsEP <- countNonZero$hits
+
     
     orderColsBy <- chemicalSummary %>%
       group_by(endPoint) %>%
@@ -110,25 +111,19 @@ plot_tox_endpoints <- function(chemicalSummary,
       data.frame() %>%
       mutate(category=as.character(category))
   
-    if(filterBy != "All"){
-      if(!(filterBy %in% unique(chemicalSummary$category))){
-        stop("filterBy argument doesn't match data")
-      }
-      
-      graphData <- graphData %>%
-        filter_(paste0("category == '", filterBy,"'"))
-  
-      countNonZero <- graphData %>%
-        group_by(endPoint) %>%
-        summarise(nonZero = as.character(sum(meanEAR>0)),
-                  hits = as.character(sum(meanEAR > hit_threshold)))
-  
-      countNonZero$hits[countNonZero$hits == "0"] <- ""
-  
-      namesToPlotEP <- as.character(countNonZero$endPoint)
-      nSamplesEP <- countNonZero$nonZero
-      nHitsEP <- countNonZero$hits
-    }
+
+
+    countNonZero <- graphData %>%
+      group_by(endPoint) %>%
+      summarise(nonZero = as.character(sum(meanEAR>0)),
+                hits = as.character(sum(meanEAR > hit_threshold)))
+
+    countNonZero$hits[countNonZero$hits == "0"] <- ""
+
+    namesToPlotEP <- as.character(countNonZero$endPoint)
+    nSamplesEP <- countNonZero$nonZero
+    nHitsEP <- countNonZero$hits
+
   
     orderColsBy <- graphData %>%
       group_by(endPoint) %>%

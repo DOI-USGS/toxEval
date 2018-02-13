@@ -1,5 +1,5 @@
 ---
-title: "toxEval Shiny Application"
+title: "Preparing toxEval Analysis"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
@@ -110,6 +110,8 @@ For the functions to work seamlessly with all `toxEval` functions, the "Benchmar
 Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
 
 # Checking the data
+
+Loading the Excel 
 
 ## Alternative method
 

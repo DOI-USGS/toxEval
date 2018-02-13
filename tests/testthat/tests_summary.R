@@ -160,7 +160,7 @@ test_that("Internal chem plotting functions", {
   
   graphData <- graph_chem_data(chemicalSummary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
-  expect_equal(levels(graphData$Class)[1], "Plasticizers")
+  expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
 })
 
