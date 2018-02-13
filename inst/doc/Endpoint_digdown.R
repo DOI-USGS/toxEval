@@ -50,7 +50,7 @@ plot_tox_boxplots(chemicalSummary, category = "Biological")
 
 ## ---------------------------------------------------------
 
-CAS_PTEN <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "PTEN"])
+CAS_PTEN <- unique(chemicalSummary$CAS[chemicalSummary$Bio_category == "ESR1"])
 
 chem_data_PTEN <- filter(chem_data_NR, CAS %in% CAS_PTEN)
 chem_info_PTEN <- filter(chem_info_NR, CAS %in% CAS_PTEN)
