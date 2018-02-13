@@ -42,18 +42,26 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
   
   if(is.null(chem.data)){
     chem.data <- tox_list[["chem_data"]]
+  } else {
+    chem.data <- rm_em_dash(chem.data)
   }
   
   if(is.null(chem.site)){
     chem.site <- tox_list[["chem_site"]]
+  } else {
+    chem.site <- rm_em_dash(chem.site)
   }
   
   if(is.null(chem.info)){
     chem.info <- tox_list[["chem_info"]]
+  } else {
+    chem.info <- rm_em_dash(chem.info)
   }
   
   if(is.null(exclusion)){
     exclusion <- tox_list[["exclusions"]]
+  } else {
+    exclusion <- rm_em_dash(exclusion)
   }
   
   if(is.null(ACClong)){
@@ -260,6 +268,5 @@ exclude_points <- function(chemicalSummary, exclusion){
       anti_join(exclude_combo, by=c("CAS","endPoint"))
   }
 
-  
   return(chem_filtered)
 }

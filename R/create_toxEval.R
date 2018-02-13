@@ -129,8 +129,20 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
   # Transform the column names the "required" names:
   names(tab)[!(names(tab) %in% req_cols_low)] <- orig_names[-which(names(tab) %in% req_cols_low)]
   names(tab)[(names(tab) %in% req_cols_low)] <- unlist(sapply(names(tab), function(x) req_cols[which(req_cols_low == x)]))
+  
+  tab <- rm_em_dash(tab)
+
   return(tab)
 }
+
+
+rm_em_dash <- function(df){
+  for(i in as.integer(which(sapply(df, class) == "character"))){
+    df[[i]] <- gsub("\u002D|\u2013|\u2014|\u2212","-",df[[i]])
+  }
+  return(df)
+}
+
 
 #' summary of tox_list
 #' 
