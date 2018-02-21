@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.height = 7,
                       fig.width = 10)
 
-## ---------------------------------------------------------
+## --------------------------------------------------------------
 library(toxEval)
 library(dplyr)
 library(ggplot2)
