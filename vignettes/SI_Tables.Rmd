@@ -150,21 +150,21 @@ ACC <- ACC
 
 ```{r }
 
-file_name <- "AOP_crosswalk.csv"
-full_path <- file.path(path_to_tox, file_name)
-
-AOP_crosswalk <- read.csv(full_path, stringsAsFactors = FALSE)
-
-AOP_crosswalk <- select(AOP_crosswalk, 
-                        gene_symbol=Target.Gene.Symbol, 
-                        AOP=AOP.name)
-  
-AOP <- data.frame(gene_symbol = unique(AOP_crosswalk$gene_symbol),
-                  AOP = "",
-                  stringsAsFactors = FALSE)
-for(gene in AOP$gene_symbol){
-  AOP$AOP[AOP$gene_symbol %in% gene] <- paste(AOP_crosswalk$AOP[AOP_crosswalk$gene_symbol %in% gene],collapse = ", ")
-}
+# file_name <- "AOP_crosswalk.csv"
+# full_path <- file.path(path_to_tox, file_name)
+# 
+# AOP_crosswalk <- read.csv(full_path, stringsAsFactors = FALSE)
+# 
+# AOP_crosswalk <- select(AOP_crosswalk, 
+#                         gene_symbol=Target.Gene.Symbol, 
+#                         AOP=AOP.name)
+#   
+# AOP <- data.frame(gene_symbol = unique(AOP_crosswalk$gene_symbol),
+#                   AOP = "",
+#                   stringsAsFactors = FALSE)
+# for(gene in AOP$gene_symbol){
+#   AOP$AOP[AOP$gene_symbol %in% gene] <- paste(AOP_crosswalk$AOP[AOP_crosswalk$gene_symbol %in% gene],collapse = ", ")
+# }
 
 chemicalSummary <- get_chemical_summary(tox_list = NULL,
                                         ACClong,
@@ -198,8 +198,8 @@ tableData <- chemicalSummary %>%
 tableData2 <- select(tableData, -endPoint, -Family, -subFamily, -gene_symbol)
 tableData$nChems <- apply(tableData2, MARGIN = 1, function(x) sum(x>0, na.rm = TRUE))
 
-tableData <- tableData %>%
-  left_join(AOP,by="gene_symbol")
+# tableData <- tableData %>%
+#   left_join(AOP,by="gene_symbol")
 
 orderedCols <- data.frame(chnm = levels(chemicalSummary$chnm),
                           stringsAsFactors = FALSE) %>%
@@ -208,7 +208,7 @@ orderedCols <- data.frame(chnm = levels(chemicalSummary$chnm),
 orderedCols <- orderedCols$`Chemical Name`[which(orderedCols$`Chemical Name` %in% names(tableData))]
 
 tableData <- tableData[,c("Family", "subFamily","gene_symbol",
-                          "endPoint","AOP", "nChems",rev(orderedCols))] 
+                          "endPoint", "nChems",rev(orderedCols))] 
 
 
 datatable(tableData,  
