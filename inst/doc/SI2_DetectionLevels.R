@@ -20,17 +20,9 @@ path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
-chem_data <- read_excel(full_path, sheet = "Data")
-chem_info <- read_excel(full_path, sheet = "Chemicals") 
-chem_site <- read_excel(full_path, sheet = "Sites")
-exclusion <- read_excel(full_path, sheet = "Exclude")
+tox_list <- create_toxEval(full_path)
 
-#Trim names for graph:
-chem_info$Class[chem_info$Class == "Antimicrobial Disinfectants"] <- "Antimicrobial"
-chem_info$Class[chem_info$Class == "Detergent Metabolites"] <- "Detergent"
-chem_info$Class[chem_info$Class == "Flavors and Fragrances"] <- "Flavor/Fragrance"
-
-ACClong <- get_ACC(chem_info$CAS)
+ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
@@ -38,22 +30,24 @@ filtered_ep <- filter_groups(cleaned_ep)
 
 # Substitute max LDL or MDL for actual values:
 
-chem_data <- chem_data %>%
-  left_join(select(chem_info,
+tox_list$chem_data <- tox_list$chem_data %>%
+  left_join(select(tox_list$chem_info,
                    CAS,
                    MDL = `Maximum method detection level`,
                    LDL = `Maximum laboratory reporting level`),
             by="CAS") %>%
   rowwise() %>%
-  mutate(Value_new = max(MDL, LDL))
+  mutate(Value = max(MDL, LDL, na.rm = TRUE)) %>%
+  select(SiteID, `Sample Date`, CAS, Value) %>%
+  distinct()
 
-chemicalSummary <- get_chemical_summary(tox_list = NULL,
-                                        ACClong,
-                                        filtered_ep, 
-                                        chem.data = chem_data, 
-                                        chem.site = chem_site, 
-                                        chem.info = chem_info,
-                                        exclusion = exclusion)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+
+#Trim some names:
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
+
 
 plot_DL <- plot_tox_boxplots(chemicalSummary, "Chemical")
 
