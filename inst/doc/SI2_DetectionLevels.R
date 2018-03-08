@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width = 7)
 
 ## ---------------------------------------------------------
-library(readxl)
 library(toxEval)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(grid)
 
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
@@ -48,9 +48,15 @@ levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Di
 levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
 levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
 
+# Basically...need to swap endpoint and site to take advantage of plot_tox_boxplots code
+
+chemicalSummary$site <- chemicalSummary$endPoint
 
 plot_DL <- plot_tox_boxplots(chemicalSummary, "Chemical")
 
 plot_DL
+grid.text("# Endpoints:", 
+          x = unit(.375, "npc"), 
+          y = unit(.992, "npc"), gp=gpar(fontsize=7))
 
 
