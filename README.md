@@ -30,7 +30,7 @@ The Water and Environmental Health  Mission Areas of the USGS, as well as the Gr
 
 ### Sunset date 
 
-Funding for `toxEval` currently expires summer 2018, after which bug fixes & new features will be minimal.
+Funding for `toxEval` is secured through summer 2021, after which bug fixes & new features will be minimal.
 
 ## Installation of R and RStudio
 
