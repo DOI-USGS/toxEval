@@ -154,7 +154,9 @@ body <- dashboardBody(
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
-             )
+             ),
+             h4("R Code:"),
+             verbatimTextOutput("barCode")
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
