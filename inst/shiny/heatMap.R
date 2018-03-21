@@ -60,3 +60,22 @@ output$downloadHeatPlot_csv <- downloadHandler(
     write.csv(heatMap_create()[['data']], file = file, row.names = FALSE)
   }
 )
+
+output$heatCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  plot_ND = input$plot_ND_heat
+  
+  heatCode <- paste0(rCodeSetup(),"
+# To re-order the x-axis, 
+# Convert tox_list$chem_site$`Short Name` to a factor,
+# and re-order the 'levels' of that factor
+plot_tox_heatmap(chemicalSummary,
+                 chem_site = tox_list$chem_site,
+                 category = '",category,"',
+                 plot_ND = ",plot_ND,")")
+  
+  HTML(heatCode)
+  
+})

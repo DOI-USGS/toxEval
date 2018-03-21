@@ -76,8 +76,6 @@ output$boxCode <- renderPrint({
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
-
-
   bioPlotCode <- paste0(rCodeSetup(),"
 plot_tox_boxplots(chemicalSummary, 
                   category = '",category,"',

@@ -203,7 +203,9 @@ body <- dashboardBody(
              fluidRow(
                column(3, downloadButton('downloadHeatPlot', 'Download PNG')),
                column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))
-             )
+             ),
+             h4("R Code:"),
+             verbatimTextOutput("heatCode")
     )
   ),
 
