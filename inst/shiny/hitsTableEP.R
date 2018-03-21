@@ -16,3 +16,19 @@ output$hitsTableEPs <- DT::renderDataTable({
                                   hit_threshold = hitThres)
   tableEPs
 })
+
+output$hitsTableEPCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  hitThres <- hitThresValue()
+  
+  hitsTableEPCode <- paste0(rCodeSetup(),"
+table_endpoint_hits(chemicalSummary, 
+                    category = '",category,"',
+                    mean_logic = ",as.logical(input$meanEAR),",
+                    hit_threshold = '",hitThres,"')")
+  
+  HTML(hitsTableEPCode)
+  
+})

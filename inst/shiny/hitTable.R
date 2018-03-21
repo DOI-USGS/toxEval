@@ -26,3 +26,19 @@ output$siteHitText <- renderUI({
   }
   
 })
+
+output$siteHitCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  hitThres <- hitThresValue()
+  
+  siteHitCode <- paste0(rCodeSetup(),"
+table_tox_endpoint(chemicalSummary, 
+                    category = '",category,"',
+                    mean_logic = ",as.logical(input$meanEAR),",
+                    hit_threshold = ",hitThres,")")
+  
+  HTML(siteHitCode)
+  
+})
