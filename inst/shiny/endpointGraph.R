@@ -74,3 +74,20 @@ output$downloadEndpoint_csv <- downloadHandler(
     write.csv(endpointGraph_create()[['data']], file, row.names = FALSE)
   }
 )
+
+output$epGraphCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  hitThres <- hitThresValue()
+  filterBy <- epDF[['epGroup']]
+  epGraphCode <- paste0(rCodeSetup(),"
+plot_tox_endpoints(chemicalSummary, 
+                    category = '",category,"',
+                    mean_logic = ",as.logical(input$meanEAR),",
+                    hit_threshold = ",hitThres,",
+                    filterBy = ",filterBy,")")
+  
+  HTML(epGraphCode)
+  
+})

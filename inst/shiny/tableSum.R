@@ -17,3 +17,19 @@ output$tableSumm <- DT::renderDataTable({
   tableGroup
   
 })
+
+output$tableSummCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  hitThres <- hitThresValue()
+  
+  tableSummCode <- paste0(rCodeSetup(),"
+table_tox_rank(chemicalSummary, 
+                  category = '",category,"',
+                  mean_logic = ",as.logical(input$meanEAR),",
+                  hit_threshold = ",hitThres,")")
+  
+  HTML(tableSummCode)
+  
+})

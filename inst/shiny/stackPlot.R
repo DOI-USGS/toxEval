@@ -58,3 +58,23 @@ output$downloadStackPlot_csv <- downloadHandler(
     write.csv(stackBarGroup_create()[['data']], file, row.names = FALSE)
   }
 )
+
+output$barCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  include_legend <- !(catType == 2)
+  
+  stackPlotCode <- paste0(rCodeSetup(),"
+# To re-order the x-axis, 
+# Convert tox_list$chem_site$`Short Name` to a factor,
+# and re-order the 'levels' of that factor
+plot_tox_stacks(chemicalSummary, 
+                  chem_site = tox_list$chem_site,
+                  category = '",category,"',
+                  mean_logic = ",as.logical(input$meanEAR),",
+                  include_legend = ",include_legend,")")
+  
+  HTML(stackPlotCode)
+  
+})

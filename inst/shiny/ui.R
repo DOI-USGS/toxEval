@@ -144,7 +144,9 @@ body <- dashboardBody(
              fluidRow(
                column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
-             )
+             ),
+             h4("R Code:"),
+             verbatimTextOutput("boxCode")
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
@@ -152,27 +154,37 @@ body <- dashboardBody(
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
-             )
+             ),
+             h4("R Code:"),
+             verbatimTextOutput("barCode")
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
             h5("maxEAR = Maximum summation of EARs per sample"),
             h5("freq = Fraction of samples with hits"),
-            DT::dataTableOutput('tableSumm')
+            DT::dataTableOutput('tableSumm'),
+            h4("R Code:"),
+            verbatimTextOutput("tableSummCode")
     ),
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
             htmlOutput("nGroup"),
-            DT::dataTableOutput('tableGroupSumm')
+            DT::dataTableOutput('tableGroupSumm'),
+            h4("R Code:"),
+            verbatimTextOutput("tableGroupCode")
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
             htmlOutput("siteHitText"),
-            div(DT::dataTableOutput("hitsTable"), style="font-size:90%")
+            div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
+            h4("R Code:"),
+            verbatimTextOutput("siteHitCode")
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
-             div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%")
+             div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
+             h4("R Code:"),
+             verbatimTextOutput("hitsTableEPCode")
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
@@ -180,7 +192,9 @@ body <- dashboardBody(
             fluidRow(
              column(3, downloadButton('downloadEndpoint', 'Download PNG')),
              column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
-            )
+            ),
+            h4("R Code:"),
+            verbatimTextOutput("epGraphCode")
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
@@ -189,7 +203,9 @@ body <- dashboardBody(
              fluidRow(
                column(3, downloadButton('downloadHeatPlot', 'Download PNG')),
                column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))
-             )
+             ),
+             h4("R Code:"),
+             verbatimTextOutput("heatCode")
     )
   ),
 
