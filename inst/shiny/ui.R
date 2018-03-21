@@ -162,7 +162,9 @@ body <- dashboardBody(
              value="maxEAR",
             h5("maxEAR = Maximum summation of EARs per sample"),
             h5("freq = Fraction of samples with hits"),
-            DT::dataTableOutput('tableSumm')
+            DT::dataTableOutput('tableSumm'),
+            h4("R Code:"),
+            verbatimTextOutput("tableSummCode")
     ),
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",

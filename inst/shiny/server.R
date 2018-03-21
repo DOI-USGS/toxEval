@@ -97,12 +97,14 @@ shinyServer(function(input, output,session) {
 path_to_file <- '",fileName,"' 
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
-ACClong <- remove_flags(ACClong = ACClong,flagsShort = ",removeFlags,")
+ACClong <- remove_flags(ACClong = ACClong,
+                        flagsShort = ",removeFlags,")
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
-filtered_ep <- filter_groups(cleaned_ep, groupCol = '",groupCol,"',
-            assays = ",assays,",
-            remove_groups = ",remove_groups,")
+filtered_ep <- filter_groups(cleaned_ep, 
+                  groupCol = '",groupCol,"',
+                  assays = ",assays,",
+                  remove_groups = ",remove_groups,")
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 ######################################")
