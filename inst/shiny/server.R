@@ -81,7 +81,7 @@ shinyServer(function(input, output,session) {
     sites <- epDF[["sites"]]
     groups <- epDF[["group"]]
     fileName <- epDF[["fileName"]]
-    
+
     remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
     remove_groups <- remove_groups[!is.na(remove_groups)]
     

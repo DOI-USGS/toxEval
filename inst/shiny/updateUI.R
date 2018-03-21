@@ -53,11 +53,9 @@ observeEvent(input$epGroup, {
 observe({
   
   groupCol <- epDF[["groupColName"]]
-  assays <- epDF[["assays"]]
-  
-  ep <- filter_groups(ep = cleaned_ep, assays = assays, groupCol = groupCol, remove_groups = "")
-  
-  orderBy <- ep[,"groupCol"]
+
+  ep <- cleaned_ep
+  orderBy <- ep[[groupCol]]
   orderNames <- names(table(orderBy))
   nEndPoints <- as.integer(table(orderBy))
   
