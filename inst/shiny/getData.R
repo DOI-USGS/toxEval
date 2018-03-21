@@ -4,6 +4,9 @@ rawData <- reactive({
     path <- file.path(input$data$datapath)
     
     newPath <- paste0(input$data$datapath,"_",input$data$name)
+    
+    epDF[["fileName"]] <- input$data$name
+    
     newPath <- gsub(", ","_",newPath)
     
     file.rename(from = path, to = newPath)

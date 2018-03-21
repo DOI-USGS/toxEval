@@ -74,6 +74,41 @@ shinyServer(function(input, output,session) {
   
   source("getData.R",local=TRUE)$value
   
+  rCodeSetup <- reactive({
+    groupCol <- epDF[["groupColName"]]
+    assays <- epDF[["assays"]]
+    flags <- epDF[["flags"]]
+    sites <- epDF[["sites"]]
+    groups <- epDF[["group"]]
+    fileName <- epDF[["fileName"]]
+    
+    remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
+    remove_groups <- remove_groups[!is.na(remove_groups)]
+    
+    removeFlags <- all_flags[!(all_flags %in% flags)]
+    
+    removeFlags <- paste0("c('",paste0(removeFlags, collapse = "','"),"')")
+    assays <- paste0("c('",paste0(assays, collapse = "','"),"')")
+    remove_groups <- paste0("c('",paste0(remove_groups, collapse = "','"),"')")
+    
+    setupCode <- paste0("######################################
+# Setup:
+#NOTE: Add path to file!!!
+path_to_file <- '",fileName,"' 
+tox_list <- create_toxEval(path_to_file)
+ACClong <- get_ACC(tox_list$chem_info$CAS)
+ACClong <- remove_flags(ACClong = ACClong,flagsShort = ",removeFlags,")
+
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+filtered_ep <- filter_groups(cleaned_ep, groupCol = '",groupCol,"',
+            assays = ",assays,",
+            remove_groups = ",remove_groups,")
+
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+######################################")
+    return(setupCode)
+  })
+  
   chemicalSummary <- reactive({
 
     groupCol <- epDF[["groupColName"]]

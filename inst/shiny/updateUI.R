@@ -13,7 +13,8 @@ epDF <- reactiveValues(assays = initAssay,
                        groupColName = "intended_target_family",
                        group = init_Groups,
                        flags = initFlags,
-                       sites = "All")
+                       sites = "All",
+                       fileName = "Choose file")
 
 observeEvent(input$pickAssay, {
   epDF[["assays"]] <- NULL

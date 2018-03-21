@@ -67,3 +67,23 @@ output$downloadBoxPlot_csv <- downloadHandler(
     write.csv(boxPlots_create()[['data']], file, row.names = FALSE)
   }
 )
+
+output$boxCode <- renderPrint({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  
+  plot_ND = input$plot_ND
+  
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  
+
+
+  bioPlotCode <- paste0(rCodeSetup(),"
+plot_tox_boxplots(chemicalSummary, 
+                  category = '",category,"',
+                  mean_logic = ",as.logical(input$meanEAR),",
+                  plot_ND = ",plot_ND,")")
+  
+  HTML(bioPlotCode)
+  
+})

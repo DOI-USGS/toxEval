@@ -144,7 +144,9 @@ body <- dashboardBody(
              fluidRow(
                column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
-             )
+             ),
+             h4("R Code:"),
+             verbatimTextOutput("boxCode")
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
