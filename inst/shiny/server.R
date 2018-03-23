@@ -71,7 +71,7 @@ shinyServer(function(input, output,session) {
   observe({
     if (input$close > 0) stopApp()    
   })
-  
+
   source("getData.R",local=TRUE)$value
   
   rCodeSetup <- reactive({
@@ -82,6 +82,8 @@ shinyServer(function(input, output,session) {
     groups <- epDF[["group"]]
     fileName <- epDF[["fileName"]]
 
+    sites <- input$sites
+    
     remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
     remove_groups <- remove_groups[!is.na(remove_groups)]
     
@@ -106,7 +108,15 @@ filtered_ep <- filter_groups(cleaned_ep,
                   assays = ",assays,",
                   remove_groups = ",remove_groups,")
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)")
+    
+    if(sites != "All"){
+      setupCode <- setupCode <- paste0(setupCode,"
+site <- '",sites,"'
+chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
+    }   
+
+    setupCode <- paste0(setupCode,"
 ######################################")
     return(setupCode)
   })
