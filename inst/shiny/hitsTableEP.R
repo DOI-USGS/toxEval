@@ -27,7 +27,7 @@ output$hitsTableEPCode <- renderPrint({
 table_endpoint_hits(chemicalSummary, 
                     category = '",category,"',
                     mean_logic = ",as.logical(input$meanEAR),",
-                    hit_threshold = '",hitThres,"')")
+                    hit_threshold = ",hitThres,")")
   
   HTML(hitsTableEPCode)
   
