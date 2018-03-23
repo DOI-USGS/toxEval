@@ -135,7 +135,9 @@ body <- dashboardBody(
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
              leaflet::leafletOutput("mymap",height = "750px"),
-            htmlOutput("mapFooter")
+            htmlOutput("mapFooter"),
+            h4("R Code:"),
+            verbatimTextOutput("mapCode")
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
