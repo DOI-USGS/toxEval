@@ -68,12 +68,17 @@ assay_names <- c("Apredica" = "APR",
 
 names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "BETA: toxEval",
+                          # tags$head(tags$style(HTML(""))),
                           tags$li(class = "dropdown", 
                             div(style="text-align:center;
-                                margin-right:13px;margin-top:7px;margin-bottom:7px;
                                 font-size: 20px;
-                                color: red;",
-                                textOutput("title_text"))),
+                                height: 50px;
+                                font-weight: 300;
+                                margin-right:25px;
+                                font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                line-height: 50px;
+                                color: #fff;",
+                                textOutput("title_text", inline = TRUE))),
                           tags$li(class = "dropdown", tags$button(
                                     id = 'close',
                                     type = "button",
