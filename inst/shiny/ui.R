@@ -67,6 +67,12 @@ assay_names <- c("Apredica" = "APR",
                  "NCCT_SIMMONS"="NCCT_SIMMONS",
                  "ACEA Biosciences" = "ACEA")
 
+init_text <- "######################################
+# Setup:
+library(toxEval)
+#NOTE: Add path to path_to_file!!!
+path_to_file <- 'Choose File'"
+
 names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "BETA: toxEval",
                           tags$li(class = "dropdown", 
@@ -148,7 +154,7 @@ body <- dashboardBody(
              leaflet::leafletOutput("mymap",height = "500px"),
             htmlOutput("mapFooter"),
             h4("R Code:"),
-            aceEditor(outputId = "mapCode_out", value = "", mode = "r", theme = "chrome", readOnly = TRUE)
+            aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
@@ -159,20 +165,17 @@ body <- dashboardBody(
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             aceEditor(outputId = "boxCode_out", value = "", mode = "r", theme = "chrome", readOnly = TRUE)
+             aceEditor(outputId = "boxCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
-             sliderInput(inputId = "text_size1",
-                         label = "Axis Font Size",                            
-                         min = 10, max = 50, step = 1, value = 20),
              plotOutput("stackBarGroup", width = "100%", height = "750px"),
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             aceEditor(outputId = "barCode_out", value = "", mode = "r", theme = "chrome", readOnly = TRUE)
+             aceEditor(outputId = "barCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
@@ -180,27 +183,27 @@ body <- dashboardBody(
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm'),
             h4("R Code:"),
-            verbatimTextOutput("tableSummCode")
+            aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
             htmlOutput("nGroup"),
             DT::dataTableOutput('tableGroupSumm'),
             h4("R Code:"),
-            verbatimTextOutput("tableGroupCode")
+            aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
             htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
             h4("R Code:"),
-            verbatimTextOutput("siteHitCode")
+            aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
              h4("R Code:"),
-             verbatimTextOutput("hitsTableEPCode")
+             aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
@@ -210,7 +213,7 @@ body <- dashboardBody(
              column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
             ),
             h4("R Code:"),
-            verbatimTextOutput("epGraphCode")
+            aceEditor(outputId = "epGraph_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",

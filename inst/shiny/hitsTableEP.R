@@ -14,10 +14,11 @@ output$hitsTableEPs <- DT::renderDataTable({
                                   category = c("Biological","Chemical","Chemical Class")[catType],
                                   mean_logic = mean_logic,
                                   hit_threshold = hitThres)
+  updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
   tableEPs
 })
 
-output$hitsTableEPCode <- renderPrint({
+hitsTableEPCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -29,6 +30,6 @@ table_endpoint_hits(chemicalSummary,
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,")")
   
-  HTML(hitsTableEPCode)
+  return(hitsTableEPCode)
   
 })

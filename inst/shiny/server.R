@@ -96,7 +96,7 @@ shinyServer(function(input, output,session) {
     setupCode <- paste0("######################################
 # Setup:
 library(toxEval)
-#NOTE: Add path to file!!!
+#NOTE: Add path to path_to_file!!!
 path_to_file <- '",fileName,"' 
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)

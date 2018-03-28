@@ -11,6 +11,8 @@ endpointGraph_create <- reactive({
                                       mean_logic = as.logical(input$meanEAR),
                                       hit_threshold = hitThresValue(),
                                       filterBy = filterBy) 
+  
+  updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
   return(endpointGraph)
 })
 
@@ -75,7 +77,7 @@ output$downloadEndpoint_csv <- downloadHandler(
   }
 )
 
-output$epGraphCode <- renderPrint({
+epGraphCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -88,6 +90,6 @@ plot_tox_endpoints(chemicalSummary,
                     hit_threshold = ",hitThres,",
                     filterBy = ",filterBy,")")
   
-  HTML(epGraphCode)
+  return(epGraphCode)
   
 })

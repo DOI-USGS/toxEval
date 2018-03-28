@@ -5,7 +5,8 @@
 \title{plot_tox_boxplots}
 \usage{
 plot_tox_boxplots(chemicalSummary, category = "Biological",
-  manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE)
+  manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE,
+  font_size = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -17,6 +18,8 @@ plot_tox_boxplots(chemicalSummary, category = "Biological",
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{plot_ND}{logical whether or not to plot the non-detects}
+
+\item{font_size}{numeric to adjust the axis font size}
 }
 \description{
 Plot boxplot of groups
