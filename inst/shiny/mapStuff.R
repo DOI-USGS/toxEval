@@ -1,6 +1,6 @@
 output$mymap <- leaflet::renderLeaflet({
   
-  map <- leaflet(height = "500px") %>%
+  map <- leaflet() %>%
     addProviderTiles("CartoDB.Positron") %>%
     setView(lng = -83.5, lat = 44.5, zoom=6)
   

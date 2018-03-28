@@ -68,7 +68,6 @@ assay_names <- c("Apredica" = "APR",
 
 names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "BETA: toxEval",
-                          # tags$head(tags$style(HTML(""))),
                           tags$li(class = "dropdown", 
                             div(style="text-align:center;
                                 font-size: 20px;
@@ -92,7 +91,7 @@ header <- dashboardHeader(title = "BETA: toxEval",
 sidebar <- dashboardSidebar(
   sidebarMenu(
    fileInput("data", "Load Excel File",multiple = FALSE),
-   radioButtons("radioMaxGroup", label = "",
+   radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
    conditionalPanel(
@@ -103,7 +102,7 @@ sidebar <- dashboardSidebar(
                  selected = "All")     
    ),
    radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
-                inline = TRUE, label = "", selected = FALSE),
+                inline = TRUE, label = NULL, selected = FALSE),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
         checkboxGroupInput("assay", "Assays:",
@@ -145,7 +144,7 @@ body <- dashboardBody(
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-             leaflet::leafletOutput("mymap",height = "750px"),
+             leaflet::leafletOutput("mymap",height = "500px"),
             htmlOutput("mapFooter"),
             h4("R Code:"),
             verbatimTextOutput("mapCode")
