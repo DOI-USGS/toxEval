@@ -1,6 +1,7 @@
-#' Explore endpoint groupings
+#' Explore data in the Shiny Application
 #' 
-#' Open an interactive app
+#' Open an interactive app in a browser. See the vignette 'User Guide'
+#' for more details.
 #' 
 #' @param browse use browser for map rendering
 #' @export

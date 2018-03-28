@@ -1,5 +1,49 @@
-#' create_toxEval
+#' Load and check toxEval data
 #' 
+#' This function requires a path to a single Excel file. The Excel
+#' file should include 3 mandatory tabs named "Data", "Chemicals", and "Sites".
+#' Additionally there are 2 optional tabs: "Exclude" and "Benchmarks". This function
+#' will load each sheet, creating a data frame for each sheet. It will
+#' perform basic checks on the data to make sure there are the required columns in
+#' each tab. 
+#' 
+#' The Data tab needs to have columns "CAS", "SiteID", "Value", "Sample Date".
+#' The "Value" column is assumed to be concentration measurements in ug/L. "Sample Date" 
+#' can be either a date or date/time or an integer. Any other column can be included, 
+#' but won't be used in general toxEval functions.
+#' 
+#' The Chemical tab needs to have columns "CAS", "Class". The "CAS" in this
+#' tab must exactly match the "CAS" in the Data tab. The "Class" designation
+#' allows the data to be grouped in a user-specified way. For example, you
+#' may want to explore the difference between pesticides and herbicides. 
+#' 
+#' The Sites tab needs to have the columns "SiteID", "Short Name", and for the Shiny application 
+#' "dec_lat","dec_lon". The "SiteID" column in this tab must match exactly
+#' the "SiteID" column in the Data tab.
+#' 
+#' The optional tab Exclude needs to have the columns "CAS", "endPoint". These
+#' are used to exclude particular chemicals (via CAS), ToxCast endpoints (via endPoint),
+#' or a unique chemical/endpoint combination.
+#' 
+#' The optional tab Benchmarks needs to have columns "CAS", "endPoint","ACC_value","chnm". This
+#' tab is used to over-ride the functions using ToxCast endpoints, allowing the user
+#' to import endpoint information from potentially other sources. It
+#' could also be useful for reproducing results in the future (for example,
+#' if ToxCast updates their data, you could use this tab to run the analysis
+#' on the older "v2" version).
+#' 
+#' 
+#' For more information, see the "User Guide" vignette.
+#' 
+#' All remaining toxEval functions will expect the data to be supplied
+#' via the list that is returned from this function.
+#'  
+#' @return list of 3 data frames, potentially up to 5. The guaranteed data
+#' frames are chem_data (containing at least the columns: "CAS", "SiteID", "Value", "Sample Date"),
+#' chem_info (containing at least the columns: "CAS", "Class"),
+#' chem_site (containing at least the columns: "SiteID", "Short Name", would need "dec_lat" and "dec_lon" for shiny app).
+#' The optional data frames are exclusions (containing at least the columns: "CAS", "endPoint"),
+#' and benchmarks (containing at least the columns: "CAS", "endPoint","ACC_value","chnm")
 #' 
 #' @param excel_file_path Path to Excel file that contains at least 3 tabs: Data, Chemicals, and Sites, 
 #' and could optionally contain Exclude and Benchmarks
