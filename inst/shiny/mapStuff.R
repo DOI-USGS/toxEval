@@ -51,7 +51,7 @@ mapDataINFO <- reactive({
                               mean_logic = meanEARlogic)
     latest_map <<- mapDataList
   }
-  
+  updateAceEditor(session, editorId = "mapCode_out", value = mapCode() )
   return(mapDataList)
   
 })
@@ -132,7 +132,7 @@ observe({
   
 })
 
-output$mapCode <- renderPrint({
+mapCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   
@@ -146,6 +146,6 @@ makeMap(chemicalSummary,
         category = '",category,"',
         mean_logic = ",as.logical(input$meanEAR),")")
 
-  HTML(mapCode)
+  return(mapCode)
   
 })

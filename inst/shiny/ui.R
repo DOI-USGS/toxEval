@@ -9,6 +9,7 @@ library(tidyr)
 library(RColorBrewer)
 library(grid)
 library(stringi)
+library(shinyAce)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
   rename(endPoint = assay_component_endpoint_name)
@@ -147,28 +148,31 @@ body <- dashboardBody(
              leaflet::leafletOutput("mymap",height = "500px"),
             htmlOutput("mapFooter"),
             h4("R Code:"),
-            verbatimTextOutput("mapCode")
+            aceEditor(outputId = "mapCode_out", value = "", mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
+             uiOutput("graphGroup.ui", width = "100%"),
              checkboxInput("plot_ND", "Plot ND's?", TRUE),
-             uiOutput("graphGroup.ui"),
              fluidRow(
                column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             verbatimTextOutput("boxCode")
+             aceEditor(outputId = "boxCode_out", value = "", mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
+             sliderInput(inputId = "text_size1",
+                         label = "Axis Font Size",                            
+                         min = 10, max = 50, step = 1, value = 20),
              plotOutput("stackBarGroup", width = "100%", height = "750px"),
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             verbatimTextOutput("barCode")
+             aceEditor(outputId = "barCode_out", value = "", mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",

@@ -3,16 +3,38 @@ boxPlots_create <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   
   plot_ND = input$plot_ND
-  
   chemicalSummary <- chemicalSummary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
                                mean_logic = as.logical(input$meanEAR),
-                               plot_ND = plot_ND)
+                               plot_ND = plot_ND,
+                               font_size = 18)
   return(bioPlot)
   
+})
+
+boxPlot_prints <- reactive({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  
+  plot_ND = input$plot_ND
+  chemicalSummary <- chemicalSummary()
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  height <- PlotHeight()
+  if(height > 750){
+    text_size <- 10
+  } else {
+    text_size <- NA
+  }
+  
+  bioPlot <- plot_tox_boxplots(chemicalSummary, 
+                               category = category,
+                               mean_logic = as.logical(input$meanEAR),
+                               plot_ND = plot_ND,
+                               font_size = text_size)
+  return(bioPlot)
 })
 
 output$graphGroup <- renderPlot({ 
@@ -20,7 +42,7 @@ output$graphGroup <- renderPlot({
   validate(
     need(!is.null(input$data), "Please select a data set")
   )
-
+  updateAceEditor(session, editorId = "boxCode_out", value = boxCode() )
   print(boxPlots_create())
   
 })
@@ -55,7 +77,7 @@ output$downloadBoxPlot <- downloadHandler(
       grDevices::png(..., width = width, height = height,
                      res = 300, units = "in")
     }
-    ggsave(file, plot = boxPlots_create(), device = device)
+    ggsave(file, plot = boxPlot_prints(), device = device)
   }
 )
 
@@ -68,7 +90,7 @@ output$downloadBoxPlot_csv <- downloadHandler(
   }
 )
 
-output$boxCode <- renderPrint({
+boxCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   
@@ -82,6 +104,7 @@ plot_tox_boxplots(chemicalSummary,
                   mean_logic = ",as.logical(input$meanEAR),",
                   plot_ND = ",plot_ND,")")
   
-  HTML(bioPlotCode)
+  return(bioPlotCode)
   
 })
+

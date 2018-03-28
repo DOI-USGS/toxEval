@@ -95,6 +95,7 @@ shinyServer(function(input, output,session) {
     
     setupCode <- paste0("######################################
 # Setup:
+library(toxEval)
 #NOTE: Add path to file!!!
 path_to_file <- '",fileName,"' 
 tox_list <- create_toxEval(path_to_file)
@@ -216,7 +217,7 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
   source("hitTable.R",local=TRUE)$value
   source("hitsTableEP.R",local=TRUE)$value
 ###################################################################
-   
+ 
 ###############################################################
 # Graphs:   
   source("stackPlot.R",local=TRUE)$value

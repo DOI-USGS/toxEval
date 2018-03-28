@@ -18,6 +18,7 @@
 #' @import grid
 #' @import gridExtra 
 #' @import shinydashboard
+#' @import shinyAce
 #' @examples 
 #' \dontrun{
 #' explore_endpoints()

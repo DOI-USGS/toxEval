@@ -7,6 +7,8 @@ stackBarGroup_create <- reactive({
   rawData <- rawData()
   chem_site <- rawData$chem_site
 
+  text_size <- input$text_size1
+  
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
@@ -24,6 +26,9 @@ stackBarGroup_create <- reactive({
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
                                include_legend = include_legend)
+  
+  updateAceEditor(session, editorId = "barCode_out", value = barCode() )
+  
   return(upperPlot)
 })
 
@@ -59,7 +64,7 @@ output$downloadStackPlot_csv <- downloadHandler(
   }
 )
 
-output$barCode <- renderPrint({
+barCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -75,6 +80,6 @@ plot_tox_stacks(chemicalSummary,
                   mean_logic = ",as.logical(input$meanEAR),",
                   include_legend = ",include_legend,")")
   
-  HTML(stackPlotCode)
+  return(stackPlotCode)
   
 })
