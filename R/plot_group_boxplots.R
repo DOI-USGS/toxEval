@@ -6,6 +6,7 @@
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param plot_ND logical whether or not to plot the non-detects
+#' @param font_size numeric to adjust the axis font size
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -37,7 +38,8 @@ plot_tox_boxplots <- function(chemicalSummary,
                               category = "Biological",
                               manual_remove = NULL,
                               mean_logic = FALSE,
-                              plot_ND = TRUE){
+                              plot_ND = TRUE, 
+                              font_size = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -45,7 +47,10 @@ plot_tox_boxplots <- function(chemicalSummary,
 
   if(category == "Chemical"){
 
-    chemPlot <- plot_chemical_boxplots(chemicalSummary, mean_logic = mean_logic, plot_ND = plot_ND)
+    chemPlot <- plot_chemical_boxplots(chemicalSummary, 
+                                       mean_logic = mean_logic, 
+                                       plot_ND = plot_ND,
+                                       font_size = font_size)
     return(chemPlot)
     
   } else {
@@ -119,6 +124,11 @@ plot_tox_boxplots <- function(chemicalSummary,
         scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
     }
     
+    if(!is.na(font_size)){
+      bioPlot <- bioPlot +
+        theme(axis.text = element_text(size = font_size))
+    }
+    
     plot_info <- ggplot_build(bioPlot)
     layout_stuff <- plot_info$layout
     
@@ -133,7 +143,7 @@ plot_tox_boxplots <- function(chemicalSummary,
     }
     
     bioPlot_w_labels <- bioPlot + 
-      geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=3)  
+      geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size))  
     
     return(bioPlot_w_labels)
   }

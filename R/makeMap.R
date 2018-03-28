@@ -42,7 +42,7 @@ getMapInfo <- function(chemicalSummary,
   
   site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- ".dplyr"
   
-  siteToFind <- chem_site$`Short Name`
+  siteToFind <- unique(chemicalSummary$shortName)
   
   if(category == "Biological"){
     typeWords <- "groups"
@@ -52,7 +52,8 @@ getMapInfo <- function(chemicalSummary,
     typeWords <- "chemical classes"
   }
   
-  mapData <- chem_site[,c("Short Name", "dec_lat", "dec_lon", "SiteID")]
+  mapData <- chem_site[chem_site$`Short Name` %in% siteToFind,
+                       c("Short Name", "dec_lat", "dec_lon", "SiteID")]
   
   nSamples <- select(chemicalSummary,site,date) %>%
     distinct() %>%
@@ -89,5 +90,98 @@ getMapInfo <- function(chemicalSummary,
   }
   
   return(list(mapData=mapData, pal=pal))
+  
+}
+
+#' makeMap
+#' 
+#' makeMap
+#' 
+#' @param chemicalSummary data frame from \code{get_chemical_summary}
+#' @param category either "Biological", "Chemical Class", or "Chemical"
+#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
+#' @export
+#' @import leaflet
+#' @examples
+#' # This is the example workflow:
+#' path_to_tox <-  system.file("extdata", package="toxEval")
+#' file_name <- "OWC_data_fromSup.xlsx"
+#'
+#' full_path <- file.path(path_to_tox, file_name)
+#' tox_list <- create_toxEval(full_path)
+#' 
+#' \dontrun{
+#' 
+#' ACClong <- get_ACC(tox_list$chem_info$CAS)
+#' ACClong <- remove_flags(ACClong)
+#' 
+#' cleaned_ep <- clean_endPoint_info(endPointInfo)
+#' filtered_ep <- filter_groups(cleaned_ep)
+#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+#' }
+#' # The example workflow takes a bit of time to load and compute, 
+#' # so an example chemicalSummary is included pre-calculated in the package. 
+#' 
+#' chemicalSummary <- ex_chemSum #loading example data
+#' makeMap(chemicalSummary, tox_list$chem_site, "Biological")   
+#' makeMap(chemicalSummary, tox_list$chem_site, "Chemical Class")
+#' makeMap(chemicalSummary, tox_list$chem_site, "Chemical") 
+makeMap <- function(chemicalSummary,
+                    chem_site,
+                    category = "Biological",
+                    mean_logic = FALSE){
+  
+  maxEARWords <- ifelse(mean_logic,"meanEAR","maxEAR")
+  
+  mapDataList <- getMapInfo(chemicalSummary, 
+                            chem_site = chem_site, 
+                            category = category,
+                            mean_logic = mean_logic)
+  
+  mapData <- mapDataList$mapData
+  pal <- mapDataList$pal
+  siteToFind <- unique(chemicalSummary$site)
+  
+  if(length(siteToFind) == 1){
+    
+    mapData <- filter(chem_site, SiteID == siteToFind) %>%
+      mutate(nSamples = median(mapData$count),
+             meanMax = median(mapData$meanMax),
+             sizes = median(mapData$sizes))
+  }
+  map <- leaflet::leaflet(height = "500px", data=mapData) %>%
+    leaflet::addProviderTiles("CartoDB.Positron") %>%
+    leaflet::setView(lng = -83.5, lat = 44.5, zoom=6) %>%
+    leaflet::clearMarkers() %>%
+    leaflet::clearControls() %>%
+    leaflet::setView(lng = mean(mapData$dec_lon, na.rm = TRUE), 
+            lat = mean(mapData$dec_lat, na.rm = TRUE), zoom=6) %>%
+    leaflet::fitBounds(lng1 = min(mapData$dec_lon, na.rm = TRUE), 
+              lat1 = min(mapData$dec_lat, na.rm = TRUE), 
+              lng2 = max(mapData$dec_lon, na.rm = TRUE), 
+              lat2 = max(mapData$dec_lat, na.rm = TRUE)) %>%
+    leaflet::addCircleMarkers(lat=~dec_lat, lng=~dec_lon,
+                     popup=paste0('<b>',mapData$`Short Name`,"</b><br/><table>",
+                                  "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanMax),'</td></tr>',
+                                  "<tr><td>Number of Samples: </td><td>",mapData$count,'</td></tr>',
+                                  '</table>') ,
+                     fillColor = ~pal(meanMax),
+                     fillOpacity = 0.8,
+                     radius = ~sizes,
+                     stroke=FALSE,
+                     opacity = 0.8)
+  
+  if(length(siteToFind) > 1){
+    map <- leaflet::addLegend(map,pal = pal,
+                     position = 'bottomleft',
+                     values=~meanMax,
+                     opacity = 0.8,
+                     labFormat = leaflet::labelFormat(digits = 2), #transform = function(x) as.integer(x)),
+                     title = paste("Sum of",category,"EAR<br>",
+                                   ifelse(mean_logic,'Mean','Max'),"at site"))
+  }
+  
+  return(map)
   
 }

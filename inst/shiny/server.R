@@ -71,7 +71,7 @@ shinyServer(function(input, output,session) {
   observe({
     if (input$close > 0) stopApp()    
   })
-  
+
   source("getData.R",local=TRUE)$value
   
   rCodeSetup <- reactive({
@@ -82,6 +82,8 @@ shinyServer(function(input, output,session) {
     groups <- epDF[["group"]]
     fileName <- epDF[["fileName"]]
 
+    sites <- input$sites
+    
     remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
     remove_groups <- remove_groups[!is.na(remove_groups)]
     
@@ -93,7 +95,8 @@ shinyServer(function(input, output,session) {
     
     setupCode <- paste0("######################################
 # Setup:
-#NOTE: Add path to file!!!
+library(toxEval)
+#NOTE: Add path to path_to_file!!!
 path_to_file <- '",fileName,"' 
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -106,7 +109,15 @@ filtered_ep <- filter_groups(cleaned_ep,
                   assays = ",assays,",
                   remove_groups = ",remove_groups,")
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)")
+    
+    if(sites != "All"){
+      setupCode <- setupCode <- paste0(setupCode,"
+site <- '",sites,"'
+chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
+    }   
+
+    setupCode <- paste0(setupCode,"
 ######################################")
     return(setupCode)
   })
@@ -180,13 +191,13 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
     return(toxCast_val)
   })
 
-  output$title_text <- renderUI({
+  output$title_text <- renderText({
 
     if(toxCast()){
-      textUI <- "<h3>Analysis using ToxCast endPoints</h3>"
+      textUI <- "Analysis using ToxCast endPoints"
     } else {
-      textUI <- "<h3>Analysis using CUSTOM endPoints</h3>
-      <h4>Many dropdowns on sidebar will have no effect</h4>"
+      textUI <- "Analysis using CUSTOM endPoints:
+      Many dropdowns on sidebar will have no effect"
     }
     
     HTML(textUI)
@@ -206,7 +217,7 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
   source("hitTable.R",local=TRUE)$value
   source("hitsTableEP.R",local=TRUE)$value
 ###################################################################
-   
+ 
 ###############################################################
 # Graphs:   
   source("stackPlot.R",local=TRUE)$value

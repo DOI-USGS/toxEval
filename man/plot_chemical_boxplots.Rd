@@ -5,7 +5,7 @@
 \title{plot_chemical_boxplots}
 \usage{
 plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
-  mean_logic = FALSE, plot_ND = TRUE)
+  mean_logic = FALSE, plot_ND = TRUE, font_size = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{graph_chem_data}}
@@ -15,6 +15,8 @@ plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{plot_ND}{logical whether or not to plot the non-detects}
+
+\item{font_size}{numeric to adjust the axis font size}
 }
 \description{
 Plot boxplot of chemicals

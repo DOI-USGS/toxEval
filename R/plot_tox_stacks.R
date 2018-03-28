@@ -96,12 +96,21 @@ plot_tox_stacks <- function(chemicalSummary,
       xlab("") +
       ylab(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site")) +
       facet_grid(. ~ site_grouping, scales="free", space="free") +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))+
+      geom_text(data = counts, 
+                aes(label = count, x=`Short Name`,y = placement), 
+                size=2,inherit.aes = FALSE) 
 
   } else {
 
     graphData <- chemicalSummary %>%
-      select(-site)
+      select(-site) 
+    
+    dates <- arrange(distinct(select(graphData, date))) 
+    dates$index <- 1:(nrow(dates))
+    
+    graphData <- graphData %>%
+      left_join(dates, by="date")
 
     if(category == "Biological"){
       graphData$category <- graphData$Bio_category
@@ -111,7 +120,7 @@ plot_tox_stacks <- function(chemicalSummary,
       graphData$category <- graphData$chnm
     }
     
-    upperPlot <- ggplot(graphData, aes(x=date, y=EAR, fill = category)) +
+    upperPlot <- ggplot(graphData, aes(x=index, y=EAR, fill = category)) +
       theme_minimal() +
       theme(axis.text.x=element_blank(),
             axis.ticks.x=element_blank()) +
@@ -123,10 +132,7 @@ plot_tox_stacks <- function(chemicalSummary,
   placement <- -0.05*diff(range(graphData$meanEAR))
   
   upperPlot <- upperPlot +
-    geom_col() +
-    geom_text(data = counts, 
-              aes(label = count, x=`Short Name`,y = placement), 
-              size=2,inherit.aes = FALSE)  +
+    geom_col()  +
     theme(plot.margin = unit(c(5.5,5.5,5.5,12), "pt"))
   
   if(include_legend && length(unique(graphData$category)) <= length(cbValues)){

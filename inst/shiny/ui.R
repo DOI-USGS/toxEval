@@ -9,6 +9,7 @@ library(tidyr)
 library(RColorBrewer)
 library(grid)
 library(stringi)
+library(shinyAce)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
   rename(endPoint = assay_component_endpoint_name)
@@ -66,20 +67,38 @@ assay_names <- c("Apredica" = "APR",
                  "NCCT_SIMMONS"="NCCT_SIMMONS",
                  "ACEA Biosciences" = "ACEA")
 
+init_text <- "######################################
+# Setup:
+library(toxEval)
+#NOTE: Add path to path_to_file!!!
+path_to_file <- 'Choose File'"
+
 names(shortFlags) <- flagsALL
-header <- dashboardHeader(title = "BETA: toxEval")
+header <- dashboardHeader(title = "BETA: toxEval",
+                          tags$li(class = "dropdown", 
+                            div(style="text-align:center;
+                                font-size: 20px;
+                                height: 50px;
+                                font-weight: 300;
+                                margin-right:25px;
+                                font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                line-height: 50px;
+                                color: #fff;",
+                                textOutput("title_text", inline = TRUE))),
+                          tags$li(class = "dropdown", tags$button(
+                                    id = 'close',
+                                    type = "button",
+                                    class = "btn action-button",
+                                    style='color: #000000; 
+                                    margin-right:13px;margin-top:7px;margin-bottom:7px',
+                                    onclick = "setTimeout(function(){window.close();},500);",  # close browser
+                                    "Stop ToxEval"
+                                  )))
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   tags$button(
-      id = 'close',
-      type = "button",
-      class = "btn action-button",
-      onclick = "setTimeout(function(){window.close();},500);",  # close browser
-      "Stop ToxEval"
-    ),
    fileInput("data", "Load Excel File",multiple = FALSE),
-   radioButtons("radioMaxGroup", label = "",
+   radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
    conditionalPanel(
@@ -90,8 +109,8 @@ sidebar <- dashboardSidebar(
                  selected = "All")     
    ),
    radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
-                inline = TRUE, label = "", selected = FALSE),
-   downloadButton('downloadBenchmarks', 'Download Benchmarks'),
+                inline = TRUE, label = NULL, selected = FALSE),
+   downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
         checkboxGroupInput("assay", "Assays:",
                            assay_names,
@@ -129,24 +148,24 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
-  htmlOutput("title_text"),
-  tags$head(tags$link(rel="shortcut icon", href="favicon.ico")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-             leaflet::leafletOutput("mymap",height = "750px"),
-            htmlOutput("mapFooter")
+             leaflet::leafletOutput("mymap",height = "500px"),
+            htmlOutput("mapFooter"),
+            h4("R Code:"),
+            aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
+             uiOutput("graphGroup.ui", width = "100%"),
              checkboxInput("plot_ND", "Plot ND's?", TRUE),
-             uiOutput("graphGroup.ui"),
              fluidRow(
                column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             verbatimTextOutput("boxCode")
+             aceEditor(outputId = "boxCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
@@ -156,7 +175,7 @@ body <- dashboardBody(
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             verbatimTextOutput("barCode")
+             aceEditor(outputId = "barCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
@@ -164,27 +183,27 @@ body <- dashboardBody(
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm'),
             h4("R Code:"),
-            verbatimTextOutput("tableSummCode")
+            aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
             htmlOutput("nGroup"),
             DT::dataTableOutput('tableGroupSumm'),
             h4("R Code:"),
-            verbatimTextOutput("tableGroupCode")
+            aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
             htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
             h4("R Code:"),
-            verbatimTextOutput("siteHitCode")
+            aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
              h4("R Code:"),
-             verbatimTextOutput("hitsTableEPCode")
+             aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
@@ -194,7 +213,7 @@ body <- dashboardBody(
              column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
             ),
             h4("R Code:"),
-            verbatimTextOutput("epGraphCode")
+            aceEditor(outputId = "epGraph_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
@@ -206,7 +225,8 @@ body <- dashboardBody(
              ),
              h4("R Code:"),
              verbatimTextOutput("heatCode")
-    )
+    ),
+    tags$head(tags$link(rel="shortcut icon", href="favicon.ico"))
   ),
 
   fluidRow(

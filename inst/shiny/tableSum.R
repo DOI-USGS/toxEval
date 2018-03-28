@@ -14,11 +14,14 @@ output$tableSumm <- DT::renderDataTable({
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
                                hit_threshold = hitThres)
+  
+  updateAceEditor(session, editorId = "tableSumm_out", value = tableSummCode() )
+  
   tableGroup
   
 })
 
-output$tableSummCode <- renderPrint({
+tableSummCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -30,6 +33,6 @@ table_tox_rank(chemicalSummary,
                   mean_logic = ",as.logical(input$meanEAR),",
                   hit_threshold = ",hitThres,")")
   
-  HTML(tableSummCode)
+  return(tableSummCode)
   
 })

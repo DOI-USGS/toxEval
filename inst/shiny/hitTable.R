@@ -13,6 +13,8 @@ output$hitsTable <- DT::renderDataTable({
                                    category = c("Biological","Chemical","Chemical Class")[catType],
                                    mean_logic = mean_logic,
                                    hit_threshold = hitThres)
+  
+  updateAceEditor(session, editorId = "siteHit_out", value = siteHitCode() )
   tableGroup
   
 })
@@ -27,7 +29,7 @@ output$siteHitText <- renderUI({
   
 })
 
-output$siteHitCode <- renderPrint({
+siteHitCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -39,6 +41,6 @@ table_tox_endpoint(chemicalSummary,
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,")")
   
-  HTML(siteHitCode)
+  return(siteHitCode)
   
 })
