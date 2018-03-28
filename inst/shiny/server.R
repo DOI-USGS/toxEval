@@ -190,13 +190,13 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     return(toxCast_val)
   })
 
-  output$title_text <- renderUI({
+  output$title_text <- renderText({
 
     if(toxCast()){
-      textUI <- "<h3>Analysis using ToxCast endPoints</h3>"
+      textUI <- "Analysis using ToxCast endPoints"
     } else {
-      textUI <- "<h3>Analysis using CUSTOM endPoints</h3>
-      <h4>Many dropdowns on sidebar will have no effect</h4>"
+      textUI <- "Analysis using CUSTOM endPoints:
+      Many dropdowns on sidebar will have no effect"
     }
     
     HTML(textUI)

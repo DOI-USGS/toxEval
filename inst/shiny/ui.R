@@ -67,17 +67,25 @@ assay_names <- c("Apredica" = "APR",
                  "ACEA Biosciences" = "ACEA")
 
 names(shortFlags) <- flagsALL
-header <- dashboardHeader(title = "BETA: toxEval")
+header <- dashboardHeader(title = "BETA: toxEval",
+                          tags$li(class = "dropdown", 
+                            div(style="text-align:center;
+                                margin-right:13px;margin-top:7px;margin-bottom:7px;
+                                font-size: 20px;
+                                color: red;",
+                                textOutput("title_text"))),
+                          tags$li(class = "dropdown", tags$button(
+                                    id = 'close',
+                                    type = "button",
+                                    class = "btn action-button",
+                                    style='color: #000000; 
+                                    margin-right:13px;margin-top:7px;margin-bottom:7px',
+                                    onclick = "setTimeout(function(){window.close();},500);",  # close browser
+                                    "Stop ToxEval"
+                                  )))
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   tags$button(
-      id = 'close',
-      type = "button",
-      class = "btn action-button",
-      onclick = "setTimeout(function(){window.close();},500);",  # close browser
-      "Stop ToxEval"
-    ),
    fileInput("data", "Load Excel File",multiple = FALSE),
    radioButtons("radioMaxGroup", label = "",
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
@@ -91,7 +99,7 @@ sidebar <- dashboardSidebar(
    ),
    radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
                 inline = TRUE, label = "", selected = FALSE),
-   downloadButton('downloadBenchmarks', 'Download Benchmarks'),
+   downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
         checkboxGroupInput("assay", "Assays:",
                            assay_names,
@@ -129,8 +137,6 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
-  htmlOutput("title_text"),
-  tags$head(tags$link(rel="shortcut icon", href="favicon.ico")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
@@ -208,7 +214,8 @@ body <- dashboardBody(
              ),
              h4("R Code:"),
              verbatimTextOutput("heatCode")
-    )
+    ),
+    tags$head(tags$link(rel="shortcut icon", href="favicon.ico"))
   ),
 
   fluidRow(
