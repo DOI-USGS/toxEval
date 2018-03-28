@@ -31,7 +31,8 @@ Imports:
     RColorBrewer,
     stringi,
     readxl,
-    tools
+    tools,
+    shinyAce
 Suggests:
     rmarkdown,
     testthat,
