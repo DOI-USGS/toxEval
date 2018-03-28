@@ -4,7 +4,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
     toc: true
-    number_sections: true
+    number_sections: false
     fig_caption: yes
     fig_height: 10
     fig_width: 7
@@ -114,6 +114,7 @@ Note: Additional columns may be useful to organize the data. They will not hinde
 Once the data is prepared as described above, it can be loaded into R using the `create_toxEval` function.
 
 ```{r}
+library(toxEval)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
@@ -126,7 +127,48 @@ The `create_toxEval` function will check that required columns are included, and
 
 # Using the Shiny Application
 
-All output on the Shiny app can be created directly in R itself as well. Customizing graphs and tables can be done in R. See the help file for any functions on details and example workflows.
+All of the output on the Shiny app can be created directly in R as well. Using the app is a quick and convenient way to explore your data. For more customization, the R-code to produce each graph and table is displayed in the app. That is a good starting-point for a custom analysis. See the help file for any functions on details and example workflows.
+
+## Overall layout
+
+![main layout](main.png)
+
+## Sidebar options
+
+![sidebar](sidebar.png)
+
+### A. Load data
+
+### B. Group by options
+
+### C. Summarize by site
+
+### D. Download benchmarks
+
+### E. Assay
+
+![Assay](assays.png)
+
+### F. Annotations
+![annotations](annotations.png)
+
+### G. Group
+
+![group](group.png)
+
+### H. Flags
+
+![flags](flags.png)
+
+### I. Sites
+
+![sites](sites.png)
+
+### J. Hit Threshold
+
+![thres](thres.png)
+
+
 
 # Getting Started
 
