@@ -5,6 +5,7 @@
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param plot_ND logical whether or not to plot the non-detects
+#' @param font_size numeric to adjust the axis font size
 #' @export
 #' @import ggplot2
 #' @importFrom stats median quantile
@@ -33,7 +34,8 @@
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
-                                   plot_ND = TRUE){
+                                   plot_ND = TRUE,
+                                   font_size = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- ".dplyr"
@@ -108,6 +110,11 @@ plot_chemical_boxplots <- function(chemicalSummary,
           legend.key.height = unit(1,"line")) +
     scale_fill_manual(values = cbValues, drop=FALSE)
 
+  if(!is.na(font_size)){
+    toxPlot_All <- toxPlot_All +
+      theme(axis.text = element_text(size = font_size))
+  }
+  
   plot_info <- ggplot_build(toxPlot_All)
   layout_stuff <- plot_info$layout
   
@@ -118,7 +125,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
   }
   
   toxPlot_All_withLabels <- toxPlot_All +
-    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size=2.5)
+    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size))
 
   return(toxPlot_All_withLabels)
   
