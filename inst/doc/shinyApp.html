@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Preparing toxEval Analysis</h1>
-<h4 class="date"><em>07 March, 2018</em></h4>
+<h4 class="date"><em>28 March, 2018</em></h4>
 
 
 <div id="TOC">
@@ -79,13 +79,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#exclude"><span class="toc-section-number">1.4</span> Exclude</a></li>
 <li><a href="#benchmarks"><span class="toc-section-number">1.5</span> Benchmarks</a></li>
 </ul></li>
-<li><a href="#checking-the-data"><span class="toc-section-number">2</span> Checking the data</a><ul>
-<li><a href="#alternative-method"><span class="toc-section-number">2.1</span> Alternative method</a></li>
-</ul></li>
-<li><a href="#using-the-shiny-application"><span class="toc-section-number">3</span> Using the Shiny Application</a><ul>
-<li><a href="#loading-data"><span class="toc-section-number">3.1</span> Loading data</a></li>
-<li><a href="#sidebar"><span class="toc-section-number">3.2</span> Sidebar</a></li>
-</ul></li>
+<li><a href="#loading-and-checking-the-data"><span class="toc-section-number">2</span> Loading and Checking the data</a></li>
+<li><a href="#using-the-shiny-application"><span class="toc-section-number">3</span> Using the Shiny Application</a></li>
 <li><a href="#getting-started"><span class="toc-section-number">4</span> Getting Started</a><ul>
 <li><a href="#installation-of-r-and-rstudio"><span class="toc-section-number">4.1</span> Installation of R and RStudio</a></li>
 <li><a href="#installation-of-toxeval"><span class="toc-section-number">4.2</span> Installation of toxEval</a></li>
@@ -155,7 +150,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="benchmarks" class="section level2">
 <h2><span class="header-section-number">1.5</span> Benchmarks</h2>
-<p>The “Benchmarks” tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar <code>ToxEval</code> analysis using EPA benchmarks instead of ToxCast endpoints.</p>
+<p>The “Benchmarks” tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar <code>toxEval</code> analysis using EPA benchmarks instead of ToxCast endpoints.</p>
 <p>For the functions to work seamlessly with all <code>toxEval</code> functions, the “Benchmarks” tab needs to have at a minimum 5 columns: “CAS”, “Chemical”, “endPoint”, “Value”, and “groupCol”. They can be in any order, but the first row of sheet should be the header (column names).</p>
 <ul>
 <li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry.</p></li>
@@ -167,21 +162,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
 </div>
 </div>
-<div id="checking-the-data" class="section level1">
-<h1><span class="header-section-number">2</span> Checking the data</h1>
-<p>Loading the Excel</p>
-<div id="alternative-method" class="section level2">
-<h2><span class="header-section-number">2.1</span> Alternative method</h2>
-</div>
+<div id="loading-and-checking-the-data" class="section level1">
+<h1><span class="header-section-number">2</span> Loading and Checking the data</h1>
+<p>Once the data is prepared as described above, it can be loaded into R using the <code>create_toxEval</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path_to_tox &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;toxEval&quot;</span>)
+file_name &lt;-<span class="st"> &quot;OWC_data_fromSup.xlsx&quot;</span>
+full_path &lt;-<span class="st"> </span><span class="kw">file.path</span>(path_to_tox, file_name)
+
+tox_list &lt;-<span class="st"> </span><span class="kw">create_toxEval</span>(full_path)</code></pre></div>
+<p>The <code>create_toxEval</code> function will check that required columns are included, and give messages if there are unusual issues such as sites that don’t match up with data, or chemicals that don’t match up with chemical information.</p>
 </div>
 <div id="using-the-shiny-application" class="section level1">
 <h1><span class="header-section-number">3</span> Using the Shiny Application</h1>
-<div id="loading-data" class="section level2">
-<h2><span class="header-section-number">3.1</span> Loading data</h2>
-</div>
-<div id="sidebar" class="section level2">
-<h2><span class="header-section-number">3.2</span> Sidebar</h2>
-</div>
 </div>
 <div id="getting-started" class="section level1">
 <h1><span class="header-section-number">4</span> Getting Started</h1>

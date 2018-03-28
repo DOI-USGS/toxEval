@@ -10,7 +10,7 @@ output:
     fig_width: 7
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Figure_1}
+  %\VignetteIndexEntry{User Guide}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -93,7 +93,7 @@ Note: Additional columns may be useful to organize the data. They will not hinde
 
 ## Benchmarks
 
-The "Benchmarks" tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar `ToxEval` analysis using EPA benchmarks instead of ToxCast endpoints. 
+The "Benchmarks" tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar `toxEval` analysis using EPA benchmarks instead of ToxCast endpoints. 
 
 For the functions to work seamlessly with all `toxEval` functions, the "Benchmarks" tab needs to have at a minimum 5 columns: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of sheet should be the header (column names).
 
@@ -109,18 +109,24 @@ For the functions to work seamlessly with all `toxEval` functions, the "Benchmar
 
 Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
 
-# Checking the data
+# Loading and Checking the data
 
-Loading the Excel 
+Once the data is prepared as described above, it can be loaded into R using the `create_toxEval` function.
 
-## Alternative method
+```{r}
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
 
+tox_list <- create_toxEval(full_path)
+
+```
+
+The `create_toxEval` function will check that required columns are included, and give messages if there are unusual issues such as sites that don't match up with data, or chemicals that don't match up with chemical information.
 
 # Using the Shiny Application
 
-## Loading data
 
-## Sidebar
 
 # Getting Started
 

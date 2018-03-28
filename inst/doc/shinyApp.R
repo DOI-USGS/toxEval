@@ -7,6 +7,14 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
 
+## ---------------------------------------------------------
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
+
+tox_list <- create_toxEval(full_path)
+
+
 ## ---- eval=FALSE------------------------------------------
 #  rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
 #  write('\noptions(repos=c(getOption(\'repos\'),
