@@ -126,7 +126,7 @@ The `create_toxEval` function will check that required columns are included, and
 
 # Using the Shiny Application
 
-
+All output on the Shiny app can be created directly in R itself as well. Customizing graphs and tables can be done in R. See the help file for any functions on details and example workflows.
 
 # Getting Started
 
