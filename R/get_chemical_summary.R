@@ -1,9 +1,21 @@
-#' get_chemical_summary
+#' Create a chemical summary of the data.
 #' 
-#' Get ACC values for vector of CAS's
+#' This function takes the measured user data from the output of \code{\link{create_toxEval},
+#' and joins the data with the endPoint information provided by ToxCast.
+#' Data from ToxCast is included with this package, but alternative 
+#' benchmark data can be provided to perform the same "toxEval" analysis.
+#' 
+#' To use the data provided by the package, a sample workflow is shown below
+#' in the examples. It includes getting the ToxCast (ACC) values that will
+#' be used to calculate the EAR, filtering out the endToints that should
+#' be ignored based on "flags" in the data, and filtering out any groups
+#' that may not be important to the analysis at hand.
+#' 
+#' 
 #' @param tox_list list with data frames for chem_data, chem_info, chem_site, 
 #' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}
-#' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value
+#' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value. To use data
+#' provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish
 #' @param filtered_ep data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 #' filtering occurs.
 #' @param chem.data OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 

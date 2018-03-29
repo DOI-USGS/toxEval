@@ -29,9 +29,13 @@ The `toxEval` R-package includes a set of functions to analyze, visualize, and o
 
 This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is not on CRAN. 
 
+# Introduction
+
+What the heck are we doing?
+
 # Preparing the data
 
-The data should be prepared in a Microsoft\textregistered\ Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear like this (although the order is not important):
+The data should be prepared in a Microsoft &trade; Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear like this (although the order is not important):
 
 ![Organize Sheets](tabs.png)
 
@@ -61,7 +65,7 @@ The "Chemicals" tab needs to have at a minimum 2 columns: "CAS" and "Class". The
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
-* Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping (will be discussed in section TODO:XXXXXXXX)
+* Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping.
 
 Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
 
@@ -109,7 +113,9 @@ For the functions to work seamlessly with all `toxEval` functions, the "Benchmar
 
 Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
 
-# Loading and Checking the data
+# Data Analysis
+
+## Loading and Checking
 
 Once the data is prepared as described above, it can be loaded into R using the `create_toxEval` function.
 
@@ -125,15 +131,42 @@ tox_list <- create_toxEval(full_path)
 
 The `create_toxEval` function will check that required columns are included, and give messages if there are unusual issues such as sites that don't match up with data, or chemicals that don't match up with chemical information.
 
+The vast majority of `toxEval` functions require a data frame described as `chemicalSummary`. The next section will walk through the options that are available in the workflow.
+
+## chemicalSummary
+
+The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
+
+```{r chemicalSummary}
+
+```
+
 # Using the Shiny Application
 
 All of the output on the Shiny app can be created directly in R as well. Using the app is a quick and convenient way to explore your data. For more customization, the R-code to produce each graph and table is displayed in the app. That is a good starting-point for a custom analysis. See the help file for any functions on details and example workflows.
 
-## Overall layout
+To run the app, load the `toxEval` package, and run the `explore_endpoints` function:
+
+```{r runApp, eval=FALSE}
+library(toxEval)
+explore_endpoints()
+```
+
+Your default browser will open up and display the following page:
 
 ![main layout](main.png)
 
+Generally the app can be divided into 3 main sections:
+
+The left sidebar (with the black background) will be used to load the data and set up the conditions for analysis. The options here will be described in the next section.
+
+The top main section includes a variety of tabs to choose from to explore the data in different ways. Each section will be described in the section "Main Output".
+
+The bottom section "R Code:" shows the exact code you could use to run directly in R to reproduce the analysis. The code can be copied and pasted directly into the R console, or (preferred for reproducibility!) saved in an R script. One important note is that the local path to the file is not recorded, so if your data file is not located in your current working directory, you'll need to add the path to your file name.
+
 ## Sidebar options
+
+The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will NOT go into the scientific details of what options to choose. That will need to be up to the user. 
 
 ![sidebar](sidebar.png)
 
@@ -168,9 +201,9 @@ All of the output on the Shiny app can be created directly in R as well. Using t
 
 ![thres](thres.png)
 
+## Main Output
 
-
-# Getting Started
+# Package logistics
 
 ## Installation of R and RStudio
 

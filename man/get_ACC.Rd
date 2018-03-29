@@ -2,15 +2,19 @@
 % Please edit documentation in R/get_ACC.R
 \name{get_ACC}
 \alias{get_ACC}
-\title{get_ACC}
+\title{Get the ACC values for a selection of chemicals}
 \usage{
 get_ACC(CAS)
 }
 \arguments{
-\item{CAS}{vector of CAS}
+\item{CAS}{vector of CAS.}
+}
+\value{
+data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
 }
 \description{
-Get ACC values for vector of CAS's
+Data from the ToxCast are included in the toxEval package. This data is
+called and filtered based on the provided vector of CAS values.
 }
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")

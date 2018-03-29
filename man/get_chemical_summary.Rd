@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_chemical_summary.R
 \name{get_chemical_summary}
 \alias{get_chemical_summary}
-\title{get_chemical_summary}
+\title{Create a chemical summary of the data.}
 \usage{
 get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
   chem.data = NULL, chem.site = NULL, chem.info = NULL,
@@ -12,7 +12,8 @@ get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
 \item{tox_list}{list with data frames for chem_data, chem_info, chem_site, 
 and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
 
-\item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value}
+\item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value. To use data
+provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish}
 
 \item{filtered_ep}{data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 filtering occurs.}
@@ -29,8 +30,12 @@ Will over-ride what is in tox_list.}
 \item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 Will over-ride what is in tox_list.}
 }
-\description{
-Get ACC values for vector of CAS's
+\details{
+To use the data provided by the package, a sample workflow is shown below
+in the examples. It includes getting the ToxCast (ACC) values that will
+be used to calculate the EAR, filtering out the endToints that should
+be ignored based on "flags" in the data, and filtering out any groups
+that may not be important to the analysis at hand.
 }
 \examples{
 path_to_tox <-  system.file("extdata", package="toxEval")
