@@ -31,6 +31,12 @@ The argument will over-ride what is in tox_list.}
 \item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 }
+\description{
+This function takes the measured user data from the output of \code{\link{create_toxEval}},
+and joins the data with the endPoint information provided by ToxCast.
+Data from ToxCast is included with this package, but alternative 
+benchmark data can be provided to perform the same "toxEval" analysis.
+}
 \details{
 To use the data provided by the package, a sample workflow is shown below
 in the examples. It includes getting the ToxCast (ACC) values that will
@@ -44,7 +50,7 @@ file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
-
+\dontrun{
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
@@ -52,5 +58,5 @@ cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-                                        
+}                                    
 }

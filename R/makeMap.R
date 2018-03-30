@@ -126,6 +126,8 @@ makeMap <- function(chemicalSummary,
                     category = "Biological",
                     mean_logic = FALSE){
   
+  SiteID <- ".dplyr
+  "
   maxEARWords <- ifelse(mean_logic,"meanEAR","maxEAR")
   
   mapDataList <- getMapInfo(chemicalSummary, 

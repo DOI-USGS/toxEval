@@ -42,7 +42,7 @@ plot_tox_stacks <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  SiteID <- site_grouping <- `Short Name` <- count <- ".dplyr"
+  SiteID <- site_grouping <- index <- `Short Name` <- count <- ".dplyr"
     
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- ""

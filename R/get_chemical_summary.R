@@ -1,6 +1,6 @@
 #' Create a chemical summary of the data.
 #' 
-#' This function takes the measured user data from the output of \code{\link{create_toxEval},
+#' This function takes the measured user data from the output of \code{\link{create_toxEval}},
 #' and joins the data with the endPoint information provided by ToxCast.
 #' Data from ToxCast is included with this package, but alternative 
 #' benchmark data can be provided to perform the same "toxEval" analysis.
@@ -36,7 +36,7 @@
 #' full_path <- file.path(path_to_tox, file_name)
 #' 
 #' tox_list <- create_toxEval(full_path)
-#' 
+#' \dontrun{
 #' ACClong <- get_ACC(tox_list$chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
 #' 
@@ -44,7 +44,7 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'                                         
+#' }                                    
 get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All", 
                                  chem.data=NULL, chem.site=NULL, 
                                  chem.info=NULL, exclusion=NULL){
