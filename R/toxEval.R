@@ -66,8 +66,7 @@ NULL
 #' the \code{get_ACC} function is an easy way to get the data
 #' in a "long" format. 
 #' 
-#' AC50gain values are either the reported modl_ga (winning model) or 10% of modl_ga if the AC50gain
-#' value is lower than the lowest measured concentration and units are 
+#' AC50gain values are the reported modl_ga (winning model) and units are 
 #' log micro-Molarity (log uM).
 #' 
 #'
@@ -83,47 +82,49 @@ NULL
 # is a function that *should* do it, assuming
 # the format it the same. I might not count on that
 # however....that is why it is an internal only function.
-update_ACC <- function(path_to_files){
-  library(data.table)
-  library(dplyr)
-  library(tidyr)
-  # Data originally from:
-  # ftp://newftp.epa.gov/COMPTOX/ToxCast_Data_Oct_2015/README_INVITRODB_V2_LEVEL5.pdf
-  # https://www.epa.gov/sites/production/files/2015-08/documents/toxcast_assay_annotation_data_users_guide_20141021.pdf
-  # path_to_files <- "D:/LADData/RCode/toxEval_Archive/INVITRODB_V2_LEVEL5"
-
-  files <- list.files(path = path_to_files)
-  
-  x <- fread(file.path(path_to_files, files[1]))
-  
-  filtered <- select(x, chnm, casn, aenm, logc_min, logc_max, modl_acc,
-                     modl, actp, modl_ga, flags, hitc,gsid_rep) %>%
-    filter(hitc == 1)
-  
-  for(i in files[-1]){
-    subX <- fread(file.path(path_to_files,i)) 
-    
-    subFiltered <- select(subX, chnm, casn, aenm, logc_min, logc_max, modl_acc,
-                          modl, actp, modl_ga, flags, hitc,gsid_rep) %>%
-      filter(hitc == 1)
-    
-    filtered <- bind_rows(filtered, subFiltered)
-  }
-  
-  ACCgain <- filter(filtered, hitc == 1) %>%
-    filter(gsid_rep == 1) %>%
-    select(casn, chnm, aenm, modl_acc, flags) %>%
-    spread(key = aenm, value = modl_acc)
-  
-  # Something we considered but decided not to do was:
-  
-  # ACCgain2 <- filter(filtered, hitc == 1) %>%
-  #   filter(gsid_rep == 1) %>%
-  #   select(casn, chnm, aenm, modl_acc, flags, logc_min) %>%
-  #   mutate(newFlag = modl_acc < logc_min) %>%
-  #   mutate(value = ifelse(newFlag, log10((10^modl_acc)/10), modl_acc)) 
-  
-}
+# This is staying commented out because it adds 
+# extraneous notes:
+# update_ACC <- function(path_to_files){
+#   library(data.table)
+#   library(dplyr)
+#   library(tidyr)
+#   # Data originally from:
+#   # ftp://newftp.epa.gov/COMPTOX/ToxCast_Data_Oct_2015/README_INVITRODB_V2_LEVEL5.pdf
+#   # https://www.epa.gov/sites/production/files/2015-08/documents/toxcast_assay_annotation_data_users_guide_20141021.pdf
+#   # path_to_files <- "D:/LADData/RCode/toxEval_Archive/INVITRODB_V2_LEVEL5"
+# 
+#   files <- list.files(path = path_to_files)
+#   
+#   x <- fread(file.path(path_to_files, files[1]))
+#   
+#   filtered <- select(x, chnm, casn, aenm, logc_min, logc_max, modl_acc,
+#                      modl, actp, modl_ga, flags, hitc,gsid_rep) %>%
+#     filter(hitc == 1)
+#   
+#   for(i in files[-1]){
+#     subX <- fread(file.path(path_to_files,i)) 
+#     
+#     subFiltered <- select(subX, chnm, casn, aenm, logc_min, logc_max, modl_acc,
+#                           modl, actp, modl_ga, flags, hitc,gsid_rep) %>%
+#       filter(hitc == 1)
+#     
+#     filtered <- bind_rows(filtered, subFiltered)
+#   }
+#   
+#   ACCgain <- filter(filtered, hitc == 1) %>%
+#     filter(gsid_rep == 1) %>%
+#     select(casn, chnm, aenm, modl_acc, flags) %>%
+#     spread(key = aenm, value = modl_acc)
+#   
+#   # Something we considered but decided not to do was:
+#   
+#   # ACCgain2 <- filter(filtered, hitc == 1) %>%
+#   #   filter(gsid_rep == 1) %>%
+#   #   select(casn, chnm, aenm, modl_acc, flags, logc_min) %>%
+#   #   mutate(newFlag = modl_acc < logc_min) %>%
+#   #   mutate(value = ifelse(newFlag, log10((10^modl_acc)/10), modl_acc)) 
+#   
+# }
 
 #' Endpoint information from ToxCast
 #' 

@@ -35,7 +35,13 @@ The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-researc
 
 When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.
 
-So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings. 
+So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
+
+## Exposure-Activity Ratio
+
+## endPoints
+
+## Summary options
 
 
 # Preparing the data
