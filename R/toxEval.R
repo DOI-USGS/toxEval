@@ -54,11 +54,15 @@ https://owi.usgs.gov/R/packages.html#research'),
 #' @keywords ToxCast
 NULL
 
-#' Constants included with toxEval. Units are log micro-Molarity (log uM).
+#' ACC values included with toxEval. 
+#' 
+#' 
 #' 
 #' AC50gain downloaded on October 2015 from ToxCast dashboard. AC50gain values 
 #' are either the reported modl_ga (winning model) or 10% of modl_ga if the AC50gain
 #' value is lower than the lowest measured concentration. Also, 
+#' 
+#' Units are log micro-Molarity (log uM).
 #' 
 #'\itemize{
 #'  \item{ACC}{ACC endpoints}
@@ -75,7 +79,14 @@ NULL
 
 #' Endpoint information from ToxCast
 #' 
-#' Downloaded on October 2015 from ToxCast dashboard
+#' Downloaded on October 2015 from ToxCast. The file name of the
+#' raw data was "Assay_Summary_151020.csv" from the zip file 
+#' "Assay_Information_Oct_2015.zip". At the time
+#' of toxEval package release, this information was found:
+#' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' in the section marked "Download Assay Information", in the 
+#' ToxCast & Tox21 high-throughput assay information data set.
+#'
 #'
 #'@name endPointInfo
 #'@aliases endPointInfo
@@ -87,9 +98,16 @@ NULL
 #'head(endPointInfo[,1:5])
 NULL
 
-#' tox_chemicals 
+#' ToxCast Chemical Information 
 #' 
-#' Downloaded on October 2015 from ToxCast dashboard
+#' Downloaded on October 2015 from ToxCast. The file name of the
+#' raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx", 
+#' from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
+#' of toxEval package release, this information was found:
+#' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' in the section marked "Download ToxCast Chemical Information". This 
+#' was in the "ToxCast & Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
+#' data set.
 #'
 #'@aliases tox_chemicals
 #'@name tox_chemicals
@@ -98,18 +116,4 @@ NULL
 #'@export tox_chemicals
 #'@examples
 #'head(tox_chemicals)
-NULL
-
-
-#' Example chemicalSummary
-#'
-#' Example data representing data from the sample Excel file found in
-#' \code{system.file("extdata", package="toxEval")}, OWC_data_fromSup.xlsx
-#'
-#' @name ex_chemSum
-#' @rdname ex_chemSum
-#' @docType data
-#' @keywords water quality data
-#' @examples 
-#' head(ex_chemSum)
 NULL

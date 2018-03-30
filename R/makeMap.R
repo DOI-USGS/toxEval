@@ -28,11 +28,8 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
 #' mapData <- getMapInfo(chemicalSummary, tox_list$chem_site, "Biological") 
+#' }
 getMapInfo <- function(chemicalSummary,
                     chem_site,
                     category = "Biological",
@@ -119,14 +116,11 @@ getMapInfo <- function(chemicalSummary,
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
 #' 
-#' chemicalSummary <- ex_chemSum #loading example data
 #' makeMap(chemicalSummary, tox_list$chem_site, "Biological")   
 #' makeMap(chemicalSummary, tox_list$chem_site, "Chemical Class")
 #' makeMap(chemicalSummary, tox_list$chem_site, "Chemical") 
+#' }
 makeMap <- function(chemicalSummary,
                     chem_site,
                     category = "Biological",

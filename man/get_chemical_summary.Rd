@@ -13,22 +13,23 @@ get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
 and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
 
 \item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value. To use data
-provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish}
+provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish
+to remove endPoints with specific flags using the \code{\link{remove_flags}} function.}
 
 \item{filtered_ep}{data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 filtering occurs.}
 
 \item{chem.data}{OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 
-Will over-ride what is in tox_list.}
+The argument will over-ride what is in tox_list.}
 
 \item{chem.site}{OPTIONAL data frame with (at least) columns: SiteID, Short Name. Default is \code{NULL}. 
-Will over-ride what is in tox_list.}
+The argument will over-ride what is in tox_list.}
 
 \item{chem.info}{OPTIONAL data frame with (at least) columns: CAS, class. Default is \code{NULL}. 
-Will over-ride what is in tox_list.}
+The argument will over-ride what is in tox_list.}
 
 \item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
-Will over-ride what is in tox_list.}
+The argument will over-ride what is in tox_list.}
 }
 \details{
 To use the data provided by the package, a sample workflow is shown below

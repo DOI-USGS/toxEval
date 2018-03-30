@@ -25,12 +25,9 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
 #'                                         
 #' plot_chemical_boxplots(chemicalSummary)
+#' }
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
@@ -155,11 +152,9 @@ plot_chemical_boxplots <- function(chemicalSummary,
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
+#'
 #' graphData <- graph_chem_data(chemicalSummary)
+#' }
 graph_chem_data <- function(chemicalSummary, 
                             manual_remove=NULL,
                             mean_logic = FALSE){

@@ -31,7 +31,12 @@ This vignette describes the process to prepare the data and use the shiny applic
 
 # Introduction
 
-What the heck are we doing?
+The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> is a database with thousands of chemicals that can give biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to the benchmark data. By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
+
+When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.
+
+So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings. 
+
 
 # Preparing the data
 
@@ -162,13 +167,14 @@ The left sidebar (with the black background) will be used to load the data and s
 
 The top main section includes a variety of tabs to choose from to explore the data in different ways. Each section will be described in the section "Main Output".
 
-The bottom section "R Code:" shows the exact code you could use to run directly in R to reproduce the analysis. The code can be copied and pasted directly into the R console, or (preferred for reproducibility!) saved in an R script. One important note is that the local path to the file is not recorded, so if your data file is not located in your current working directory, you'll need to add the path to your file name.
+The bottom section "R Code:" shows the exact code you could use to run directly in R to reproduce the analysis. The code can be copied and pasted directly into the R console, or (preferred for reproducible!) saved in an R script. One important note is that the local path to the file is not recorded, so if your data file is not located in your current working directory, you'll need to add the path to your file name.
 
 ## Sidebar options
 
+<img style="float: right;" src="sidebar.png">
+
 The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will NOT go into the scientific details of what options to choose. That will need to be up to the user. 
 
-![sidebar](sidebar.png)
 
 ### A. Load data
 

@@ -4,13 +4,14 @@
 \name{Constants}
 \alias{Constants}
 \alias{ACC}
-\title{Constants included with toxEval. Units are log micro-Molarity (log uM).}
-\description{
+\title{ACC values included with toxEval.}
+\details{
 AC50gain downloaded on October 2015 from ToxCast dashboard. AC50gain values 
 are either the reported modl_ga (winning model) or 10% of modl_ga if the AC50gain
 value is lower than the lowest measured concentration. Also,
-}
-\details{
+
+Units are log micro-Molarity (log uM).
+
 \itemize{
  \item{ACC}{ACC endpoints}
 }

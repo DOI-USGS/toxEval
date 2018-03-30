@@ -27,14 +27,11 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
-#'                                         
+#'                                        
 #' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
 #' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
 #' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+#' }
 plot_tox_stacks <- function(chemicalSummary, 
                             chem_site,
                             category = "Biological",

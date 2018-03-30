@@ -16,16 +16,17 @@
 #' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}
 #' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value. To use data
 #' provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish
+#' to remove endPoints with specific flags using the \code{\link{remove_flags}} function.
 #' @param filtered_ep data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 #' filtering occurs.
 #' @param chem.data OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 
-#' Will over-ride what is in tox_list.
+#' The argument will over-ride what is in tox_list.
 #' @param chem.site OPTIONAL data frame with (at least) columns: SiteID, Short Name. Default is \code{NULL}. 
-#' Will over-ride what is in tox_list.
+#' The argument will over-ride what is in tox_list.
 #' @param chem.info OPTIONAL data frame with (at least) columns: CAS, class. Default is \code{NULL}. 
-#' Will over-ride what is in tox_list.
+#' The argument will over-ride what is in tox_list.
 #' @param exclusion OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
-#' Will over-ride what is in tox_list.
+#' The argument will over-ride what is in tox_list.
 #' @export
 #' @importFrom tidyr gather
 #' @importFrom dplyr full_join filter mutate select left_join right_join anti_join
@@ -252,14 +253,11 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
 #' exclusion <- data.frame(CAS = c("134-62-3","486-56-6"),
 #'                         endPoint = c("", "TOX21_p53_BLA_p3_viability"),
 #'                         stringsAsFactors = FALSE)
 #' chemicalSummary <- exclude_points(chemicalSummary, exclusion)
+#' }
 exclude_points <- function(chemicalSummary, exclusion){
   
   CAS <- endPoint <- casrn <- ".dplyr"

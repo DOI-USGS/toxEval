@@ -25,14 +25,11 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
-#'                                         
+#'                                       
 #' table_endpoint_hits(chemicalSummary, category = "Biological")
 #' table_endpoint_hits(chemicalSummary, category = "Chemical Class")
 #' table_endpoint_hits(chemicalSummary, category = "Chemical")
+#' }
 table_endpoint_hits <- function(chemicalSummary, 
                            category = "Biological",
                            mean_logic = FALSE,
