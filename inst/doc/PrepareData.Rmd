@@ -1,0 +1,95 @@
+---
+title: "Preparing toxEval Data"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+    fig_caption: yes
+    fig_height: 10
+    fig_width: 7
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Prepare Data}
+  \usepackage[utf8]{inputenc}
+---
+
+# Preparing the data
+
+The data should be prepared in a Microsoft &trade; Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear like this (although the order is not important):
+
+![Organize Sheets](tabs.png)
+
+Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns is important. Additional columns can be included but will be ignored. The top row of each sheet should contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data. 
+
+## Data
+
+The "Data" tab needs to have at a minimum 4 columns: "CAS", "SiteID", "Value", and "Sample Date". They can be in any order, but the first row of sheet should be the header (column names).
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Chemicals" sheet.
+
+* SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Sites" sheet. There is no requirements on formatting for this column.
+
+* Value: This column is numeric. It should be the concentration of the chemical in $\mu$g/L.
+
+* Sample Date: Currently this column only serves to identify unique samples.  Dates and times as formatted in Excel, as well as integer values are acceptable. The actual date and times are not currently used to perform any time series analysis. 
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+As an example, the first several rows of a minimal example would look like this:
+
+![Example Data](data.png)
+
+## Chemicals
+
+The "Chemicals" tab needs to have at a minimum 2 columns: "CAS" and "Class". They can be in any order, but the first row of sheet should be the header (column names).
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
+
+* Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping.
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+## Sites
+
+The "Sites" tab needs to have at a minimum 4 columns: "SiteID", "Short Name", "dec_lon", and "dec_lat". They can be in any order, but the first row of sheet should be the header (column names).
+
+* SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Data" sheet. There is no requirements on formatting for this column.
+
+* Short Name: This character column is the name associated with the SiteID that will be used in the graphs and tables. The names should be sufficiently descriptive, but as short as possible to optimize the area on the graph devoted to the data and not the labels.
+
+* dec_lon: This numeric column is the decimal longitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most `toxEval` functions will not require this column.
+
+* dec_lat: This numeric column is the decimal latitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most `toxEval` functions will not require this column.
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+## Exclude
+
+The "Exclude" tab is an optional tab. If used, the "Exclude" tab needs to have at a minimum 2 columns: "CAS" and "endPoint". They can be in any order, but the first row of sheet should be the header (column names).
+
+* endPoint: A character column define a specific ToxCast endpoint to ignore. IF the "CAS" in the corresponding row is empty, the endPoint will be completely excluded from the `toxEval` analysis. For example, maybe it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider in the analysis. We can exclude all TOX21_p53_BLA_p3_ratio endPoints by adding it to the Exclude tab. IF the "CAS" in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis. 
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. IF the "endPoint" in the corresponding row is empty, the chemical will be completely excluded from the `toxEval` analysis. For example, maybe it was discovered that DEET was contaminated in the sampling method. We can exclude all DEET measurements by adding 134-62-3 to the Exclude tab. IF the "endPoint" in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.
+
+There could be a variety of reasons to exclude chemical/endpoint combinations. This will be discussed further in section TODO: XXXXXXXXX.
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.
+
+## Benchmarks
+
+The "Benchmarks" tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar `toxEval` analysis using EPA benchmarks instead of ToxCast endpoints. 
+
+For the functions to work seamlessly with all `toxEval` functions, the "Benchmarks" tab needs to have at a minimum 5 columns: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of sheet should be the header (column names).
+
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. 
+
+* Chemical: A character column defining the name of the chemicals.
+
+* endPoint: A character column naming the benchmark
+
+* Value: The concentration (in identical units as what is reported in the "Data" tab) of the benchmark.
+
+* groupCol: A character column that groups endpoints. This is analogous to the Biological groupings from the ToxCast analysis.
+
+Note: Additional columns may be useful to organize the data. They will not hinder a `toxEval` analysis.

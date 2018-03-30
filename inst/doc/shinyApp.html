@@ -12,7 +12,7 @@
 
 
 
-<title>Preparing toxEval Analysis</title>
+<title>Shiny App</title>
 
 
 
@@ -66,28 +66,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">Preparing toxEval Analysis</h1>
+<h1 class="title toc-ignore">Shiny App</h1>
 <h4 class="date"><em>30 March, 2018</em></h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">Introduction</a><ul>
-<li><a href="#exposure-activity-ratio">Exposure-Activity Ratio</a></li>
-<li><a href="#endpoints">endPoints</a></li>
-<li><a href="#summary-options">Summary options</a></li>
-</ul></li>
-<li><a href="#preparing-the-data">Preparing the data</a><ul>
-<li><a href="#data">Data</a></li>
-<li><a href="#chemicals">Chemicals</a></li>
-<li><a href="#sites">Sites</a></li>
-<li><a href="#exclude">Exclude</a></li>
-<li><a href="#benchmarks">Benchmarks</a></li>
-</ul></li>
-<li><a href="#data-analysis">Data Analysis</a><ul>
-<li><a href="#loading-and-checking">Loading and Checking</a></li>
-<li><a href="#chemicalsummary">chemicalSummary</a></li>
-</ul></li>
 <li><a href="#using-the-shiny-application">Using the Shiny Application</a><ul>
 <li><a href="#sidebar-options">Sidebar options</a><ul>
 <li><a href="#a.-load-data">A. Load data</a></li>
@@ -114,110 +98,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 </div>
 
-<p>The <code>toxEval</code> R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the <code>shiny</code> R-package. There is less customization from the application, but it is a convenient way to explore the data.</p>
-<p>This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is not on CRAN.</p>
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>The U.S. EPA’s Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> is a database with thousands of chemicals that can give biological relevance to measured concentrations. The <code>toxEval</code> package attempts to simplify the workflow for exploring data as it relates to the benchmark data. By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.</p>
-<p>When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.</p>
-<p>So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.</p>
-<div id="exposure-activity-ratio" class="section level2">
-<h2>Exposure-Activity Ratio</h2>
-</div>
-<div id="endpoints" class="section level2">
-<h2>endPoints</h2>
-</div>
-<div id="summary-options" class="section level2">
-<h2>Summary options</h2>
-</div>
-</div>
-<div id="preparing-the-data" class="section level1">
-<h1>Preparing the data</h1>
-<p>The data should be prepared in a Microsoft ™ Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear like this (although the order is not important):</p>
-<div class="figure">
-<img src="data:image/png;base64,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" alt="Organize Sheets" />
-<p class="caption">Organize Sheets</p>
-</div>
-<p>Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns is important. Additional columns can be included but will be ignored. The top row of each sheet should contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data.</p>
-<div id="data" class="section level2">
-<h2>Data</h2>
-<p>The “Data” tab needs to have at a minimum 4 columns: “CAS”, “SiteID”, “Value”, and “Sample Date”. They can be in any order, but the first row of sheet should be the header (column names).</p>
-<ul>
-<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose “Format Cells”, and choose “Text” as the category to assure they retain their format. The unique CAS values in this column <em>must</em> match with the CAS values in the “Chemicals” sheet.</p></li>
-<li><p>SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique “SiteID” values <em>must</em> match the “SiteID” values in the “Sites” sheet. There is no requirements on formatting for this column.</p></li>
-<li><p>Value: This column is numeric. It should be the concentration of the chemical in <span class="math inline">\(\mu\)</span>g/L.</p></li>
-<li><p>Sample Date: Currently this column only serves to identify unique samples. Dates and times as formatted in Excel, as well as integer values are acceptable. The actual date and times are not currently used to perform any time series analysis.</p></li>
-</ul>
-<p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
-<p>As an example, the first several rows of a minimal example would look like this:</p>
-<div class="figure">
-<img src="data:image/png;base64,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" alt="Example Data" />
-<p class="caption">Example Data</p>
-</div>
-</div>
-<div id="chemicals" class="section level2">
-<h2>Chemicals</h2>
-<p>The “Chemicals” tab needs to have at a minimum 2 columns: “CAS” and “Class”. They can be in any order, but the first row of sheet should be the header (column names).</p>
-<ul>
-<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose “Format Cells”, and choose “Text” as the category to assure they retain their format. The unique CAS values in this column <em>must</em> match with the CAS values in the “Data” sheet.</p></li>
-<li><p>Class: A character column defining the class of chemicals. Most <code>toxEval</code> functions will allow groupings by either chemical, class (as defined here), or biological grouping.</p></li>
-</ul>
-<p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
-</div>
-<div id="sites" class="section level2">
-<h2>Sites</h2>
-<p>The “Sites” tab needs to have at a minimum 4 columns: “SiteID”, “Short Name”, “dec_lon”, and “dec_lat”. They can be in any order, but the first row of sheet should be the header (column names).</p>
-<ul>
-<li><p>SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique “SiteID” values <em>must</em> match the “SiteID” values in the “Data” sheet. There is no requirements on formatting for this column.</p></li>
-<li><p>Short Name: This character column is the name associated with the SiteID that will be used in the graphs and tables. The names should be sufficiently descriptive, but as short as possible to optimize the area on the graph devoted to the data and not the labels.</p></li>
-<li><p>dec_lon: This numeric column is the decimal longitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most <code>toxEval</code> functions will not require this column.</p></li>
-<li><p>dec_lat: This numeric column is the decimal latitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most <code>toxEval</code> functions will not require this column.</p></li>
-</ul>
-<p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
-</div>
-<div id="exclude" class="section level2">
-<h2>Exclude</h2>
-<p>The “Exclude” tab is an optional tab. If used, the “Exclude” tab needs to have at a minimum 2 columns: “CAS” and “endPoint”. They can be in any order, but the first row of sheet should be the header (column names).</p>
-<ul>
-<li><p>endPoint: A character column define a specific ToxCast endpoint to ignore. IF the “CAS” in the corresponding row is empty, the endPoint will be completely excluded from the <code>toxEval</code> analysis. For example, maybe it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider in the analysis. We can exclude all TOX21_p53_BLA_p3_ratio endPoints by adding it to the Exclude tab. IF the “CAS” in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.</p></li>
-<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. IF the “endPoint” in the corresponding row is empty, the chemical will be completely excluded from the <code>toxEval</code> analysis. For example, maybe it was discovered that DEET was contaminated in the sampling method. We can exclude all DEET measurements by adding 134-62-3 to the Exclude tab. IF the “endPoint” in the corresponding row is NOT empty, the specific chemical/endPoint combination will be excluded from the analysis.</p></li>
-</ul>
-<p>There could be a variety of reasons to exclude chemical/endpoint combinations. This will be discussed further in section TODO: XXXXXXXXX.</p>
-<p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
-</div>
-<div id="benchmarks" class="section level2">
-<h2>Benchmarks</h2>
-<p>The “Benchmarks” tab is an optional tab. The benchmark tab can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar <code>toxEval</code> analysis using EPA benchmarks instead of ToxCast endpoints.</p>
-<p>For the functions to work seamlessly with all <code>toxEval</code> functions, the “Benchmarks” tab needs to have at a minimum 5 columns: “CAS”, “Chemical”, “endPoint”, “Value”, and “groupCol”. They can be in any order, but the first row of sheet should be the header (column names).</p>
-<ul>
-<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry.</p></li>
-<li><p>Chemical: A character column defining the name of the chemicals.</p></li>
-<li><p>endPoint: A character column naming the benchmark</p></li>
-<li><p>Value: The concentration (in identical units as what is reported in the “Data” tab) of the benchmark.</p></li>
-<li><p>groupCol: A character column that groups endpoints. This is analogous to the Biological groupings from the ToxCast analysis.</p></li>
-</ul>
-<p>Note: Additional columns may be useful to organize the data. They will not hinder a <code>toxEval</code> analysis.</p>
-</div>
-</div>
-<div id="data-analysis" class="section level1">
-<h1>Data Analysis</h1>
-<div id="loading-and-checking" class="section level2">
-<h2>Loading and Checking</h2>
-<p>Once the data is prepared as described above, it can be loaded into R using the <code>create_toxEval</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
-path_to_tox &lt;-<span class="st">  </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;toxEval&quot;</span>)
-file_name &lt;-<span class="st"> &quot;OWC_data_fromSup.xlsx&quot;</span>
-full_path &lt;-<span class="st"> </span><span class="kw">file.path</span>(path_to_tox, file_name)
-
-tox_list &lt;-<span class="st"> </span><span class="kw">create_toxEval</span>(full_path)</code></pre></div>
-<p>The <code>create_toxEval</code> function will check that required columns are included, and give messages if there are unusual issues such as sites that don’t match up with data, or chemicals that don’t match up with chemical information.</p>
-<p>The vast majority of <code>toxEval</code> functions require a data frame described as <code>chemicalSummary</code>. The next section will walk through the options that are available in the workflow.</p>
-</div>
-<div id="chemicalsummary" class="section level2">
-<h2>chemicalSummary</h2>
-<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” tab in the Excel file. The general workflow for creating this data frame is:</p>
-</div>
-</div>
 <div id="using-the-shiny-application" class="section level1">
 <h1>Using the Shiny Application</h1>
 <p>All of the output on the Shiny app can be created directly in R as well. Using the app is a quick and convenient way to explore your data. For more customization, the R-code to produce each graph and table is displayed in the app. That is a good starting-point for a custom analysis. See the help file for any functions on details and example workflows.</p>

@@ -1,0 +1,35 @@
+---
+title: "Introduction to toxEval"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+    fig_caption: yes
+    fig_height: 10
+    fig_width: 7
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to toxEval}
+  \usepackage[utf8]{inputenc}
+---
+
+
+The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package. There is less customization from the application, but it is a convenient way to explore the data. 
+
+This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is not on CRAN. 
+
+# Introduction
+
+The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> is a database with thousands of chemicals that can give biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to the benchmark data. By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
+
+When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.
+
+So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
+
+## Exposure-Activity Ratio
+
+## endPoints
+
+## Summary options
+

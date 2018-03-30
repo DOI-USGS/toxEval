@@ -1,0 +1,41 @@
+---
+title: "Basic Workflow"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+    fig_caption: yes
+    fig_height: 10
+    fig_width: 7
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Basic Workflow}
+  \usepackage[utf8]{inputenc}
+---
+
+## Loading and Checking
+
+Once the data is prepared as described in the vignette: "Prepare Data", it can be loaded into R using the `create_toxEval` function.
+
+```{r}
+library(toxEval)
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
+
+tox_list <- create_toxEval(full_path)
+
+```
+
+The `create_toxEval` function will check that required columns are included, and give messages if there are unusual issues such as sites that don't match up with data, or chemicals that don't match up with chemical information.
+
+The vast majority of `toxEval` functions require a data frame described as `chemicalSummary`. The next section will walk through the options that are available in the workflow.
+
+## chemicalSummary
+
+The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
+
+```{r chemicalSummary}
+
+```

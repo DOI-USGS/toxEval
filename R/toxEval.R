@@ -64,13 +64,12 @@ NULL
 #' 
 #' The data has been provided in a "wide" format, however
 #' the \code{get_ACC} function is an easy way to get the data
-#' in a "long" format. 
-#' 
-#' AC50gain values are the reported modl_ga (winning model) and units are 
+#' in a "long" format. AC50gain values are the reported modl_ga (winning model) and units are 
 #' log micro-Molarity (log uM).
 #' 
 #'
 #'@aliases ACC
+#'@name ACC
 #'@docType data
 #'@export ACC
 #'@keywords datasets
