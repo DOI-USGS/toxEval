@@ -29,15 +29,15 @@
 
 
 <h1 class="title toc-ignore">Introduction to toxEval</h1>
-<h4 class="date"><em>30 March, 2018</em></h4>
+<h4 class="date"><em>02 April, 2018</em></h4>
 
 
 <div id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
 <li><a href="#exposure-activity-ratio">Exposure-Activity Ratio</a></li>
-<li><a href="#endpoints">endPoints</a></li>
-<li><a href="#summary-options">Summary options</a></li>
+<li><a href="#what-is-an-endpoint">What is an “endPoint”?</a></li>
+<li><a href="#grouping-options">Grouping options</a></li>
 </ul></li>
 </ul>
 </div>
@@ -48,15 +48,18 @@
 <h1>Introduction</h1>
 <p>The U.S. EPA’s Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> is a database with thousands of chemicals that can give biological relevance to measured concentrations. The <code>toxEval</code> package attempts to simplify the workflow for exploring data as it relates to the benchmark data. By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.</p>
 <p>When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.</p>
-<p>So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.</p>
+<p>So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.</p>
 <div id="exposure-activity-ratio" class="section level2">
 <h2>Exposure-Activity Ratio</h2>
+<p>A Exposure-Activity Ratio (EAR) is the measured concentration divided by a concentration that was determined to cause some activity. The ToxCast database (as provided in the current version of <code>toxEval</code>) provides 991 “endPoints” for more than 6575 chemicals. Each endPoint is a single test that was done to detect some form of activity.</p>
+<p>In order to get consistent EAR results, it is important to use the correct units. The <code>toxEval</code> package assumes all measured concentration is repored in micrograms per liter (ug/L). ToxCast data is reported in log(uM), so the <code>toxEval</code> package automatically performs the unit conversion.</p>
+<p>ToxCast uses high-throughput assays to create does-response curves for each of these chemical/endPoint combinations. Activity concentration at cutoff (ACC) values of these does response curves are provided in the <code>toxEval</code> package. ACC was choosen over the chemical-specific half-maximal activity concentration (AC50) as described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, et.al 2017</a>.</p>
 </div>
-<div id="endpoints" class="section level2">
-<h2>endPoints</h2>
+<div id="what-is-an-endpoint" class="section level2">
+<h2>What is an “endPoint”?</h2>
 </div>
-<div id="summary-options" class="section level2">
-<h2>Summary options</h2>
+<div id="grouping-options" class="section level2">
+<h2>Grouping options</h2>
 </div>
 </div>
 
