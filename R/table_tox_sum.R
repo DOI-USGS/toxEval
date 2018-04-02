@@ -50,8 +50,7 @@ table_tox_sum <- function(chemicalSummary,
 
   tableGroup <- DT::datatable(statsOfGroupOrdered,  extensions = 'Buttons',
                               rownames = FALSE,
-                              options = list(pageLength = nrow(statsOfGroupOrdered),
-                                            order=list(list(colToSort,'desc')),
+                              options = list(order=list(list(colToSort,'desc')),
                                             dom = 'Bfrtip',
                                             buttons =
                                              list('colvis', list(

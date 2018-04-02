@@ -102,7 +102,7 @@ table_tox_rank <- function(chemicalSummary,
                                                 )
                                               ),
                                             scrollX = TRUE,
-                                            pageLength = nrow(statsOfColumn),
+                                            # pageLength = nrow(statsOfColumn),
                                             order=list(list(colToSort,'desc'))))
 
   tableSumm <- formatRound(tableSumm, names(statsOfColumn)[-ignoreIndex], 2)

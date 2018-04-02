@@ -25,11 +25,19 @@ The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-researc
 
 When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.
 
-So what are we doing? Basically, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
+So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
 
 ## Exposure-Activity Ratio
 
-## endPoints
+A Exposure-Activity Ratio (EAR) is the measured concentration divided by a concentration that was determined to cause some activity. The ToxCast database (as provided in the current version of `toxEval`) provides 991 "endPoints" for more than 6575 chemicals. Each endPoint is a single test that was done to detect some form of activity. 
 
-## Summary options
+In order to get consistent EAR results, it is important to use the correct units. The `toxEval` package assumes all measured concentration is repored in micrograms per liter (ug/L). ToxCast data is reported in log(uM), so the `toxEval` package automatically performs the unit conversion.
+
+ToxCast uses high-throughput assays to create does-response curves for each of these chemical/endPoint combinations. Activity concentration at cutoff (ACC) values of these does response curves are provided in the `toxEval` package. ACC was choosen over the chemical-specific half-maximal activity concentration (AC50) as described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, et.al 2017</a>.
+
+## What is an "endPoint"?
+
+
+
+## Grouping options
 

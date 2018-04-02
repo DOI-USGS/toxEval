@@ -6,7 +6,7 @@ output:
     toc: true
     number_sections: false
     fig_caption: yes
-    fig_height: 10
+    fig_height: 7
     fig_width: 7
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,11 +14,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-## Loading and Checking
+# Load Data
 
 Once the data is prepared as described in the vignette: "Prepare Data", it can be loaded into R using the `create_toxEval` function.
 
-```{r}
+```{r startup, message=FALSE}
 library(toxEval)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
@@ -32,10 +32,128 @@ The `create_toxEval` function will check that required columns are included, and
 
 The vast majority of `toxEval` functions require a data frame described as `chemicalSummary`. The next section will walk through the options that are available in the workflow.
 
-## chemicalSummary
+# Setup Analysis
 
 The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
 
 ```{r chemicalSummary}
+ACClong <- get_ACC(tox_list$chem_info$CAS)
+ACClong <- remove_flags(ACClong)
 
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+filtered_ep <- filter_groups(cleaned_ep)
+
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+```
+
+What's going on with this workflow?
+
+## get_ACC
+
+## remove_flags
+
+## clean_endPoint_info
+
+## filter_groups
+
+## get_chemical_summary
+
+## Custom configuration
+
+Let's say we want to trim some names to make the labels more readable in graphs. Here we clean up some chemical class labels:
+
+```{r clean}
+#Trim some names:
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
+```
+
+And here, we convert the site lists to factors. This will make any site graph in an order that we define. Here, we take Great Lakes sites and make the order up-to-down stream:
+
+```{r sites}
+#Ordering the sites to flow "downstream" of the Great Lakes:
+sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+                  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+                  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+                  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+                  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+                  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+                  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+                  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+                  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+                  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+                  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+                  "Raquette","StRegis")
+
+ tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
+               levels = sitesOrdered)
+
+lakes_ordered <- c("Lake Superior",
+                  "Lake Michigan",
+                  "Lake Huron",
+                  "Lake Erie",
+                  "Lake Ontario")
+
+tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
+               levels=lakes_ordered)
+
+```
+
+# Visualize Data
+
+## plot_tox_boxplots
+
+```{r boxplots1, warning=FALSE}
+plot_tox_boxplots(chemicalSummary, "Biological")   
+plot_tox_boxplots(chemicalSummary, "Chemical Class")
+plot_tox_boxplots(chemicalSummary, "Chemical") 
+```
+
+## plot_tox_boxplots
+
+```{r stackplots1, warning=FALSE}
+plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
+plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
+plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+```
+
+## plot_tox_heatmap
+
+```{r heat, warning=FALSE}
+plot_tox_heatmap(chemicalSummary, 
+                  tox_list$chem_site, 
+                  category = "Biological",
+                  manual_remove = "Undefined")
+plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
+plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+```
+
+## plot_tox_endpoints
+
+```{r endpoints, warning=FALSE}
+plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
+plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+```
+
+# Tables
+
+## table_tox_rank
+
+```{r table_tox_rank, warning=FALSE}
+library(DT)
+options(DT.options = list(pageLength = 5))
+
+table_tox_rank(chemicalSummary, category = "Biological")
+table_tox_rank(chemicalSummary, category = "Chemical Class")
+table_tox_rank(chemicalSummary, category = "Chemical")
+```
+
+## table_tox_sum
+
+```{r table_tox_sum, warning=FALSE}
+table_tox_sum(chemicalSummary, category = "Biological")
+table_tox_sum(chemicalSummary, category = "Chemical Class")
+table_tox_sum(chemicalSummary, category = "Chemical")
 ```
