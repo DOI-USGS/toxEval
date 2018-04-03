@@ -7,6 +7,10 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
 
+## ----runApp, eval=FALSE-----------------------------------
+#  library(toxEval)
+#  explore_endpoints()
+
 ## ---- eval=FALSE------------------------------------------
 #  rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
 #  write('\noptions(repos=c(getOption(\'repos\'),

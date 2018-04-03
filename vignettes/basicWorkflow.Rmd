@@ -1,0 +1,303 @@
+---
+title: "Basic Workflow"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+    fig_height: 7
+    fig_width: 7
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Basic Workflow}
+  \usepackage[utf8]{inputenc}
+---
+
+# Load Data
+
+Once the data is prepared as described in the vignette: "Prepare Data", it can be loaded into R using the `create_toxEval` function.
+
+```{r startup, message=FALSE}
+library(toxEval)
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
+
+tox_list <- create_toxEval(full_path)
+
+```
+
+The `create_toxEval` function will check that required columns are included, and give messages if there are unusual issues such as sites that don't match up with data, or chemicals that don't match up with chemical information.
+
+The vast majority of `toxEval` functions require a data frame described as `chemicalSummary`. The next section will walk through the options that are available in the workflow.
+
+# Setup Analysis
+
+The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
+
+```{r chemicalSummary}
+ACClong <- get_ACC(tox_list$chem_info$CAS)
+ACClong <- remove_flags(ACClong)
+
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+filtered_ep <- filter_groups(cleaned_ep)
+
+chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+```
+
+What's going on with this workflow?
+
+## get_ACC
+
+The `get_ACC` function will retrieve the ACC values for the specified CAS (chemicals). The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of toxEval package release, this information was found
+[here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
+The `ACC` data frame provided in `toxEval` is in a wide format. The function `get_ACC` will convert it to a long format, and convert the native log(uM) to ug/L.
+
+## remove_flags
+
+There are a set of flags that ToxCast includes with the ACC values. Depending on the scope of your analysis, you may want to include EARs with certain flags. EndPoints are removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function):
+
+| Flags   |  flagsShort |
+|----------|------:|
+| Borderline active |  Borderline |
+| Only highest conc above baseline, active |   OnlyHighest |
+| Only one conc above baseline, active | OneAbove |
+| Noisy data | Noisy |
+| Hit-call potentially confounded by overfitting | HitCall |
+| Gain AC50 < lowest conc & loss AC50 < mean conc  | GainAC50 |
+| Biochemical assay with < 50% efficacy | Biochemical |
+
+
+## clean_endPoint_info
+
+The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast. Filtering based on [Blackwell](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes in the removal of endPoints that are ATG sources with signal loss, and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
+
+## filter_groups
+
+This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group from the category. The default is to remove "Background Measurement" and "Undefined", but it is a good idea to check if other groups may not be relevant to the study.
+
+The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relavant. To discover to options, look at the column names in `endPointInfo`:
+
+```{r eval=FALSE}
+names(endPointInfo)
+```
+
+By default, the BioSeek set of assays are removed. The list of assays and their short names are here:
+
+| Assay Name | Short Name |
+|----------|------:|
+|Apredica|APR|
+|Attagene|ATG|
+|BioSeek|BSK|
+|NovaScreen|NVS|
+|Odyssey Thera|OT|
+|Toxicity Testing|TOX21|
+|CEETOX|CEETOX|
+|CLD|CLD|
+|TANGUAY|TANGUAY|
+|NHEERL_PADILLA|NHEERL_PADILLA|
+|NCCT_SIMMONS|NCCT_SIMMONS|
+|ACEA Biosciences|ACEA|
+
+## get_chemical_summary
+
+Finally, the function `get_chemical_summary` takes the measured user data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast, as filtered by the functions described above.
+
+## Custom configuration
+
+Let's say we want to trim some names to make the labels more readable in graphs. Here we clean up some chemical class labels:
+
+```{r clean}
+#Trim some names:
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
+```
+
+And here, we convert the site lists to factors. This will make any site graph in an order that we define. Here, we take Great Lakes sites and make the order up-to-down stream:
+
+```{r sites}
+#Ordering the sites to flow "downstream" of the Great Lakes:
+sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+  "Raquette","StRegis")
+
+ tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
+               levels = sitesOrdered)
+
+lakes_ordered <- c("Lake Superior",
+                  "Lake Michigan",
+                  "Lake Huron",
+                  "Lake Erie",
+                  "Lake Ontario")
+
+tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
+               levels=lakes_ordered)
+
+```
+
+# Visualize Data
+
+## plot_tox_boxplots
+
+The `plot_tox_boxplots` function
+
+```{r boxplots1, warning=FALSE, message=FALSE}
+library(grid)
+plot_tox_boxplots(chemicalSummary, "Biological")   
+grid.text("# Sites w/ Detections:", 
+          x = unit(.22, "npc"), 
+          y = unit(.994, "npc"), gp=gpar(fontsize=7))
+# Other options:
+# plot_tox_boxplots(chemicalSummary, "Chemical Class")
+# plot_tox_boxplots(chemicalSummary, "Chemical") 
+```
+
+The graph shows a slightly different result for a single site. First, let's set up a subset of data that we will use throughout this document to show a single site. We'll use the Maumee River data.
+
+```{r filtersiteBox, message=FALSE, warning=FALSE}
+library(dplyr)
+
+maumee <- filter(chemicalSummary, shortName == "Maumee")
+maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
+```
+
+
+Now, we'll run `plot_tox_boxplots` on that single site. The difference in the output is that instead of listing the number of sites, it lists the number of unique chemical/endpoint combinations used to create the box plot. We've also included
+the code to add a custom title to the output:
+
+```{r maumeePlot, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+maumee_plot <- plot_tox_boxplots(maumee, "Biological")
+maumee_plot <- maumee_plot +
+  ggtitle(maumee_site$Fullname[1])
+print(maumee_plot)
+grid.text("# Unique Chemical/endPoints:", 
+          x = unit(.225, "npc"), 
+          y = unit(.962, "npc"), gp=gpar(fontsize=7))
+```
+
+## plot_tox_boxplots
+
+```{r stackplots1, warning=FALSE, fig.width=10}
+plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
+grid.text("# Samples:", 
+          x = unit(.03, "npc"), 
+          y = unit(.205, "npc"), gp=gpar(fontsize=7))
+# More options:
+# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
+# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+```
+
+The graph shows a slightly different result for a single site:
+
+```{r siteStacks, message=FALSE, warning=FALSE, fig.width=10}
+maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological")
+
+maumee_plot_stack <- maumee_plot_stack +
+  ggtitle(maumee_site$Fullname[1])
+print(maumee_plot_stack)
+
+```
+
+
+## plot_tox_heatmap
+
+```{r heat, warning=FALSE, fig.width=10}
+plot_tox_heatmap(chemicalSummary, 
+                  tox_list$chem_site, 
+                  category = "Biological")
+# More options:
+# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
+# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+```
+
+## plot_tox_endpoints
+
+```{r endpoints, warning=FALSE}
+plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+grid.text("# Sites w/ Detections:", 
+          x = unit(.38, "npc"), 
+          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+# More options:
+# plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
+# plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+```
+
+# Tables
+
+## table_tox_rank
+
+```{r table_tox_rank, warning=FALSE}
+library(DT)
+options(DT.options = list(pageLength = 5))
+
+table_tox_rank(chemicalSummary, category = "Biological")
+# More options:
+# table_tox_rank(chemicalSummary, category = "Chemical Class")
+# table_tox_rank(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site:
+
+```{r table_tox_rank_site, warning=FALSE}
+table_tox_rank(maumee, category = "Biological")
+```
+
+## table_tox_sum
+
+```{r table_tox_sum, warning=FALSE}
+table_tox_sum(chemicalSummary, category = "Biological")
+# More options:
+# table_tox_sum(chemicalSummary, category = "Chemical Class")
+# table_tox_sum(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site:
+
+```{r table_tox_sum_site, warning=FALSE}
+table_tox_sum(maumee, category = "Biological")
+```
+
+
+## table_endpoint_hits
+
+```{r table_endpoint_hits, warning=FALSE}
+table_endpoint_hits(chemicalSummary, category = "Biological")
+# More options:
+# table_endpoint_hits(chemicalSummary, category = "Chemical Class")
+# table_endpoint_hits(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples.
+
+```{r table_endpoint_hits_site, warning=FALSE}
+table_endpoint_hits(maumee, category = "Biological")
+```
+
+
+## table_tox_endpoint
+
+```{r table_tox_endpoint, warning=FALSE}
+table_tox_endpoint(chemicalSummary, category = "Biological")
+# More options:
+# table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+# table_tox_endpoint(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
+
+```{r table_tox_endpoint_site, warning=FALSE}
+table_tox_endpoint(maumee, category = "Biological")
+```
+

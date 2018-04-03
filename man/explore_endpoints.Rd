@@ -2,7 +2,7 @@
 % Please edit documentation in R/explore_endpoints.R
 \name{explore_endpoints}
 \alias{explore_endpoints}
-\title{Explore endpoint groupings}
+\title{Explore data in the Shiny Application}
 \usage{
 explore_endpoints(browse = TRUE)
 }
@@ -10,7 +10,11 @@ explore_endpoints(browse = TRUE)
 \item{browse}{use browser for map rendering}
 }
 \description{
-Open an interactive app
+Open an interactive app in a browser. See the vignette 'User Guide'
+for more details. Using this function is a quick and convenient way
+to explore your data. For more customization, the R-code to 
+produce each graph and table is displayed in the app. That is 
+a good starting-point for a custom analysis.
 }
 \examples{
 \dontrun{

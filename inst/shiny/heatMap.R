@@ -20,6 +20,9 @@ heatMap_create <- reactive({
                               chem_site,
                               category = c("Biological","Chemical","Chemical Class")[catType],
                               plot_ND = plot_ND)
+  
+  updateAceEditor(session, editorId = "heat_out", value = heatCode() )
+  
   return(heatMap)
 })
 
@@ -61,7 +64,7 @@ output$downloadHeatPlot_csv <- downloadHandler(
   }
 )
 
-output$heatCode <- renderPrint({
+heatCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]

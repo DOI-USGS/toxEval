@@ -9,8 +9,19 @@ clean_endPoint_info(endPointInfo)
 \arguments{
 \item{endPointInfo}{data frame Endpoint information from ToxCast}
 }
+\value{
+data frame based on endPointInfo, but with some endPoints
+filtered out, some additional categories in intended_target_family and
+intended_target_family_sub. Also, the names in intended_target_family
+are cleaned up to look good in graphs and tables.
+}
 \description{
-Clean up the endPointInfo table from toxCast. Filtering and cleaning based on ES&T (cite Dan/Brett's paper)
+Clean up the endPointInfo table from ToxCast. Filtering based on 
+\url{https://pubs.acs.org/doi/10.1021/acs.est.7b01613}. Specifically, 
+this function hard-codes in the removal of endPoints that are ATG 
+sources with signal loss, and NVS with signal gain. Also, this function 
+adds some additional categories to intended_target_family and 
+intended_target_family_sub as described in the paper linked above.
 }
 \examples{
 endPointInfo <- endPointInfo

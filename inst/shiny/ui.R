@@ -224,7 +224,7 @@ body <- dashboardBody(
                column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             verbatimTextOutput("heatCode")
+             aceEditor(outputId = "heat_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tags$head(tags$link(rel="shortcut icon", href="favicon.ico"))
   ),

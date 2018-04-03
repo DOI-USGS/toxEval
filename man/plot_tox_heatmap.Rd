@@ -27,7 +27,7 @@ Plot heat map
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
-
+\dontrun{
 tox_list <- create_toxEval(full_path)
 
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -69,4 +69,5 @@ plot_tox_heatmap(chemicalSummary,
                  manual_remove = "Undefined")
 plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
 plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+}
 }

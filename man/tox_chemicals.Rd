@@ -3,9 +3,16 @@
 \docType{data}
 \name{tox_chemicals}
 \alias{tox_chemicals}
-\title{tox_chemicals}
+\title{ToxCast Chemical Information}
 \description{
-Downloaded on October 2015 from ToxCast dashboard
+Downloaded on October 2015 from ToxCast. The file name of the
+raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx", 
+from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
+of toxEval package release, this information was found:
+\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+in the section marked "Download ToxCast Chemical Information". This 
+was in the "ToxCast & Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
+data set.
 }
 \examples{
 head(tox_chemicals)

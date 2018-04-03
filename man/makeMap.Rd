@@ -35,12 +35,9 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-}
-# The example workflow takes a bit of time to load and compute, 
-# so an example chemicalSummary is included pre-calculated in the package. 
 
-chemicalSummary <- ex_chemSum #loading example data
 makeMap(chemicalSummary, tox_list$chem_site, "Biological")   
 makeMap(chemicalSummary, tox_list$chem_site, "Chemical Class")
 makeMap(chemicalSummary, tox_list$chem_site, "Chemical") 
+}
 }

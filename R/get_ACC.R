@@ -1,8 +1,10 @@
-#' get_ACC
+#' Get the ACC values for a selection of chemicals
 #' 
-#' Get ACC values for vector of CAS's
+#' Data from the ToxCast are included in the toxEval package. This data is
+#' called and filtered based on the provided vector of CAS values.
 #' 
-#' @param CAS vector of CAS
+#' @param CAS vector of CAS. 
+#' @return data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
 #' @export
 #' @importFrom tidyr gather
 #' @importFrom dplyr select filter right_join mutate

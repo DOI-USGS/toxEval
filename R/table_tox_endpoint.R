@@ -25,14 +25,11 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
-#'                                         
+#'                                        
 #' table_tox_endpoint(chemicalSummary, category = "Biological")
 #' table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 #' table_tox_endpoint(chemicalSummary, category = "Chemical")
+#' }
 table_tox_endpoint <- function(chemicalSummary, 
                            category = "Biological",
                            mean_logic = FALSE,
@@ -65,7 +62,7 @@ table_tox_endpoint <- function(chemicalSummary,
                                                  text = 'Download',
                                                  filename= 'test'
                                                )),
-                               pageLength = nrow(tableData),
+                               # pageLength = nrow(tableData),
                                order=list(list(1,'desc'))))
   
   if(category != "Biological"){
@@ -105,14 +102,11 @@ table_tox_endpoint <- function(chemicalSummary,
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }
-#' # The example workflow takes a bit of time to load and compute, 
-#' # so an example chemicalSummary is included pre-calculated in the package. 
-#' chemicalSummary <- ex_chemSum #loading example data
 #'                                           
 #' bio_table <- endpoint_table(chemicalSummary, category = "Biological")
 #' class_table <- endpoint_table(chemicalSummary, category = "Chemical Class")
 #' chem_table <- endpoint_table(chemicalSummary, category = "Chemical")
+#' }
 endpoint_table <- function(chemicalSummary, category, mean_logic=FALSE, hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"

@@ -5,7 +5,13 @@
 \alias{endPointInfo}
 \title{Endpoint information from ToxCast}
 \description{
-Downloaded on October 2015 from ToxCast dashboard
+Downloaded on October 2015 from ToxCast. The file name of the
+raw data was "Assay_Summary_151020.csv" from the zip file 
+"Assay_Information_Oct_2015.zip". At the time
+of toxEval package release, this information was found:
+\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+in the section marked "Download Assay Information", in the 
+ToxCast & Tox21 high-throughput assay information data set.
 }
 \examples{
 endPointInfo <- endPointInfo
