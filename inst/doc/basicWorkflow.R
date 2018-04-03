@@ -16,6 +16,9 @@ filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 
+## ----eval=FALSE----------------------------------------------------------
+#  names(endPointInfo)
+
 ## ----clean---------------------------------------------------------------
 #Trim some names:
 levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
@@ -53,35 +56,45 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 ## ----boxplots1, warning=FALSE, message=FALSE-----------------------------
 library(grid)
 plot_tox_boxplots(chemicalSummary, "Biological")   
-grid.text("# Sites:", 
+grid.text("# Sites w/ Detections:", 
           x = unit(.22, "npc"), 
-          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+          y = unit(.994, "npc"), gp=gpar(fontsize=7))
 # Other options:
 # plot_tox_boxplots(chemicalSummary, "Chemical Class")
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
 
-## ----siteBox, message=FALSE, warning=FALSE-------------------------------
+## ----filtersiteBox, message=FALSE, warning=FALSE-------------------------
 library(dplyr)
-maumee <- filter(chemicalSummary, shortName == "Maumee")
 
-plot_tox_boxplots(maumee, "Biological")
-grid.text("# EndPoints:", 
-          x = unit(.22, "npc"), 
-          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+maumee <- filter(chemicalSummary, shortName == "Maumee")
+maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
+
+## ----maumeePlot, message=FALSE, warning=FALSE----------------------------
+library(ggplot2)
+
+maumee_plot <- plot_tox_boxplots(maumee, "Biological")
+maumee_plot <- maumee_plot +
+  ggtitle(maumee_site$Fullname[1])
+print(maumee_plot)
+grid.text("# Unique Chemical/endPoints:", 
+          x = unit(.225, "npc"), 
+          y = unit(.962, "npc"), gp=gpar(fontsize=7))
 
 ## ----stackplots1, warning=FALSE, fig.width=10----------------------------
 plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
-grid.text("# Detections:", 
-          x = unit(.05, "npc"), 
+grid.text("# Samples:", 
+          x = unit(.03, "npc"), 
           y = unit(.205, "npc"), gp=gpar(fontsize=7))
 # More options:
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 
 ## ----siteStacks, message=FALSE, warning=FALSE, fig.width=10--------------
+maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological")
 
-maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
-plot_tox_stacks(maumee, maumee_site,"Biological")
+maumee_plot_stack <- maumee_plot_stack +
+  ggtitle(maumee_site$Fullname[1])
+print(maumee_plot_stack)
 
 
 ## ----heat, warning=FALSE, fig.width=10-----------------------------------
@@ -94,7 +107,7 @@ plot_tox_heatmap(chemicalSummary,
 
 ## ----endpoints, warning=FALSE--------------------------------------------
 plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-grid.text("# Detections:", 
+grid.text("# Sites w/ Detections:", 
           x = unit(.38, "npc"), 
           y = unit(.995, "npc"), gp=gpar(fontsize=7))
 # More options:

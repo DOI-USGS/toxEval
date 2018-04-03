@@ -5,7 +5,6 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
-    fig_caption: yes
     fig_height: 10
     fig_width: 7
 vignette: >
@@ -39,7 +38,7 @@ explore_endpoints()
 
 Your default browser will open up and display the following page:
 
-![main layout](main.png)
+![Main Layout of Shiny App](main.png)
 
 Generally the app can be divided into 3 main sections:
 
@@ -56,38 +55,63 @@ The bottom section "R Code:" shows the exact code you could use to run directly 
 The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will NOT go into the scientific details of what options to choose. That will need to be up to the user. 
 
 
-### A. Load data
+### A. Load Excel File 
 
-### B. Group by options
+Once the Shiny App has been started, the first step is to load the data. The data should be prepared as described in the "Prepare Data" vignette. Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is picked, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to compute.
 
-### C. Summarize by site
+### B. 'Group By' option
+
+The "Group By" radio buttons affect all output in the application. For each function, we will be summarizing the data by summing individual EARs. How we group those summations depends on this choice. 
+
+The "Group" choice will group all of the endPoints that have similar groupings based on the options as determined by the designated "Annotation". The default annotation is "intended_target_family". With that choice, the "Group" radio button groups all EARs by the unique categories in the "intended_target_family" category.
+
+The "Chemical" choice will group all of the endPoints in a single chemical (as defined by unique CAS).
+
+The "Class" choice will group all of the endpoints in all of the chemicals as defined in the "Chemical" tab in the Excel file.
+
+### C. Mean and Max: Summarize by site
+
+The options are "MeanEAR" and "MaxEAR", and they dictate how to summarize the EARs per site. Each site may have different numbers of collected samples, and depending on the scope of your study, it may be more important to analyze the mean of the site, or look at the maximum at each site.
 
 ### D. Download benchmarks
 
+Clicking on this button will download the a comma delimited (csv) file that could be used in the "Benchmark" tab (as described in the "Prepare Data" vignette). The provided columns are "CAS", "Chemical" (name), "flags", "endPoint", "ACC", "MlWt", "Value", "groupCol", and "assaysFull".
+
+The "ACC" column is in log(uM), and the "Value" column is the conversion from that log(uM) to ug/L.
+ 
 ### E. Assay
 
-![Assay](assays.png)
+<img style="float: right;" src="assays.png">
+
+The assays dropdown menu offers the option to remove certain assays from the analysis. By default, the "BioSeek" assay is not included. Clicking on any of the options will not have an immediate affect until the "Switch Assays" button is clicked.
 
 ### F. Annotations
-![annotations](annotations.png)
+
+The "Annotations" dropdown offers the choice of which ToxCast grouping to analyze. By default, the "intended_target_family" is picked, but there may be other more appropriate options based on the scope of the analysis. Choosing a new annotation will not have an immediate affect until the "Switch Annotation" button is clicked.
 
 ### G. Group
 
-![group](group.png)
+The options in the "Group" dropdown change depending on the choice in Annotations. For "intended_target_family" for example, there would be the choices such as "Nuclear Receptors", "Cell Cycle", "DNA Binding", etc. You can ignore certain groups ("Background Measurement" for instance) by leaving the options unchecked. Clicking on and off the checkboxes will not have an immediate affect until the "Switch Groups" button is clicked.
 
 ### H. Flags
 
-![flags](flags.png)
+<img style="float: right;" src="flags.png">
+
+The choices in the "Flags" dropdown are which flags to include in your analysis. By default, endPoints flagged with "Noisy Data", "Only one conc above baseline, active", and "Hit-call potentially confounded by overfitting" are included in the analysis. The scope of the analysis may cause you to want to include more or less flagged endPoints. Clicking on the flag checkboxes will not have an immediate affect until the "Switch Flags" button is clicked.
 
 ### I. Sites
 
-![sites](sites.png)
+By default, the analysis is done on all the sites. However, you can dig down to an individual sites using this dropdown menu. Each graph and table may show the individual site data a bit different than the full data set analysis, and that is described in the "Basic Workflow" vignette
 
 ### J. Hit Threshold
 
-![thres](thres.png)
+There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits) that will calculate the number of "Hits"...which is simply the number of times the EAR is above a designated threshold. That threshold value is defined here. Changing the threshold will not have an immedate affect until the "Change Hit Threshold" button is clicked.
 
 ## Main Output
+
+Each plot and table offered in the app is described in the "Basic Workflow" vignette. Please refer there for more information.
+
+For each plot, there is an option to download the plot or data that is in the plot. The R-code to generate the output is also provided under each output. This would be the ideal way to customize any additional output.
 
 # Package logistics
 
@@ -130,9 +154,10 @@ install.packages("toxEval")
 
 ## Update toxEval
 
+<img style="float: right;" src="update.png">
+
 Regularly, it is a good idea to update *ALL* your packages in R. If using RStudio, this is quite easy, there's an Update button in the "Packages" tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.
 
-![update](update.png)
 
 Within the R-console, packages can be update with the command:
 ```{r eval=FALSE}
