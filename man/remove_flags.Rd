@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_chemical_summary.R
 \name{remove_flags}
 \alias{remove_flags}
-\title{remove_flags}
+\title{Remove endpoints with specific flags from data}
 \usage{
 remove_flags(ACClong, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
   "Biochemical"))
@@ -14,7 +14,18 @@ remove_flags(ACClong, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
 "Borderline", "OnlyHighest", "OneAbove","Noisy", "HitCall", "GainAC50", "Biochemical"}
 }
 \description{
-Remove endpoints with specific flags from data
+Remove endpoints with specific flags associated with the ACC values. The set
+of flags that are included are: 
+\tabular{ll}{
+Flag \tab flagsShort\cr
+Borderline active \tab Borderline \cr
+Only highest conc above baseline, active \tab OnlyHighest \cr
+Only one conc above baseline, active \tab OneAbove \cr
+Noisy data \tab Noisy \cr
+Hit-call potentially confounded by overfitting \tab HitCall \cr
+Gain AC50 < lowest conc & loss AC50 < mean conc \tab GainAC50 \cr
+Biochemical assay with < 50% efficacy \tab Biochemical \cr
+}
 }
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_endPoint_info.R
 \name{filter_groups}
 \alias{filter_groups}
-\title{filter_groups}
+\title{Filter endPoints based on groups and assays.}
 \usage{
 filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
   "NVS", "OT", "TOX21", "CEETOX", "APR", "CLD", "TANGUAY", "NHEERL_PADILLA",
@@ -15,12 +15,20 @@ filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
 \item{groupCol}{character name of column to use as a group catetory}
 
 \item{assays}{vector of assays to use. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
-"CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA"}
+"CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
+"BSK" (BioSeek) assay is removed.}
 
 \item{remove_groups}{vector of groups to remove}
 }
 \description{
-Clean up the endPointInfo table from toxCast. Filtering and cleaning based on ES&T (cite Dan/Brett's paper)
+This function takes the data frame from \code{\link{endPointInfo}} 
+and filters the endpoints in 3 steps. First, the user specifies
+the "groupCol" which is a column header from \code{\link{endPointInfo}}. 
+The default category is intended_target_family. Second, the user specifies the assays to use. By default, the BioSeek
+set of assays are removed. Finally, the user can also choose to remove
+specific group from the category. The default is to remove "Background Measurement"
+and "Undefined", but it is a good idea to check if other groups may 
+not be relevant to the study.
 }
 \examples{
 endPointInfo <- endPointInfo

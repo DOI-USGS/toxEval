@@ -49,13 +49,59 @@ What's going on with this workflow?
 
 ## get_ACC
 
+The `get_ACC` function will retrieve the ACC values for the specified CAS (chemicals). The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of toxEval package release, this information was found
+[here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
+The `ACC` data frame provided in `toxEval` is in a wide format. The function `get_ACC` will convert it to a long format, and convert the native log(uM) to ug/L.
+
 ## remove_flags
+
+There are a set of flags that ToxCast includes with the ACC values. Depending on the scope of your analysis, you may want to include EARs with certain flags. EndPoints are removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function):
+
+| Flags   |  flagsShort |
+|----------|------:|
+| Borderline active |  Borderline |
+| Only highest conc above baseline, active |   OnlyHighest |
+| Only one conc above baseline, active | OneAbove |
+| Noisy data | Noisy |
+| Hit-call potentially confounded by overfitting | HitCall |
+| Gain AC50 < lowest conc & loss AC50 < mean conc  | GainAC50 |
+| Biochemical assay with < 50% efficacy | Biochemical |
+
 
 ## clean_endPoint_info
 
+The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast. Filtering based on [Blackwell](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes in the removal of endPoints that are ATG sources with signal loss, and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
+
 ## filter_groups
 
+This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group from the category. The default is to remove "Background Measurement" and "Undefined", but it is a good idea to check if other groups may not be relevant to the study.
+
+The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relavant. To discover to options, look at the column names in `endPointInfo`:
+
+```{r eval=FALSE}
+names(endPointInfo)
+```
+
+By default, the BioSeek set of assays are removed. The list of assays and their short names are here:
+
+| Assay Name | Short Name |
+|----------|------:|
+|Apredica|APR|
+|Attagene|ATG|
+|BioSeek|BSK|
+|NovaScreen|NVS|
+|Odyssey Thera|OT|
+|Toxicity Testing|TOX21|
+|CEETOX|CEETOX|
+|CLD|CLD|
+|TANGUAY|TANGUAY|
+|NHEERL_PADILLA|NHEERL_PADILLA|
+|NCCT_SIMMONS|NCCT_SIMMONS|
+|ACEA Biosciences|ACEA|
+
 ## get_chemical_summary
+
+Finally, the function `get_chemical_summary` takes the measured user data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast, as filtered by the functions described above.
 
 ## Custom configuration
 
@@ -103,36 +149,50 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 ## plot_tox_boxplots
 
+The `plot_tox_boxplots` function
+
 ```{r boxplots1, warning=FALSE, message=FALSE}
 library(grid)
 plot_tox_boxplots(chemicalSummary, "Biological")   
-grid.text("# Sites:", 
+grid.text("# Sites w/ Detections:", 
           x = unit(.22, "npc"), 
-          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+          y = unit(.994, "npc"), gp=gpar(fontsize=7))
 # Other options:
 # plot_tox_boxplots(chemicalSummary, "Chemical Class")
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
 ```
 
-The graph shows a slightly different result for a single site:
+The graph shows a slightly different result for a single site. First, let's set up a subset of data that we will use throughout this document to show a single site. We'll use the Maumee River data.
 
-```{r siteBox, message=FALSE, warning=FALSE}
+```{r filtersiteBox, message=FALSE, warning=FALSE}
 library(dplyr)
-maumee <- filter(chemicalSummary, shortName == "Maumee")
 
-plot_tox_boxplots(maumee, "Biological")
-grid.text("# EndPoints:", 
-          x = unit(.22, "npc"), 
-          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+maumee <- filter(chemicalSummary, shortName == "Maumee")
+maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
 ```
- 
+
+
+Now, we'll run `plot_tox_boxplots` on that single site. The difference in the output is that instead of listing the number of sites, it lists the number of unique chemical/endpoint combinations used to create the box plot. We've also included
+the code to add a custom title to the output:
+
+```{r maumeePlot, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+maumee_plot <- plot_tox_boxplots(maumee, "Biological")
+maumee_plot <- maumee_plot +
+  ggtitle(maumee_site$Fullname[1])
+print(maumee_plot)
+grid.text("# Unique Chemical/endPoints:", 
+          x = unit(.225, "npc"), 
+          y = unit(.962, "npc"), gp=gpar(fontsize=7))
+```
 
 ## plot_tox_boxplots
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
 plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
-grid.text("# Detections:", 
-          x = unit(.05, "npc"), 
+grid.text("# Samples:", 
+          x = unit(.03, "npc"), 
           y = unit(.205, "npc"), gp=gpar(fontsize=7))
 # More options:
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
@@ -142,9 +202,11 @@ grid.text("# Detections:",
 The graph shows a slightly different result for a single site:
 
 ```{r siteStacks, message=FALSE, warning=FALSE, fig.width=10}
+maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological")
 
-maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
-plot_tox_stacks(maumee, maumee_site,"Biological")
+maumee_plot_stack <- maumee_plot_stack +
+  ggtitle(maumee_site$Fullname[1])
+print(maumee_plot_stack)
 
 ```
 
@@ -164,7 +226,7 @@ plot_tox_heatmap(chemicalSummary,
 
 ```{r endpoints, warning=FALSE}
 plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-grid.text("# Detections:", 
+grid.text("# Sites w/ Detections:", 
           x = unit(.38, "npc"), 
           y = unit(.995, "npc"), gp=gpar(fontsize=7))
 # More options:

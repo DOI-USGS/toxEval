@@ -172,9 +172,20 @@ orderChem <- function(graphData, orderClass_df){
   return(orderChem_df)
 }
 
-#' remove_flags
-#' 
 #' Remove endpoints with specific flags from data
+#' 
+#' Remove endpoints with specific flags associated with the ACC values. The set
+#' of flags that are included are: 
+#' \tabular{ll}{
+#' Flag \tab flagsShort\cr
+#' Borderline active \tab Borderline \cr
+#' Only highest conc above baseline, active \tab OnlyHighest \cr
+#' Only one conc above baseline, active \tab OneAbove \cr
+#' Noisy data \tab Noisy \cr
+#' Hit-call potentially confounded by overfitting \tab HitCall \cr
+#' Gain AC50 < lowest conc & loss AC50 < mean conc \tab GainAC50 \cr
+#' Biochemical assay with < 50% efficacy \tab Biochemical \cr
+#' }
 #' 
 #' @param ACClong data frame with columns: casn, chnm, endPoint, ACC_value
 #' @param flagsShort vector of flags to TAKE OUT. Possible values are 

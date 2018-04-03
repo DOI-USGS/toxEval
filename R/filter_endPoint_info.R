@@ -1,11 +1,19 @@
-#' filter_groups
+#' Filter endPoints based on groups and assays.
 #' 
-#' Clean up the endPointInfo table from toxCast. Filtering and cleaning based on ES&T (cite Dan/Brett's paper)
+#' This function takes the data frame from \code{\link{endPointInfo}} 
+#' and filters the endpoints in 3 steps. First, the user specifies
+#' the "groupCol" which is a column header from \code{\link{endPointInfo}}. 
+#' The default category is intended_target_family. Second, the user specifies the assays to use. By default, the BioSeek
+#' set of assays are removed. Finally, the user can also choose to remove
+#' specific group from the category. The default is to remove "Background Measurement"
+#' and "Undefined", but it is a good idea to check if other groups may 
+#' not be relevant to the study.
 #' 
 #' @param ep data frame Endpoint information from ToxCast
 #' @param groupCol character name of column to use as a group catetory
 #' @param assays vector of assays to use. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
-#' "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA" 
+#' "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
+#' "BSK" (BioSeek) assay is removed.
 #' @param remove_groups vector of groups to remove
 #' @export
 #' @importFrom stringi stri_trans_totitle
