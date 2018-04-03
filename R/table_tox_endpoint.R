@@ -62,7 +62,7 @@ table_tox_endpoint <- function(chemicalSummary,
                                                  text = 'Download',
                                                  filename= 'test'
                                                )),
-                               pageLength = nrow(tableData),
+                               # pageLength = nrow(tableData),
                                order=list(list(1,'desc'))))
   
   if(category != "Biological"){

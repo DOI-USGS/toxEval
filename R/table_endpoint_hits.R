@@ -154,7 +154,7 @@ table_endpoint_hits <- function(chemicalSummary,
                                                  text = 'Download'
                                                )),
                                              scrollX = TRUE,
-                                             pageLength = nrow(fullData),
+                                             # pageLength = nrow(fullData),
                                              order=list(list(2,'desc'))))
   return(fullData)
 }

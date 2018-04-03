@@ -74,17 +74,17 @@ And here, we convert the site lists to factors. This will make any site graph in
 ```{r sites}
 #Ordering the sites to flow "downstream" of the Great Lakes:
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
-                  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
-                  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
-                  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
-                  "Manistee","Fox","Oconto","Peshtigo","Menominee",
-                  "Indian","Cheboygan","Ford","Escanaba","Manistique",
-                  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
-                  "Clinton","Rouge","HuronMI","Raisin","Maumee",
-                  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
-                  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
-                  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
-                  "Raquette","StRegis")
+  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+  "Raquette","StRegis")
 
  tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
                levels = sitesOrdered)
@@ -106,16 +106,18 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 ```{r boxplots1, warning=FALSE}
 plot_tox_boxplots(chemicalSummary, "Biological")   
-plot_tox_boxplots(chemicalSummary, "Chemical Class")
-plot_tox_boxplots(chemicalSummary, "Chemical") 
+# Other options:
+# plot_tox_boxplots(chemicalSummary, "Chemical Class")
+# plot_tox_boxplots(chemicalSummary, "Chemical") 
 ```
 
 ## plot_tox_boxplots
 
 ```{r stackplots1, warning=FALSE}
 plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+# More options:
+# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
+# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 ```
 
 ## plot_tox_heatmap
@@ -123,18 +125,19 @@ plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend 
 ```{r heat, warning=FALSE}
 plot_tox_heatmap(chemicalSummary, 
                   tox_list$chem_site, 
-                  category = "Biological",
-                  manual_remove = "Undefined")
-plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
-plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+                  category = "Biological")
+# More options:
+# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
+# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
 ```
 
 ## plot_tox_endpoints
 
 ```{r endpoints, warning=FALSE}
 plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
-plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+# More options:
+# plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
+# plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
 ```
 
 # Tables
@@ -146,14 +149,34 @@ library(DT)
 options(DT.options = list(pageLength = 5))
 
 table_tox_rank(chemicalSummary, category = "Biological")
-table_tox_rank(chemicalSummary, category = "Chemical Class")
-table_tox_rank(chemicalSummary, category = "Chemical")
+# More options:
+# table_tox_rank(chemicalSummary, category = "Chemical Class")
+# table_tox_rank(chemicalSummary, category = "Chemical")
 ```
 
 ## table_tox_sum
 
 ```{r table_tox_sum, warning=FALSE}
 table_tox_sum(chemicalSummary, category = "Biological")
-table_tox_sum(chemicalSummary, category = "Chemical Class")
-table_tox_sum(chemicalSummary, category = "Chemical")
+# More options:
+# table_tox_sum(chemicalSummary, category = "Chemical Class")
+# table_tox_sum(chemicalSummary, category = "Chemical")
+```
+
+## table_endpoint_hits
+
+```{r table_endpoint_hits, warning=FALSE}
+table_endpoint_hits(chemicalSummary, category = "Biological")
+# More options:
+# table_endpoint_hits(chemicalSummary, category = "Chemical Class")
+# table_endpoint_hits(chemicalSummary, category = "Chemical")
+```
+
+## table_tox_endpoint
+
+```{r table_tox_endpoint, warning=FALSE}
+table_tox_endpoint(chemicalSummary, category = "Biological")
+# More options:
+# table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+# table_tox_endpoint(chemicalSummary, category = "Chemical")
 ```
