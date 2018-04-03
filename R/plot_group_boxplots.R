@@ -66,7 +66,7 @@ plot_tox_boxplots <- function(chemicalSummary,
       
       countNonZero <- chemicalSummary %>%
         group_by(category) %>%
-        summarise(nonZero = as.character(sum(EAR>0))) %>%
+        summarise(nonZero = as.character(length(unique(CAS)))) %>%
         data.frame() 
       
       if(!is.null(manual_remove)){
