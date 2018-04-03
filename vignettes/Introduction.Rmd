@@ -38,4 +38,15 @@ An endPoint is "associated with the perturbation of specific biological processe
 
 ## Grouping options
 
-Often, a single endPoint is too specific to 
+Often, a single endPoint is too specific to be of much interest. ToxCast has provided tables that group individual endPoints into more generalized categories. The grouping summary table is included in `toxEval` and can be explored via the `endPointInfo` data:
+
+```{r endPointInfo, eval=FALSE}
+library(toxEval)
+endPointInfo <- endPointInfo
+```
+
+See the help file `?endPointInfo` for specifics on how the table was downloaded.
+
+Throughout the `toxEval` analysis, there are graphing and table functions that will summarize EARs based on either "Biological" groupings (as defined by a group of endPoints) or "Chemical Class" groupings (as defined by a group of chemicals).
+
+The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. 

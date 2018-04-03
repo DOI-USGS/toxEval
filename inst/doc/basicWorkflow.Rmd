@@ -5,7 +5,6 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
-    fig_caption: yes
     fig_height: 7
     fig_width: 7
 vignette: >
@@ -74,17 +73,17 @@ And here, we convert the site lists to factors. This will make any site graph in
 ```{r sites}
 #Ordering the sites to flow "downstream" of the Great Lakes:
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
-                  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
-                  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
-                  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
-                  "Manistee","Fox","Oconto","Peshtigo","Menominee",
-                  "Indian","Cheboygan","Ford","Escanaba","Manistique",
-                  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
-                  "Clinton","Rouge","HuronMI","Raisin","Maumee",
-                  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
-                  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
-                  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
-                  "Raquette","StRegis")
+  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+  "Raquette","StRegis")
 
  tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
                levels = sitesOrdered)
@@ -104,37 +103,73 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 ## plot_tox_boxplots
 
-```{r boxplots1, warning=FALSE}
+```{r boxplots1, warning=FALSE, message=FALSE}
+library(grid)
 plot_tox_boxplots(chemicalSummary, "Biological")   
-plot_tox_boxplots(chemicalSummary, "Chemical Class")
-plot_tox_boxplots(chemicalSummary, "Chemical") 
+grid.text("# Sites:", 
+          x = unit(.22, "npc"), 
+          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+# Other options:
+# plot_tox_boxplots(chemicalSummary, "Chemical Class")
+# plot_tox_boxplots(chemicalSummary, "Chemical") 
 ```
+
+The graph shows a slightly different result for a single site:
+
+```{r siteBox, message=FALSE, warning=FALSE}
+library(dplyr)
+maumee <- filter(chemicalSummary, shortName == "Maumee")
+
+plot_tox_boxplots(maumee, "Biological")
+grid.text("# EndPoints:", 
+          x = unit(.22, "npc"), 
+          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+```
+ 
 
 ## plot_tox_boxplots
 
-```{r stackplots1, warning=FALSE}
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+```{r stackplots1, warning=FALSE, fig.width=10}
+plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
+grid.text("# Detections:", 
+          x = unit(.05, "npc"), 
+          y = unit(.205, "npc"), gp=gpar(fontsize=7))
+# More options:
+# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
+# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 ```
+
+The graph shows a slightly different result for a single site:
+
+```{r siteStacks, message=FALSE, warning=FALSE, fig.width=10}
+
+maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
+plot_tox_stacks(maumee, maumee_site,"Biological")
+
+```
+
 
 ## plot_tox_heatmap
 
-```{r heat, warning=FALSE}
+```{r heat, warning=FALSE, fig.width=10}
 plot_tox_heatmap(chemicalSummary, 
                   tox_list$chem_site, 
-                  category = "Biological",
-                  manual_remove = "Undefined")
-plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
-plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+                  category = "Biological")
+# More options:
+# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
+# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
 ```
 
 ## plot_tox_endpoints
 
 ```{r endpoints, warning=FALSE}
 plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
-plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+grid.text("# Detections:", 
+          x = unit(.38, "npc"), 
+          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+# More options:
+# plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
+# plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
 ```
 
 # Tables
@@ -146,14 +181,61 @@ library(DT)
 options(DT.options = list(pageLength = 5))
 
 table_tox_rank(chemicalSummary, category = "Biological")
-table_tox_rank(chemicalSummary, category = "Chemical Class")
-table_tox_rank(chemicalSummary, category = "Chemical")
+# More options:
+# table_tox_rank(chemicalSummary, category = "Chemical Class")
+# table_tox_rank(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site:
+
+```{r table_tox_rank_site, warning=FALSE}
+table_tox_rank(maumee, category = "Biological")
 ```
 
 ## table_tox_sum
 
 ```{r table_tox_sum, warning=FALSE}
 table_tox_sum(chemicalSummary, category = "Biological")
-table_tox_sum(chemicalSummary, category = "Chemical Class")
-table_tox_sum(chemicalSummary, category = "Chemical")
+# More options:
+# table_tox_sum(chemicalSummary, category = "Chemical Class")
+# table_tox_sum(chemicalSummary, category = "Chemical")
 ```
+
+The tables show slightly different results for a single site:
+
+```{r table_tox_sum_site, warning=FALSE}
+table_tox_sum(maumee, category = "Biological")
+```
+
+
+## table_endpoint_hits
+
+```{r table_endpoint_hits, warning=FALSE}
+table_endpoint_hits(chemicalSummary, category = "Biological")
+# More options:
+# table_endpoint_hits(chemicalSummary, category = "Chemical Class")
+# table_endpoint_hits(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples.
+
+```{r table_endpoint_hits_site, warning=FALSE}
+table_endpoint_hits(maumee, category = "Biological")
+```
+
+
+## table_tox_endpoint
+
+```{r table_tox_endpoint, warning=FALSE}
+table_tox_endpoint(chemicalSummary, category = "Biological")
+# More options:
+# table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+# table_tox_endpoint(chemicalSummary, category = "Chemical")
+```
+
+The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
+
+```{r table_tox_endpoint_site, warning=FALSE}
+table_tox_endpoint(maumee, category = "Biological")
+```
+

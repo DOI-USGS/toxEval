@@ -132,7 +132,7 @@ grid.text("# EndPoints:",
 ```{r stackplots1, warning=FALSE, fig.width=10}
 plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
 grid.text("# Detections:", 
-          x = unit(.35, "npc"), 
+          x = unit(.05, "npc"), 
           y = unit(.205, "npc"), gp=gpar(fontsize=7))
 # More options:
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")

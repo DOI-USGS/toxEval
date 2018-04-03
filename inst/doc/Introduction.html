@@ -16,6 +16,44 @@
 
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
 
 
 
@@ -29,7 +67,7 @@
 
 
 <h1 class="title toc-ignore">Introduction to toxEval</h1>
-<h4 class="date"><em>02 April, 2018</em></h4>
+<h4 class="date"><em>03 April, 2018</em></h4>
 
 
 <div id="TOC">
@@ -53,13 +91,20 @@
 <h2>Exposure-Activity Ratio</h2>
 <p>A Exposure-Activity Ratio (EAR) is the measured concentration divided by a concentration that was determined to cause some activity. The ToxCast database (as provided in the current version of <code>toxEval</code>) provides 991 “endPoints” for more than 6575 chemicals. Each endPoint is a single test that was done to detect some form of activity.</p>
 <p>In order to get consistent EAR results, it is important to use the correct units. The <code>toxEval</code> package assumes all measured concentration is repored in micrograms per liter (ug/L). ToxCast data is reported in log(uM), so the <code>toxEval</code> package automatically performs the unit conversion.</p>
-<p>ToxCast uses high-throughput assays to create does-response curves for each of these chemical/endPoint combinations. Activity concentration at cutoff (ACC) values of these does response curves are provided in the <code>toxEval</code> package. ACC was choosen over the chemical-specific half-maximal activity concentration (AC50) as described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, et.al 2017</a>.</p>
+<p>ToxCast uses high-throughput assays to create does-response curves for each of these chemical/endPoint combinations. Activity concentration at cutoff (ACC) values of these does response curves are provided in the <code>toxEval</code> package. ACC was choosen over the chemical-specific half-maximal activity concentration (AC50) as described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>.</p>
 </div>
 <div id="what-is-an-endpoint" class="section level2">
 <h2>What is an “endPoint”?</h2>
+<p>An endPoint is “associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards” <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a very specific action was tested, and concentration at which that activity was observed was determined. For ToxCast endPoints, that is via the ACC value in a dose response curve.</p>
 </div>
 <div id="grouping-options" class="section level2">
 <h2>Grouping options</h2>
+<p>Often, a single endPoint is too specific to be of much interest. ToxCast has provided tables that group individual endPoints into more generalized categories. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>endPointInfo</code> data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
+endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
+<p>See the help file <code>?endPointInfo</code> for specifics on how the table was downloaded.</p>
+<p>Throughout the <code>toxEval</code> analysis, there are graphing and table functions that will summarize EARs based on either “Biological” groupings (as defined by a group of endPoints) or “Chemical Class” groupings (as defined by a group of chemicals).</p>
+<p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories.</p>
 </div>
 </div>
 
