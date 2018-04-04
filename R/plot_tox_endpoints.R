@@ -173,17 +173,26 @@ plot_tox_endpoints <- function(chemicalSummary,
     xmin <- plot_layout$panel_ranges[[1]]$x.range[1]
   }
   
-  label <- c("# Sites","# Hits")
+  label <- "# Sites"
   if(single_site){
-    label <- c("# Chemicals","# Hits")
+    label <- "# Chemicals"
   }
   
   stackedPlot <- stackedPlot +
     geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
-    geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
-    geom_text(data=data.frame(x = c(Inf,Inf), y=c(ymin,ymax), label = label, stringsAsFactors = FALSE), 
-            aes(x = x,  y=y, label = label),
-            size=ifelse(is.na(font_size),3,0.30*font_size)) 
+    geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
+              aes(x = x,  y=y, label = label),
+              size=ifelse(is.na(font_size),3,0.30*font_size))     
+  
+  if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {
+    stackedPlot <- stackedPlot +
+      geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size))
+      geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
+              aes(x = x,  y=y, label = label),
+              size=ifelse(is.na(font_size),3,0.30*font_size))
+  }
+
+
       
   if(!is.na(font_size)){
     stackedPlot <- stackedPlot +
