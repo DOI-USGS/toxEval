@@ -180,13 +180,7 @@ statsOfColumns <- function(chemicalSummary,
   return(statsOfColumn)
 }
 
-#' interl
-#' 
-#' Interleaves vector
-#' @export
-#' @keywords internal
-#' @param a vector
-#' @param b vector
+
 interl <- function (a,b) {
   n <- min(length(a),length(b))
   p1 <- as.vector(rbind(a[1:n],b[1:n]))

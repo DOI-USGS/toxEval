@@ -9,7 +9,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                    title = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  chnm <- Class <- maxEAR <- ".dplyr"
+  chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
     
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
@@ -50,7 +50,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                    lwd=0.1,outlier.size=1)  
     
   } else {
-    graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
+    graphData <- toxEval:::graph_chem_data(chemicalSummary=chemicalSummary, 
                                  manual_remove=manual_remove,
                                  mean_logic=mean_logic)
     

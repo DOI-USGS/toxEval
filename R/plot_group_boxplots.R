@@ -52,6 +52,7 @@ plot_tox_boxplots <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
+  x <- y <- CAS <- ".dplyr"
 
   if(category == "Chemical"){
 
