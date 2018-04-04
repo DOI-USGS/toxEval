@@ -9,8 +9,13 @@ boxPlots_create <- reactive({
   site <- input$sites
   
   if(site == "All"){
+    pretty_cat <- tolower(category)
+    if(pretty_cat == "biological"){
+      pretty_cat <- "biological activity grouping"
+    }
+    
     title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
-                   "per site, grouped by", tolower(category))
+                   "per site, grouped by", pretty_cat)
   } else {
     title <- rawData()[["chem_site"]][["Fullname"]]
   }

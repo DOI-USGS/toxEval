@@ -36,7 +36,8 @@ siteHitCode <- reactive({
   hitThres <- hitThresValue()
   
   siteHitCode <- paste0(rCodeSetup(),"
-table_tox_endpoint(chemicalSummary, 
+# Use the table_tox_endpoint function for the formatted DT table
+hitSiteTable <- endpoint_table(chemicalSummary, 
                     category = '",category,"',
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,")")

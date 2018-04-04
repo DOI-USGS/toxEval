@@ -41,7 +41,8 @@ tableSummCode <- reactive({
   hitThres <- hitThresValue()
   
   tableSummCode <- paste0(rCodeSetup(),"
-table_tox_rank(chemicalSummary, 
+# Use the table_tox_rank function for a formatted DT table
+tableSum <- statsOfColumns(chemicalSummary, 
                   category = '",category,"',
                   mean_logic = ",as.logical(input$meanEAR),",
                   hit_threshold = ",hitThres,")")

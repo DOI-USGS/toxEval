@@ -103,6 +103,8 @@ plot_heat_chemicals <- function(graphData, chem_site){
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param plot_ND logical whether or not to plot the non-detects
+#' @param font_size numeric to adjust the axis font size
+#' @param title character title for plot. 
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -157,9 +159,12 @@ plot_heat_chemicals <- function(graphData, chem_site){
 plot_tox_heatmap <- function(chemicalSummary, 
                              chem_site, 
                              category = "Biological",
+                             breaks = c(0.00001,0.0001,0.001,0.01,0.1,1,5),
                              manual_remove = NULL,
                              mean_logic = FALSE,
-                             plot_ND = TRUE){
+                             plot_ND = TRUE, 
+                             font_size = NA,
+                             title = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -193,14 +198,14 @@ plot_tox_heatmap <- function(chemicalSummary,
     plot_back <- ggplot(data = graphData) +
       geom_tile(aes(x = `Short Name`, y=category, fill=meanEAR)) +
       theme_bw() +
-      theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
+      theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 0.975)) +
       ylab("") +
       xlab("") +
       labs(fill="Maximum EAR") +
       scale_fill_gradient( guide = "legend",
                            trans = 'log',
                            low = "white", high = "steelblue",
-                           breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
+                           breaks=breaks,
                            na.value = 'transparent',labels=fancyNumbers2) +
       facet_grid(. ~ site_grouping, scales="free", space="free") +
       theme(strip.text.y = element_text(angle=0, hjust=0), 
@@ -208,9 +213,26 @@ plot_tox_heatmap <- function(chemicalSummary,
             panel.spacing = unit(0.05, "lines"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
+            axis.ticks = element_blank(),
             plot.background = element_rect(fill = "transparent",colour = NA))
 
   }
+  
+  if(!is.na(font_size)){
+    plot_back <- plot_back +
+      theme(axis.text = element_text(size = font_size),
+            strip.text = element_text(size = font_size))
+  }
+  
+  if(!is.na(title)){
+    plot_back <- plot_back +
+      ggtitle(title)
+    
+    if(!is.na(font_size)){
+      plot_back <- plot_back +
+        theme(plot.title = element_text(size=font_size))
+    }
+  }  
   
   return(plot_back)
 }

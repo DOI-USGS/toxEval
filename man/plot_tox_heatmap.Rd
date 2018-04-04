@@ -5,7 +5,8 @@
 \title{plot_tox_heatmap}
 \usage{
 plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
-  manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE)
+  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 5), manual_remove = NULL,
+  mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -19,6 +20,10 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{plot_ND}{logical whether or not to plot the non-detects}
+
+\item{font_size}{numeric to adjust the axis font size}
+
+\item{title}{character title for plot.}
 }
 \description{
 Plot heat map

@@ -5,7 +5,8 @@ heatMap_create <- reactive({
   chemicalSummary <- chemicalSummary()
   rawData <- rawData()
   chem_site <- rawData$chem_site
-
+  mean_logic <- as.logical(input$meanEAR)
+  
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
@@ -15,11 +16,28 @@ heatMap_create <- reactive({
     chem_site$`Short Name` <- factor(chem_site$`Short Name`,
                                      levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
   }
+  category <-  c("Biological","Chemical","Chemical Class")[catType]
+  site <- input$sites
+  
+  if(site == "All"){
+    pretty_cat <- tolower(category)
+    if(pretty_cat == "biological"){
+      pretty_cat <- "biological activity grouping"
+    }
+    title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+                   "grouped by", pretty_cat)
+  } else {
+    title <- rawData()[["chem_site"]][["Fullname"]]
+  }
+  
   
   heatMap <- plot_tox_heatmap(chemicalSummary,
                               chem_site,
-                              category = c("Biological","Chemical","Chemical Class")[catType],
-                              plot_ND = plot_ND)
+                              category = category,
+                              plot_ND = plot_ND,
+                              mean_logic = mean_logic,
+                              font_size = ifelse(catType == 2, 14, 17),
+                              title = title)
   
   updateAceEditor(session, editorId = "heat_out", value = heatCode() )
   
@@ -69,6 +87,7 @@ heatCode <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   plot_ND = input$plot_ND_heat
+  mean_logic <- as.logical(input$meanEAR)
   
   heatCode <- paste0(rCodeSetup(),"
 # To re-order the x-axis, 
@@ -77,6 +96,7 @@ heatCode <- reactive({
 plot_tox_heatmap(chemicalSummary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
+                 mean_logic = ",mean_logic,",
                  plot_ND = ",plot_ND,")")
   
   HTML(heatCode)
