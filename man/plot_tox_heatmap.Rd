@@ -15,6 +15,8 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
+\item{breaks}{numerical vector to define legend breaks}
+
 \item{manual_remove}{vector of categories to remove}
 
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}

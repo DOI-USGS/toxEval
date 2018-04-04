@@ -105,6 +105,7 @@ plot_heat_chemicals <- function(graphData, chem_site){
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot. 
+#' @param breaks numerical vector to define legend breaks
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
