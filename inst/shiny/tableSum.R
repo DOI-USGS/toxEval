@@ -1,3 +1,16 @@
+tableSummData <- reactive({
+  catType = as.numeric(input$radioMaxGroup)
+  
+  chemicalSummary <- chemicalSummary()
+  hitThres <- hitThresValue()
+  mean_logic <- as.logical(input$meanEAR)
+  
+  tableGroup <- statsOfColumns(chemicalSummary, 
+                               category = c("Biological","Chemical","Chemical Class")[catType],
+                               mean_logic = mean_logic,
+                               hit_threshold = hitThres)
+})
+
 output$tableSumm <- DT::renderDataTable({
   
   validate(
@@ -36,3 +49,11 @@ table_tox_rank(chemicalSummary,
   return(tableSummCode)
   
 })
+
+output$downloadTable <- downloadHandler(
+  filename = "tableSum.csv",
+  content = function(file) {
+
+    write.csv(tableSummData(), file = file, row.names = FALSE)
+  }
+)

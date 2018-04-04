@@ -7,6 +7,7 @@
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param font_size numeric to adjust the axis font size
+#' @param title character title for plot. 
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -28,14 +29,24 @@
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #' plot_tox_boxplots(chemicalSummary, "Biological")   
 #' plot_tox_boxplots(chemicalSummary, "Chemical Class")
-#' plot_tox_boxplots(chemicalSummary, "Chemical") 
+#' plot_tox_boxplots(chemicalSummary, "Chemical")
+#' 
+#'  # To turn off clipping:
+#' class_plot <- plot_tox_boxplots(chemicalSummary, "Chemical Class")
+#' gb <- ggplot2::ggplot_build(class_plot)
+#' gt <- ggplot2::ggplot_gtable(gb)
+#' 
+#' gt$layout$clip[gt$layout$name=="panel"] <- "off"
+#' 
+#' grid::grid.draw(gt) 
 #' }
 plot_tox_boxplots <- function(chemicalSummary, 
                               category = "Biological",
                               manual_remove = NULL,
                               mean_logic = FALSE,
                               plot_ND = TRUE, 
-                              font_size = NA){
+                              font_size = NA,
+                              title = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -46,7 +57,8 @@ plot_tox_boxplots <- function(chemicalSummary,
     chemPlot <- plot_chemical_boxplots(chemicalSummary, 
                                        mean_logic = mean_logic, 
                                        plot_ND = plot_ND,
-                                       font_size = font_size)
+                                       font_size = font_size,
+                                       title = title)
     return(chemPlot)
     
   } else {
@@ -68,6 +80,8 @@ plot_tox_boxplots <- function(chemicalSummary,
         group_by(category) %>%
         summarise(nonZero = as.character(length(unique(CAS)))) %>%
         data.frame() 
+      
+      label <- "# Chemicals"
       
       if(!is.null(manual_remove)){
         chemicalSummary <- filter(chemicalSummary, !(category %in% manual_remove))
@@ -94,7 +108,9 @@ plot_tox_boxplots <- function(chemicalSummary,
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
               axis.text.y = element_text(color = "black", vjust = 0.2), 
-              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0))) + 
+              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
+              panel.border = element_blank(),
+              axis.ticks = element_blank()) + 
         geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
         scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
       
@@ -109,13 +125,17 @@ plot_tox_boxplots <- function(chemicalSummary,
         summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
         data.frame() 
       
+      label <- "# Sites"
+      
       bioPlot <- ggplot(data = graphData)+
         coord_flip() +
         theme_bw() +
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
               axis.text.y = element_text(color = "black", vjust = 0.2), 
-              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0))) +  
+              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
+              panel.border = element_blank(),
+              axis.ticks = element_blank()) +  
         geom_boxplot(aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
         scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
     }
@@ -135,11 +155,24 @@ plot_tox_boxplots <- function(chemicalSummary,
     } else {
       xmin <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[1]))
       xmax <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[2]))
-      ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[1])
+      ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[2])
     }
     
     bioPlot_w_labels <- bioPlot + 
-      geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size))  
+      geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+      geom_text(data=data.frame(x = Inf, y=xmin, label = label, stringsAsFactors = FALSE), 
+                aes(x = Inf,  y=xmin, label = label),
+                size=ifelse(is.na(font_size),3,0.30*font_size)) 
+    
+    if(!is.na(title)){
+      bioPlot_w_labels <- bioPlot_w_labels +
+        ggtitle(title)
+      
+      if(!is.na(font_size)){
+        bioPlot_w_labels <- bioPlot_w_labels +
+          theme(plot.title = element_text(size=font_size))
+      }
+    }  
     
     return(bioPlot_w_labels)
   }

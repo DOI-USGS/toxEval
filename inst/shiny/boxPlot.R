@@ -5,12 +5,23 @@ boxPlots_create <- reactive({
   plot_ND = input$plot_ND
   chemicalSummary <- chemicalSummary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
+  mean_logic <- as.logical(input$meanEAR)
+  site <- input$sites
+  
+  if(site == "All"){
+    title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+                   "per site, grouped by", tolower(category))
+  } else {
+    title <- rawData()[["chem_site"]][["Fullname"]]
+  }
+
   
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
-                               mean_logic = as.logical(input$meanEAR),
+                               mean_logic = mean_logic,
                                plot_ND = plot_ND,
-                               font_size = 18)
+                               font_size = 18,
+                               title = title)
   return(bioPlot)
   
 })
@@ -43,7 +54,15 @@ output$graphGroup <- renderPlot({
     need(!is.null(input$data), "Please select a data set")
   )
   updateAceEditor(session, editorId = "boxCode_out", value = boxCode() )
-  print(boxPlots_create())
+  
+  gb <- ggplot2::ggplot_build(boxPlots_create())
+  gt <- ggplot2::ggplot_gtable(gb)
+
+  gt$layout$clip[gt$layout$name=="panel"] <- "off"
+
+  grid::grid.draw(gt)
+  # print(boxPlots_create())
+
   
 })
 

@@ -32,7 +32,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
                                    plot_ND = TRUE,
-                                   font_size = NA){
+                                   font_size = NA,
+                                   title = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- ".dplyr"
@@ -69,6 +70,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
       group_by(chnm, Class) %>%
       summarize(nonZero = as.character(sum(EAR>0)))
     
+    label <- "# Endpoints"
+    
     toxPlot_All <- ggplot(data=chemicalSummary) +
       geom_boxplot(aes(x=chnm, y=EAR, fill=Class),
                    lwd=0.1,outlier.size=1)  
@@ -83,6 +86,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
       group_by(chnm, Class) %>%
       summarize(nonZero = as.character(sum(maxEAR>0)))
     
+    label <- "# Sites"
     toxPlot_All <- ggplot(data=graphData) +
       geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
                    lwd=0.1,outlier.size=1)  
@@ -98,7 +102,9 @@ plot_chemical_boxplots <- function(chemicalSummary,
           panel.background = element_blank(),
           plot.background = element_rect(fill = "transparent",colour = NA),
           strip.background = element_rect(fill = "transparent",colour = NA),
-          strip.text.y = element_blank()) +
+          strip.text.y = element_blank(),
+          panel.border = element_blank(),
+          axis.ticks = element_blank()) +
     guides(fill=guide_legend(ncol=6)) +
     theme(legend.position="bottom",
           legend.justification = "left",
@@ -122,8 +128,21 @@ plot_chemical_boxplots <- function(chemicalSummary,
   }
   
   toxPlot_All_withLabels <- toxPlot_All +
-    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size))
-
+    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size)) +
+    geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
+            aes(x=x,  y=y, label = label),
+            size=ifelse(is.na(font_size),3,0.30*font_size)) 
+  
+  if(!is.na(title)){
+    toxPlot_All_withLabels <- toxPlot_All_withLabels +
+      ggtitle(title)
+    
+    if(!is.na(font_size)){
+      toxPlot_All_withLabels <- toxPlot_All_withLabels +
+        theme(plot.title = element_text(size=font_size))
+    }
+  }
+  
   return(toxPlot_All_withLabels)
   
 }

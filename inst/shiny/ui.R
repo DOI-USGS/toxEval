@@ -182,6 +182,7 @@ body <- dashboardBody(
             h5("maxEAR = Maximum summation of EARs per sample"),
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm'),
+            downloadButton('downloadTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),

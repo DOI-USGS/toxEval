@@ -6,7 +6,7 @@
 \usage{
 plot_tox_boxplots(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE,
-  font_size = NA)
+  font_size = NA, title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -20,6 +20,8 @@ plot_tox_boxplots(chemicalSummary, category = "Biological",
 \item{plot_ND}{logical whether or not to plot the non-detects}
 
 \item{font_size}{numeric to adjust the axis font size}
+
+\item{title}{character title for plot.}
 }
 \description{
 Plot boxplot of groups
@@ -41,6 +43,15 @@ filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 plot_tox_boxplots(chemicalSummary, "Biological")   
 plot_tox_boxplots(chemicalSummary, "Chemical Class")
-plot_tox_boxplots(chemicalSummary, "Chemical") 
+plot_tox_boxplots(chemicalSummary, "Chemical")
+
+ # To turn off clipping:
+class_plot <- plot_tox_boxplots(chemicalSummary, "Chemical Class")
+gb <- ggplot2::ggplot_build(class_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+
+grid::grid.draw(gt) 
 }
 }

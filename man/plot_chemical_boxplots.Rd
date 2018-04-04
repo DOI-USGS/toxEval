@@ -5,7 +5,7 @@
 \title{plot_chemical_boxplots}
 \usage{
 plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
-  mean_logic = FALSE, plot_ND = TRUE, font_size = NA)
+  mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{graph_chem_data}}
