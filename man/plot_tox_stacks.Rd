@@ -5,7 +5,8 @@
 \title{plot_tox_boxplots}
 \usage{
 plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE, manual_remove = NULL, include_legend = TRUE)
+  mean_logic = FALSE, manual_remove = NULL, include_legend = TRUE,
+  font_size = NA, title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -19,6 +20,10 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
 \item{manual_remove}{vector of categories to remove}
 
 \item{include_legend}{logical to include legend or not}
+
+\item{font_size}{numeric to adjust the axis font size}
+
+\item{title}{character title for plot.}
 }
 \description{
 Plot boxplot of groups

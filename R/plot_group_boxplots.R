@@ -9,6 +9,7 @@
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot. 
 #' @export
+#' @rdname plot_tox_boxplots
 #' @import ggplot2
 #' @importFrom stats median
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -179,17 +180,8 @@ plot_tox_boxplots <- function(chemicalSummary,
   
 }
 
-#' graphData
-#' 
-#' Summarize data for most graphs/tables
-#' @param chemicalSummary data frame
-#' @param category character
-#' @param manual_remove vector
-#' @param mean_logic logical
-#' @export
-#' @keywords internal
+
 graphData <- function(chemicalSummary, 
-                      # filtered_ep,
                       category = "Biological",
                       manual_remove = NULL, 
                       mean_logic = FALSE){
@@ -235,12 +227,7 @@ graphData <- function(chemicalSummary,
   return(graphData)
 }
 
-#' fancyNumbers2
-#' 
-#' Just another fancy ggplot2 axis labeler.
-#' @param n vectore
-#' @export
-#' @keywords internal
+
 fancyNumbers2 <- function(n){
   textReturn <-  signif(n,digits = 2)
   textReturn <- as.character(textReturn)
@@ -249,17 +236,12 @@ fancyNumbers2 <- function(n){
   return(textReturn)
 }
 
-#' fancyNumbers
-#' 
-#' Plot fancyNumbers of groups
-#' @param n vector
-#' @export
-#' 
+
 fancyNumbers <- function(n){
   nNoNA <- n[!is.na(n)]
   x <-gsub(pattern = "1e",replacement = "10^",x = format(nNoNA, scientific = TRUE))
   exponents <- as.numeric(sapply(strsplit(x, "\\^"), function(j) j[2]))
-  # browser()
+
   base <- ifelse(exponents == 0, "1", ifelse(exponents == 1, "10","10^"))
   exponents[base == "1" | base == "10"] <- ""
   textNums <- rep(NA, length(n))  

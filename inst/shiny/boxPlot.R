@@ -13,7 +13,7 @@ boxPlots_create <- reactive({
     pretty_cat <- "biological activity grouping"
   }
   
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
                  "per site, grouped by", pretty_cat)
   if(site != "All"){
     title <- paste(title,"
@@ -66,8 +66,6 @@ output$graphGroup <- renderPlot({
   gt$layout$clip[gt$layout$name=="panel"] <- "off"
 
   grid::grid.draw(gt)
-  # print(boxPlots_create())
-
   
 })
 

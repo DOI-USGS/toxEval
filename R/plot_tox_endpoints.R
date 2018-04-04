@@ -192,8 +192,6 @@ plot_tox_endpoints <- function(chemicalSummary,
               size=ifelse(is.na(font_size),3,0.30*font_size))
   }
 
-
-      
   if(!is.na(font_size)){
     stackedPlot <- stackedPlot +
       theme(axis.text = element_text(size = font_size))

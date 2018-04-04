@@ -1,33 +1,6 @@
-#' plot_chemical_boxplots
-#' 
-#' Plot boxplot of chemicals
-#' @param chemicalSummary data frame from \code{graph_chem_data}
-#' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @param plot_ND logical whether or not to plot the non-detects
-#' @param font_size numeric to adjust the axis font size
+
+#' @rdname plot_tox_heatmap
 #' @export
-#' @import ggplot2
-#' @importFrom stats median quantile
-#' @importFrom dplyr full_join filter mutate select left_join right_join
-#' @examples
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'                                         
-#' plot_chemical_boxplots(chemicalSummary)
-#' }
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
@@ -147,33 +120,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
   
 }
 
-#' graph_chem_data
-#' 
-#' Get chemical data summarized for plots
-#' @param chemicalSummary data frame from \code{graph_chem_data}
-#' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @export
-#' @importFrom stats median
-#' @importFrom dplyr full_join filter mutate select left_join right_join
-#' @examples
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'
-#' graphData <- graph_chem_data(chemicalSummary)
-#' }
+
 graph_chem_data <- function(chemicalSummary, 
                             manual_remove=NULL,
                             mean_logic = FALSE){

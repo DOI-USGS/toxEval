@@ -7,6 +7,8 @@
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param manual_remove vector of categories to remove
 #' @param include_legend logical to include legend or not
+#' @param font_size numeric to adjust the axis font size
+#' @param title character title for plot. 
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -37,7 +39,9 @@ plot_tox_stacks <- function(chemicalSummary,
                             category = "Biological",
                             mean_logic = FALSE,
                             manual_remove = NULL,
-                            include_legend = TRUE){
+                            include_legend = TRUE, 
+                            font_size = NA,
+                            title = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -81,12 +85,27 @@ plot_tox_stacks <- function(chemicalSummary,
   cbValues <- sample(cbValues)
 
   siteLimits <- chem_site$`Short Name`
-
+  
   if(length(siteToFind) > 1){
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
-
+    
+    placement <- -0.05*diff(range(graphData$meanEAR))
+    
+    label_samples <- data.frame(x=-Inf,
+                                y=placement,
+                                label="# Samples", 
+                                site_grouping = NA,
+                                stringsAsFactors = FALSE)
+    if(isTRUE(is.null(levels(chem_site$site_grouping)))){
+      x <- factor(chem_site$site_grouping)
+      label_samples$site_grouping <- levels(x)[1]
+    } else {
+      label_samples$site_grouping <- factor(levels(chem_site$site_grouping)[1],
+                                            levels = levels(chem_site$site_grouping))
+    }
+    
     upperPlot <- ggplot(graphData, 
                         aes(x=`Short Name`, y=meanEAR, fill = category)) +
       theme_minimal() +
@@ -96,12 +115,17 @@ plot_tox_stacks <- function(chemicalSummary,
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))+
       geom_text(data = counts, 
                 aes(label = count, x=`Short Name`,y = placement), 
-                size=2,inherit.aes = FALSE) 
+                size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
+      geom_text(data = label_samples,hjust=0.9,
+                aes(x=x,y=y,label=label),
+                size=ifelse(is.na(font_size),2,0.20*font_size),inherit.aes = FALSE)
 
   } else {
 
     graphData <- chemicalSummary %>%
       select(-site) 
+    
+    placement <- -0.05*diff(range(graphData$meanEAR))
     
     dates <- arrange(distinct(select(graphData, date))) 
     dates$index <- 1:(nrow(dates))
@@ -126,8 +150,6 @@ plot_tox_stacks <- function(chemicalSummary,
 
   }
   
-  placement <- -0.05*diff(range(graphData$meanEAR))
-  
   upperPlot <- upperPlot +
     geom_col()  +
     theme(plot.margin = unit(c(5.5,5.5,5.5,12), "pt"))
@@ -139,6 +161,22 @@ plot_tox_stacks <- function(chemicalSummary,
   } else {
     upperPlot <- upperPlot +
       theme(legend.position="none")
+  }
+  
+  if(!is.na(font_size)){
+    upperPlot <- upperPlot +
+      theme(axis.text = element_text(size = font_size),
+            strip.text = element_text(size = font_size))
+  }
+  
+  if(!is.na(title)){
+    upperPlot <- upperPlot +
+      ggtitle(title)
+    
+    if(!is.na(font_size)){
+      upperPlot <- upperPlot +
+        theme(plot.title = element_text(size=font_size))
+    }
   }
   
   return(upperPlot)

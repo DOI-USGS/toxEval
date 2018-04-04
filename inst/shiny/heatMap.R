@@ -23,7 +23,7 @@ heatMap_create <- reactive({
   if(pretty_cat == "biological"){
     pretty_cat <- "biological activity grouping"
   }
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
                  "grouped by", pretty_cat)
   if(site != "All"){
     title <- paste(title,"

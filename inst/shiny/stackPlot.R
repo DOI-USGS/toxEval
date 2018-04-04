@@ -21,11 +21,25 @@ stackBarGroup_create <- reactive({
 
   include_legend <- !(catType == 2)
 
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  pretty_cat <- tolower(category)
+  if(pretty_cat == "biological"){
+    pretty_cat <- "biological activity grouping"
+  }
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
+                 "grouped by", pretty_cat)
+  site <- input$sites
+  if(site != "All"){
+    title <- paste("Individual samples grouped by",pretty_cat,"
+                   ",rawData()[["chem_site"]][["Fullname"]])
+  }
   upperPlot <- plot_tox_stacks(chemicalSummary, 
                                chem_site, 
-                               category = c("Biological","Chemical","Chemical Class")[catType],
+                               category = ,
                                mean_logic = mean_logic,
-                               include_legend = include_legend)
+                               include_legend = include_legend,
+                               font_size = ifelse(catType == 2, 14, 17),
+                               title = title)
   
   updateAceEditor(session, editorId = "barCode_out", value = barCode() )
   
@@ -34,12 +48,17 @@ stackBarGroup_create <- reactive({
 
 output$stackBarGroup <- renderPlot({
   
- validate(
+  validate(
   need(!is.null(input$data), "Please select a data set")
- )
+  )
   
- print(stackBarGroup_create())
- 
+  gb <- ggplot2::ggplot_build(stackBarGroup_create())
+  gt <- ggplot2::ggplot_gtable(gb)
+  
+  gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
+  
+  grid::grid.draw(gt)
+
 })
 
 output$downloadStackPlot <- downloadHandler(
