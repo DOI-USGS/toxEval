@@ -7,6 +7,7 @@
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
 #' @import DT
+#' @rdname table_tox_rank
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -25,6 +26,8 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+#'
+#' stats_df <- statsOfColumns(chemicalSummary, "Biological")
 #'
 #' table_tox_rank(chemicalSummary, category = "Biological")
 #' table_tox_rank(chemicalSummary, category = "Chemical Class")
@@ -101,32 +104,9 @@ table_tox_rank <- function(chemicalSummary,
   return(tableSumm)
 }
 
-#' statsOfColumns
-#' 
-#' Summarize data for most graphs/tables
-#' @param chemicalSummary data frame
-#' @param category character
-#' @param hit_threshold numeric
-#' @param mean_logic logical
+
 #' @export
-#' @examples 
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'
-#' stats_df <- statsOfColumns(chemicalSummary, "Biological")
-#' } 
+#' @rdname table_tox_rank
 statsOfColumns <- function(chemicalSummary, 
                            category, 
                            hit_threshold = 0.1, 

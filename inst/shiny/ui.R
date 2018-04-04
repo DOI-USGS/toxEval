@@ -190,6 +190,7 @@ body <- dashboardBody(
              value="maxHits",
             htmlOutput("nGroup"),
             DT::dataTableOutput('tableGroupSumm'),
+            downloadButton('downloadGroupTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
@@ -197,12 +198,14 @@ body <- dashboardBody(
             value="siteHits",
             htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
+            downloadButton('downloadSiteHitTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
+             downloadButton('downloadHitTable', 'Download CSV'),
              h4("R Code:"),
              aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),

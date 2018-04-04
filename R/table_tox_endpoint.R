@@ -6,6 +6,7 @@
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
+#' @rdname table_tox_endpoint
 #' @import DT
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
@@ -25,7 +26,8 @@
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'                                        
+#'
+#' site_df <- endpoint_table(chemicalSummary, category = "Biological")
 #' table_tox_endpoint(chemicalSummary, category = "Biological")
 #' table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 #' table_tox_endpoint(chemicalSummary, category = "Chemical")
@@ -50,19 +52,7 @@ table_tox_endpoint <- function(chemicalSummary,
                               rownames = TRUE,
                               options = list(scrollX = TRUE,
                                              dom = 'Bfrtip',
-                                             buttons =
-                                               list('colvis', list(
-                                                 extend = 'collection',
-                                                 buttons = list(list(extend='csv',
-                                                                     filename = 'siteHits'),
-                                                                list(extend='excel',
-                                                                     filename = 'siteHits'),
-                                                                list(extend='pdf',
-                                                                     filename= 'siteHits')),
-                                                 text = 'Download',
-                                                 filename= 'test'
-                                               )),
-                               # pageLength = nrow(tableData),
+                                             buttons = list('colvis'),
                                order=list(list(1,'desc'))))
   
   if(category != "Biological"){
@@ -77,36 +67,8 @@ table_tox_endpoint <- function(chemicalSummary,
   return(tableData1)
 }
 
-#' endpoint_table
-#' 
-#' Table of ranks
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold numeric threshold defining a "hit"
 #' @export
-#' @import DT
-#' @importFrom stats median
-#' @importFrom tidyr spread unite
-#' @importFrom dplyr full_join filter mutate select left_join right_join
-#' @examples
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' \dontrun{
-#' tox_list <- create_toxEval(full_path)
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'                                           
-#' bio_table <- endpoint_table(chemicalSummary, category = "Biological")
-#' class_table <- endpoint_table(chemicalSummary, category = "Chemical Class")
-#' chem_table <- endpoint_table(chemicalSummary, category = "Chemical")
-#' }
+#' @rdname table_tox_endpoint
 endpoint_table <- function(chemicalSummary, category, mean_logic=FALSE, hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"

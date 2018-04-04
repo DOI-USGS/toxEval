@@ -69,3 +69,29 @@ table_tox_sum(chemicalSummary,
   return(tableGroupCode)
   
 })
+
+tableSummGroupData <- reactive({
+  
+  validate(
+    need(!is.null(input$data), "Please select a data set")
+  )
+  
+  catType = as.numeric(input$radioMaxGroup)
+  
+  chemicalSummary <- chemicalSummary()
+  hitThres <- hitThresValue()
+  mean_logic <- as.logical(input$meanEAR)
+  
+  tableGroup <- statsOfGroup(chemicalSummary, 
+                              category = c("Biological","Chemical","Chemical Class")[catType],
+                              hit_threshold = hitThres)
+
+})
+
+output$downloadGroupTable <- downloadHandler(
+  filename = "tableGroupSum.csv",
+  content = function(file) {
+    
+    write.csv(tableSummGroupData(), file = file, row.names = FALSE)
+  }
+)

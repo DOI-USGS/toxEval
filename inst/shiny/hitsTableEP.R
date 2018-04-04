@@ -33,3 +33,28 @@ table_endpoint_hits(chemicalSummary,
   return(hitsTableEPCode)
   
 })
+
+hitTableData <- reactive({
+  validate(
+    need(!is.null(input$data), "Please select a data set")
+  )
+  
+  catType = as.numeric(input$radioMaxGroup)
+  
+  chemicalSummary <- chemicalSummary()
+  hitThres <- hitThresValue()
+  mean_logic <- as.logical(input$meanEAR)
+  
+  tableGroup <- endpointHits(chemicalSummary, 
+                             category = c("Biological","Chemical","Chemical Class")[catType],
+                             mean_logic = mean_logic,
+                             hit_threshold = hitThres)
+})
+
+output$downloadHitTable <- downloadHandler(
+  filename = "hitTable.csv",
+  content = function(file) {
+    
+    write.csv(hitTableData(), file = file, row.names = FALSE)
+  }
+)

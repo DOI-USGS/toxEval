@@ -2,10 +2,14 @@
 % Please edit documentation in R/table_tox_endpoint.R
 \name{table_tox_endpoint}
 \alias{table_tox_endpoint}
+\alias{endpoint_table}
 \title{table_tox_rank}
 \usage{
 table_tox_endpoint(chemicalSummary, category = "Biological",
   mean_logic = FALSE, hit_threshold = 0.1)
+
+endpoint_table(chemicalSummary, category, mean_logic = FALSE,
+  hit_threshold = 0.1)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -34,7 +38,8 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-                                       
+
+site_df <- endpoint_table(chemicalSummary, category = "Biological")
 table_tox_endpoint(chemicalSummary, category = "Biological")
 table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 table_tox_endpoint(chemicalSummary, category = "Chemical")

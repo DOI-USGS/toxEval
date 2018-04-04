@@ -2,10 +2,13 @@
 % Please edit documentation in R/table_tox_sum.R
 \name{table_tox_sum}
 \alias{table_tox_sum}
+\alias{statsOfGroup}
 \title{table_tox_sum}
 \usage{
 table_tox_sum(chemicalSummary, category = "Biological", mean_logic = FALSE,
   hit_threshold = 0.1)
+
+statsOfGroup(chemicalSummary, category, hit_threshold = 0.1)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -15,6 +18,10 @@ table_tox_sum(chemicalSummary, category = "Biological", mean_logic = FALSE,
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
+}
+\value{
+data frame with columns "Hits per Sample", "Individual Hits",
+"nSample", "site", and "category"
 }
 \description{
 Table of sums
@@ -34,6 +41,8 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+
+stats_group <- statsOfGroup(chemicalSummary, "Biological")
 
 table_tox_sum(chemicalSummary, category = "Biological")
 table_tox_sum(chemicalSummary, category = "Chemical Class")
