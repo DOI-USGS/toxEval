@@ -101,13 +101,6 @@ sidebar <- dashboardSidebar(
    radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
-   conditionalPanel(
-     condition = "input.mainOut == 'endpoint'",
-     selectInput("epGroup", label = "Choose Chemical",
-                 choices = "All",
-                 multiple = FALSE,
-                 selected = "All")     
-   ),
    radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
                 inline = TRUE, label = NULL, selected = FALSE),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
@@ -211,6 +204,10 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
+             selectInput("epGroup", label = "Choose Chemical",
+                         choices = "All",
+                         multiple = FALSE,
+                         selected = "All"),
              div(style = 'overflow-y: scroll', uiOutput("endpointGraph.ui")),
             fluidRow(
              column(3, downloadButton('downloadEndpoint', 'Download PNG')),

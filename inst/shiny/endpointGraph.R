@@ -4,13 +4,30 @@ endpointGraph_create <- reactive({
   meanEARlogic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   chemicalSummary <- chemicalSummary()
-  catType = as.numeric(input$radioMaxGroup)
-
+  catType <- as.numeric(input$radioMaxGroup)
+  mean_logic <- as.logical(input$meanEAR)
+  site <- input$sites
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  
+  if(site == "All"){
+    pretty_cat <- tolower(category)
+    if(pretty_cat == "biological"){
+      pretty_cat <- "biological activity grouping"
+    }
+    
+    title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+                   "per site, grouped by", pretty_cat)
+  } else {
+    title <- rawData()[["chem_site"]][["Fullname"]]
+  }
+  
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
-                                      category = c("Biological","Chemical","Chemical Class")[catType],
-                                      mean_logic = as.logical(input$meanEAR),
+                                      category = category,
+                                      mean_logic = mean_logic,
                                       hit_threshold = hitThresValue(),
-                                      filterBy = filterBy) 
+                                      filterBy = filterBy,
+                                      title = title,
+                                      font_size = 18) 
   
   updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
   return(endpointGraph)
@@ -22,7 +39,13 @@ output$endpointGraph <- renderPlot({
     need(!is.null(input$data), "Please select a data set")
   )
   
-  print(endpointGraph_create())
+  gb <- ggplot2::ggplot_build(endpointGraph_create())
+  gt <- ggplot2::ggplot_gtable(gb)
+  
+  gt$layout$clip[gt$layout$name=="panel"] <- "off"
+  
+  grid::grid.draw(gt)
+
 })
 
 output$endpointGraph.ui <- renderUI({

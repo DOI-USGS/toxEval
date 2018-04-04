@@ -6,7 +6,7 @@
 \usage{
 plot_tox_endpoints(chemicalSummary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = 0.1,
-  mean_logic = FALSE)
+  mean_logic = FALSE, font_size = NA, title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -20,6 +20,10 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
 \item{hit_threshold}{numeric threshold defining a "hit"}
 
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
+
+\item{font_size}{numeric to adjust the axis font size}
+
+\item{title}{character title for plot.}
 }
 \description{
 Plot boxplot of groups
@@ -43,5 +47,14 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
 plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
 plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+
+ # To turn off clipping:
+class_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+gb <- ggplot2::ggplot_build(class_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+
+grid::grid.draw(gt) 
 }
 }

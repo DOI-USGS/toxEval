@@ -161,7 +161,7 @@ plot_tox_boxplots <- function(chemicalSummary,
     bioPlot_w_labels <- bioPlot + 
       geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
       geom_text(data=data.frame(x = Inf, y=xmin, label = label, stringsAsFactors = FALSE), 
-                aes(x = Inf,  y=xmin, label = label),
+                aes(x = x,  y=y, label = label),
                 size=ifelse(is.na(font_size),3,0.30*font_size)) 
     
     if(!is.na(title)){

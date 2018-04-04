@@ -7,6 +7,8 @@
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param hit_threshold numeric threshold defining a "hit"
+#' @param font_size numeric to adjust the axis font size
+#' @param title character title for plot. 
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -31,13 +33,24 @@
 #' plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
 #' plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
 #' plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+#' 
+#'  # To turn off clipping:
+#' class_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+#' gb <- ggplot2::ggplot_build(class_plot)
+#' gt <- ggplot2::ggplot_gtable(gb)
+#' 
+#' gt$layout$clip[gt$layout$name=="panel"] <- "off"
+#' 
+#' grid::grid.draw(gt) 
 #' }
 plot_tox_endpoints <- function(chemicalSummary, 
                               category = "Biological",
                               filterBy = "All",
                               manual_remove = NULL,
                               hit_threshold = 0.1,
-                              mean_logic = FALSE){
+                              mean_logic = FALSE, 
+                              font_size = NA,
+                              title = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -74,7 +87,6 @@ plot_tox_endpoints <- function(chemicalSummary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
     nSamplesEP <- countNonZero$nonZero
     nHitsEP <- countNonZero$hits
-
     
     orderColsBy <- chemicalSummary %>%
       group_by(endPoint) %>%
@@ -91,7 +103,7 @@ plot_tox_endpoints <- function(chemicalSummary,
     chemicalSummary$endPoint <- factor(chemicalSummary$endPoint, levels = orderedLevelsEP)
     
     
-    stackedPlot <- ggplot(chemicalSummary)+
+    stackedPlot <- ggplot(data = chemicalSummary)+
       scale_y_log10("EAR per Sample",labels=fancyNumbers) +
       geom_boxplot(aes(x=endPoint, y=EAR), fill = "steelblue") +
       theme_minimal() +
@@ -109,8 +121,6 @@ plot_tox_endpoints <- function(chemicalSummary,
       data.frame() %>%
       mutate(category=as.character(category))
   
-
-
     countNonZero <- graphData %>%
       group_by(endPoint) %>%
       summarise(nonZero = as.character(sum(meanEAR>0)),
@@ -146,45 +156,50 @@ plot_tox_endpoints <- function(chemicalSummary,
       geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
   }
+
+  plot_layout <- ggplot_build(stackedPlot)$layout    
   
-
-  if(filterBy != "All"){
-
-    plot_layout <- ggplot_build(stackedPlot)$layout    
+  if(packageVersion("ggplot2") >= "2.2.1.9000"){
+    ymin <- 10^(plot_layout$panel_scales_y[[1]]$range$range[1])
+    ymax <- 10^(plot_layout$panel_scales_y[[1]]$range$range[2])
     
-    if(packageVersion("ggplot2") >= "2.2.1.9000"){
-      ymin <- 10^(plot_layout$panel_scales_y[[1]]$range$range[1])
-      ymax <- 10^(plot_layout$panel_scales_y[[1]]$range$range[2])
-      
-      xmax <- plot_layout$plot_layout$panel_scales_x[[1]]$range$range[1]
-      xmin <- plot_layout$plot_layout$panel_scales_x[[1]]$range$range[2]
-    } else {
-      ymin <- 10^(plot_layout$panel_ranges[[1]]$y.range)[1]
-      ymax <- 10^(plot_layout$panel_ranges[[1]]$y.range)[2]
-  
-      xmax <- plot_layout$panel_ranges[[1]]$x.range[2]
-      xmin <- plot_layout$panel_ranges[[1]]$x.range[1]
-    }
-    stackedPlot <- stackedPlot +
-      geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=5) +
-      geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=5)
+    xmax <- plot_layout$plot_layout$panel_scales_x[[1]]$range$range[1]
+    xmin <- plot_layout$plot_layout$panel_scales_x[[1]]$range$range[2]
+  } else {
+    ymin <- 10^(plot_layout$panel_ranges[[1]]$y.range)[1]
+    ymax <- 10^(plot_layout$panel_ranges[[1]]$y.range)[2]
 
-    # df1 <- data.frame(y = c(ymin,hit_threshold,ymax), 
-    #                   text = c("# Non Zero",
-    #                            "Hit Threshold",
-    #                            "# Hits"), stringsAsFactors = FALSE)
-    # 
-    # for(i in 1:3){
-    #   stackedPlot <- stackedPlot +
-    #     annotation_custom(
-    #       grob = textGrob(label = df1$text[i], gp = gpar(cex = 0.75)),
-    #       ymin = log10(df1$y[i]),      # Vertical position of the textGrob
-    #       ymax = log10(df1$y[i]),
-    #       xmin = xmax+0.05,  # Note: The grobs are positioned outside the plot area
-    #       xmax = xmax+0.05)
-    # }
+    xmax <- plot_layout$panel_ranges[[1]]$x.range[2]
+    xmin <- plot_layout$panel_ranges[[1]]$x.range[1]
   }
+  
+  label <- c("# Sites","# Hits")
+  if(single_site){
+    label <- c("# Chemicals","# Hits")
+  }
+  
+  stackedPlot <- stackedPlot +
+    geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+    geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+    geom_text(data=data.frame(x = c(Inf,Inf), y=c(ymin,ymax), label = label, stringsAsFactors = FALSE), 
+            aes(x = x,  y=y, label = label),
+            size=ifelse(is.na(font_size),3,0.30*font_size)) 
       
+  if(!is.na(font_size)){
+    stackedPlot <- stackedPlot +
+      theme(axis.text = element_text(size = font_size))
+  }
+  
+  if(!is.na(title)){
+    stackedPlot <- stackedPlot +
+      ggtitle(title)
+    
+    if(!is.na(font_size)){
+      stackedPlot <- stackedPlot +
+        theme(plot.title = element_text(size=font_size))
+    }
+  } 
+  
   stackedPlot <- stackedPlot +
         coord_flip()
   

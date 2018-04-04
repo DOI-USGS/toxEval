@@ -126,12 +126,15 @@ observe({
 
   if (input$radioMaxGroup == 2){
     valueText <- c("All",chems())
+    first_pick <- chems()[1]
   } else if(input$radioMaxGroup == 3){
     valueText <- c("All",classes())
+    first_pick <- classes()[1]
   } else if(input$radioMaxGroup == 1){
     valueText <- c("All",Bio_category())
+    first_pick <- Bio_category()[1]
   }
 
-  updateSelectInput(session, "epGroup", choices = valueText)
+  updateSelectInput(session, "epGroup", choices = valueText, selected = first_pick)
 })
 
