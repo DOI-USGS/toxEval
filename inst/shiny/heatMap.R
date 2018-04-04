@@ -19,15 +19,15 @@ heatMap_create <- reactive({
   category <-  c("Biological","Chemical","Chemical Class")[catType]
   site <- input$sites
   
-  if(site == "All"){
-    pretty_cat <- tolower(category)
-    if(pretty_cat == "biological"){
-      pretty_cat <- "biological activity grouping"
-    }
-    title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
-                   "grouped by", pretty_cat)
-  } else {
-    title <- rawData()[["chem_site"]][["Fullname"]]
+  pretty_cat <- tolower(category)
+  if(pretty_cat == "biological"){
+    pretty_cat <- "biological activity grouping"
+  }
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+                 "grouped by", pretty_cat)
+  if(site != "All"){
+    title <- paste(title,"
+                   ",rawData()[["chem_site"]][["Fullname"]])
   }
   
   

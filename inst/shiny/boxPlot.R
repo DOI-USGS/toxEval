@@ -8,16 +8,16 @@ boxPlots_create <- reactive({
   mean_logic <- as.logical(input$meanEAR)
   site <- input$sites
   
-  if(site == "All"){
-    pretty_cat <- tolower(category)
-    if(pretty_cat == "biological"){
-      pretty_cat <- "biological activity grouping"
-    }
-    
-    title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
-                   "per site, grouped by", pretty_cat)
-  } else {
-    title <- rawData()[["chem_site"]][["Fullname"]]
+  pretty_cat <- tolower(category)
+  if(pretty_cat == "biological"){
+    pretty_cat <- "biological activity grouping"
+  }
+  
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
+                 "per site, grouped by", pretty_cat)
+  if(site != "All"){
+    title <- paste(title,"
+                   ",rawData()[["chem_site"]][["Fullname"]])
   }
 
   

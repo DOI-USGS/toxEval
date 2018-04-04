@@ -125,13 +125,13 @@ observe({
   valueText <- "All"
 
   if (input$radioMaxGroup == 2){
-    valueText <- c("All",chems())
+    valueText <- c(chems())
     first_pick <- chems()[1]
   } else if(input$radioMaxGroup == 3){
-    valueText <- c("All",classes())
+    valueText <- c(classes())
     first_pick <- classes()[1]
   } else if(input$radioMaxGroup == 1){
-    valueText <- c("All",Bio_category())
+    valueText <- c(Bio_category())
     first_pick <- Bio_category()[1]
   }
 

@@ -9,16 +9,13 @@ endpointGraph_create <- reactive({
   site <- input$sites
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
-  if(site == "All"){
-    pretty_cat <- tolower(category)
-    if(pretty_cat == "biological"){
-      pretty_cat <- "biological activity grouping"
-    }
-    
-    title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR ",
-                   "per site, grouped by", pretty_cat)
-  } else {
-    title <- rawData()[["chem_site"]][["Fullname"]]
+  title <- paste(filterBy, ifelse(mean_logic,"Mean","Maximum"),"EAR",
+                 "per site End Point Distribution")
+  
+  if(site != "All"){
+
+    title <- paste(title,"
+                   ",rawData()[["chem_site"]][["Fullname"]])
   }
   
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
