@@ -62,7 +62,7 @@ tableGroupCode <- reactive({
   
   tableGroupCode <- paste0(rCodeSetup(),"
 # Use the table_tox_sum function for a formatted DT table
-tableGroupSum <- statsOfGroup(chemicalSummary, 
+tableGroupSum <- stats_of_hits(chemicalSummary, 
                   category = '",category,"',
                   mean_logic = ",as.logical(input$meanEAR),",
                   hit_threshold = ",hitThres,")")
@@ -83,7 +83,7 @@ tableSummGroupData <- reactive({
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   
-  tableGroup <- statsOfGroup(chemicalSummary, 
+  tableGroup <- stats_of_hits(chemicalSummary, 
                               category = c("Biological","Chemical","Chemical Class")[catType],
                               hit_threshold = hitThres)
 
