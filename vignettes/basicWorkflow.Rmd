@@ -300,15 +300,15 @@ table_endpoint_hits(maumee, category = "Biological")
 ## table_tox_endpoint
 
 ```{r table_tox_endpoint, warning=FALSE}
-table_tox_endpoint(chemicalSummary, category = "Biological")
+table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 # More options:
-# table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+# table_tox_endpoint(chemicalSummary, category = "Biological")
 # table_tox_endpoint(chemicalSummary, category = "Chemical")
 ```
 
 The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
 
 ```{r table_tox_endpoint_site, warning=FALSE}
-table_tox_endpoint(maumee, category = "Biological")
+table_tox_endpoint(maumee, category = "Chemical Class")
 ```
 

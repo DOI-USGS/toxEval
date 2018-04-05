@@ -118,7 +118,7 @@ plot_tox_stacks <- function(chemicalSummary,
                 size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
       geom_text(data = label_samples,hjust=0.9,
                 aes(x=x,y=y,label=label),
-                size=ifelse(is.na(font_size),2,0.20*font_size),inherit.aes = FALSE)
+                size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE)
 
   } else {
 

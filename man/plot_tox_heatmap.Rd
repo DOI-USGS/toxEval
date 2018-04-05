@@ -9,7 +9,7 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
   breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 5), manual_remove = NULL,
   mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
 
-plot_heat_chemicals(graphData, chem_site)
+plot_heat_chemicals(chemicalSummary, chem_site, mean_logic)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}

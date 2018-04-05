@@ -86,8 +86,8 @@ plot_tox_heatmap <- function(chemicalSummary,
   }
   
   if(category == "Chemical"){
-    graphData <- graph_chem_data(chemicalSummary, mean_logic=mean_logic)
-    plot_back <- plot_heat_chemicals(graph_data=graphData, 
+    plot_back <- plot_heat_chemicals(chemicalSummary=chemicalSummary, 
+                                     mean_logic=mean_logic, 
                                      chem_site=chem_site)
     
   } else {
@@ -147,10 +147,14 @@ plot_tox_heatmap <- function(chemicalSummary,
 
 #' @rdname plot_tox_heatmap
 #' @export
-plot_heat_chemicals <- function(graphData, chem_site){
+plot_heat_chemicals <- function(chemicalSummary,
+                                chem_site,
+                                mean_logic){
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
+  
+  graphData <- graph_chem_data(chemicalSummary, mean_logic=mean_logic)
   
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- "Sites"
