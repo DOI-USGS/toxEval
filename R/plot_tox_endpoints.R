@@ -186,7 +186,7 @@ plot_tox_endpoints <- function(chemicalSummary,
   
   if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {
     stackedPlot <- stackedPlot +
-      geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size))
+      geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
       geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
               aes(x = x,  y=y, label = label),
               size=ifelse(is.na(font_size),3,0.30*font_size))
