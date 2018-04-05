@@ -8,6 +8,7 @@
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
 #' @export
+#' @rdname make_tox_map
 #' @import leaflet
 #' @importFrom stats quantile
 #' @examples
@@ -40,7 +41,7 @@ make_tox_map <- function(chemicalSummary,
   "
   maxEARWords <- ifelse(mean_logic,"meanEAR","maxEAR")
   
-  mapDataList <- getMapInfo(chemicalSummary, 
+  mapDataList <- map_tox_data(chemicalSummary, 
                             chem_site = chem_site, 
                             category = category,
                             mean_logic = mean_logic)
@@ -92,14 +93,16 @@ make_tox_map <- function(chemicalSummary,
   
 }
 
-getMapInfo <- function(chemicalSummary,
+#' @export
+#' @rdname make_tox_map
+map_tox_data <- function(chemicalSummary,
                        chem_site,
                        category = "Biological",
                        mean_logic = FALSE){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- ".dplyr"
+  site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- n <- ".dplyr"
   
   siteToFind <- unique(chemicalSummary$shortName)
   
@@ -119,7 +122,7 @@ getMapInfo <- function(chemicalSummary,
     group_by(site) %>%
     summarize(count = n())
   
-  meanStuff <- graphData(chemicalSummary = chemicalSummary, 
+  meanStuff <- tox_boxplot_data(chemicalSummary = chemicalSummary, 
                          category = category, mean_logic = mean_logic) %>%
     group_by(site) %>%
     summarize(meanMax = max(meanEAR)) %>%

@@ -117,7 +117,7 @@ plot_tox_boxplots <- function(chemicalSummary,
         scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
       
     } else {
-      graphData <- graphData(chemicalSummary = chemicalSummary,
+      graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                              category = category,
                              manual_remove = manual_remove,
                              mean_logic = mean_logic)
@@ -181,8 +181,9 @@ plot_tox_boxplots <- function(chemicalSummary,
   
 }
 
-
-graphData <- function(chemicalSummary, 
+#' @rdname plot_tox_boxplots
+#' @export
+tox_boxplot_data <- function(chemicalSummary, 
                       category = "Biological",
                       manual_remove = NULL, 
                       mean_logic = FALSE){
@@ -198,7 +199,7 @@ graphData <- function(chemicalSummary,
     chemicalSummary$category <- chemicalSummary$Class
   }
   
-  graphData <- chemicalSummary %>%
+  tox_boxplot_data <- chemicalSummary %>%
     group_by(site,date,category) %>%
     summarise(sumEAR=sum(EAR)) %>%
     data.frame() %>%
@@ -207,10 +208,10 @@ graphData <- function(chemicalSummary,
     data.frame() 
   
   if(!is.null(manual_remove)){
-    graphData <- filter(graphData, !(category %in% manual_remove))
+    tox_boxplot_data <- filter(tox_boxplot_data, !(category %in% manual_remove))
   }
   
-  orderColsBy <- graphData %>%
+  orderColsBy <- tox_boxplot_data %>%
     group_by(category) %>%
     summarise(median = median(meanEAR[meanEAR != 0])) %>%
     arrange(median)
@@ -222,10 +223,10 @@ graphData <- function(chemicalSummary,
                        orderColsBy$category[!is.na(orderColsBy$median)])
   }
   
-  graphData$category <- factor(as.character(graphData$category), 
-                               levels=orderedLevels[orderedLevels %in% unique(as.character(graphData$category))])
+  tox_boxplot_data$category <- factor(as.character(tox_boxplot_data$category), 
+                               levels=orderedLevels[orderedLevels %in% unique(as.character(tox_boxplot_data$category))])
   
-  return(graphData)
+  return(tox_boxplot_data)
 }
 
 

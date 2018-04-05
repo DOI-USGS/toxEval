@@ -87,12 +87,12 @@ plot_tox_heatmap <- function(chemicalSummary,
   
   if(category == "Chemical"){
     graphData <- graph_chem_data(chemicalSummary, mean_logic=mean_logic)
-    plot_back <- plot_heat_chemicals(graphData=graphData, 
+    plot_back <- plot_heat_chemicals(graph_data=graphData, 
                                      chem_site=chem_site)
     
   } else {
     
-    graphData <- graphData(chemicalSummary = chemicalSummary,
+    graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                            category = category,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic)

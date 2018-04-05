@@ -2,9 +2,13 @@
 % Please edit documentation in R/makeMap.R
 \name{make_tox_map}
 \alias{make_tox_map}
+\alias{map_tox_data}
 \title{make_tox_map}
 \usage{
 make_tox_map(chemicalSummary, chem_site, category = "Biological",
+  mean_logic = FALSE)
+
+map_tox_data(chemicalSummary, chem_site, category = "Biological",
   mean_logic = FALSE)
 }
 \arguments{

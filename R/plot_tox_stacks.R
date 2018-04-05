@@ -46,7 +46,7 @@ plot_tox_stacks <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  SiteID <- site_grouping <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
+  SiteID <- site_grouping <- n <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
     
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- ""
@@ -59,7 +59,7 @@ plot_tox_stacks <- function(chemicalSummary,
     names(graphData)[names(graphData) == "maxEAR"] <- "meanEAR"
     names(graphData)[names(graphData) == "chnm"] <- "category"
   } else {
-    graphData <- graphData(chemicalSummary = chemicalSummary,
+    graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                            category = category,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic) 

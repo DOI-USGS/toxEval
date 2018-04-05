@@ -1,5 +1,5 @@
 
-#' @rdname plot_tox_heatmap
+#' @rdname plot_tox_boxplots
 #' @export
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
@@ -50,7 +50,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                    lwd=0.1,outlier.size=1)  
     
   } else {
-    graphData <- toxEval:::graph_chem_data(chemicalSummary=chemicalSummary, 
+    graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
                                  manual_remove=manual_remove,
                                  mean_logic=mean_logic)
     
@@ -120,7 +120,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
   
 }
 
-
+#' @export
+#' @rdname plot_tox_boxplots
 graph_chem_data <- function(chemicalSummary, 
                             manual_remove=NULL,
                             mean_logic = FALSE){

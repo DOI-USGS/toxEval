@@ -27,7 +27,7 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #' 
-#' hits_df <- endpointHits(chemicalSummary, category = "Biological")                        
+#' hits_df <- endpoint_hits(chemicalSummary, category = "Biological")                        
 #' table_endpoint_hits(chemicalSummary, category = "Biological")
 #' table_endpoint_hits(chemicalSummary, category = "Chemical Class")
 #' table_endpoint_hits(chemicalSummary, category = "Chemical")
@@ -37,7 +37,9 @@ table_endpoint_hits <- function(chemicalSummary,
                            mean_logic = FALSE,
                            hit_threshold = 0.1){
   
-  fullData <- endpointHits(chemicalSummary = chemicalSummary,
+  chnm <- CAS <- ".dplyr"
+  
+  fullData <- endpoint_hits(chemicalSummary = chemicalSummary,
                            category = category,
                            mean_logic = mean_logic,
                            hit_threshold = hit_threshold)
@@ -73,7 +75,7 @@ table_endpoint_hits <- function(chemicalSummary,
 
 #' @rdname table_endpoint_hits
 #' @export
-endpointHits <- function(chemicalSummary, 
+endpoint_hits <- function(chemicalSummary, 
                          category = "Biological",
                          mean_logic = FALSE,
                          hit_threshold = 0.1){

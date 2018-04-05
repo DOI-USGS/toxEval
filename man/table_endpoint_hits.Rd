@@ -2,13 +2,13 @@
 % Please edit documentation in R/table_endpoint_hits.R
 \name{table_endpoint_hits}
 \alias{table_endpoint_hits}
-\alias{endpointHits}
+\alias{endpoint_hits}
 \title{table_endpoint_hits}
 \usage{
 table_endpoint_hits(chemicalSummary, category = "Biological",
   mean_logic = FALSE, hit_threshold = 0.1)
 
-endpointHits(chemicalSummary, category = "Biological", mean_logic = FALSE,
+endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
   hit_threshold = 0.1)
 }
 \arguments{
@@ -39,7 +39,7 @@ cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 
-hits_df <- endpointHits(chemicalSummary, category = "Biological")                        
+hits_df <- endpoint_hits(chemicalSummary, category = "Biological")                        
 table_endpoint_hits(chemicalSummary, category = "Biological")
 table_endpoint_hits(chemicalSummary, category = "Chemical Class")
 table_endpoint_hits(chemicalSummary, category = "Chemical")
