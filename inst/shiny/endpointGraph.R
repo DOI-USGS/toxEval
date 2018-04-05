@@ -108,7 +108,7 @@ plot_tox_endpoints(chemicalSummary,
                     category = '",category,"',
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,",
-                    filterBy = ",filterBy,")")
+                    filterBy = '",filterBy,"')")
   
   return(epGraphCode)
   

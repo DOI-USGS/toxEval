@@ -26,7 +26,7 @@ hitsTableEPCode <- reactive({
   
   hitsTableEPCode <- paste0(rCodeSetup(),"
 # Use the table_endpoint_hits for a formatted DT table
-hitTable <- endpointHits(chemicalSummary, 
+hitTable <- endpoint_hits(chemicalSummary, 
               category = '",category,"',
               mean_logic = ",as.logical(input$meanEAR),",
               hit_threshold = ",hitThres,")")

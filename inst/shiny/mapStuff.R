@@ -45,7 +45,7 @@ mapDataINFO <- reactive({
     
     meanEARlogic <- as.logical(input$meanEAR)
     
-    mapDataList <- toxEval:::getMapInfo(chemicalSummary, 
+    mapDataList <- map_tox_data(chemicalSummary, 
                               chem_site = chem_site, 
                               category = category,
                               mean_logic = meanEARlogic)
