@@ -54,11 +54,15 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 
 ## ----boxplots1, warning=FALSE, message=FALSE-----------------------------
-library(grid)
-plot_tox_boxplots(chemicalSummary, "Biological")   
-grid.text("# Sites w/ Detections:", 
-          x = unit(.22, "npc"), 
-          y = unit(.994, "npc"), gp=gpar(fontsize=7))
+
+bio_box <- plot_tox_boxplots(chemicalSummary, "Biological")
+
+# The graph can be plotted without these additional lines,
+# but they allow the labels to look nicer:
+gb <- ggplot2::ggplot_build(bio_box)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
 # Other options:
 # plot_tox_boxplots(chemicalSummary, "Chemical Class")
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
@@ -72,29 +76,33 @@ maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
 ## ----maumeePlot, message=FALSE, warning=FALSE----------------------------
 library(ggplot2)
 
-maumee_plot <- plot_tox_boxplots(maumee, "Biological")
-maumee_plot <- maumee_plot +
-  ggtitle(maumee_site$Fullname[1])
-print(maumee_plot)
-grid.text("# Unique Chemical/endPoints:", 
-          x = unit(.225, "npc"), 
-          y = unit(.962, "npc"), gp=gpar(fontsize=7))
+maumee_plot <- plot_tox_boxplots(maumee, "Biological",title = maumee_site$Fullname[1])
+
+gb <- ggplot2::ggplot_build(maumee_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
 
 ## ----stackplots1, warning=FALSE, fig.width=10----------------------------
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
-grid.text("# Samples:", 
-          x = unit(.03, "npc"), 
-          y = unit(.205, "npc"), gp=gpar(fontsize=7))
+stack_plot <- plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
+
+gb <- ggplot2::ggplot_build(stack_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
+grid::grid.draw(gt)
+
 # More options:
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 
 ## ----siteStacks, message=FALSE, warning=FALSE, fig.width=10--------------
-maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological")
+maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological", title = maumee_site$Fullname[1])
 
-maumee_plot_stack <- maumee_plot_stack +
-  ggtitle(maumee_site$Fullname[1])
-print(maumee_plot_stack)
+gb <- ggplot2::ggplot_build(maumee_plot_stack)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
 
 
 ## ----heat, warning=FALSE, fig.width=10-----------------------------------
@@ -106,10 +114,13 @@ plot_tox_heatmap(chemicalSummary,
 # plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
 
 ## ----endpoints, warning=FALSE--------------------------------------------
-plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-grid.text("# Sites w/ Detections:", 
-          x = unit(.38, "npc"), 
-          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+ep_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+
+gb <- ggplot2::ggplot_build(ep_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
 # More options:
 # plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
 # plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
@@ -145,11 +156,11 @@ table_endpoint_hits(chemicalSummary, category = "Biological")
 table_endpoint_hits(maumee, category = "Biological")
 
 ## ----table_tox_endpoint, warning=FALSE-----------------------------------
-table_tox_endpoint(chemicalSummary, category = "Biological")
+table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 # More options:
-# table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+# table_tox_endpoint(chemicalSummary, category = "Biological")
 # table_tox_endpoint(chemicalSummary, category = "Chemical")
 
 ## ----table_tox_endpoint_site, warning=FALSE------------------------------
-table_tox_endpoint(maumee, category = "Biological")
+table_tox_endpoint(maumee, category = "Chemical Class")
 

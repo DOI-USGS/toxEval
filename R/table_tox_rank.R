@@ -7,6 +7,7 @@
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
 #' @import DT
+#' @rdname table_tox_rank
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -26,6 +27,8 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'
+#' stats_df <- stats_of_groupings(chemicalSummary, "Biological")
+#'
 #' table_tox_rank(chemicalSummary, category = "Biological")
 #' table_tox_rank(chemicalSummary, category = "Chemical Class")
 #' table_tox_rank(chemicalSummary, category = "Chemical")
@@ -39,9 +42,7 @@ table_tox_rank <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  siteToFind <- unique(chemicalSummary$shortName)
-
-  statsOfColumn <- statsOfColumns(chemicalSummary=chemicalSummary,
+  statsOfColumn <- stats_of_groupings(chemicalSummary=chemicalSummary,
                                    category = category,
                                    hit_threshold = hit_threshold,
                                    mean_logic = mean_logic)
@@ -50,30 +51,12 @@ table_tox_rank <- function(chemicalSummary,
   if("nSamples" %in% names(statsOfColumn)){
     colToSort <- 2
   }
-  freqCol <- grep("freq",names(statsOfColumn))
-  maxEARS <- grep("maxEAR",names(statsOfColumn))
-
-  ignoreIndex <- which(names(statsOfColumn) %in% c("site","nSamples"))
-
-  statsOfColumn <- statsOfColumn[,c(ignoreIndex,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-
-  maxEARS <- grep("maxEAR",names(statsOfColumn))
-
-  MaxEARSordered <- order(apply(statsOfColumn[,maxEARS, drop = FALSE], 2, max),decreasing = TRUE)
-
-  if(length(maxEARS) != 1){
-    statsOfColumn <- statsOfColumn[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
-  }
   
-  freqCol <- grep("freq",names(statsOfColumn))
   maxEARS <- grep("maxEAR",names(statsOfColumn))
-
-  if(mean_logic){
-    names(statsOfColumn)[maxEARS] <- gsub("max","mean",names(statsOfColumn)[maxEARS])
-  }
-
+  freqCol <- grep("freq",names(statsOfColumn))
   n <- length(maxEARS)
-
+  ignoreIndex <- which(names(statsOfColumn) %in% c("site","nSamples"))
+  
   if(n > 20 & n<30){
     colors <- c(brewer.pal(n = 12, name = "Set3"),
                   brewer.pal(n = 8, name = "Set2"),
@@ -90,17 +73,7 @@ table_tox_rank <- function(chemicalSummary,
                              options = list(#dom = 'ft',
                                             dom = 'Bfrtip',
                                             buttons =
-                                              list('colvis', list(
-                                                extend = 'collection',
-                                                buttons = list(list(extend='csv',
-                                                                    filename = 'hitStats'),
-                                                               list(extend='excel',
-                                                                    filename = 'hitStats'),
-                                                               list(extend='pdf',
-                                                                    filename= 'hitStats')),
-                                                text = 'Download'
-                                                )
-                                              ),
+                                              list('colvis'),
                                             scrollX = TRUE,
                                             # pageLength = nrow(statsOfColumn),
                                             order=list(list(colToSort,'desc'))))
@@ -131,19 +104,13 @@ table_tox_rank <- function(chemicalSummary,
   return(tableSumm)
 }
 
-#' statsOfColumns
-#' 
-#' Summarize data for most graphs/tables
-#' @param chemicalSummary data frame
-#' @param category character
-#' @param hit_threshold numeric
-#' @param mean_logic logical
+
 #' @export
-#' @keywords internal
-statsOfColumns <- function(chemicalSummary, 
+#' @rdname table_tox_rank
+stats_of_groupings <- function(chemicalSummary, 
                            category, 
-                           hit_threshold, 
-                           mean_logic){
+                           hit_threshold = 0.1, 
+                           mean_logic = FALSE){
   
   sumEAR <- nHits <- n <- calc <- value <- choice_calc <- ".dplyr"
   chnm <- Class <- Bio_category <- site <- EAR <- ".dplyr"
@@ -181,17 +148,39 @@ statsOfColumns <- function(chemicalSummary,
       unite(choice_calc, category, calc, sep=" ") %>%
       spread(choice_calc, value)        
   }
+  colToSort <- 2
+  if("nSamples" %in% names(statsOfColumn)){
+    colToSort <- 3
+  }
+  
+  freqCol <- grep("freq",names(statsOfColumn))
+  maxEARS <- grep("maxEAR",names(statsOfColumn))
+  
+  ignoreIndex <- which(names(statsOfColumn) %in% c("site","nSamples"))
+  
+  statsOfColumn <- statsOfColumn[,c(ignoreIndex,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
+  
+  maxEARS <- grep("maxEAR",names(statsOfColumn))
+  
+  MaxEARSordered <- order(apply(statsOfColumn[,maxEARS, drop = FALSE], 2, max),decreasing = TRUE)
+  
+  if(length(maxEARS) != 1){
+    statsOfColumn <- statsOfColumn[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
+  }
+  
+  freqCol <- grep("freq",names(statsOfColumn))
+  maxEARS <- grep("maxEAR",names(statsOfColumn))
+  
+  if(mean_logic){
+    names(statsOfColumn)[maxEARS] <- gsub("max","mean",names(statsOfColumn)[maxEARS])
+  }
+  
+  statsOfColumn <- statsOfColumn[order(statsOfColumn[[colToSort]], decreasing = TRUE),]
   
   return(statsOfColumn)
 }
 
-#' interl
-#' 
-#' Interleaves vector
-#' @export
-#' @keywords internal
-#' @param a vector
-#' @param b vector
+
 interl <- function (a,b) {
   n <- min(length(a),length(b))
   p1 <- as.vector(rbind(a[1:n],b[1:n]))

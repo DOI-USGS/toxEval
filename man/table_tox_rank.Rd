@@ -2,10 +2,14 @@
 % Please edit documentation in R/table_tox_rank.R
 \name{table_tox_rank}
 \alias{table_tox_rank}
+\alias{stats_of_groupings}
 \title{table_tox_rank}
 \usage{
 table_tox_rank(chemicalSummary, category = "Biological", mean_logic = FALSE,
   hit_threshold = 0.1)
+
+stats_of_groupings(chemicalSummary, category, hit_threshold = 0.1,
+  mean_logic = FALSE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -34,6 +38,8 @@ ACClong <- remove_flags(ACClong)
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+
+stats_df <- stats_of_groupings(chemicalSummary, "Biological")
 
 table_tox_rank(chemicalSummary, category = "Biological")
 table_tox_rank(chemicalSummary, category = "Chemical Class")

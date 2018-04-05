@@ -6,6 +6,7 @@
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
+#' @rdname table_tox_sum
 #' @import DT
 #' @importFrom stats median
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -25,6 +26,8 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'
+#' stats_group <- stats_of_hits(chemicalSummary, "Biological")
+#'
 #' table_tox_sum(chemicalSummary, category = "Biological")
 #' table_tox_sum(chemicalSummary, category = "Chemical Class")
 #' table_tox_sum(chemicalSummary, category = "Chemical")
@@ -38,41 +41,30 @@ table_tox_sum <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  statsOfGroupOrdered <- statsOfGroup(chemicalSummary = chemicalSummary,
+  stats_of_hitsOrdered <- stats_of_hits(chemicalSummary = chemicalSummary,
                category = category,
                hit_threshold = hit_threshold)
   siteToFind <- unique(chemicalSummary$site)
 
-  meanChem <- grep("Individual.Hits",names(statsOfGroupOrdered))
-  maxChem <- grep("Hits.per.Sample",names(statsOfGroupOrdered))
+  meanChem <- grep("Individual.Hits",names(stats_of_hitsOrdered))
+  maxChem <- grep("Hits.per.Sample",names(stats_of_hitsOrdered))
   
   colToSort <- maxChem-1
 
-  tableGroup <- DT::datatable(statsOfGroupOrdered,  extensions = 'Buttons',
+  tableGroup <- DT::datatable(stats_of_hitsOrdered, extensions = 'Buttons',
                               rownames = FALSE,
                               options = list(order=list(list(colToSort,'desc')),
                                             dom = 'Bfrtip',
-                                            buttons =
-                                             list('colvis', list(
-                                               extend = 'collection',
-                                               buttons = list(list(extend='csv',
-                                                                   filename = 'hitCount'),
-                                                              list(extend='excel',
-                                                                   filename = 'hitCount'),
-                                                              list(extend='pdf',
-                                                                   filename= 'hitCount')),
-                                               text = 'Download')
-                                             )
-                                           ))
+                                            buttons = list('colvis')))
   
-  tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[maxChem],
-                            background = styleColorBar(range(statsOfGroupOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
+  tableGroup <- formatStyle(tableGroup, names(stats_of_hitsOrdered)[maxChem],
+                            background = styleColorBar(range(stats_of_hitsOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
                             backgroundSize = '100% 90%',
                             backgroundRepeat = 'no-repeat',
                             backgroundPosition = 'center' )
   
-  tableGroup <- formatStyle(tableGroup, names(statsOfGroupOrdered)[meanChem],
-                            background = styleColorBar(range(statsOfGroupOrdered[,meanChem],na.rm=TRUE), 'wheat'),
+  tableGroup <- formatStyle(tableGroup, names(stats_of_hitsOrdered)[meanChem],
+                            background = styleColorBar(range(stats_of_hitsOrdered[,meanChem],na.rm=TRUE), 'wheat'),
                             backgroundSize = '100% 90%',
                             backgroundRepeat = 'no-repeat',
                             backgroundPosition = 'center')
@@ -80,18 +72,13 @@ table_tox_sum <- function(chemicalSummary,
   return(tableGroup)
 }
 
-
-#' statsOfGroup
-#' 
-#' Summarize data for most graphs/tables
-#' @param chemicalSummary data frame
-#' @param category character
-#' @param hit_threshold numeric
 #' @export
-#' @keywords internal
-statsOfGroup <- function(chemicalSummary, category, hit_threshold){
+#' @rdname table_tox_sum
+#' @return data frame with columns "Hits per Sample", "Individual Hits",
+#' "nSample", "site", and "category"
+stats_of_hits <- function(chemicalSummary, category, hit_threshold = 0.1){
   
-  Class <- Bio_category <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
+  Class <- Bio_category <- `Hits per Sample` <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
   
   siteToFind <- unique(chemicalSummary$site)
   
@@ -111,16 +98,15 @@ statsOfGroup <- function(chemicalSummary, category, hit_threshold){
     chemicalSummary$site <- chemicalSummary$shortName
   }
   
-  statsOfGroup <- chemicalSummary %>%
+  stats_of_hits <- chemicalSummary %>%
     group_by(site, date,category) %>%
     summarise(sumEAR = sum(EAR),
               hits = sum(EAR > hit_threshold)) %>%
     group_by(site,category) %>%
     summarise(`Hits per Sample` = sum(sumEAR > hit_threshold),
-              # `Mean(n) of hits` = sum(mean(sumEAR) > hit_threshold),
               `Individual Hits` = sum(hits),
               nSamples = n()) %>%
-    data.frame()
-  
-  return(statsOfGroup)
+    arrange(desc(`Hits per Sample`))
+
+  return(stats_of_hits)
 }

@@ -61,11 +61,37 @@ tableGroupCode <- reactive({
   hitThres <- hitThresValue()
   
   tableGroupCode <- paste0(rCodeSetup(),"
-table_tox_sum(chemicalSummary, 
+# Use the table_tox_sum function for a formatted DT table
+tableGroupSum <- stats_of_hits(chemicalSummary, 
                   category = '",category,"',
-                  mean_logic = ",as.logical(input$meanEAR),",
                   hit_threshold = ",hitThres,")")
   
   return(tableGroupCode)
   
 })
+
+tableSummGroupData <- reactive({
+  
+  validate(
+    need(!is.null(input$data), "Please select a data set")
+  )
+  
+  catType = as.numeric(input$radioMaxGroup)
+  
+  chemicalSummary <- chemicalSummary()
+  hitThres <- hitThresValue()
+  mean_logic <- as.logical(input$meanEAR)
+  
+  tableGroup <- stats_of_hits(chemicalSummary, 
+                              category = c("Biological","Chemical","Chemical Class")[catType],
+                              hit_threshold = hitThres)
+
+})
+
+output$downloadGroupTable <- downloadHandler(
+  filename = "tableGroupSum.csv",
+  content = function(file) {
+    
+    write.csv(tableSummGroupData(), file = file, row.names = FALSE)
+  }
+)

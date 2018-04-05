@@ -74,6 +74,8 @@ The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCa
 
 ## filter_groups
 
+<table>
+<tr><td>
 This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group from the category. The default is to remove "Background Measurement" and "Undefined", but it is a good idea to check if other groups may not be relevant to the study.
 
 The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relavant. To discover to options, look at the column names in `endPointInfo`:
@@ -82,7 +84,9 @@ The default category ("groupCol") is "intended_target_family". Depending on the 
 names(endPointInfo)
 ```
 
-By default, the BioSeek set of assays are removed. The list of assays and their short names are here:
+By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.
+
+</td><td>
 
 | Assay Name | Short Name |
 |----------|------:|
@@ -98,6 +102,8 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 |NHEERL_PADILLA|NHEERL_PADILLA|
 |NCCT_SIMMONS|NCCT_SIMMONS|
 |ACEA Biosciences|ACEA|
+
+</td></tr> </table>
 
 ## get_chemical_summary
 
@@ -152,11 +158,15 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 The `plot_tox_boxplots` function
 
 ```{r boxplots1, warning=FALSE, message=FALSE}
-library(grid)
-plot_tox_boxplots(chemicalSummary, "Biological")   
-grid.text("# Sites w/ Detections:", 
-          x = unit(.22, "npc"), 
-          y = unit(.994, "npc"), gp=gpar(fontsize=7))
+
+bio_box <- plot_tox_boxplots(chemicalSummary, "Biological")
+
+# The graph can be plotted without these additional lines,
+# but they allow the labels to look nicer:
+gb <- ggplot2::ggplot_build(bio_box)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
 # Other options:
 # plot_tox_boxplots(chemicalSummary, "Chemical Class")
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
@@ -178,22 +188,25 @@ the code to add a custom title to the output:
 ```{r maumeePlot, message=FALSE, warning=FALSE}
 library(ggplot2)
 
-maumee_plot <- plot_tox_boxplots(maumee, "Biological")
-maumee_plot <- maumee_plot +
-  ggtitle(maumee_site$Fullname[1])
-print(maumee_plot)
-grid.text("# Unique Chemical/endPoints:", 
-          x = unit(.225, "npc"), 
-          y = unit(.962, "npc"), gp=gpar(fontsize=7))
+maumee_plot <- plot_tox_boxplots(maumee, "Biological",title = maumee_site$Fullname[1])
+
+gb <- ggplot2::ggplot_build(maumee_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
 ```
 
 ## plot_tox_boxplots
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
-grid.text("# Samples:", 
-          x = unit(.03, "npc"), 
-          y = unit(.205, "npc"), gp=gpar(fontsize=7))
+stack_plot <- plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
+
+gb <- ggplot2::ggplot_build(stack_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
+grid::grid.draw(gt)
+
 # More options:
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
 # plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
@@ -202,11 +215,12 @@ grid.text("# Samples:",
 The graph shows a slightly different result for a single site:
 
 ```{r siteStacks, message=FALSE, warning=FALSE, fig.width=10}
-maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological")
+maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological", title = maumee_site$Fullname[1])
 
-maumee_plot_stack <- maumee_plot_stack +
-  ggtitle(maumee_site$Fullname[1])
-print(maumee_plot_stack)
+gb <- ggplot2::ggplot_build(maumee_plot_stack)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
 
 ```
 
@@ -225,10 +239,13 @@ plot_tox_heatmap(chemicalSummary,
 ## plot_tox_endpoints
 
 ```{r endpoints, warning=FALSE}
-plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-grid.text("# Sites w/ Detections:", 
-          x = unit(.38, "npc"), 
-          y = unit(.995, "npc"), gp=gpar(fontsize=7))
+ep_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+
+gb <- ggplot2::ggplot_build(ep_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
 # More options:
 # plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
 # plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
@@ -289,15 +306,15 @@ table_endpoint_hits(maumee, category = "Biological")
 ## table_tox_endpoint
 
 ```{r table_tox_endpoint, warning=FALSE}
-table_tox_endpoint(chemicalSummary, category = "Biological")
+table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 # More options:
-# table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+# table_tox_endpoint(chemicalSummary, category = "Biological")
 # table_tox_endpoint(chemicalSummary, category = "Chemical")
 ```
 
 The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
 
 ```{r table_tox_endpoint_site, warning=FALSE}
-table_tox_endpoint(maumee, category = "Biological")
+table_tox_endpoint(maumee, category = "Chemical Class")
 ```
 

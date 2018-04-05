@@ -1,41 +1,15 @@
-#' plot_chemical_boxplots
-#' 
-#' Plot boxplot of chemicals
-#' @param chemicalSummary data frame from \code{graph_chem_data}
-#' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @param plot_ND logical whether or not to plot the non-detects
-#' @param font_size numeric to adjust the axis font size
+
+#' @rdname plot_tox_boxplots
 #' @export
-#' @import ggplot2
-#' @importFrom stats median quantile
-#' @importFrom dplyr full_join filter mutate select left_join right_join
-#' @examples
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'                                         
-#' plot_chemical_boxplots(chemicalSummary)
-#' }
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
                                    plot_ND = TRUE,
-                                   font_size = NA){
+                                   font_size = NA,
+                                   title = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  chnm <- Class <- maxEAR <- ".dplyr"
+  chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
     
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
@@ -69,6 +43,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
       group_by(chnm, Class) %>%
       summarize(nonZero = as.character(sum(EAR>0)))
     
+    label <- "# Endpoints"
+    
     toxPlot_All <- ggplot(data=chemicalSummary) +
       geom_boxplot(aes(x=chnm, y=EAR, fill=Class),
                    lwd=0.1,outlier.size=1)  
@@ -83,6 +59,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
       group_by(chnm, Class) %>%
       summarize(nonZero = as.character(sum(maxEAR>0)))
     
+    label <- "# Sites"
     toxPlot_All <- ggplot(data=graphData) +
       geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
                    lwd=0.1,outlier.size=1)  
@@ -98,7 +75,9 @@ plot_chemical_boxplots <- function(chemicalSummary,
           panel.background = element_blank(),
           plot.background = element_rect(fill = "transparent",colour = NA),
           strip.background = element_rect(fill = "transparent",colour = NA),
-          strip.text.y = element_blank()) +
+          strip.text.y = element_blank(),
+          panel.border = element_blank(),
+          axis.ticks = element_blank()) +
     guides(fill=guide_legend(ncol=6)) +
     theme(legend.position="bottom",
           legend.justification = "left",
@@ -122,39 +101,27 @@ plot_chemical_boxplots <- function(chemicalSummary,
   }
   
   toxPlot_All_withLabels <- toxPlot_All +
-    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size))
-
+    geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size)) +
+    geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
+            aes(x=x,  y=y, label = label),
+            size=ifelse(is.na(font_size),3,0.30*font_size)) 
+  
+  if(!is.na(title)){
+    toxPlot_All_withLabels <- toxPlot_All_withLabels +
+      ggtitle(title)
+    
+    if(!is.na(font_size)){
+      toxPlot_All_withLabels <- toxPlot_All_withLabels +
+        theme(plot.title = element_text(size=font_size))
+    }
+  }
+  
   return(toxPlot_All_withLabels)
   
 }
 
-#' graph_chem_data
-#' 
-#' Get chemical data summarized for plots
-#' @param chemicalSummary data frame from \code{graph_chem_data}
-#' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @export
-#' @importFrom stats median
-#' @importFrom dplyr full_join filter mutate select left_join right_join
-#' @examples
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#'
-#' graphData <- graph_chem_data(chemicalSummary)
-#' }
+#' @rdname plot_tox_boxplots
 graph_chem_data <- function(chemicalSummary, 
                             manual_remove=NULL,
                             mean_logic = FALSE){

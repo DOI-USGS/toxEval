@@ -2,10 +2,14 @@
 % Please edit documentation in R/table_endpoint_hits.R
 \name{table_endpoint_hits}
 \alias{table_endpoint_hits}
+\alias{endpoint_hits}
 \title{table_endpoint_hits}
 \usage{
 table_endpoint_hits(chemicalSummary, category = "Biological",
   mean_logic = FALSE, hit_threshold = 0.1)
+
+endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
+  hit_threshold = 0.1)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -25,16 +29,17 @@ path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
-
-tox_list <- create_toxEval(full_path)
 \dontrun{
+tox_list <- create_toxEval(full_path)
+
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-                                      
+
+hits_df <- endpoint_hits(chemicalSummary, category = "Biological")                        
 table_endpoint_hits(chemicalSummary, category = "Biological")
 table_endpoint_hits(chemicalSummary, category = "Chemical Class")
 table_endpoint_hits(chemicalSummary, category = "Chemical")

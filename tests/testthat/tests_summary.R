@@ -145,12 +145,12 @@ test_that("Plotting endpoints", {
 test_that("Internal table functions", {
   testthat::skip_on_cran()
   
-  statStuff <- statsOfColumns(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
+  statStuff <- stats_of_groupings(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
   expect_equal(nrow(statStuff), nrow(chem_site))
   
   expect_true(all(c("Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
   
-  groupStuff <- statsOfGroup(chemicalSummary, "Biological", hit_threshold = 1)
+  groupStuff <- stats_of_hits(chemicalSummary, "Biological", hit_threshold = 1)
   
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
 })
@@ -158,7 +158,7 @@ test_that("Internal table functions", {
 test_that("Internal chem plotting functions", {
   testthat::skip_on_cran()
   
-  graphData <- graph_chem_data(chemicalSummary)
+  graphData <- toxEval:::graph_chem_data(chemicalSummary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
   expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
@@ -167,7 +167,7 @@ test_that("Internal chem plotting functions", {
 test_that("Map stuff functions", {
   testthat::skip_on_cran()
   
-  mapDataList <- getMapInfo(chemicalSummary, 
+  mapDataList <- map_tox_data(chemicalSummary, 
                             chem_site = chem_site, 
                             category = "Biological")
   expect_type(mapDataList, "list")
@@ -229,19 +229,19 @@ test_that("table_tox_sum", {
   
   bt <- table_tox_sum(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
-  expect_true(all(c("site","category","Hits.per.Sample","Individual.Hits","nSamples") %in% names(bt$x$data)))
+  expect_true(all(c("site","category","Hits per Sample","Individual Hits","nSamples") %in% names(bt$x$data)))
   
   expect_error(table_tox_sum(chemicalSummary, category = "Class"))
   
   ct <- table_tox_sum(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
-  expect_true(all(names(ct$x$data) %in% c("site","category","Hits.per.Sample","Individual.Hits","nSamples")))
+  expect_true(all(names(ct$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))
   
   cht <- table_tox_sum(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
-  expect_true(all(names(cht$x$data) %in% c("site","category","Hits.per.Sample","Individual.Hits","nSamples")))
+  expect_true(all(names(cht$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))
 })
 
 test_that("table_tox_rank", {

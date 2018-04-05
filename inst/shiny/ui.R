@@ -101,13 +101,6 @@ sidebar <- dashboardSidebar(
    radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
-   conditionalPanel(
-     condition = "input.mainOut == 'endpoint'",
-     selectInput("epGroup", label = "Choose Chemical",
-                 choices = "All",
-                 multiple = FALSE,
-                 selected = "All")     
-   ),
    radioButtons("meanEAR", choices = list("MeanEAR"=TRUE, "MaxEAR" = FALSE),
                 inline = TRUE, label = NULL, selected = FALSE),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
@@ -182,6 +175,7 @@ body <- dashboardBody(
             h5("maxEAR = Maximum summation of EARs per sample"),
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm'),
+            downloadButton('downloadTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
@@ -189,6 +183,7 @@ body <- dashboardBody(
              value="maxHits",
             htmlOutput("nGroup"),
             DT::dataTableOutput('tableGroupSumm'),
+            downloadButton('downloadGroupTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
@@ -196,17 +191,23 @@ body <- dashboardBody(
             value="siteHits",
             htmlOutput("siteHitText"),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
+            downloadButton('downloadSiteHitTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
+             downloadButton('downloadHitTable', 'Download CSV'),
              h4("R Code:"),
              aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
+             selectInput("epGroup", label = "Choose Chemical",
+                         choices = "All",
+                         multiple = FALSE,
+                         selected = "All"),
              div(style = 'overflow-y: scroll', uiOutput("endpointGraph.ui")),
             fluidRow(
              column(3, downloadButton('downloadEndpoint', 'Download PNG')),

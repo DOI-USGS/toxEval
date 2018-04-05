@@ -1,105 +1,16 @@
-#' getMapInfo
-#' 
-#' getMapInfo
-#' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @export
-#' @import ggplot2
-#' @importFrom stats median
-#' @importFrom dplyr n
-#' @importFrom grDevices colorRampPalette
-#' @importFrom leaflet colorBin
-#' @importFrom dplyr full_join filter mutate select left_join right_join
-#' @examples
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' mapData <- getMapInfo(chemicalSummary, tox_list$chem_site, "Biological") 
-#' }
-getMapInfo <- function(chemicalSummary,
-                    chem_site,
-                    category = "Biological",
-                    mean_logic = FALSE){
 
-  match.arg(category, c("Biological","Chemical Class","Chemical"))
-  
-  site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- ".dplyr"
-  
-  siteToFind <- unique(chemicalSummary$shortName)
-  
-  if(category == "Biological"){
-    typeWords <- "groups"
-  } else if (category == "Chemical"){
-    typeWords <- "chemicals"
-  } else {
-    typeWords <- "chemical classes"
-  }
-  
-  mapData <- chem_site[chem_site$`Short Name` %in% siteToFind,
-                       c("Short Name", "dec_lat", "dec_lon", "SiteID")]
-  
-  nSamples <- select(chemicalSummary,site,date) %>%
-    distinct() %>%
-    group_by(site) %>%
-    summarize(count = n())
-  
-  meanStuff <- graphData(chemicalSummary = chemicalSummary, 
-            category = category, mean_logic = mean_logic) %>%
-    group_by(site) %>%
-    summarize(meanMax = max(meanEAR)) %>%
-    left_join(nSamples, by="site")
-  
-  mapData <- left_join(mapData, meanStuff, by=c("SiteID"="site"))
-  
-  col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
-
-  counts <- mapData$count       
-  
-  if(length(siteToFind) > 1){
-    leg_vals <- unique(as.numeric(quantile(mapData$meanMax, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-    pal = colorBin(col_types, mapData$meanMax, bins = leg_vals)
-    rad <-3*seq(1,4,length.out = 16)
-    
-    if(sum(mapData$count, na.rm = TRUE) == 0){
-      mapData$sizes <- rad[1]
-    } else {
-      mapData$sizes <- rad[as.numeric(cut(mapData$count, breaks=16))]
-    }
-    
-  } else {
-    leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanMax), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-    pal = colorBin(col_types, c(0,mapData$meanMax), bins = leg_vals)
-    mapData$sizes <- 3
-  }
-  
-  return(list(mapData=mapData, pal=pal))
-  
-}
-
-#' makeMap
+#' make_tox_map
 #' 
-#' makeMap
+#' make_tox_map
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
 #' @export
+#' @rdname make_tox_map
 #' @import leaflet
+#' @importFrom stats quantile
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -117,11 +28,11 @@ getMapInfo <- function(chemicalSummary,
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #' 
-#' makeMap(chemicalSummary, tox_list$chem_site, "Biological")   
-#' makeMap(chemicalSummary, tox_list$chem_site, "Chemical Class")
-#' makeMap(chemicalSummary, tox_list$chem_site, "Chemical") 
+#' make_tox_map(chemicalSummary, tox_list$chem_site, "Biological")   
+#' make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical Class")
+#' make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical") 
 #' }
-makeMap <- function(chemicalSummary,
+make_tox_map <- function(chemicalSummary,
                     chem_site,
                     category = "Biological",
                     mean_logic = FALSE){
@@ -130,7 +41,7 @@ makeMap <- function(chemicalSummary,
   "
   maxEARWords <- ifelse(mean_logic,"meanEAR","maxEAR")
   
-  mapDataList <- getMapInfo(chemicalSummary, 
+  mapDataList <- map_tox_data(chemicalSummary, 
                             chem_site = chem_site, 
                             category = category,
                             mean_logic = mean_logic)
@@ -179,5 +90,67 @@ makeMap <- function(chemicalSummary,
   }
   
   return(map)
+  
+}
+
+#' @export
+#' @rdname make_tox_map
+map_tox_data <- function(chemicalSummary,
+                       chem_site,
+                       category = "Biological",
+                       mean_logic = FALSE){
+  
+  match.arg(category, c("Biological","Chemical Class","Chemical"))
+  
+  site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- n <- ".dplyr"
+  
+  siteToFind <- unique(chemicalSummary$shortName)
+  
+  if(category == "Biological"){
+    typeWords <- "groups"
+  } else if (category == "Chemical"){
+    typeWords <- "chemicals"
+  } else {
+    typeWords <- "chemical classes"
+  }
+  
+  mapData <- chem_site[chem_site$`Short Name` %in% siteToFind,
+                       c("Short Name", "dec_lat", "dec_lon", "SiteID")]
+  
+  nSamples <- select(chemicalSummary,site,date) %>%
+    distinct() %>%
+    group_by(site) %>%
+    summarize(count = n())
+  
+  meanStuff <- tox_boxplot_data(chemicalSummary = chemicalSummary, 
+                         category = category, mean_logic = mean_logic) %>%
+    group_by(site) %>%
+    summarize(meanMax = max(meanEAR)) %>%
+    left_join(nSamples, by="site")
+  
+  mapData <- left_join(mapData, meanStuff, by=c("SiteID"="site"))
+  
+  col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
+  
+  counts <- mapData$count       
+  
+  if(length(siteToFind) > 1){
+    leg_vals <- unique(as.numeric(quantile(mapData$meanMax, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+    pal = colorBin(col_types, mapData$meanMax, bins = leg_vals)
+    rad <-3*seq(1,4,length.out = 16)
+    
+    if(sum(mapData$count, na.rm = TRUE) == 0){
+      mapData$sizes <- rad[1]
+    } else {
+      mapData$sizes <- rad[as.numeric(cut(mapData$count, breaks=16))]
+    }
+    
+  } else {
+    leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanMax), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
+    pal = colorBin(col_types, c(0,mapData$meanMax), bins = leg_vals)
+    mapData$sizes <- 3
+  }
+  
+  return(list(mapData=mapData, pal=pal))
   
 }

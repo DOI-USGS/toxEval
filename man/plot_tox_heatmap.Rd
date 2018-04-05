@@ -2,10 +2,14 @@
 % Please edit documentation in R/plot_heat_chemical.R
 \name{plot_tox_heatmap}
 \alias{plot_tox_heatmap}
+\alias{plot_heat_chemicals}
 \title{plot_tox_heatmap}
 \usage{
 plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
-  manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE)
+  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 5), manual_remove = NULL,
+  mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
+
+plot_heat_chemicals(chemicalSummary, chem_site, mean_logic)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -14,11 +18,17 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
+\item{breaks}{numerical vector to define legend breaks}
+
 \item{manual_remove}{vector of categories to remove}
 
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{plot_ND}{logical whether or not to plot the non-detects}
+
+\item{font_size}{numeric to adjust the axis font size}
+
+\item{title}{character title for plot.}
 }
 \description{
 Plot heat map

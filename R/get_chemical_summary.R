@@ -134,9 +134,7 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
   return(chemicalSummary)
 }
 
-#' orderClass
-#' 
-#' @param graphData data frame
+
 orderClass <- function(graphData){
   
   chnm <- Class <- maxEAR <- median <- max_med <- ".dplyr"
@@ -151,10 +149,7 @@ orderClass <- function(graphData){
   return(orderClass_df)
 }
 
-#' orderChem
-#' 
-#' @param graphData data frame
-#' @param orderClass_df data frame
+
 orderChem <- function(graphData, orderClass_df){
   
   chnm <- Class <- maxEAR <- median <- ".dplyr"
@@ -239,36 +234,6 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
 }
 
 
-#' Exclude endPoint/Chem combos
-#' 
-#' Using a dataframe "exclusion", filter out all chemical/endpoint combos
-#' 
-#' @param chemicalSummary data frame from \code{graph_chem_data}
-#' @param exclusion data frame with columns "CAS" and "endPoint"
-#' 
-#' @export
-#' @importFrom dplyr filter
-#' @importFrom dplyr anti_join
-#' @examples 
-#' # This is the example workflow:
-#' path_to_tox <-  system.file("extdata", package="toxEval")
-#' file_name <- "OWC_data_fromSup.xlsx"
-#'
-#' full_path <- file.path(path_to_tox, file_name)
-#' 
-#' tox_list <- create_toxEval(full_path)
-#' \dontrun{
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
-#' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
-#' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' exclusion <- data.frame(CAS = c("134-62-3","486-56-6"),
-#'                         endPoint = c("", "TOX21_p53_BLA_p3_viability"),
-#'                         stringsAsFactors = FALSE)
-#' chemicalSummary <- exclude_points(chemicalSummary, exclusion)
-#' }
 exclude_points <- function(chemicalSummary, exclusion){
   
   CAS <- endPoint <- casrn <- ".dplyr"
