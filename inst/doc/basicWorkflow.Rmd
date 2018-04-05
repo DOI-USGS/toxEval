@@ -153,7 +153,7 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 # Visualize Data
 
-## plot_tox_boxplots
+## plot_tox_boxplots {#plot_tox_boxplots}
 
 The `plot_tox_boxplots` function
 
@@ -197,7 +197,7 @@ grid::grid.draw(gt)
 
 ```
 
-## plot_tox_boxplots
+## plot_tox_stacks {#plot_tox_stacks}
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
 stack_plot <- plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
@@ -225,7 +225,7 @@ grid::grid.draw(gt)
 ```
 
 
-## plot_tox_heatmap
+## plot_tox_heatmap {#plot_tox_heatmap}
 
 ```{r heat, warning=FALSE, fig.width=10}
 plot_tox_heatmap(chemicalSummary, 
@@ -236,7 +236,7 @@ plot_tox_heatmap(chemicalSummary,
 # plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
 ```
 
-## plot_tox_endpoints
+## plot_tox_endpoints {#plot_tox_endpoints}
 
 ```{r endpoints, warning=FALSE}
 ep_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
@@ -253,7 +253,7 @@ grid::grid.draw(gt)
 
 # Tables
 
-## table_tox_rank
+## table_tox_rank {#table_tox_rank}
 
 ```{r table_tox_rank, warning=FALSE}
 library(DT)
@@ -271,7 +271,7 @@ The tables show slightly different results for a single site:
 table_tox_rank(maumee, category = "Biological")
 ```
 
-## table_tox_sum
+## table_tox_sum {#table_tox_sum}
 
 ```{r table_tox_sum, warning=FALSE}
 table_tox_sum(chemicalSummary, category = "Biological")
@@ -287,7 +287,7 @@ table_tox_sum(maumee, category = "Biological")
 ```
 
 
-## table_endpoint_hits
+## table_endpoint_hits {#table_endpoint_hits}
 
 ```{r table_endpoint_hits, warning=FALSE}
 table_endpoint_hits(chemicalSummary, category = "Biological")
@@ -303,7 +303,7 @@ table_endpoint_hits(maumee, category = "Biological")
 ```
 
 
-## table_tox_endpoint
+## table_tox_endpoint {#table_tox_endpoint}
 
 ```{r table_tox_endpoint, warning=FALSE}
 table_tox_endpoint(chemicalSummary, category = "Chemical Class")
@@ -316,5 +316,17 @@ The tables show slightly different results for a single site, showing the number
 
 ```{r table_tox_endpoint_site, warning=FALSE}
 table_tox_endpoint(maumee, category = "Chemical Class")
+```
+
+# Maps {#make_tox_map}
+
+There is one function included that creates a `leaflet` map of the data `make_tox_map`.
+
+```{r makeMap, warning=FALSE, message=FALSE}
+make_tox_map(chemicalSummary, tox_list$chem_site, "Biological")
+# More options:
+# make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical Class")
+# make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical") 
+
 ```
 
