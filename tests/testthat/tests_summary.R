@@ -145,12 +145,12 @@ test_that("Plotting endpoints", {
 test_that("Internal table functions", {
   testthat::skip_on_cran()
   
-  statStuff <- statsOfColumns(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
+  statStuff <- stats_of_groupings(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
   expect_equal(nrow(statStuff), nrow(chem_site))
   
   expect_true(all(c("Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
   
-  groupStuff <- statsOfGroup(chemicalSummary, "Biological", hit_threshold = 1)
+  groupStuff <- stats_of_hits(chemicalSummary, "Biological", hit_threshold = 1)
   
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
 })

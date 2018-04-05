@@ -2,13 +2,13 @@
 % Please edit documentation in R/table_tox_sum.R
 \name{table_tox_sum}
 \alias{table_tox_sum}
-\alias{statsOfGroup}
+\alias{stats_of_hits}
 \title{table_tox_sum}
 \usage{
 table_tox_sum(chemicalSummary, category = "Biological", mean_logic = FALSE,
   hit_threshold = 0.1)
 
-statsOfGroup(chemicalSummary, category, hit_threshold = 0.1)
+stats_of_hits(chemicalSummary, category, hit_threshold = 0.1)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -42,7 +42,7 @@ cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 
-stats_group <- statsOfGroup(chemicalSummary, "Biological")
+stats_group <- stats_of_hits(chemicalSummary, "Biological")
 
 table_tox_sum(chemicalSummary, category = "Biological")
 table_tox_sum(chemicalSummary, category = "Chemical Class")

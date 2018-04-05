@@ -27,7 +27,7 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'
-#' stats_df <- statsOfColumns(chemicalSummary, "Biological")
+#' stats_df <- stats_of_groupings(chemicalSummary, "Biological")
 #'
 #' table_tox_rank(chemicalSummary, category = "Biological")
 #' table_tox_rank(chemicalSummary, category = "Chemical Class")
@@ -42,7 +42,7 @@ table_tox_rank <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  statsOfColumn <- statsOfColumns(chemicalSummary=chemicalSummary,
+  statsOfColumn <- stats_of_groupings(chemicalSummary=chemicalSummary,
                                    category = category,
                                    hit_threshold = hit_threshold,
                                    mean_logic = mean_logic)
@@ -107,7 +107,7 @@ table_tox_rank <- function(chemicalSummary,
 
 #' @export
 #' @rdname table_tox_rank
-statsOfColumns <- function(chemicalSummary, 
+stats_of_groupings <- function(chemicalSummary, 
                            category, 
                            hit_threshold = 0.1, 
                            mean_logic = FALSE){
