@@ -57,7 +57,7 @@ The sidebar offers a host of options for customizing the analysis. This document
 
 ### A. Load Excel File 
 
-Once the Shiny App has been started, the first step is to load the data. The data should be prepared as described in the "Prepare Data" vignette. Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is picked, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to compute.
+Once the Shiny App has been started, the first step is to load the data. The data should be prepared as described in the ["Prepare Data" vignette](PrepareData.html). Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is picked, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to compute.
 
 ### B. 'Group By' option
 
@@ -109,60 +109,28 @@ There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits)
 
 ## Main Output
 
-Each plot and table offered in the app is described in the "Basic Workflow" vignette. Please refer there for more information.
+Each plot and table offered in the app is described in the ["Basic Workflow" vignette](basicWorkflow.html). Please refer there for more information.
 
 For each plot, there is an option to download the plot or data that is in the plot. The R-code to generate the output is also provided under each output. This would be the ideal way to customize any additional output.
 
-# Package logistics
+The following table shows the main function that each tab in the app uses:
 
-## Installation of R and RStudio
-
-This section should only need to be done once per computer. The following link walks you through an installation of R and RStudio:
-
-[Installation Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
-
-If you follow those instructions exactly, you should have the USGS R repository (GRAN) added to your R profile. If that step doesn't ring a bell, paste the following into your R console:
-
-```{r, eval=FALSE}
-rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
-write('\noptions(repos=c(getOption(\'repos\'),
-    CRAN=\'https://cloud.r-project.org\',
-    USGS=\'https://owi.usgs.gov/R\'))\n',
-      rprofile_path, 
-      append =  TRUE)
-
-cat('Your Rprofile has been updated to include GRAN.
-    Please restart R for changes to take effect.')
-```
-
-*RESTART RSTUDIO!*
-
-Useful links:
-
-* [Download R Windows](https://cran.r-project.org/bin/windows/base/)
-* [Download R Mac](https://cran.r-project.org/bin/macosx/)
-* [Download RStudio](https://www.rstudio.com/products/rstudio/download/)
+| Tab   |  Function |
+|----------|------:|
+| Map | [`make_tox_map`](basicWorkFlow.html#make_tox_map) |
+| Box Plots | [`plot_tox_boxplots`](basicWorkFlow.html#plot_tox_boxplots) |
+| Bar Charts | [`plot_tox_stacks`](basicWorkFlow.html#plot_tox_stacks)|
+| Max EAR and Frequency | [`table_tox_rank`](basicWorkFlow.html#table_tox_rank)|
+| Hit Counts | [`table_tox_sum`](basicWorkFlow.html#table_tox_sum)|
+| Site Hits | [`table_tox_endpoint`](basicWorkFlow.html#table_tox_endpoint)|
+| Endpoint Hits | [`table_endpoint_hits`](basicWorkFlow.html#table_endpoint_hits)|
+| Endpoint | [`plot_tox_endpoints`](basicWorkFlow.html#plot_tox_endpoints)|
+| Heat Map | [`plot_tox_heatmap`](basicWorkFlow.html#plot_tox_heatmap)|
 
 
-## Installation of toxEval
-
-This section should also only have to be done once. It assumes the USGS R repository (GRAN) was added to your R profile as described above.
-
-```{r, eval=FALSE}
-install.packages("toxEval")
-```
-
-## Update toxEval
-
-<img style="float: right;" src="update.png">
-
-Regularly, it is a good idea to update *ALL* your packages in R. If using RStudio, this is quite easy, there's an Update button in the "Packages" tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.
 
 
-Within the R-console, packages can be update with the command:
-```{r eval=FALSE}
-update.packages()
-```
+# Logistics
 
 ## Reporting bugs
 

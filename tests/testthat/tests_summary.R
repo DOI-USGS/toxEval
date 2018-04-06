@@ -1,14 +1,13 @@
 context("Chemical summary tests")
 
-library(readxl)
 path_to_tox <-  system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
-chem_data <- read_excel(full_path, sheet = "Data")
-chem_info <- read_excel(full_path, sheet = "Chemicals")
-chem_site <- read_excel(full_path, sheet = "Sites")
-exclusion <- read_excel(full_path, sheet = "Exclude")
+chem_data <- readxl::read_excel(full_path, sheet = "Data")
+chem_info <- readxl::read_excel(full_path, sheet = "Chemicals")
+chem_site <- readxl::read_excel(full_path, sheet = "Sites")
+exclusion <- readxl::read_excel(full_path, sheet = "Exclude")
 
 ACClong <- get_ACC(chem_info$CAS)
 ACClong <- remove_flags(ACClong)
@@ -18,15 +17,15 @@ filtered_ep <- filter_groups(cleaned_ep)
 
 tox_list <- create_toxEval(full_path)
 
-chemicalSummary <- get_chemical_summary(tox_list = NULL,
-                                        ACClong,
-                                        filtered_ep,
-                                        chem_data,
-                                        chem_site,
-                                        chem_info,
-                                        exclusion)
+chemicalSummary1 <- get_chemical_summary(tox_list = NULL,
+                                         ACClong,
+                                         filtered_ep,
+                                         chem_data,
+                                         chem_site,
+                                         chem_info,
+                                         exclusion)
 
-chemicalSummary1 <- get_chemical_summary(tox_list,ACClong,filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list,ACClong,filtered_ep)
 
 test_that("Calculating tox_list", {
   
@@ -142,26 +141,44 @@ test_that("Plotting endpoints", {
 })
 
 
-test_that("Internal table functions", {
+test_that("Table functions", {
   testthat::skip_on_cran()
   
   statStuff <- stats_of_groupings(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
   expect_equal(nrow(statStuff), nrow(chem_site))
-  
-  expect_true(all(c("Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
+  expect_true(all(c("site","DNA Binding maxEAR",     
+                    "DNA Binding freq","Nuclear Receptor maxEAR",
+                    "Nuclear Receptor freq","Esterase maxEAR",
+                    "Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
+  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),4.2992)
+  expect_equal(round(statStuff[["DNA Binding freq"]][which(statStuff[["site"]] == "Raisin")],4),0.8409)
   
   groupStuff <- stats_of_hits(chemicalSummary, "Biological", hit_threshold = 1)
-  
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
+  expect_true(all(c("site","category","Hits per Sample",
+                    "Individual Hits","nSamples") %in% names(groupStuff)))
+  expect_equal(groupStuff[["Hits per Sample"]][which(groupStuff[["site"]] == "Raisin" &
+                                                           groupStuff[["category"]] == "DNA Binding")],28)
+  expect_equal(groupStuff[["Individual Hits"]][which(groupStuff[["site"]] == "Raisin" &
+                                                       groupStuff[["category"]] == "DNA Binding")],19)
+  expect_equal(groupStuff[["nSamples"]][which(groupStuff[["site"]] == "Raisin" &
+                                                       groupStuff[["category"]] == "DNA Binding")],44)
+  
 })
 
-test_that("Internal chem plotting functions", {
+test_that("Chem plotting functions", {
   testthat::skip_on_cran()
   
-  graphData <- toxEval:::graph_chem_data(chemicalSummary)
+  graphData <- graph_chem_data(chemicalSummary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
   expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
+  expect_equal(signif(graphData[["maxEAR"]][graphData[["site"]] == "USGS-04024000" &
+                                       graphData[["chnm"]] == "1-Methylnaphthalene"],4),2.279e-06)
+  expect_equal(signif(graphData[["maxEAR"]][graphData[["site"]] == "USGS-04024000" &
+                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.9975)
+  
+  
 })
 
 test_that("Map stuff functions", {
@@ -172,6 +189,16 @@ test_that("Map stuff functions", {
                             category = "Biological")
   expect_type(mapDataList, "list")
   expect_equal(length(mapDataList), 2)
+  map_df <- mapDataList[["mapData"]]
+  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4),1.271)
+  expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],31)
+  expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],7.2)
+  
+  # Map data:
+  map_data <- make_tox_map(chemicalSummary, chem_site, "Biological")
+  expect_type(map_data, "list")
+  expect_equal(length(map_data), 8) 
+  expect_true(all(class(map_data) %in% c("leaflet","htmlwidget")))
 })
 
 test_that("Table endpoint hits", {
@@ -181,6 +208,13 @@ test_that("Table endpoint hits", {
   expect_type(bt, "list")
   expect_true(all(names(bt$x$data) %in% c("endPoint","Nuclear Receptor","DNA Binding",
                                   "Phosphatase","Steroid Hormone","Esterase")))
+  expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
+  
+  bt_df <- endpoint_hits(chemicalSummary, category = "Biological")
+  expect_true(all(names(bt_df) %in% c("endPoint","Nuclear Receptor","DNA Binding",     
+                                      "Esterase","Steroid Hormone")))
+  expect_equal(bt_df[["Nuclear Receptor"]][bt_df[["endPoint"]] == "NVS_NR_hPPARg"],11)
+  expect_true(is.na(bt_df[["Esterase"]][bt_df[["endPoint"]] == "NVS_NR_hPPARg"]))
   
   expect_error(table_endpoint_hits(chemicalSummary, category = "Class"))
   
@@ -204,13 +238,20 @@ test_that("table_tox_endpoint", {
   
   bt <- table_tox_endpoint(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
+  expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
   expect_true("nSites" %in% names(bt$x$data))
+  
+  bt_df <- endpoint_table(chemicalSummary, category = "Chemical Class")
+  expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Esterase",        
+                                      "Steroid Hormone","Zebrafish")))
+  expect_true(all(c("Detergent Metabolites","Antioxidants","Herbicides") %in% rownames(bt_df)))
+  expect_equal(bt_df[["Nuclear Receptor"]], c(10,11,7,11,rep(0,9)))
   
   expect_error(table_tox_endpoint(chemicalSummary, category = "Class"))
   
   ct <- table_tox_endpoint(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
-  
+  expect_true(all(class(ct) %in% c("datatables","htmlwidget")))
   expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
                                           "Phosphatase","Esterase","Steroid Hormone",
                                           "Zebrafish")))
@@ -229,6 +270,7 @@ test_that("table_tox_sum", {
   
   bt <- table_tox_sum(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
+  expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
   expect_true(all(c("site","category","Hits per Sample","Individual Hits","nSamples") %in% names(bt$x$data)))
   
   expect_error(table_tox_sum(chemicalSummary, category = "Class"))
