@@ -35,7 +35,7 @@ stackBarGroup_create <- reactive({
   }
   upperPlot <- plot_tox_stacks(chemicalSummary, 
                                chem_site, 
-                               category = ,
+                               category = category,
                                mean_logic = mean_logic,
                                include_legend = include_legend,
                                font_size = ifelse(catType == 2, 14, 17),
