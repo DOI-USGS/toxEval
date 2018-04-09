@@ -104,11 +104,15 @@ epGraphCode <- reactive({
   hitThres <- hitThresValue()
   filterBy <- epDF[['epGroup']]
   epGraphCode <- paste0(rCodeSetup(),"
-plot_tox_endpoints(chemicalSummary, 
+ep_plot <- plot_tox_endpoints(chemicalSummary, 
                     category = '",category,"',
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,",
-                    filterBy = '",filterBy,"')")
+                    filterBy = '",filterBy,"')
+gb <- ggplot2::ggplot_build(ep_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=='panel'] <- 'off'
+grid::grid.draw(gt)")
   
   return(epGraphCode)
   
