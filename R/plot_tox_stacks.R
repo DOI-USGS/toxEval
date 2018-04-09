@@ -154,11 +154,13 @@ plot_tox_stacks <- function(chemicalSummary,
     geom_col()  +
     theme(plot.margin = unit(c(5.5,5.5,5.5,12), "pt"))
   
-  if(include_legend && length(unique(graphData$category)) <= length(cbValues)){
+  if(length(unique(graphData$category)) <= length(cbValues)){
     upperPlot <- upperPlot + 
       scale_fill_manual(name = category,values = cbValues, drop=TRUE)
 
-  } else {
+  } 
+  
+  if(!include_legend){
     upperPlot <- upperPlot +
       theme(legend.position="none")
   }
