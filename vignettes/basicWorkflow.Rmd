@@ -49,11 +49,11 @@ What's going on with this workflow?
 
 The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`) values for the specified chemicals. The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of the toxEval package release, this information was found
 [here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-The function `get_ACC` will convert the ACC values the ToxCast databse from units of log(uM) to units of ug/L, and reformat the data to a format that can be used in `toxEval`.
+The function `get_ACC` will convert the ACC values the ToxCast database from units of log(uM) to units of ug/L, and reformat the data to a format that can be used in `toxEval`.
 
 ## remove_flags
 
-Through the ToxCast program quality assurrance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
+Through the ToxCast program quality assurance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
 
 | Flags   |  flagsShort |
 |----------|------:|
