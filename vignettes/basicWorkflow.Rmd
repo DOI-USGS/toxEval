@@ -53,7 +53,7 @@ The function `get_ACC` will convert the ACC values the ToxCast databse from unit
 
 ## remove_flags
 
-Through the ToxCast program quality assurrance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
+Through the ToxCast program quality assurrance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
 
 | Flags   |  flagsShort |
 |----------|------:|
@@ -65,18 +65,19 @@ Through the ToxCast program quality assurrance procedures, information is examin
 | Gain AC50 < lowest conc & loss AC50 < mean conc  | GainAC50 |
 | Biochemical assay with < 50% efficacy | Biochemical |
 
+The function is written to exclude results with the flags "Borderline", "OnlyHighest", "GainAC50", "Biochemical" as a default. If the user prefers a different list, the full list must be specified (default values will be ignored).
 
 ## clean_endPoint_info
 
-The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast. Filtering based on [Blackwell](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes in the removal of endPoints that are ATG sources with signal loss, and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
+The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on [Blackwell](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes in the removal of endPoints that are ATG sources with signal loss, and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
 
 ## filter_groups
 
 <table>
 <tr><td>
-This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group from the category. The default is to remove "Background Measurement" and "Undefined", but it is a good idea to check if other groups may not be relevant to the study.
+This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group(s) from the category. The default is to remove "Background Measurement" and "Undefined", but a different list of priorities may need to be used based on individual study objectives.
 
-The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relavant. To discover to options, look at the column names in `endPointInfo`:
+The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame `endPointInfo`:
 
 ```{r eval=FALSE}
 names(endPointInfo)
@@ -105,11 +106,11 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 ## get_chemical_summary
 
-Finally, the function `get_chemical_summary` takes the measured user data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast, as filtered by the functions described above.
+The function `get_chemical_summary` takes the measured user data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast, as filtered by the functions described above.
 
 ## Custom configuration
 
-Let's say we want to trim some names to make the labels more readable in graphs. Here we clean up some chemical class labels:
+Let's say we want to trim some names to make the labels more readable in graphs. Here, we clean up some chemical class labels:
 
 ```{r clean}
 #Trim some names:
@@ -153,7 +154,7 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 ## plot_tox_boxplots {#plot_tox_boxplots}
 
-The `plot_tox_boxplots` function
+The `plot_tox_boxplots` function creates a set of boxplots based on the original input data modified by the processing steps above, and the choice of several input options. The result includes boxplots of the maximum or mean value per site based on the `mean_logic` option. This ensures that each site is represented equally regardless of how many samples are available per site. Boxplots are generated by the chosen category. Categories include "Biological", "Chemical Class", or "Chemical". Biological refers to the chosen toxCast annotation as defined in the `groupCol` option of the `filter_groups` function. Chemical Class refers to the groupings of chemicals as defined in the "Class" column of the "Chemicals" tab of the input file. Choosing Chemical Class will generate a separate boxplot for each unique class. Choosing Chemical will generate a separate boxplot for each individual chemical in the data set.
 
 ```{r boxplots1, warning=FALSE, message=FALSE}
 
