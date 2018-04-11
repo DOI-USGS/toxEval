@@ -15,7 +15,7 @@ vignette: >
 
 # Load Data
 
-Once the data is prepared as described in the vignette: "Prepare Data", it can be loaded into R using the `create_toxEval` function.
+Once the data is prepared as described in the vignette "Prepare Data", it can be loaded into R using the `create_toxEval` function.
 
 ```{r startup, message=FALSE}
 library(toxEval)
@@ -29,11 +29,9 @@ tox_list <- create_toxEval(full_path)
 
 The `create_toxEval` function will check that required columns are included, and give messages if there are unusual issues such as sites that don't match up with data, or chemicals that don't match up with chemical information.
 
-The vast majority of `toxEval` functions require a data frame described as `chemicalSummary`. The next section will walk through the options that are available in the workflow.
-
 # Setup Analysis
 
-The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
+The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. This data frame (`chemicalSummary`) is required for most functions within `toxEval`. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
 
 ```{r chemicalSummary}
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -49,13 +47,13 @@ What's going on with this workflow?
 
 ## get_ACC
 
-The `get_ACC` function will retrieve the ACC values for the specified CAS (chemicals). The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of toxEval package release, this information was found
+The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`) values for the specified chemicals. The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of the toxEval package release, this information was found
 [here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-The `ACC` data frame provided in `toxEval` is in a wide format. The function `get_ACC` will convert it to a long format, and convert the native log(uM) to ug/L.
+The function `get_ACC` will convert the ACC values the ToxCast databse from units of log(uM) to units of ug/L, and reformat the data to a format that can be used in `toxEval`.
 
 ## remove_flags
 
-There are a set of flags that ToxCast includes with the ACC values. Depending on the scope of your analysis, you may want to include EARs with certain flags. EndPoints are removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function):
+Through the ToxCast program quality assurrance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
 
 | Flags   |  flagsShort |
 |----------|------:|
