@@ -9,6 +9,8 @@
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot. 
+#' @param pallette vector of color pallette for fill. Can be a named vector
+#' to specify specific color for specific categories. 
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -50,7 +52,8 @@ plot_tox_endpoints <- function(chemicalSummary,
                               hit_threshold = 0.1,
                               mean_logic = FALSE, 
                               font_size = NA,
-                              title = NA){
+                              title = NA,
+                              pallette = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -105,11 +108,20 @@ plot_tox_endpoints <- function(chemicalSummary,
     
     stackedPlot <- ggplot(data = chemicalSummary)+
       scale_y_log10("EAR per Sample",labels=fancyNumbers) +
-      geom_boxplot(aes(x=endPoint, y=EAR), fill = "steelblue") +
       theme_minimal() +
       xlab("") +
       theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
       geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+    
+    if(!all(is.na(pallette))){
+      stackedPlot <- stackedPlot +
+        geom_boxplot(aes(x=endPoint, y=EAR, fill = endPoint)) +
+        scale_fill_manual(values = pallette) +
+        theme(legend.position = "none")
+    } else {
+      stackedPlot <- stackedPlot +
+        geom_boxplot(aes(x=endPoint, y=EAR), fill = "steelblue") 
+    }
     
   } else {
     graphData <- chemicalSummary %>%
@@ -132,7 +144,6 @@ plot_tox_endpoints <- function(chemicalSummary,
     nSamplesEP <- countNonZero$nonZero
     nHitsEP <- countNonZero$hits
 
-  
     orderColsBy <- graphData %>%
       group_by(endPoint) %>%
       summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
@@ -149,11 +160,25 @@ plot_tox_endpoints <- function(chemicalSummary,
     
     stackedPlot <- ggplot(graphData)+
       scale_y_log10(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
-      geom_boxplot(aes(x=endPoint, y=meanEAR), fill = "steelblue") +
       theme_minimal() +
       xlab("") +
-      theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-      geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+      theme(axis.text.y = element_text(vjust = .25,hjust=1)) 
+    
+    if(!is.na(hit_threshold)){
+      stackedPlot <- stackedPlot +
+        geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+    }
+      
+    
+    if(!all(is.na(pallette))){
+      stackedPlot <- stackedPlot +
+        geom_boxplot(aes(x=endPoint, y=meanEAR, fill = endPoint)) +
+        scale_fill_manual(values = pallette) +
+        theme(legend.position = "none")
+    } else {
+      stackedPlot <- stackedPlot +
+        geom_boxplot(aes(x=endPoint, y=meanEAR), fill = "steelblue") 
+    }
     
   }
 

@@ -33,6 +33,15 @@
 #' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
 #' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
 #' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+#' 
+#' # To turn off clipping:
+#' class_plot <- plot_tox_stacks(chemicalSummary, "Chemical Class")
+#' gb <- ggplot2::ggplot_build(class_plot)
+#' gt <- ggplot2::ggplot_gtable(gb)
+#' 
+#' gt$layout$clip[gt$layout$name=="panel-1-1"] <- "off"
+#' 
+#' grid::grid.draw(gt) 
 #' }
 plot_tox_stacks <- function(chemicalSummary, 
                             chem_site,
@@ -116,9 +125,9 @@ plot_tox_stacks <- function(chemicalSummary,
       geom_text(data = counts, 
                 aes(label = count, x=`Short Name`,y = placement), 
                 size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
-      geom_text(data = label_samples,hjust=0.9,
+      geom_text(data = label_samples,hjust=1,
                 aes(x=x,y=y,label=label),
-                size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE)
+                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE)
 
   } else {
 

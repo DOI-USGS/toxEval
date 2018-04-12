@@ -28,7 +28,7 @@ So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for e
 
 An Exposure-Activity Ratio (EAR) is the measured concentration divided by a concentration that was determined to cause some activity in a specified ToxCast assay. The ToxCast database (as provided in the current version of `toxEval`) provides several hundred "endPoints" for more than 6575 chemicals. Each endPoint is a single test that was done to detect some form of activity. 
 
-In order to get consistent EAR results, it is important to use the correct units. The `toxEval` package assumes all measured concentrations are repored in micrograms per liter (ug/L). ToxCast data is reported in log(uM), so the `toxEval` package automatically performs the unit conversion.
+In order to get consistent EAR results, it is important to use the correct units. The `toxEval` package assumes all measured concentrations are repored in micrograms per liter (μg/L). ToxCast data is reported in log(μM), so the `toxEval` package automatically performs the unit conversion.
 
 ## What is an "endPoint"?
 

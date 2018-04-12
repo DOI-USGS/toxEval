@@ -1,13 +1,27 @@
-#' plot_tox_boxplots
+#' Grouped Boxplots
 #' 
-#' Plot boxplot of groups
+#' This function creates a set of boxplots based on the original input data 
+#' modified by the processing steps above, and the choice of several input options. 
+#' The result includes boxplots of the maximum or mean value per site based on 
+#' the mean_logic argument This ensures that each site is represented equally 
+#' regardless of how many samples are available per site. Boxplots are generated 
+#' by the chosen category. Categories include "Biological", "Chemical Class", or 
+#' "Chemical". Biological refers to the chosen toxCast annotation as defined 
+#' in the groupCol argument of the \code{filter_groups} function. Chemical Class 
+#' refers to the groupings of chemicals as defined in the "Class" column of the 
+#' "Chemicals" tab of the input file. Choosing Chemical Class will generate a 
+#' separate boxplot for each unique class. Choosing Chemical will generate a 
+#' separate boxplot for each individual chemical in the data set.
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param font_size numeric to adjust the axis font size
-#' @param title character title for plot. 
+#' @param title character title for plot.
+#' @param pallette vector of color pallette for fill. Can be a named vector
+#' to specify specific color for specific categories. 
 #' @export
 #' @rdname plot_tox_boxplots
 #' @import ggplot2
@@ -47,7 +61,8 @@ plot_tox_boxplots <- function(chemicalSummary,
                               mean_logic = FALSE,
                               plot_ND = TRUE, 
                               font_size = NA,
-                              title = NA){
+                              title = NA,
+                              pallette = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -113,8 +128,17 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
               axis.ticks = element_blank()) + 
-        geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
         scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
+      
+      if(!all(is.na(pallette))){
+        bioPlot <- bioPlot +
+          geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
+          scale_fill_manual(values = cbValues) +
+          theme(legend.position = "none")
+      } else {
+        bioPlot <- bioPlot +
+          geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") 
+      }
       
     } else {
       graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
@@ -138,10 +162,18 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
               axis.ticks = element_blank()) +  
-        geom_boxplot(aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
         scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
-    }
     
+      if(!all(is.na(pallette))){
+        bioPlot <- bioPlot +
+          geom_boxplot(aes(x=category, y=meanEAR, fill = category),lwd=0.1,outlier.size=1) +
+          scale_fill_manual(values = cbValues) +
+          theme(legend.position = "none")
+      } else {
+        bioPlot <- bioPlot +
+          geom_boxplot(aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue")      
+      }
+    }
     if(!is.na(font_size)){
       bioPlot <- bioPlot +
         theme(axis.text = element_text(size = font_size))
