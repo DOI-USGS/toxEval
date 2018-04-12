@@ -12,33 +12,31 @@ vignette: >
 ---
 
 
-The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package. There is less customization from the application, but it is a convenient way to explore the data. 
+The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package. There is less customization from the application, but it is a convenient way to explore the data. 
 
-This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is not on CRAN. 
+This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is located on the Geological Survey R Archive Network (GRAN) rather than CRAN. 
 
 # Introduction
 
-The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> is a database with thousands of chemicals that can give biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to the benchmark data. By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
+The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hunderds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
 
-When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">TosCast Dashboard</a> that has a wealth of information on ToxCast data.
+When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">ToxCast Dashboard</a> that has a wealth of information on ToxCast data.
 
 So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
 
 ## Exposure-Activity Ratio
 
-A Exposure-Activity Ratio (EAR) is the measured concentration divided by a concentration that was determined to cause some activity. The ToxCast database (as provided in the current version of `toxEval`) provides 991 "endPoints" for more than 6575 chemicals. Each endPoint is a single test that was done to detect some form of activity. 
+An Exposure-Activity Ratio (EAR) is the measured concentration divided by a concentration that was determined to cause some activity in a specified ToxCast assay. The ToxCast database (as provided in the current version of `toxEval`) provides several hundred "endPoints" for more than 6575 chemicals. Each endPoint is a single test that was done to detect some form of activity. 
 
-In order to get consistent EAR results, it is important to use the correct units. The `toxEval` package assumes all measured concentration is repored in micrograms per liter (ug/L). ToxCast data is reported in log(uM), so the `toxEval` package automatically performs the unit conversion.
-
-ToxCast uses high-throughput assays to create does-response curves for each of these chemical/endPoint combinations. Activity concentration at cutoff (ACC) values of these does response curves are provided in the `toxEval` package. ACC was choosen over the chemical-specific half-maximal activity concentration (AC50) as described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>.
+In order to get consistent EAR results, it is important to use the correct units. The `toxEval` package assumes all measured concentrations are repored in micrograms per liter (μg/L). ToxCast data is reported in log(μM), so the `toxEval` package automatically performs the unit conversion.
 
 ## What is an "endPoint"?
 
-An endPoint is "associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards" <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a very specific action was tested, and concentration at which that activity was observed was determined. For ToxCast endPoints, that is via the ACC value in a dose response curve.
+ToxCast uses high-throughput assays to create dose-response curves for each of these chemical/endPoint combinations. An endPoint is "associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards" <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a very specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast databse, the activity concentration at cutoff (ACC) was choosen to compute EAR values within the `toxEval` package consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. The ACC values of these dose response curves are provided within the `toxEval` package. 
 
 ## Grouping options
 
-Often, a single endPoint is too specific to be of much interest. ToxCast has provided tables that group individual endPoints into more generalized categories. The grouping summary table is included in `toxEval` and can be explored via the `endPointInfo` data:
+Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in `toxEval` and can be explored via the `endPointInfo` data:
 
 ```{r endPointInfo, eval=FALSE}
 library(toxEval)
@@ -95,17 +93,17 @@ install.packages("toxEval")
 
 <img style="float: right;" src="update.png">
 
-Regularly, it is a good idea to update *ALL* your packages in R. If using RStudio, this is quite easy, there's an Update button in the "Packages" tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.
+Regularly, it is a good idea to update *ALL* of your packages in R. If using RStudio, this is done quite easily by usign the Update button in the "Packages" tab. Selecting this option checks CRAN and GRAN for updates. 
 
 
-Within the R-console, packages can be update with the command:
+Within the R-console, packages can be updated with the command:
 ```{r eval=FALSE}
 update.packages()
 ```
 
 ## Reporting bugs
 
-Please consider reporting bugs and asking questions on the Issues page:
+If you discover an issue that you feel is a bug in the package or have a question on functionality, please consider reporting bugs and asking questions on the Issues page:
 [https://github.com/USGS-R/toxEval/issues](https://github.com/USGS-R/toxEval/issues)
 
 ## Citing toxEval
