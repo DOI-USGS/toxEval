@@ -93,11 +93,17 @@ barCode <- reactive({
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
 # and re-order the 'levels' of that factor
-plot_tox_stacks(chemicalSummary, 
+stack_plot <- plot_tox_stacks(chemicalSummary, 
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
                   mean_logic = ",as.logical(input$meanEAR),",
-                  include_legend = ",include_legend,")")
+                  include_legend = ",include_legend,")
+gb <- ggplot2::ggplot_build(stack_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+
+gt$layout$clip[gt$layout$name=='panel-1-1'] = 'off'
+
+grid::grid.draw(gt)")
   
   return(stackPlotCode)
   

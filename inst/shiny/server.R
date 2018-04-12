@@ -92,13 +92,15 @@ shinyServer(function(input, output,session) {
     removeFlags <- paste0("c('",paste0(removeFlags, collapse = "','"),"')")
     assays <- paste0("c('",paste0(assays, collapse = "','"),"')")
     remove_groups <- paste0("c('",paste0(remove_groups, collapse = "','"),"')")
-    
     setupCode <- paste0("######################################
 # Setup:
 library(toxEval)
 #NOTE: Add path to path_to_file!!!
 path_to_file <- '",fileName,"' 
-tox_list <- create_toxEval(path_to_file)
+tox_list <- create_toxEval(path_to_file)")
+    
+  if(toxCast()){ 
+        setupCode <- paste0(setupCode,"
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong = ACClong,
                         flagsShort = ",removeFlags,")
@@ -110,13 +112,17 @@ filtered_ep <- filter_groups(cleaned_ep,
                   remove_groups = ",remove_groups,")
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)")
+  
+  } else {
+    setupCode <- paste0(setupCode,"
+chemicalSummary <- get_chemical_summary(rawData)" )  
+  }
     
-    if(sites != "All"){
-      setupCode <- setupCode <- paste0(setupCode,"
-site <- '",sites,"'
-chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
-    }   
-
+  if(sites != "All"){
+    setupCode <- paste0(setupCode,"
+                        site <- '",sites,"'
+                        chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
+  }
     setupCode <- paste0(setupCode,"
 ######################################")
     return(setupCode)

@@ -6,7 +6,7 @@
 \usage{
 plot_tox_endpoints(chemicalSummary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = 0.1,
-  mean_logic = FALSE, font_size = NA, title = NA)
+  mean_logic = FALSE, font_size = NA, title = NA, pallette = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -24,6 +24,9 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
 \item{font_size}{numeric to adjust the axis font size}
 
 \item{title}{character title for plot.}
+
+\item{pallette}{vector of color pallette for fill. Can be a named vector
+to specify specific color for specific categories.}
 }
 \description{
 Plot boxplot of groups

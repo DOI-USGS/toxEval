@@ -93,6 +93,7 @@ output$graphGroup.ui <- renderUI({
 })
 
 output$downloadBoxPlot <- downloadHandler(
+
   filename = "boxPlot.png",
   content = function(file) {
     device <- function(..., width, height) {
@@ -121,10 +122,14 @@ boxCode <- reactive({
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   bioPlotCode <- paste0(rCodeSetup(),"
-plot_tox_boxplots(chemicalSummary, 
+bio_plot <- plot_tox_boxplots(chemicalSummary, 
                   category = '",category,"',
                   mean_logic = ",as.logical(input$meanEAR),",
-                  plot_ND = ",plot_ND,")")
+                  plot_ND = ",plot_ND,")
+gb <- ggplot2::ggplot_build(bio_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=='panel'] <- 'off'
+grid::grid.draw(gt)")
   
   return(bioPlotCode)
   

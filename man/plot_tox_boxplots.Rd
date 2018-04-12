@@ -6,7 +6,7 @@
 \alias{graph_chem_data}
 \alias{plot_tox_boxplots}
 \alias{tox_boxplot_data}
-\title{plot_tox_boxplots}
+\title{Grouped Boxplots}
 \usage{
 plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
   mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
@@ -15,7 +15,7 @@ graph_chem_data(chemicalSummary, manual_remove = NULL, mean_logic = FALSE)
 
 plot_tox_boxplots(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE,
-  font_size = NA, title = NA)
+  font_size = NA, title = NA, pallette = NA)
 
 tox_boxplot_data(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE)
@@ -34,9 +34,23 @@ tox_boxplot_data(chemicalSummary, category = "Biological",
 \item{title}{character title for plot.}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
+
+\item{pallette}{vector of color pallette for fill. Can be a named vector
+to specify specific color for specific categories.}
 }
 \description{
-Plot boxplot of groups
+This function creates a set of boxplots based on the original input data 
+modified by the processing steps above, and the choice of several input options. 
+The result includes boxplots of the maximum or mean value per site based on 
+the mean_logic argument This ensures that each site is represented equally 
+regardless of how many samples are available per site. Boxplots are generated 
+by the chosen category. Categories include "Biological", "Chemical Class", or 
+"Chemical". Biological refers to the chosen toxCast annotation as defined 
+in the groupCol argument of the \code{filter_groups} function. Chemical Class 
+refers to the groupings of chemicals as defined in the "Class" column of the 
+"Chemicals" tab of the input file. Choosing Chemical Class will generate a 
+separate boxplot for each unique class. Choosing Chemical will generate a 
+separate boxplot for each individual chemical in the data set.
 }
 \examples{
 # This is the example workflow:

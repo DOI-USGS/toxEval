@@ -77,7 +77,7 @@ The options are "MeanEAR" and "MaxEAR", and they dictate how to summarize the EA
 
 Clicking on this button will download the a comma delimited (csv) file that could be used in the "Benchmark" tab (as described in the "Prepare Data" vignette). The provided columns are "CAS", "Chemical" (name), "flags", "endPoint", "ACC", "MlWt", "Value", "groupCol", and "assaysFull".
 
-The "ACC" column is in log(uM), and the "Value" column is the conversion from that log(uM) to ug/L.
+The "ACC" column is in log(μM), and the "Value" column is the conversion from that log(μM) to μg/L.
  
 ### E. Assay
 
