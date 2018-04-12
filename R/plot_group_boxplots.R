@@ -13,6 +13,10 @@
 #' separate boxplot for each unique class. Choosing Chemical will generate a 
 #' separate boxplot for each individual chemical in the data set.
 #' 
+#' The difference in the single-site output is that instead of listing the number 
+#' of sites, it lists the number of unique chemical/endpoint combinations used to 
+#' create the box plot.
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove

@@ -18,7 +18,7 @@ This vignette describes the process to prepare the data and use the shiny applic
 
 # Introduction
 
-The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hunderds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
+The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
 
 When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">ToxCast Dashboard</a> that has a wealth of information on ToxCast data.
 
@@ -48,6 +48,14 @@ See the help file `?endPointInfo` for specifics on how the table was downloaded.
 Throughout the `toxEval` analysis, there are graphing and table functions that will summarize EARs based on either "Biological" groupings (as defined by a group of endPoints) or "Chemical Class" groupings (as defined by a group of chemicals).
 
 The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. 
+
+## Summarizing the data{#summarize_data}
+
+The functions in `toxEval` summarize the data as follows: 
+
+First, individual EAR values are calculated for each chemical/endPoint combination. Then, the EAR values are summed together by samples (a sample is defined as a unique site/date) based on the grouping picked in the "category" argument. Categories include "Biological", "Chemical Class", or "Chemical". "Biological" refers to the chosen ToxCast annotation as defined in the `groupCol` option of the `filter_groups` function. "Chemical Class" refers to the groupings of chemicals as defined in the "Class" column of the "Chemicals" tab of the input file. "Chemical" refers to the individual chemical as defined by a unique CAS value. Finally, the maximum or mean EAR is calculated per site (based on the `mean_logic` option). This ensures that each site is represented equally regardless of how many samples are available per site. 
+
+Some functions will also include a calculation for a "hit". A threshold is defined by the user, and if the mean or max EAR (calculated as described above) is greater than the threshold, that is considered a "hit".
 
 
 # Package logistics
@@ -93,7 +101,7 @@ install.packages("toxEval")
 
 <img style="float: right;" src="update.png">
 
-Regularly, it is a good idea to update *ALL* of your packages in R. If using RStudio, this is done quite easily by usign the Update button in the "Packages" tab. Selecting this option checks CRAN and GRAN for updates. 
+Regularly, it is a good idea to update *ALL* of your packages in R. If using RStudio, this is done quite easily by using the Update button in the "Packages" tab. Selecting this option checks CRAN and GRAN for updates. 
 
 
 Within the R-console, packages can be updated with the command:
