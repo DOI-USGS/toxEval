@@ -197,11 +197,13 @@ grid::grid.draw(gt)
 
 ## plot_tox_stacks {#plot_tox_stacks}
 
-The `plot_tox_stacks` function creates a set of stacked bar charts based on the original input data modified by the processing steps above, and the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation.
+The `plot_tox_stacks` function creates a set of stacked bar charts based on the original input data modified by the processing steps above, and the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation. There is an option `include_legend` to turn on and off the legend. It may be impractical for instance to show the legend for "Chemical" if there are hundreds of chemicals.
 
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
-stack_plot <- plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
+stack_plot <- plot_tox_stacks(chemicalSummary, 
+                              chem_site = tox_list$chem_site, 
+                              category =  "Biological")
 
 gb <- ggplot2::ggplot_build(stack_plot)
 gt <- ggplot2::ggplot_gtable(gb)
@@ -209,8 +211,12 @@ gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
 grid::grid.draw(gt)
 
 # More options:
-# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
-# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+# plot_tox_stacks(chemicalSummary, 
+#                 chem_site = tox_list$chem_site, 
+#                 category = "Chemical Class")
+# plot_tox_stacks(chemicalSummary, 
+#                 chem_site = tox_list$chem_site, 
+#                 category = "Chemical", include_legend = FALSE)
 ```
 
 The graph shows a slightly different result for a single site. The graph now shows each individual sample. The EAR values are no longer the mean or max at the site, but rather the sums of the individual EAR values. 
@@ -234,11 +240,15 @@ This is a function where it may be ideal to create a custom order to the sites (
 
 ```{r heat, warning=FALSE, fig.width=10}
 plot_tox_heatmap(chemicalSummary, 
-                  tox_list$chem_site, 
-                  category = "Biological")
+                 chem_site = tox_list$chem_site, 
+                 category = "Biological")
 # More options:
-# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
-# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+# plot_tox_heatmap(chemicalSummary, 
+#                  chem_site = tox_list$chem_site, 
+#                  category = "Chemical Class")
+# plot_tox_heatmap(chemicalSummary, 
+#                  chem_site = tox_list$chem_site, 
+#                  category = "Chemical")
 ```
 
 ## plot_tox_endpoints {#plot_tox_endpoints}
@@ -268,11 +278,15 @@ grid::grid.draw(gt)
 
 # Tables
 
+Several tables are also provided in `toxEval`. Each table can be returned in the form of a data frame (to be used further in R), or a `DT` table, which is a nicely formatted HTML table. For general exploration, the `DT` options are nice. To use the outputs in R for further analysis, the data frame options are needed. 
+
 ## table_tox_rank {#table_tox_rank}
 
 ```{r table_tox_rank, warning=FALSE}
 library(DT)
 options(DT.options = list(pageLength = 5))
+
+rank_df <- stats_of_groupings(chemicalSummary, category = "Biological")
 
 table_tox_rank(chemicalSummary, category = "Biological")
 # More options:
@@ -289,6 +303,9 @@ table_tox_rank(maumee, category = "Biological")
 ## table_tox_sum {#table_tox_sum}
 
 ```{r table_tox_sum, warning=FALSE}
+
+hit_df <- stats_of_hits(chemicalSummary, category = "Biological")
+
 table_tox_sum(chemicalSummary, category = "Biological")
 # More options:
 # table_tox_sum(chemicalSummary, category = "Chemical Class")
@@ -305,6 +322,9 @@ table_tox_sum(maumee, category = "Biological")
 ## table_endpoint_hits {#table_endpoint_hits}
 
 ```{r table_endpoint_hits, warning=FALSE}
+
+ep_hits <- endpoint_hits(chemicalSummary, category = "Biological")
+
 table_endpoint_hits(chemicalSummary, category = "Biological")
 # More options:
 # table_endpoint_hits(chemicalSummary, category = "Chemical Class")
@@ -335,13 +355,19 @@ table_tox_endpoint(maumee, category = "Chemical Class")
 
 # Maps {#make_tox_map}
 
-There is one function included that creates a `leaflet` map of the data `make_tox_map`.
+There is one function included that creates a `leaflet` map of the data `make_tox_map`. The function `map_tox_data` creates the data that is then plotted in `make_tox_map`. These are the only function that requires "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the `chem_site` argument.
 
 ```{r makeMap, warning=FALSE, message=FALSE}
-make_tox_map(chemicalSummary, tox_list$chem_site, "Biological")
+make_tox_map(chemicalSummary, 
+             chem_site = tox_list$chem_site, 
+             category = "Biological")
 # More options:
-# make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical Class")
-# make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical") 
+# make_tox_map(chemicalSummary, 
+#              chem_site = tox_list$chem_site, 
+#              category = "Chemical Class")
+# make_tox_map(chemicalSummary, 
+#              chem_site = tox_list$chem_site, 
+#              category = "Chemical")
 
 ```
 

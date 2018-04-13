@@ -3,7 +3,7 @@
 \name{make_tox_map}
 \alias{make_tox_map}
 \alias{map_tox_data}
-\title{make_tox_map}
+\title{Create an interactive map of the data}
 \usage{
 make_tox_map(chemicalSummary, chem_site, category = "Biological",
   mean_logic = FALSE)
@@ -14,14 +14,20 @@ map_tox_data(chemicalSummary, chem_site, category = "Biological",
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
 
-\item{chem_site}{data frame with at least columns SiteID, site_grouping, and Short Name}
+\item{chem_site}{data frame with at least columns SiteID, site_grouping, 
+Short Name, dec_lon, and dec_lat}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 }
 \description{
-make_tox_map
+This function takes the data and summarizes it based on the 
+selected 'category' ("Chemical Class", "Chemical", or "Biological") using
+the \code{map_tox_data} function. Then the summarized data is plotted on
+an interactive "leaflet" map. This is the only function that requires
+"dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
+chem_site argument.
 }
 \examples{
 # This is the example workflow:

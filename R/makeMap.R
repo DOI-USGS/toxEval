@@ -1,12 +1,17 @@
-
-#' make_tox_map
+#' Create an interactive map of the data
 #' 
-#' make_tox_map
+#' This function takes the data and summarizes it based on the 
+#' selected 'category' ("Chemical Class", "Chemical", or "Biological") using
+#' the \code{map_tox_data} function. Then the summarized data is plotted on
+#' an interactive "leaflet" map. This is the only function that requires
+#' "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
+#' chem_site argument.
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
-#' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
+#' @param chem_site data frame with at least columns SiteID, site_grouping, 
+#' Short Name, dec_lon, and dec_lat
 #' @export
 #' @rdname make_tox_map
 #' @import leaflet
@@ -112,6 +117,10 @@ map_tox_data <- function(chemicalSummary,
     typeWords <- "chemicals"
   } else {
     typeWords <- "chemical classes"
+  }
+  
+  if(!all(c("Short Name", "dec_lat", "dec_lon", "SiteID") %in% names(chem_site))){
+    stop('Map functions require columns: "Short Name", "dec_lat", "dec_lon", "SiteID" in chem_site')
   }
   
   mapData <- chem_site[chem_site$`Short Name` %in% siteToFind,
