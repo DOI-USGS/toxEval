@@ -108,7 +108,7 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 The function `get_chemical_summary` takes the measured user data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast, as filtered by the functions described above.
 
-## Custom configuration
+## Custom configuration{#custom_config}
 
 Let's say we want to trim some names to make the labels more readable in graphs. Here, we clean up some chemical class labels:
 
@@ -228,7 +228,9 @@ grid::grid.draw(gt)
 
 ## plot_tox_heatmap {#plot_tox_heatmap}
 
+The `plot_tox_heatmap` function creates heat (tile) map with sites on the x-axis, a specified grouping on the y-axis (defined by the `category` argument), and color shading defining the mean or max EAR. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. The y-axis grouping can be "Biological","Chemical Class", or "Chemical". The breaks for the color scale can be customized with the `breaks` argument.
 
+This is a function where it may be ideal to create a custom order to the sites (for example, west-to-east). See the above section ["Custom configuration"](#custom_config) for instructions on how to convert the character vector `sites` to a factor with ordered levels.
 
 ```{r heat, warning=FALSE, fig.width=10}
 plot_tox_heatmap(chemicalSummary, 

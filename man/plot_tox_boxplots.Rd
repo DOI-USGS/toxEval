@@ -52,6 +52,11 @@ refers to the groupings of chemicals as defined in the "Class" column of the
 separate boxplot for each unique class. Choosing Chemical will generate a 
 separate boxplot for each individual chemical in the data set.
 }
+\details{
+The difference in the single-site output is that instead of listing the number 
+of sites, it lists the number of unique chemical/endpoint combinations used to 
+create the box plot.
+}
 \examples{
 # This is the example workflow:
 path_to_tox <-  system.file("extdata", package="toxEval")
