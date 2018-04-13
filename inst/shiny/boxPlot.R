@@ -6,19 +6,6 @@ boxPlots_create <- reactive({
   chemicalSummary <- chemicalSummary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
   mean_logic <- as.logical(input$meanEAR)
-  site <- input$sites
-  
-  pretty_cat <- tolower(category)
-  if(pretty_cat == "biological"){
-    pretty_cat <- "biological activity grouping"
-  }
-  
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "per site, grouped by", pretty_cat)
-  if(site != "All"){
-    title <- paste(title,"
-                   ",rawData()[["chem_site"]][["Fullname"]])
-  }
 
   
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
@@ -26,7 +13,7 @@ boxPlots_create <- reactive({
                                mean_logic = mean_logic,
                                plot_ND = plot_ND,
                                font_size = 18,
-                               title = title)
+                               title = boxTitle())
   return(bioPlot)
   
 })
@@ -113,18 +100,40 @@ output$downloadBoxPlot_csv <- downloadHandler(
   }
 )
 
+boxTitle <- reactive({
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+
+  site <- input$sites
+  pretty_cat <- tolower(category)
+  if(pretty_cat == "biological"){
+    pretty_cat <- "biological activity grouping"
+  }
+  
+  mean_logic <- as.logical(input$meanEAR)
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
+                 "per site, grouped by", pretty_cat)
+  if(site != "All"){
+    title <- paste(title,"
+                   ",rawData()[["chem_site"]][["Fullname"]])
+  }
+  return(title)
+})
+
 boxCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
-  
+  mean_logic <- as.logical(input$meanEAR)
   plot_ND = input$plot_ND
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  
+
   bioPlotCode <- paste0(rCodeSetup(),"
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
                   category = '",category,"',
-                  mean_logic = ",as.logical(input$meanEAR),",
+                  mean_logic = ",mean_logic,",
+                  title = '",boxTitle(),"',
                   plot_ND = ",plot_ND,")
 gb <- ggplot2::ggplot_build(bio_plot)
 gt <- ggplot2::ggplot_gtable(gb)

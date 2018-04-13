@@ -144,7 +144,7 @@ test_that("Plotting endpoints", {
 test_that("Table functions", {
   testthat::skip_on_cran()
   
-  statStuff <- stats_of_groupings(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
+  statStuff <- rank_sites(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
   expect_equal(nrow(statStuff), nrow(chem_site))
   expect_true(all(c("site","DNA Binding maxEAR",     
                     "DNA Binding freq","Nuclear Receptor maxEAR",
@@ -286,23 +286,23 @@ test_that("table_tox_sum", {
   expect_true(all(names(cht$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))
 })
 
-test_that("table_tox_rank", {
+test_that("rank_sites_DT", {
   testthat::skip_on_cran()
   
-  bt <- table_tox_rank(chemicalSummary, category = "Biological")
+  bt <- rank_sites_DT(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
   expect_true("site" %in% names(bt$x$data))
   
-  expect_error(table_tox_rank(chemicalSummary, category = "Class"))
+  expect_error(rank_sites_DT(chemicalSummary, category = "Class"))
   
-  ct <- table_tox_rank(chemicalSummary, category = "Chemical Class")
+  ct <- rank_sites_DT(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
   expect_true(all(c("site","Antioxidants maxEAR","Antioxidants freq",
                     "Herbicides maxEAR","Herbicides freq",
                     "Detergent Metabolites maxEAR","Detergent Metabolites freq") %in% names(ct$x$data)))
   
-  cht <- table_tox_rank(chemicalSummary, category = "Chemical")
+  cht <- rank_sites_DT(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
   expect_true(all(c("site","Bisphenol A maxEAR","Bisphenol A freq",

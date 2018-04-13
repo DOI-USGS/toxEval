@@ -17,7 +17,26 @@ heatMap_create <- reactive({
                                      levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
   }
   category <-  c("Biological","Chemical","Chemical Class")[catType]
+  
+  heatMap <- plot_tox_heatmap(chemicalSummary,
+                              chem_site,
+                              category = category,
+                              plot_ND = plot_ND,
+                              mean_logic = mean_logic,
+                              font_size = ifelse(catType == 2, 14, 17),
+                              title = heatTitle())
+  
+  updateAceEditor(session, editorId = "heat_out", value = heatCode() )
+  
+  return(heatMap)
+})
+
+heatTitle <- reactive({
+  catType = as.numeric(input$radioMaxGroup)
+  mean_logic <- as.logical(input$meanEAR)
   site <- input$sites
+  
+  category <-  c("Biological","Chemical","Chemical Class")[catType]
   
   pretty_cat <- tolower(category)
   if(pretty_cat == "biological"){
@@ -29,19 +48,7 @@ heatMap_create <- reactive({
     title <- paste(title,"
                    ",rawData()[["chem_site"]][["Fullname"]])
   }
-  
-  
-  heatMap <- plot_tox_heatmap(chemicalSummary,
-                              chem_site,
-                              category = category,
-                              plot_ND = plot_ND,
-                              mean_logic = mean_logic,
-                              font_size = ifelse(catType == 2, 14, 17),
-                              title = title)
-  
-  updateAceEditor(session, editorId = "heat_out", value = heatCode() )
-  
-  return(heatMap)
+  return(title)
 })
 
 output$graphHeat <- renderPlot({
@@ -97,6 +104,7 @@ plot_tox_heatmap(chemicalSummary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
                  mean_logic = ",mean_logic,",
+                 title = '",heatTitle(),"',
                  plot_ND = ",plot_ND,")")
   
   HTML(heatCode)

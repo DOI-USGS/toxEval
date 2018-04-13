@@ -337,26 +337,33 @@ On the `ggplot2` horizon, there may be easier ways to accomplish the labeling, a
 
 Several tables are also provided in `toxEval`. Each table can be returned in the form of a data frame (to be used further in R), or a `DT` table, which is a nicely formatted HTML table. For general exploration, the `DT` options are nice. To use the outputs in R for further analysis, the data frame options are needed. 
 
-## table_tox_rank {#table_tox_rank}
+## rank_sites_DT {#rank_sites_DT}
+
+The `rank_sites_DT` (`DT` option) and `rank_sites` (data frame option) functions create a table with one row per site. There are columns of the max or mean EAR (depending on the `mean_logic` argument) for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, there are columns of the frequency of the max or mean EAR being above a user specified `hit_threshold`.
 
 
-
-```{r table_tox_rank, warning=FALSE}
+```{r rank_sites_DT, warning=FALSE}
 library(DT)
 options(DT.options = list(pageLength = 5))
 
-rank_df <- stats_of_groupings(chemicalSummary, category = "Biological")
+rank_df <- rank_sites(chemicalSummary, 
+                      category = "Biological",
+                      hit_threshold = 0.1)
 
-table_tox_rank(chemicalSummary, category = "Biological")
+rank_sites_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_tox_rank(chemicalSummary, category = "Chemical Class")
-# table_tox_rank(chemicalSummary, category = "Chemical")
+# rank_sites_DT(chemicalSummary, 
+#               category = "Chemical Class", 
+#               hit_threshold = 0.1)
+# rank_sites_DT(chemicalSummary, 
+#               category = "Chemical", 
+#               hit_threshold = 0.1)
 ```
 
 The tables show slightly different results for a single site:
 
-```{r table_tox_rank_site, warning=FALSE}
-table_tox_rank(maumee, category = "Biological")
+```{r rank_sites_DT_site, warning=FALSE}
+rank_sites_DT(maumee, category = "Biological")
 ```
 
 ## table_tox_sum {#table_tox_sum}

@@ -5,7 +5,7 @@ tableSummData <- reactive({
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   
-  tableGroup <- stats_of_groupings(chemicalSummary, 
+  tableGroup <- rank_sites(chemicalSummary, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
                                hit_threshold = hitThres)
@@ -23,7 +23,7 @@ output$tableSumm <- DT::renderDataTable({
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   
-  tableGroup <- table_tox_rank(chemicalSummary, 
+  tableGroup <- rank_sites_DT(chemicalSummary, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
                                hit_threshold = hitThres)
@@ -41,8 +41,8 @@ tableSummCode <- reactive({
   hitThres <- hitThresValue()
   
   tableSummCode <- paste0(rCodeSetup(),"
-# Use the table_tox_rank function for a formatted DT table
-tableSum <- stats_of_groupings(chemicalSummary, 
+# Use the rank_sites_DT function for a formatted DT table
+tableSum <- rank_sites(chemicalSummary, 
                   category = '",category,"',
                   mean_logic = ",as.logical(input$meanEAR),",
                   hit_threshold = ",hitThres,")")

@@ -3,7 +3,7 @@
 \name{table_tox_endpoint}
 \alias{table_tox_endpoint}
 \alias{endpoint_table}
-\title{table_tox_rank}
+\title{rank_sites_DT}
 \usage{
 table_tox_endpoint(chemicalSummary, category = "Biological",
   mean_logic = FALSE, hit_threshold = 0.1)

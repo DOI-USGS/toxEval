@@ -1,4 +1,4 @@
-#' table_tox_rank
+#' rank_sites_DT
 #' 
 #' Table of ranks
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
