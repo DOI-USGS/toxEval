@@ -5,7 +5,7 @@
 \title{EndPoint boxplots}
 \usage{
 plot_tox_endpoints(chemicalSummary, category = "Biological",
-  filterBy = "All", manual_remove = NULL, hit_threshold = 0.1,
+  filterBy = "All", manual_remove = NULL, hit_threshold = NA,
   mean_logic = FALSE, font_size = NA, title = NA, pallette = NA)
 }
 \arguments{
