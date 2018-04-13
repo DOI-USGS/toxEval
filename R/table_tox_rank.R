@@ -6,6 +6,9 @@
 #' there are columns of the frequency of the max or mean EAR being above a user 
 #' specified 'hit_threshold'.
 #' 
+#' The tables show slightly different results for a single site. Instead of multiple 
+#' columns for category, there is now 1 row per category (since the site is known).
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"

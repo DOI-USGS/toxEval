@@ -121,7 +121,7 @@ The following table shows the main function that each tab in the app uses:
 | Box Plots | [`plot_tox_boxplots`](basicWorkFlow.html#plot_tox_boxplots) |
 | Bar Charts | [`plot_tox_stacks`](basicWorkFlow.html#plot_tox_stacks)|
 | Max EAR and Frequency | [`rank_sites_DT`](basicWorkFlow.html#rank_sites_DT)|
-| Hit Counts | [`table_tox_sum`](basicWorkFlow.html#table_tox_sum)|
+| Hit Counts | [`hits_summary_DT`](basicWorkFlow.html#hits_summary_DT)|
 | Site Hits | [`table_tox_endpoint`](basicWorkFlow.html#table_tox_endpoint)|
 | Endpoint Hits | [`table_endpoint_hits`](basicWorkFlow.html#table_endpoint_hits)|
 | Endpoint | [`plot_tox_endpoints`](basicWorkFlow.html#plot_tox_endpoints)|

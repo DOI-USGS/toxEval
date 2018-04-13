@@ -153,7 +153,7 @@ test_that("Table functions", {
   expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),4.2992)
   expect_equal(round(statStuff[["DNA Binding freq"]][which(statStuff[["site"]] == "Raisin")],4),0.8409)
   
-  groupStuff <- stats_of_hits(chemicalSummary, "Biological", hit_threshold = 1)
+  groupStuff <- hits_summary(chemicalSummary, "Biological", hit_threshold = 1)
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
   expect_true(all(c("site","category","Hits per Sample",
                     "Individual Hits","nSamples") %in% names(groupStuff)))
@@ -265,22 +265,22 @@ test_that("table_tox_endpoint", {
 })
 
 
-test_that("table_tox_sum", {
+test_that("hits_summary_DT", {
   testthat::skip_on_cran()
   
-  bt <- table_tox_sum(chemicalSummary, category = "Biological")
+  bt <- hits_summary_DT(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
   expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
   expect_true(all(c("site","category","Hits per Sample","Individual Hits","nSamples") %in% names(bt$x$data)))
   
-  expect_error(table_tox_sum(chemicalSummary, category = "Class"))
+  expect_error(hits_summary_DT(chemicalSummary, category = "Class"))
   
-  ct <- table_tox_sum(chemicalSummary, category = "Chemical Class")
+  ct <- hits_summary_DT(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
   expect_true(all(names(ct$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))
   
-  cht <- table_tox_sum(chemicalSummary, category = "Chemical")
+  cht <- hits_summary_DT(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
   expect_true(all(names(cht$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))

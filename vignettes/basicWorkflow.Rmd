@@ -360,28 +360,28 @@ rank_sites_DT(chemicalSummary, category = "Biological")
 #               hit_threshold = 0.1)
 ```
 
-The tables show slightly different results for a single site:
+The tables show slightly different results for a single site. Instead of multiple columns for category, there is now 1 row per category (since the site is known).
 
 ```{r rank_sites_DT_site, warning=FALSE}
 rank_sites_DT(maumee, category = "Biological")
 ```
 
-## table_tox_sum {#table_tox_sum}
+## hits_summary_DT {#hits_summary_DT}
 
-```{r table_tox_sum, warning=FALSE}
+```{r hits_summary_DT, warning=FALSE}
 
-hit_df <- stats_of_hits(chemicalSummary, category = "Biological")
+hit_df <- hits_summary(chemicalSummary, category = "Biological")
 
-table_tox_sum(chemicalSummary, category = "Biological")
+hits_summary_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_tox_sum(chemicalSummary, category = "Chemical Class")
-# table_tox_sum(chemicalSummary, category = "Chemical")
+# hits_summary_DT(chemicalSummary, category = "Chemical Class")
+# hits_summary_DT(chemicalSummary, category = "Chemical")
 ```
 
 The tables show slightly different results for a single site:
 
-```{r table_tox_sum_site, warning=FALSE}
-table_tox_sum(maumee, category = "Biological")
+```{r hits_summary_DT_site, warning=FALSE}
+hits_summary_DT(maumee, category = "Biological")
 ```
 
 

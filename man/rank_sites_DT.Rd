@@ -3,7 +3,7 @@
 \name{rank_sites_DT}
 \alias{rank_sites_DT}
 \alias{rank_sites}
-\title{rank_sites_DT}
+\title{Rank sites by EAR}
 \usage{
 rank_sites_DT(chemicalSummary, category = "Biological", mean_logic = FALSE,
   hit_threshold = 0.1)
@@ -21,7 +21,15 @@ rank_sites(chemicalSummary, category, hit_threshold = 0.1,
 \item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
-Table of ranks
+These functions create a table (either data frame or DT) with one row per site. 
+There are columns of the max or mean EAR (depending on the 'mean_logic' argument) 
+for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, 
+there are columns of the frequency of the max or mean EAR being above a user 
+specified 'hit_threshold'.
+}
+\details{
+The tables show slightly different results for a single site. Instead of multiple 
+columns for category, there is now 1 row per category (since the site is known).
 }
 \examples{
 # This is the example workflow:
