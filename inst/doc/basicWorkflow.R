@@ -181,31 +181,37 @@ grid::grid.draw(gt)
 #  
 #  
 
-## ----table_tox_rank, warning=FALSE---------------------------------------
+## ----rank_sites_DT, warning=FALSE----------------------------------------
 library(DT)
 options(DT.options = list(pageLength = 5))
 
-rank_df <- stats_of_groupings(chemicalSummary, category = "Biological")
+rank_df <- rank_sites(chemicalSummary, 
+                      category = "Biological",
+                      hit_threshold = 0.1)
 
-table_tox_rank(chemicalSummary, category = "Biological")
+rank_sites_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_tox_rank(chemicalSummary, category = "Chemical Class")
-# table_tox_rank(chemicalSummary, category = "Chemical")
+# rank_sites_DT(chemicalSummary, 
+#               category = "Chemical Class", 
+#               hit_threshold = 0.1)
+# rank_sites_DT(chemicalSummary, 
+#               category = "Chemical", 
+#               hit_threshold = 0.1)
 
-## ----table_tox_rank_site, warning=FALSE----------------------------------
-table_tox_rank(maumee, category = "Biological")
+## ----rank_sites_DT_site, warning=FALSE-----------------------------------
+rank_sites_DT(maumee, category = "Biological")
 
-## ----table_tox_sum, warning=FALSE----------------------------------------
+## ----hits_summary_DT, warning=FALSE--------------------------------------
 
-hit_df <- stats_of_hits(chemicalSummary, category = "Biological")
+hit_df <- hits_summary(chemicalSummary, category = "Biological")
 
-table_tox_sum(chemicalSummary, category = "Biological")
+hits_summary_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_tox_sum(chemicalSummary, category = "Chemical Class")
-# table_tox_sum(chemicalSummary, category = "Chemical")
+# hits_summary_DT(chemicalSummary, category = "Chemical Class")
+# hits_summary_DT(chemicalSummary, category = "Chemical")
 
-## ----table_tox_sum_site, warning=FALSE-----------------------------------
-table_tox_sum(maumee, category = "Biological")
+## ----hits_summary_DT_site, warning=FALSE---------------------------------
+hits_summary_DT(maumee, category = "Biological")
 
 ## ----table_endpoint_hits, warning=FALSE----------------------------------
 
