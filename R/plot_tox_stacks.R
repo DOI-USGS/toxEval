@@ -78,7 +78,7 @@ plot_tox_stacks <- function(chemicalSummary,
     chem_site$site_grouping <- ""
   }
   
-  if(include_legend & category == "Chemical"){
+  if(category == "Chemical"){
     graphData <- graph_chem_data(chemicalSummary = chemicalSummary,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic)   

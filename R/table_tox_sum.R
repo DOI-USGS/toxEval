@@ -43,13 +43,14 @@ hits_summary_DT <- function(chemicalSummary,
   
   hits_summaryOrdered <- hits_summary(chemicalSummary = chemicalSummary,
                category = category,
-               hit_threshold = hit_threshold)
+               hit_threshold = hit_threshold, 
+               mean_logic=mean_logic)
+  
   siteToFind <- unique(chemicalSummary$site)
 
-  meanChem <- grep("Individual.Hits",names(hits_summaryOrdered))
-  maxChem <- grep("Hits.per.Sample",names(hits_summaryOrdered))
+  meanChem <- grep("Samples with hits",names(hits_summaryOrdered))
   
-  colToSort <- maxChem-1
+  colToSort <- meanChem-1
 
   tableGroup <- DT::datatable(hits_summaryOrdered, extensions = 'Buttons',
                               rownames = FALSE,
@@ -57,11 +58,11 @@ hits_summary_DT <- function(chemicalSummary,
                                             dom = 'Bfrtip',
                                             buttons = list('colvis')))
   
-  tableGroup <- formatStyle(tableGroup, names(hits_summaryOrdered)[maxChem],
-                            background = styleColorBar(range(hits_summaryOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
-                            backgroundSize = '100% 90%',
-                            backgroundRepeat = 'no-repeat',
-                            backgroundPosition = 'center' )
+  # tableGroup <- formatStyle(tableGroup, names(hits_summaryOrdered)[maxChem],
+  #                           background = styleColorBar(range(hits_summaryOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
+  #                           backgroundSize = '100% 90%',
+  #                           backgroundRepeat = 'no-repeat',
+  #                           backgroundPosition = 'center' )
   
   tableGroup <- formatStyle(tableGroup, names(hits_summaryOrdered)[meanChem],
                             background = styleColorBar(range(hits_summaryOrdered[,meanChem],na.rm=TRUE), 'wheat'),
@@ -76,7 +77,8 @@ hits_summary_DT <- function(chemicalSummary,
 #' @rdname hits_summary_DT
 #' @return data frame with columns "Hits per Sample", "Individual Hits",
 #' "nSample", "site", and "category"
-hits_summary <- function(chemicalSummary, category, hit_threshold = 0.1){
+hits_summary <- function(chemicalSummary, category, 
+                         hit_threshold = 0.1, mean_logic = FALSE){
   
   Class <- Bio_category <- `Hits per Sample` <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
   
@@ -103,10 +105,9 @@ hits_summary <- function(chemicalSummary, category, hit_threshold = 0.1){
     summarise(sumEAR = sum(EAR),
               hits = sum(EAR > hit_threshold)) %>%
     group_by(site,category) %>%
-    summarise(`Hits per Sample` = sum(sumEAR > hit_threshold),
-              `Individual Hits` = sum(hits),
+    summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
               nSamples = n()) %>%
-    arrange(desc(`Hits per Sample`))
-
+    arrange(desc(`Samples with hits`))
+  
   return(hits_summary)
 }

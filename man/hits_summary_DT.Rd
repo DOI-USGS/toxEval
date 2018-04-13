@@ -8,7 +8,8 @@
 hits_summary_DT(chemicalSummary, category = "Biological",
   mean_logic = FALSE, hit_threshold = 0.1)
 
-hits_summary(chemicalSummary, category, hit_threshold = 0.1)
+hits_summary(chemicalSummary, category, hit_threshold = 0.1,
+  mean_logic = FALSE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
