@@ -276,11 +276,30 @@ grid::grid.draw(gt)
 #                    filterBy = "Atrazine")
 ```
 
+## What is the "clipping" code???
+
+You might notice that all of the plotting examples here have 4 extra lines of code after the plot is generated. This is required to have the labels extend past the plotting area (such as "# Sites", "Threshold", etc.). The reason we did not embed that code into the functions themselves is that those lines no longer make the output a `ggplot2` object. By leaving them outside of the function, the user could set additional `ggplot2` themes or other parts of the plots. That is, the plots as they are now can be additionally customizable, but they lose that feature once we do those final lines:
+
+```{r clipping, eval=FALSE}
+gb <- ggplot2::ggplot_build(ep_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+```
+
+You will notice that some of the examples above use "panel" and others use "panel-1-1". This is an affect of using `ggplot2`'s `facet_grid` options. 
+
+## How to save a plot?
+
+
+
 # Tables
 
 Several tables are also provided in `toxEval`. Each table can be returned in the form of a data frame (to be used further in R), or a `DT` table, which is a nicely formatted HTML table. For general exploration, the `DT` options are nice. To use the outputs in R for further analysis, the data frame options are needed. 
 
 ## table_tox_rank {#table_tox_rank}
+
+
 
 ```{r table_tox_rank, warning=FALSE}
 library(DT)

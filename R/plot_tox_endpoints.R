@@ -58,7 +58,7 @@ plot_tox_endpoints <- function(chemicalSummary,
                               category = "Biological",
                               filterBy = "All",
                               manual_remove = NULL,
-                              hit_threshold = 0.1,
+                              hit_threshold = NA,
                               mean_logic = FALSE, 
                               font_size = NA,
                               title = NA,
@@ -224,6 +224,13 @@ plot_tox_endpoints <- function(chemicalSummary,
       geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
               aes(x = x,  y=y, label = label),
               size=ifelse(is.na(font_size),3,0.30*font_size))
+  }
+  
+  if(!is.na(hit_threshold)) {
+    stackedPlot <- stackedPlot +
+      geom_text(data=data.frame(x = Inf, y=hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
+                aes(x = x,  y=y, label = label),
+                size=ifelse(is.na(font_size),3,0.30*font_size))
   }
 
   if(!is.na(font_size)){
