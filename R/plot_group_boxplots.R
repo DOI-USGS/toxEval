@@ -137,7 +137,7 @@ plot_tox_boxplots <- function(chemicalSummary,
       if(!all(is.na(pallette))){
         bioPlot <- bioPlot +
           geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
-          scale_fill_manual(values = cbValues) +
+          scale_fill_manual(values = pallette) +
           theme(legend.position = "none")
       } else {
         bioPlot <- bioPlot +
@@ -171,7 +171,7 @@ plot_tox_boxplots <- function(chemicalSummary,
       if(!all(is.na(pallette))){
         bioPlot <- bioPlot +
           geom_boxplot(aes(x=category, y=meanEAR, fill = category),lwd=0.1,outlier.size=1) +
-          scale_fill_manual(values = cbValues) +
+          scale_fill_manual(values = pallette) +
           theme(legend.position = "none")
       } else {
         bioPlot <- bioPlot +
