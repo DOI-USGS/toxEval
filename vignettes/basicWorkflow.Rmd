@@ -287,11 +287,51 @@ gt$layout$clip[gt$layout$name=="panel"] <- "off"
 grid::grid.draw(gt)
 ```
 
-You will notice that some of the examples above use "panel" and others use "panel-1-1". This is an affect of using `ggplot2`'s `facet_grid` options. 
+You will notice that some of the examples above use "panel" and others use "panel-1-1". This is an affect of using `ggplot2`'s `facet_grid` options. It will be important to get those right for nice plotting.
 
 ## How to save a plot?
 
+If you don't mind having some of the labels slightly clipped off, the `ggsave` function is really nice. It takes away the guessing game of how big or resolved the plot should be. For RStudio users, the size by default is determined by how large you have your "Plots" tab sized. This could be handy when sharing plots with colleagues during project analysis. An example of using the `ggsave` function is:
 
+```{r ggsave1, eval=FALSE}
+
+ep_plot <- plot_tox_endpoints(chemicalSummary, 
+                              category = "Biological", 
+                              filterBy = "Cell Cycle")
+
+# To save a png:
+ggsave(ep_plot, file = "ep_plot.png")
+
+# To save a pdf:
+ggsave(ep_plot, file = "ep_plot.pdf")
+```
+
+But now you would like to save a nice plot for a presentation or manuscript. First, you will need to turn off clipping, then you need to save it via the standard "base R" methods:
+
+```{r basesave1, eval=FALSE}
+
+ep_plot <- plot_tox_endpoints(chemicalSummary, 
+                              category = "Biological", 
+                              filterBy = "Cell Cycle")
+gb <- ggplot2::ggplot_build(ep_plot)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+
+
+# To save a png:
+png("ep_plot.png", width = 1200, height = 1200, res = 142)
+grid::grid.draw(gt)
+dev.off()
+
+# To save a pdf:
+pdf("ep_plot.pdf", width = 9, height = 11)
+grid::grid.draw(gt)
+dev.off()
+
+
+```
+
+On the `ggplot2` horizon, there may be easier ways to accomplish the labeling, and hopefully these directions will not be necessary.
 
 # Tables
 
