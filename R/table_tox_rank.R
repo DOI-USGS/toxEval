@@ -1,13 +1,21 @@
-#' table_tox_rank
+#' Rank sites by EAR
 #' 
-#' Table of ranks
+#' These functions create a table (either data frame or DT) with one row per site. 
+#' There are columns of the max or mean EAR (depending on the 'mean_logic' argument) 
+#' for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, 
+#' there are columns of the frequency of the max or mean EAR being above a user 
+#' specified 'hit_threshold'.
+#' 
+#' The tables show slightly different results for a single site. Instead of multiple 
+#' columns for category, there is now 1 row per category (since the site is known).
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
 #' @import DT
-#' @rdname table_tox_rank
+#' @rdname rank_sites_DT
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -27,13 +35,13 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'
-#' stats_df <- stats_of_groupings(chemicalSummary, "Biological")
+#' stats_df <- rank_sites(chemicalSummary, "Biological")
 #'
-#' table_tox_rank(chemicalSummary, category = "Biological")
-#' table_tox_rank(chemicalSummary, category = "Chemical Class")
-#' table_tox_rank(chemicalSummary, category = "Chemical")
+#' rank_sites_DT(chemicalSummary, category = "Biological")
+#' rank_sites_DT(chemicalSummary, category = "Chemical Class")
+#' rank_sites_DT(chemicalSummary, category = "Chemical")
 #' }
-table_tox_rank <- function(chemicalSummary, 
+rank_sites_DT <- function(chemicalSummary, 
                           category = "Biological",
                           mean_logic = FALSE,
                           hit_threshold = 0.1){
@@ -42,7 +50,7 @@ table_tox_rank <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  statsOfColumn <- stats_of_groupings(chemicalSummary=chemicalSummary,
+  statsOfColumn <- rank_sites(chemicalSummary=chemicalSummary,
                                    category = category,
                                    hit_threshold = hit_threshold,
                                    mean_logic = mean_logic)
@@ -106,8 +114,8 @@ table_tox_rank <- function(chemicalSummary,
 
 
 #' @export
-#' @rdname table_tox_rank
-stats_of_groupings <- function(chemicalSummary, 
+#' @rdname rank_sites_DT
+rank_sites <- function(chemicalSummary, 
                            category, 
                            hit_threshold = 0.1, 
                            mean_logic = FALSE){

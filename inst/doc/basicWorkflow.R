@@ -85,7 +85,9 @@ grid::grid.draw(gt)
 
 
 ## ----stackplots1, warning=FALSE, fig.width=10----------------------------
-stack_plot <- plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
+stack_plot <- plot_tox_stacks(chemicalSummary, 
+                              chem_site = tox_list$chem_site, 
+                              category =  "Biological")
 
 gb <- ggplot2::ggplot_build(stack_plot)
 gt <- ggplot2::ggplot_gtable(gb)
@@ -93,8 +95,12 @@ gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
 grid::grid.draw(gt)
 
 # More options:
-# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
-# plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+# plot_tox_stacks(chemicalSummary, 
+#                 chem_site = tox_list$chem_site, 
+#                 category = "Chemical Class")
+# plot_tox_stacks(chemicalSummary, 
+#                 chem_site = tox_list$chem_site, 
+#                 category = "Chemical", include_legend = FALSE)
 
 ## ----siteStacks, message=FALSE, warning=FALSE, fig.width=10--------------
 maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological", title = maumee_site$Fullname[1])
@@ -107,14 +113,20 @@ grid::grid.draw(gt)
 
 ## ----heat, warning=FALSE, fig.width=10-----------------------------------
 plot_tox_heatmap(chemicalSummary, 
-                  tox_list$chem_site, 
-                  category = "Biological")
+                 chem_site = tox_list$chem_site, 
+                 category = "Biological")
 # More options:
-# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
-# plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+# plot_tox_heatmap(chemicalSummary, 
+#                  chem_site = tox_list$chem_site, 
+#                  category = "Chemical Class")
+# plot_tox_heatmap(chemicalSummary, 
+#                  chem_site = tox_list$chem_site, 
+#                  category = "Chemical")
 
 ## ----endpoints, warning=FALSE--------------------------------------------
-ep_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
+ep_plot <- plot_tox_endpoints(chemicalSummary, 
+                              category = "Biological", 
+                              filterBy = "Cell Cycle")
 
 gb <- ggplot2::ggplot_build(ep_plot)
 gt <- ggplot2::ggplot_gtable(gb)
@@ -122,31 +134,89 @@ gt$layout$clip[gt$layout$name=="panel"] <- "off"
 grid::grid.draw(gt)
 
 # More options:
-# plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
-# plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+# plot_tox_endpoints(chemicalSummary,   
+#                    category = "Chemical Class", 
+#                    filterBy = "PAHs")
+# plot_tox_endpoints(chemicalSummary, 
+#                    category = "Chemical", 
+#                    filterBy = "Atrazine")
 
-## ----table_tox_rank, warning=FALSE---------------------------------------
+## ----clipping, eval=FALSE------------------------------------------------
+#  gb <- ggplot2::ggplot_build(ep_plot)
+#  gt <- ggplot2::ggplot_gtable(gb)
+#  gt$layout$clip[gt$layout$name=="panel"] <- "off"
+#  grid::grid.draw(gt)
+
+## ----ggsave1, eval=FALSE-------------------------------------------------
+#  
+#  ep_plot <- plot_tox_endpoints(chemicalSummary,
+#                                category = "Biological",
+#                                filterBy = "Cell Cycle")
+#  
+#  # To save a png:
+#  ggsave(ep_plot, file = "ep_plot.png")
+#  
+#  # To save a pdf:
+#  ggsave(ep_plot, file = "ep_plot.pdf")
+
+## ----basesave1, eval=FALSE-----------------------------------------------
+#  
+#  ep_plot <- plot_tox_endpoints(chemicalSummary,
+#                                category = "Biological",
+#                                filterBy = "Cell Cycle")
+#  gb <- ggplot2::ggplot_build(ep_plot)
+#  gt <- ggplot2::ggplot_gtable(gb)
+#  gt$layout$clip[gt$layout$name=="panel"] <- "off"
+#  
+#  
+#  # To save a png:
+#  png("ep_plot.png", width = 1200, height = 1200, res = 142)
+#  grid::grid.draw(gt)
+#  dev.off()
+#  
+#  # To save a pdf:
+#  pdf("ep_plot.pdf", width = 9, height = 11)
+#  grid::grid.draw(gt)
+#  dev.off()
+#  
+#  
+
+## ----rank_sites_DT, warning=FALSE----------------------------------------
 library(DT)
 options(DT.options = list(pageLength = 5))
 
-table_tox_rank(chemicalSummary, category = "Biological")
+rank_df <- rank_sites(chemicalSummary, 
+                      category = "Biological",
+                      hit_threshold = 0.1)
+
+rank_sites_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_tox_rank(chemicalSummary, category = "Chemical Class")
-# table_tox_rank(chemicalSummary, category = "Chemical")
+# rank_sites_DT(chemicalSummary, 
+#               category = "Chemical Class", 
+#               hit_threshold = 0.1)
+# rank_sites_DT(chemicalSummary, 
+#               category = "Chemical", 
+#               hit_threshold = 0.1)
 
-## ----table_tox_rank_site, warning=FALSE----------------------------------
-table_tox_rank(maumee, category = "Biological")
+## ----rank_sites_DT_site, warning=FALSE-----------------------------------
+rank_sites_DT(maumee, category = "Biological")
 
-## ----table_tox_sum, warning=FALSE----------------------------------------
-table_tox_sum(chemicalSummary, category = "Biological")
+## ----hits_summary_DT, warning=FALSE--------------------------------------
+
+hit_df <- hits_summary(chemicalSummary, category = "Biological")
+
+hits_summary_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_tox_sum(chemicalSummary, category = "Chemical Class")
-# table_tox_sum(chemicalSummary, category = "Chemical")
+# hits_summary_DT(chemicalSummary, category = "Chemical Class")
+# hits_summary_DT(chemicalSummary, category = "Chemical")
 
-## ----table_tox_sum_site, warning=FALSE-----------------------------------
-table_tox_sum(maumee, category = "Biological")
+## ----hits_summary_DT_site, warning=FALSE---------------------------------
+hits_summary_DT(maumee, category = "Biological")
 
 ## ----table_endpoint_hits, warning=FALSE----------------------------------
+
+ep_hits <- endpoint_hits(chemicalSummary, category = "Biological")
+
 table_endpoint_hits(chemicalSummary, category = "Biological")
 # More options:
 # table_endpoint_hits(chemicalSummary, category = "Chemical Class")
@@ -165,9 +235,15 @@ table_tox_endpoint(chemicalSummary, category = "Chemical Class")
 table_tox_endpoint(maumee, category = "Chemical Class")
 
 ## ----makeMap, warning=FALSE, message=FALSE-------------------------------
-make_tox_map(chemicalSummary, tox_list$chem_site, "Biological")
+make_tox_map(chemicalSummary, 
+             chem_site = tox_list$chem_site, 
+             category = "Biological")
 # More options:
-# make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical Class")
-# make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical") 
+# make_tox_map(chemicalSummary, 
+#              chem_site = tox_list$chem_site, 
+#              category = "Chemical Class")
+# make_tox_map(chemicalSummary, 
+#              chem_site = tox_list$chem_site, 
+#              category = "Chemical")
 
 

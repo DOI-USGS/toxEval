@@ -22,6 +22,27 @@ stackBarGroup_create <- reactive({
   include_legend <- !(catType == 2)
 
   category <- c("Biological","Chemical","Chemical Class")[catType]
+
+  upperPlot <- plot_tox_stacks(chemicalSummary, 
+                               chem_site, 
+                               category = category,
+                               mean_logic = mean_logic,
+                               include_legend = include_legend,
+                               font_size = ifelse(catType == 2, 14, 17),
+                               title = stackTitle())
+  
+  updateAceEditor(session, editorId = "barCode_out", value = barCode() )
+  
+  return(upperPlot)
+})
+
+stackTitle <- reactive({
+
+  catType = as.numeric(input$radioMaxGroup)
+  mean_logic <- as.logical(input$meanEAR)
+  
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  
   pretty_cat <- tolower(category)
   if(pretty_cat == "biological"){
     pretty_cat <- "biological activity grouping"
@@ -33,17 +54,7 @@ stackBarGroup_create <- reactive({
     title <- paste("Individual samples grouped by",pretty_cat,"
                    ",rawData()[["chem_site"]][["Fullname"]])
   }
-  upperPlot <- plot_tox_stacks(chemicalSummary, 
-                               chem_site, 
-                               category = category,
-                               mean_logic = mean_logic,
-                               include_legend = include_legend,
-                               font_size = ifelse(catType == 2, 14, 17),
-                               title = title)
-  
-  updateAceEditor(session, editorId = "barCode_out", value = barCode() )
-  
-  return(upperPlot)
+  return(title)
 })
 
 output$stackBarGroup <- renderPlot({
@@ -97,6 +108,7 @@ stack_plot <- plot_tox_stacks(chemicalSummary,
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
                   mean_logic = ",as.logical(input$meanEAR),",
+                  title = '",stackTitle(),"',
                   include_legend = ",include_legend,")
 gb <- ggplot2::ggplot_build(stack_plot)
 gt <- ggplot2::ggplot_gtable(gb)

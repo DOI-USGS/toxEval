@@ -6,24 +6,14 @@ endpointGraph_create <- reactive({
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- as.logical(input$meanEAR)
-  site <- input$sites
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  
-  title <- paste(filterBy, ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "per site End Point Distribution")
-  
-  if(site != "All"){
-
-    title <- paste(title,"
-                   ",rawData()[["chem_site"]][["Fullname"]])
-  }
   
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
                                       category = category,
                                       mean_logic = mean_logic,
                                       hit_threshold = hitThresValue(),
                                       filterBy = filterBy,
-                                      title = title,
+                                      title = epTitle(),
                                       font_size = 18) 
   
   updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
@@ -38,9 +28,7 @@ output$endpointGraph <- renderPlot({
   
   gb <- ggplot2::ggplot_build(endpointGraph_create())
   gt <- ggplot2::ggplot_gtable(gb)
-  
   gt$layout$clip[gt$layout$name=="panel"] <- "off"
-  
   grid::grid.draw(gt)
 
 })
@@ -97,6 +85,22 @@ output$downloadEndpoint_csv <- downloadHandler(
   }
 )
 
+epTitle <- reactive({
+  catType <- as.numeric(input$radioMaxGroup)
+  mean_logic <- as.logical(input$meanEAR)
+  site <- input$sites
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  filterBy <- epDF[['epGroup']]
+  title <- paste(filterBy, ifelse(mean_logic,"Mean","Maximum"),"EAR",
+                 "per site End Point Distribution")
+  
+  if(site != "All"){
+    title <- paste(title,"
+                   ",rawData()[["chem_site"]][["Fullname"]])
+  }
+  return(title)
+})
+
 epGraphCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
@@ -108,6 +112,7 @@ ep_plot <- plot_tox_endpoints(chemicalSummary,
                     category = '",category,"',
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,",
+                    title = '",epTitle(),"'
                     filterBy = '",filterBy,"')
 gb <- ggplot2::ggplot_build(ep_plot)
 gt <- ggplot2::ggplot_gtable(gb)

@@ -31,7 +31,17 @@ plot_heat_chemicals(chemicalSummary, chem_site, mean_logic)
 \item{title}{character title for plot.}
 }
 \description{
-Plot heat map
+This function creates heat (tile) map with sites on the x-axis, a 
+specified grouping on the y-axis (defined by the 'category' argument), 
+and color shading defining the mean or max EAR. The y-axis grouping 
+can be "Biological","Chemical Class", or "Chemical". The breaks for the 
+color scale can be customized with the 'breaks' argument.
+}
+\details{
+This is a function where it may be ideal to create a custom order to 
+the sites (for example, west-to-east). There is an example below with 
+instructions on how to convert the character vector 'sites' to a factor 
+with ordered levels.
 }
 \examples{
 path_to_tox <-  system.file("extdata", package="toxEval")

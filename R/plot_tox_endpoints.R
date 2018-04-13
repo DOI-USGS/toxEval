@@ -1,6 +1,15 @@
-#' plot_tox_boxplots
+#' EndPoint boxplots
 #' 
-#' Plot boxplot of groups
+#' This function creates a set of boxplots for each endPoint based on a selected 
+#' filter. The data is first filtered down to what group is specified in the 'filterBy' 
+#' argument. The 'filterBy' argument must match one of the unique options in the 'category'. 
+#' So for example, if the 'category' is "Chemical Class", then the 'filterBy' argument must 
+#' be one of the defined "Chemical Class" options such as "Herbicide". 
+#'
+#' After the data is filtered, a boxplot is generated for each endPoint. The EAR values 
+#' that are used to create the boxplots are still the mean or max (as defined by 'mean_logic') 
+#' of each site.
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param filterBy character either "All" or one of the filtered categories.
@@ -49,7 +58,7 @@ plot_tox_endpoints <- function(chemicalSummary,
                               category = "Biological",
                               filterBy = "All",
                               manual_remove = NULL,
-                              hit_threshold = 0.1,
+                              hit_threshold = NA,
                               mean_logic = FALSE, 
                               font_size = NA,
                               title = NA,
@@ -215,6 +224,13 @@ plot_tox_endpoints <- function(chemicalSummary,
       geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
               aes(x = x,  y=y, label = label),
               size=ifelse(is.na(font_size),3,0.30*font_size))
+  }
+  
+  if(!is.na(hit_threshold)) {
+    stackedPlot <- stackedPlot +
+      geom_text(data=data.frame(x = Inf, y=hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
+                aes(x = x,  y=y, label = label),
+                size=ifelse(is.na(font_size),3,0.30*font_size))
   }
 
   if(!is.na(font_size)){
