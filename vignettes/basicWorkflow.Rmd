@@ -413,19 +413,19 @@ endpoint_hits_DT(maumee, category = "Biological")
 ```
 
 
-## table_tox_endpoint {#table_tox_endpoint}
+## hits_by_groupings_DT {#hits_by_groupings_DT}
 
-```{r table_tox_endpoint, warning=FALSE}
-table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+```{r hits_by_groupings_DT, warning=FALSE}
+hits_by_groupings_DT(chemicalSummary, category = "Chemical Class")
 # More options:
-# table_tox_endpoint(chemicalSummary, category = "Biological")
-# table_tox_endpoint(chemicalSummary, category = "Chemical")
+# hits_by_groupings_DT(chemicalSummary, category = "Biological")
+# hits_by_groupings_DT(chemicalSummary, category = "Chemical")
 ```
 
 The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
 
-```{r table_tox_endpoint_site, warning=FALSE}
-table_tox_endpoint(maumee, category = "Chemical Class")
+```{r hits_by_groupings_DT_site, warning=FALSE}
+hits_by_groupings_DT(maumee, category = "Chemical Class")
 ```
 
 # Maps {#make_tox_map}

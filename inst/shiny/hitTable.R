@@ -9,7 +9,7 @@ output$hitsTable <- DT::renderDataTable({
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   
-  tableGroup <- table_tox_endpoint(chemicalSummary, 
+  tableGroup <- hits_by_groupings_DT(chemicalSummary, 
                                    category = c("Biological","Chemical","Chemical Class")[catType],
                                    mean_logic = mean_logic,
                                    hit_threshold = hitThres)
@@ -36,8 +36,8 @@ siteHitCode <- reactive({
   hitThres <- hitThresValue()
   
   siteHitCode <- paste0(rCodeSetup(),"
-# Use the table_tox_endpoint function for the formatted DT table
-hitSiteTable <- endpoint_table(chemicalSummary, 
+# Use the hits_by_groupings_DT function for the formatted DT table
+hitSiteTable <- hits_by_groupings(chemicalSummary, 
                     category = '",category,"',
                     mean_logic = ",as.logical(input$meanEAR),",
                     hit_threshold = ",hitThres,")")
@@ -57,7 +57,7 @@ siteHitTableData <- reactive({
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   
-  tableGroup <- endpoint_table(chemicalSummary, 
+  tableGroup <- hits_by_groupings(chemicalSummary, 
                                    category = c("Biological","Chemical","Chemical Class")[catType],
                                    mean_logic = mean_logic,
                                    hit_threshold = hitThres)

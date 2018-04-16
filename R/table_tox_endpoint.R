@@ -1,4 +1,4 @@
-#' rank_sites_DT
+#' Biological hits per category
 #' 
 #' Table of ranks
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
@@ -6,7 +6,7 @@
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
-#' @rdname table_tox_endpoint
+#' @rdname hits_by_groupings_DT
 #' @import DT
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
@@ -27,12 +27,12 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'
-#' site_df <- endpoint_table(chemicalSummary, category = "Biological")
-#' table_tox_endpoint(chemicalSummary, category = "Biological")
-#' table_tox_endpoint(chemicalSummary, category = "Chemical Class")
-#' table_tox_endpoint(chemicalSummary, category = "Chemical")
+#' site_df <- hits_by_groupings(chemicalSummary, category = "Biological")
+#' hits_by_groupings_DT(chemicalSummary, category = "Biological")
+#' hits_by_groupings_DT(chemicalSummary, category = "Chemical Class")
+#' hits_by_groupings_DT(chemicalSummary, category = "Chemical")
 #' }
-table_tox_endpoint <- function(chemicalSummary, 
+hits_by_groupings_DT <- function(chemicalSummary, 
                            category = "Biological",
                            mean_logic = FALSE,
                            hit_threshold = 0.1){
@@ -40,7 +40,7 @@ table_tox_endpoint <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
 
-  tableData <- endpoint_table(chemicalSummary=chemicalSummary, 
+  tableData <- hits_by_groupings(chemicalSummary=chemicalSummary, 
                               category = category,
                               mean_logic = mean_logic,
                               hit_threshold = hit_threshold)
@@ -68,8 +68,8 @@ table_tox_endpoint <- function(chemicalSummary,
 }
 
 #' @export
-#' @rdname table_tox_endpoint
-endpoint_table <- function(chemicalSummary, category, mean_logic=FALSE, hit_threshold = 0.1){
+#' @rdname hits_by_groupings_DT
+hits_by_groupings <- function(chemicalSummary, category, mean_logic=FALSE, hit_threshold = 0.1){
   
   Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
   meanEAR <- nSites <- ".dplyr"

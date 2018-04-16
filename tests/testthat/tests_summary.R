@@ -230,30 +230,30 @@ test_that("Table endpoint hits", {
                                            "Metolachlor","Atrazine")))
 })
 
-test_that("table_tox_endpoint", {
+test_that("hits_by_groupings_DT", {
   testthat::skip_on_cran()
   
-  bt <- table_tox_endpoint(chemicalSummary, category = "Biological")
+  bt <- hits_by_groupings_DT(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
   expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
   expect_true("nSites" %in% names(bt$x$data))
   
-  bt_df <- endpoint_table(chemicalSummary, category = "Chemical Class")
+  bt_df <- hits_by_groupings(chemicalSummary, category = "Chemical Class")
   expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Esterase",        
                                       "Steroid Hormone","Zebrafish")))
   expect_true(all(c("Detergent Metabolites","Antioxidants","Herbicides") %in% rownames(bt_df)))
   expect_equal(bt_df[["Nuclear Receptor"]], c(10,11,7,11,rep(0,9)))
   
-  expect_error(table_tox_endpoint(chemicalSummary, category = "Class"))
+  expect_error(hits_by_groupings_DT(chemicalSummary, category = "Class"))
   
-  ct <- table_tox_endpoint(chemicalSummary, category = "Chemical Class")
+  ct <- hits_by_groupings_DT(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   expect_true(all(class(ct) %in% c("datatables","htmlwidget")))
   expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
                                           "Phosphatase","Esterase","Steroid Hormone",
                                           "Zebrafish")))
   
-  cht <- table_tox_endpoint(chemicalSummary, category = "Chemical")
+  cht <- hits_by_groupings_DT(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
   expect_true(all(names(cht$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
