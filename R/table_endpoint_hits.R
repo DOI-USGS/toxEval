@@ -1,4 +1,4 @@
-#' table_endpoint_hits
+#' endpoint_hits_DT
 #' 
 #' Table of ranks
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
@@ -7,7 +7,7 @@
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
 #' @import DT
-#' @rdname table_endpoint_hits
+#' @rdname endpoint_hits_DT
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
 #' @importFrom dplyr full_join filter mutate select left_join right_join
@@ -28,11 +28,11 @@
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #' 
 #' hits_df <- endpoint_hits(chemicalSummary, category = "Biological")                        
-#' table_endpoint_hits(chemicalSummary, category = "Biological")
-#' table_endpoint_hits(chemicalSummary, category = "Chemical Class")
-#' table_endpoint_hits(chemicalSummary, category = "Chemical")
+#' endpoint_hits_DT(chemicalSummary, category = "Biological")
+#' endpoint_hits_DT(chemicalSummary, category = "Chemical Class")
+#' endpoint_hits_DT(chemicalSummary, category = "Chemical")
 #' }
-table_endpoint_hits <- function(chemicalSummary, 
+endpoint_hits_DT <- function(chemicalSummary, 
                            category = "Biological",
                            mean_logic = FALSE,
                            hit_threshold = 0.1){
@@ -77,7 +77,7 @@ table_endpoint_hits <- function(chemicalSummary,
   return(fullData)
 }
 
-#' @rdname table_endpoint_hits
+#' @rdname endpoint_hits_DT
 #' @export
 endpoint_hits <- function(chemicalSummary, 
                          category = "Biological",

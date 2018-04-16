@@ -201,7 +201,7 @@ test_that("Map stuff functions", {
 test_that("Table endpoint hits", {
   testthat::skip_on_cran()
 
-  bt <- table_endpoint_hits(chemicalSummary, category = "Biological")
+  bt <- endpoint_hits_DT(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
   expect_true(all(names(bt$x$data) %in% c("endPoint","Nuclear Receptor","DNA Binding",
                                   "Phosphatase","Steroid Hormone","Esterase")))
@@ -213,16 +213,16 @@ test_that("Table endpoint hits", {
   expect_equal(bt_df[["Nuclear Receptor"]][bt_df[["endPoint"]] == "NVS_NR_hPPARg"],11)
   expect_true(is.na(bt_df[["Esterase"]][bt_df[["endPoint"]] == "NVS_NR_hPPARg"]))
   
-  expect_error(table_endpoint_hits(chemicalSummary, category = "Class"))
+  expect_error(endpoint_hits_DT(chemicalSummary, category = "Class"))
   
-  ct <- table_endpoint_hits(chemicalSummary, category = "Chemical Class")
+  ct <- endpoint_hits_DT(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
   expect_true(all(names(ct$x$data) %in% c("endPoint","Antioxidants","PAHs",
                                           "Detergent Metabolites","Herbicides",
                                           "Plasticizers")))
   
-  cht <- table_endpoint_hits(chemicalSummary, category = "Chemical")
+  cht <- endpoint_hits_DT(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
   expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A","Fluoranthene","Tris(2-chloroethyl) phosphate",

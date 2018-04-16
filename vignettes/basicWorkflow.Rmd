@@ -390,22 +390,22 @@ hits_summary_DT(maumee, category = "Biological")
 ```
 
 
-## table_endpoint_hits {#table_endpoint_hits}
+## endpoint_hits_DT {#endpoint_hits_DT}
 
-```{r table_endpoint_hits, warning=FALSE}
+```{r endpoint_hits_DT, warning=FALSE}
 
 ep_hits <- endpoint_hits(chemicalSummary, category = "Biological")
 
-table_endpoint_hits(chemicalSummary, category = "Biological")
+endpoint_hits_DT(chemicalSummary, category = "Biological")
 # More options:
-# table_endpoint_hits(chemicalSummary, category = "Chemical Class")
-# table_endpoint_hits(chemicalSummary, category = "Chemical")
+# endpoint_hits_DT(chemicalSummary, category = "Chemical Class")
+# endpoint_hits_DT(chemicalSummary, category = "Chemical")
 ```
 
 The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples.
 
-```{r table_endpoint_hits_site, warning=FALSE}
-table_endpoint_hits(maumee, category = "Biological")
+```{r endpoint_hits_DT_site, warning=FALSE}
+endpoint_hits_DT(maumee, category = "Biological")
 ```
 
 

@@ -123,7 +123,7 @@ The following table shows the main function that each tab in the app uses:
 | Max EAR and Frequency | [`rank_sites_DT`](basicWorkFlow.html#rank_sites_DT)|
 | Hit Counts | [`hits_summary_DT`](basicWorkFlow.html#hits_summary_DT)|
 | Site Hits | [`table_tox_endpoint`](basicWorkFlow.html#table_tox_endpoint)|
-| Endpoint Hits | [`table_endpoint_hits`](basicWorkFlow.html#table_endpoint_hits)|
+| Endpoint Hits | [`endpoint_hits_DT`](basicWorkFlow.html#endpoint_hits_DT)|
 | Endpoint | [`plot_tox_endpoints`](basicWorkFlow.html#plot_tox_endpoints)|
 | Heat Map | [`plot_tox_heatmap`](basicWorkFlow.html#plot_tox_heatmap)|
 
