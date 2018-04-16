@@ -155,10 +155,10 @@ test_that("Table functions", {
   
   groupStuff <- hits_summary(chemicalSummary, "Biological", hit_threshold = 1)
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
-  expect_true(all(c("site","category","Samples with hits","nSamples") %in% names(groupStuff)))
+  expect_true(all(c("site","category","Samples with hits","Number of Samples") %in% names(groupStuff)))
   expect_equal(groupStuff[["Samples with hits"]][which(groupStuff[["site"]] == "Raisin" &
                                                            groupStuff[["category"]] == "DNA Binding")],28)
-  expect_equal(groupStuff[["nSamples"]][which(groupStuff[["site"]] == "Raisin" &
+  expect_equal(groupStuff[["Number of Samples"]][which(groupStuff[["site"]] == "Raisin" &
                                                        groupStuff[["category"]] == "DNA Binding")],44)
   
 })
@@ -268,19 +268,19 @@ test_that("hits_summary_DT", {
   bt <- hits_summary_DT(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
   expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
-  expect_true(all(c("site","category","Samples with hits","nSamples") %in% names(bt$x$data)))
+  expect_true(all(c("site","category","Samples with hits","Number of Samples") %in% names(bt$x$data)))
   
   expect_error(hits_summary_DT(chemicalSummary, category = "Class"))
   
   ct <- hits_summary_DT(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
-  expect_true(all(names(ct$x$data) %in% c("site","category","Samples with hits","nSamples")))
+  expect_true(all(names(ct$x$data) %in% c("site","category","Samples with hits","Number of Samples")))
   
   cht <- hits_summary_DT(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
-  expect_true(all(names(cht$x$data) %in% c("site","category","Samples with hits","nSamples")))
+  expect_true(all(names(cht$x$data) %in% c("site","category","Samples with hits","Number of Samples")))
 })
 
 test_that("rank_sites_DT", {
