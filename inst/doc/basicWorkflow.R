@@ -189,50 +189,51 @@ rank_df <- rank_sites(chemicalSummary,
                       category = "Biological",
                       hit_threshold = 0.1)
 
-rank_sites_DT(chemicalSummary, category = "Biological")
-# More options:
-# rank_sites_DT(chemicalSummary, 
-#               category = "Chemical Class", 
-#               hit_threshold = 0.1)
-# rank_sites_DT(chemicalSummary, 
-#               category = "Chemical", 
-#               hit_threshold = 0.1)
+rank_sites_DT(chemicalSummary, 
+              category = "Biological",
+              hit_threshold = 0.1)
 
 ## ----rank_sites_DT_site, warning=FALSE-----------------------------------
 rank_sites_DT(maumee, category = "Biological")
 
 ## ----hits_summary_DT, warning=FALSE--------------------------------------
 
-hit_df <- hits_summary(chemicalSummary, category = "Biological")
+hit_df <- hits_summary(chemicalSummary,
+                       category = "Biological",
+                       hit_threshold = 0.1 )
 
-hits_summary_DT(chemicalSummary, category = "Biological")
-# More options:
-# hits_summary_DT(chemicalSummary, category = "Chemical Class")
-# hits_summary_DT(chemicalSummary, category = "Chemical")
+hits_summary_DT(chemicalSummary, 
+                category = "Biological",
+                hit_threshold = 0.1)
 
 ## ----hits_summary_DT_site, warning=FALSE---------------------------------
 hits_summary_DT(maumee, category = "Biological")
 
-## ----table_endpoint_hits, warning=FALSE----------------------------------
+## ----endpoint_hits_DT, warning=FALSE-------------------------------------
 
-ep_hits <- endpoint_hits(chemicalSummary, category = "Biological")
+ep_hits <- endpoint_hits(chemicalSummary, 
+                         category = "Biological", 
+                         hit_threshold = 0.1)
 
-table_endpoint_hits(chemicalSummary, category = "Biological")
-# More options:
-# table_endpoint_hits(chemicalSummary, category = "Chemical Class")
-# table_endpoint_hits(chemicalSummary, category = "Chemical")
+endpoint_hits_DT(chemicalSummary, 
+                 category = "Biological",
+                 hit_threshold = 0.1)
 
-## ----table_endpoint_hits_site, warning=FALSE-----------------------------
-table_endpoint_hits(maumee, category = "Biological")
 
-## ----table_tox_endpoint, warning=FALSE-----------------------------------
-table_tox_endpoint(chemicalSummary, category = "Chemical Class")
-# More options:
-# table_tox_endpoint(chemicalSummary, category = "Biological")
-# table_tox_endpoint(chemicalSummary, category = "Chemical")
+## ----endpoint_hits_DT_site, warning=FALSE--------------------------------
+endpoint_hits_DT(maumee, category = "Biological")
 
-## ----table_tox_endpoint_site, warning=FALSE------------------------------
-table_tox_endpoint(maumee, category = "Chemical Class")
+## ----hits_by_groupings_DT, warning=FALSE---------------------------------
+site_df <- hits_by_groupings(chemicalSummary, 
+                             category = "Chemical Class",
+                             hit_threshold = 0.1)
+
+hits_by_groupings_DT(chemicalSummary, 
+                     category = "Chemical Class",
+                     hit_threshold = 0.1)
+
+## ----hits_by_groupings_DT_site, warning=FALSE----------------------------
+hits_by_groupings_DT(maumee, category = "Chemical Class")
 
 ## ----makeMap, warning=FALSE, message=FALSE-------------------------------
 make_tox_map(chemicalSummary, 
