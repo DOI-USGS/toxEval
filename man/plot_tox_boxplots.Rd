@@ -88,7 +88,8 @@ gt$layout$clip[gt$layout$name=="panel"] <- "off"
 
 grid::grid.draw(gt) 
 
-cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
+               "#0072B2", "#D55E00", "#CC79A7")
 graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                               category = "Biological") 
 cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
