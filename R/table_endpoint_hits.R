@@ -1,6 +1,13 @@
-#' endpoint_hits_DT
+#' Rank endpoints by category
 #' 
-#' Table of ranks
+#' These functions create a table with one row per endPoint, and one 
+#' column per category("Biological", "Chemical", or "Chemical Class"). 
+#' The values in the table are number of sites with hits in that endpoint/category 
+#' combination, based on a user-specified threshold (defined by hit_threshold).
+#' 
+#' The tables show slightly different results for a single site. Instead of the 
+#' number of sites with hits above a threshold, it is now the number of samples with hits.
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
@@ -45,9 +52,12 @@ endpoint_hits_DT <- function(chemicalSummary,
                            hit_threshold = hit_threshold)
 
   if(category == "Chemical"){
+    orig_names <- names(fullData)
+    
     casKey <- select(chemicalSummary, chnm, CAS) %>%
       distinct()
-
+    
+    numeric_hits <- fullData
     hits <- sapply(fullData, function(x) as.character(x))
 
     for(k in 1:nrow(fullData)){
@@ -64,17 +74,47 @@ endpoint_hits_DT <- function(chemicalSummary,
       }
     }
 
-    fullData <- hits
+    fullData <- data.frame(hits, stringsAsFactors = FALSE)
+    names(fullData) <- orig_names
   }
   
-  fullData <- DT::datatable(fullData, extensions = 'Buttons',
+  n <- ncol(fullData)-1
+  
+  if(n > 20 & n<30){
+    colors <- c(brewer.pal(n = 12, name = "Set3"),
+                brewer.pal(n = 8, name = "Set2"),
+                brewer.pal(n = max(c(3,n-20)), name = "Set1"))
+  } else if (n <= 20){
+    colors <- c(brewer.pal(n = 12, name = "Set3"),
+                brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
+  } else {
+    colors <- colorRampPalette(brewer.pal(11,"Spectral"))(n)
+  }
+  
+  fullData_dt <- DT::datatable(fullData, extensions = 'Buttons',
                               escape = FALSE,
                               rownames = FALSE,
                               options = list(dom = 'Bfrtip',
                                              buttons = list('colvis'),
                                              scrollX = TRUE,
                                              order=list(list(1,'desc'))))
-  return(fullData)
+  
+  for(i in 2:ncol(fullData)){
+    fullData_dt <- formatStyle(fullData_dt,
+                             names(fullData)[i],
+                             backgroundColor = colors[i])
+
+    if(category != "Chemical"){
+      fullData_dt <- formatStyle(fullData_dt, names(fullData)[i],
+                                 background = styleColorBar(range(fullData[,names(fullData)[i]],na.rm = TRUE), 'goldenrod'),
+                                 backgroundSize = '100% 90%',
+                                 backgroundRepeat = 'no-repeat',
+                                 backgroundPosition = 'center' )      
+    } 
+
+  }
+  
+  return(fullData_dt)
 }
 
 #' @rdname endpoint_hits_DT

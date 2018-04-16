@@ -392,7 +392,7 @@ hits_summary_DT(maumee, category = "Biological")
 
 ## endpoint_hits_DT {#endpoint_hits_DT}
 
-The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create a table with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are number of sites with hits in that endpoint/category combination, based on a user-specified threshold (defined by `hit_threshold`)
+The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create a table with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are number of sites with hits in that endpoint/category combination, based on a user-specified threshold (defined by `hit_threshold`).
 .
 ```{r endpoint_hits_DT, warning=FALSE}
 

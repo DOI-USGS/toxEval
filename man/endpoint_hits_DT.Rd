@@ -3,7 +3,7 @@
 \name{endpoint_hits_DT}
 \alias{endpoint_hits_DT}
 \alias{endpoint_hits}
-\title{endpoint_hits_DT}
+\title{Rank endpoints by category}
 \usage{
 endpoint_hits_DT(chemicalSummary, category = "Biological",
   mean_logic = FALSE, hit_threshold = 0.1)
@@ -21,7 +21,14 @@ endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
 \item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
-Table of ranks
+These functions create a table with one row per endPoint, and one 
+column per category("Biological", "Chemical", or "Chemical Class"). 
+The values in the table are number of sites with hits in that endpoint/category 
+combination, based on a user-specified threshold (defined by hit_threshold).
+}
+\details{
+The tables show slightly different results for a single site. Instead of the 
+number of sites with hits above a threshold, it is now the number of samples with hits.
 }
 \examples{
 # This is the example workflow:
