@@ -48,7 +48,8 @@ hits_summary_DT <- function(chemicalSummary,
                           mean_logic = FALSE,
                           hit_threshold = 0.1){
     
-  chnm <- Class <- Bio_category <- site <- EAR <- sumEAR <- hits <- n <- ".dplyr"
+  chnm <- Class <- Bio_category <- site <- EAR <- sumEAR <- hits <- n <- `Samples with
+  hits` <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -85,7 +86,7 @@ hits_summary_DT <- function(chemicalSummary,
 hits_summary <- function(chemicalSummary, category, 
                          hit_threshold = 0.1, mean_logic = FALSE){
   
-  Class <- Bio_category <- `Hits per Sample` <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
+  Class <- Bio_category <- `Samples with hits` <- nSamples <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
   
   siteToFind <- unique(chemicalSummary$site)
   

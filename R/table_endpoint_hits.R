@@ -156,9 +156,7 @@ endpoint_hits <- function(chemicalSummary,
       group_by(category, endPoint, date) %>%
       summarize(sumEAR = sum(EAR)) %>%
       group_by(category, endPoint) %>%
-      summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-      group_by(category, endPoint) %>%
-      summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+      summarise(nSites = sum(sumEAR > hit_threshold)) %>%
       spread(category, nSites)
     
   }
