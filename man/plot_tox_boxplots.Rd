@@ -9,7 +9,8 @@
 \title{Grouped Boxplots}
 \usage{
 plot_chemical_boxplots(chemicalSummary, manual_remove = NULL,
-  mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
+  mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA,
+  pallette = NA, hit_threshold = NA)
 
 graph_chem_data(chemicalSummary, manual_remove = NULL, mean_logic = FALSE)
 
@@ -33,12 +34,12 @@ tox_boxplot_data(chemicalSummary, category = "Biological",
 
 \item{title}{character title for plot.}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
-
 \item{pallette}{vector of color pallette for fill. Can be a named vector
 to specify specific color for specific categories.}
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
+
+\item{category}{either "Biological", "Chemical Class", or "Chemical"}
 }
 \description{
 This function creates a set of boxplots based on the original input data 
@@ -86,5 +87,19 @@ gt <- ggplot2::ggplot_gtable(gb)
 gt$layout$clip[gt$layout$name=="panel"] <- "off"
 
 grid::grid.draw(gt) 
+
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+                              category = "Biological") 
+cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
+names(cbValues) <- levels(graphData$category)
+
+plot_tox_boxplots(chemicalSummary, 
+                  hit_threshold = 0.1,
+                  category = "Biological",
+                  pallette = cbValues,
+                  title = 'Maximum EAR per site, grouped by biological activity groupings') 
+
+
 }
 }

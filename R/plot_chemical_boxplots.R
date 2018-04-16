@@ -7,6 +7,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                    plot_ND = TRUE,
                                    font_size = NA,
                                    title = NA,
+                                   pallette = NA,
                                    hit_threshold = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
@@ -49,9 +50,18 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
     label <- "# Endpoints"
     
-    toxPlot_All <- ggplot(data=chemicalSummary) +
-      geom_boxplot(aes(x=chnm, y=EAR, fill=Class),
-                   lwd=0.1,outlier.size=1)  
+    toxPlot_All <- ggplot(data=chemicalSummary)
+    
+    if(!all(is.na(pallette))){
+      toxPlot_All <- toxPlot_All +
+        geom_boxplot(aes(x=chnm, y=EAR, fill=chnm),lwd=0.1,outlier.size=1) +
+        scale_fill_manual(values = pallette) +
+        theme(legend.position = "none")
+    } else {
+      toxPlot_All <- toxPlot_All +
+        geom_boxplot(aes(x=chnm, y=EAR, fill=Class),
+                     lwd=0.1,outlier.size=1)
+    }
     
   } else {
     graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
@@ -67,9 +77,19 @@ plot_chemical_boxplots <- function(chemicalSummary,
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     
     label <- "# Sites"
-    toxPlot_All <- ggplot(data=graphData) +
-      geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
-                   lwd=0.1,outlier.size=1)  
+    toxPlot_All <- ggplot(data=graphData) 
+    
+    if(!all(is.na(pallette))){
+      toxPlot_All <- toxPlot_All +
+        geom_boxplot(aes(x=chnm, y=maxEAR, fill=chnm),lwd=0.1,outlier.size=1) +
+        scale_fill_manual(values = pallette) +
+        theme(legend.position = "none")
+    } else {
+      toxPlot_All <- toxPlot_All +
+        geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
+                     lwd=0.1,outlier.size=1)
+    }
+ 
   }
   
   toxPlot_All <- toxPlot_All +
@@ -85,14 +105,19 @@ plot_chemical_boxplots <- function(chemicalSummary,
           strip.background = element_rect(fill = "transparent",colour = NA),
           strip.text.y = element_blank(),
           panel.border = element_blank(),
-          axis.ticks = element_blank()) +
-    guides(fill=guide_legend(ncol=6)) +
-    theme(legend.position="bottom",
-          legend.justification = "left",
-          legend.background = element_rect(fill = "transparent", colour = "transparent"),
-          legend.title=element_blank(),
-          legend.key.height = unit(1,"line")) +
-    scale_fill_manual(values = cbValues, drop=FALSE)
+          axis.ticks = element_blank())  
+  
+  if(all(is.na(pallette))){
+    toxPlot_All <- toxPlot_All +
+      scale_fill_manual(values = cbValues, drop=FALSE) +
+      guides(fill=guide_legend(ncol=6)) +
+      theme(legend.position="bottom",
+            legend.justification = "left",
+            legend.background = element_rect(fill = "transparent", colour = "transparent"),
+            legend.title=element_blank(),
+            legend.key.height = unit(1,"line"))
+  }
+    
 
   if(!is.na(font_size)){
     toxPlot_All <- toxPlot_All +

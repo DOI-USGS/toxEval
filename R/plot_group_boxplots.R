@@ -59,6 +59,20 @@
 #' gt$layout$clip[gt$layout$name=="panel"] <- "off"
 #' 
 #' grid::grid.draw(gt) 
+#' 
+#' cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+#' graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+#'                               category = "Biological") 
+#' cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
+#' names(cbValues) <- levels(graphData$category)
+#' 
+#' plot_tox_boxplots(chemicalSummary, 
+#'                   hit_threshold = 0.1,
+#'                   category = "Biological",
+#'                   pallette = cbValues,
+#'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
+#' 
+#' 
 #' }
 plot_tox_boxplots <- function(chemicalSummary, 
                               category = "Biological",
@@ -82,6 +96,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                                        plot_ND = plot_ND,
                                        font_size = font_size,
                                        title = title,
+                                       pallette = pallette,
                                        hit_threshold = hit_threshold)
     return(chemPlot)
     
