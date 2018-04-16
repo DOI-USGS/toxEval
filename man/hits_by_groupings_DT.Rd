@@ -21,7 +21,16 @@ hits_by_groupings(chemicalSummary, category, mean_logic = FALSE,
 \item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
-Table of ranks
+These functions create a table with one row per category("Biological", 
+"Chemical", or "Chemical Class"). The columns are always the "Biological" 
+groupings. The values in the table are how many sites have hits (based on 
+hit_threshold), for that particular "Biological"/category combination. Note, 
+if the user chooses "Biological", it is a simple 2-column table of 
+"Biological" groupings and number of sites (nSites).
+}
+\details{
+The tables show slightly different results for a single site, showing the 
+number of samples with hits (instead of number of sites).
 }
 \examples{
 # This is the example workflow:

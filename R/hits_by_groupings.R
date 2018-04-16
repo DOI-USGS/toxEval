@@ -1,6 +1,15 @@
 #' Biological hits per category
 #' 
-#' Table of ranks
+#' These functions create a table with one row per category("Biological", 
+#' "Chemical", or "Chemical Class"). The columns are always the "Biological" 
+#' groupings. The values in the table are how many sites have hits (based on 
+#' hit_threshold), for that particular "Biological"/category combination. Note, 
+#' if the user chooses "Biological", it is a simple 2-column table of 
+#' "Biological" groupings and number of sites (nSites).
+#' 
+#' The tables show slightly different results for a single site, showing the 
+#' number of samples with hits (instead of number of sites).
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
