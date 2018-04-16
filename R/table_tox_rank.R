@@ -144,7 +144,7 @@ rank_sites <- function(chemicalSummary,
   statsOfColumn <- chemicalSummary %>%
     group_by(site, date, category) %>%
     summarise(sumEAR = sum(EAR),
-              nHits = sum(EAR > hit_threshold)) %>%
+              nHits = sum(sumEAR > hit_threshold)) %>%
     group_by(site, category) %>%
     summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
               freq = sum(nHits > 0)/n()) %>%
