@@ -10,7 +10,7 @@ output$hitsTableEPs <- DT::renderDataTable({
   mean_logic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   
-  tableEPs <- table_endpoint_hits(chemicalSummary, 
+  tableEPs <- endpoint_hits_DT(chemicalSummary, 
                                   category = c("Biological","Chemical","Chemical Class")[catType],
                                   mean_logic = mean_logic,
                                   hit_threshold = hitThres)
@@ -25,7 +25,7 @@ hitsTableEPCode <- reactive({
   hitThres <- hitThresValue()
   
   hitsTableEPCode <- paste0(rCodeSetup(),"
-# Use the table_endpoint_hits for a formatted DT table
+# Use the endpoint_hits_DT for a formatted DT table
 hitTable <- endpoint_hits(chemicalSummary, 
               category = '",category,"',
               mean_logic = ",as.logical(input$meanEAR),",

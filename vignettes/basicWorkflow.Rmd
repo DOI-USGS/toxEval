@@ -171,6 +171,22 @@ grid::grid.draw(gt)
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
 ```
 
+It is also possible to show a threshold line using the `hit_threshold` argument. The graph will then include the number of sites with detections, the threshold line, and the number of sites with "hits" as defined by measured concentration higher than the `hit_threshold`.
+
+```{r plot_box_thres, warning=FALSE, message=FALSE}
+bio_box_thresh <- plot_tox_boxplots(chemicalSummary, 
+                             category = "Biological",
+                             hit_threshold = 0.001)
+
+# The graph can be plotted without these additional lines,
+# but they allow the labels to look nicer:
+gb <- ggplot2::ggplot_build(bio_box_thresh)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
+```
+
 The graph shows a slightly different result for a single site. First, let's set up a subset of data that we will use throughout this document to show a single site. We'll use the Maumee River data.
 
 ```{r filtersiteBox, message=FALSE, warning=FALSE}
@@ -198,7 +214,6 @@ grid::grid.draw(gt)
 ## plot_tox_stacks {#plot_tox_stacks}
 
 The `plot_tox_stacks` function creates a set of stacked bar charts based on the original input data modified by the processing steps above, and the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation. There is an option `include_legend` to turn on and off the legend. It may be impractical for instance to show the legend for "Chemical" if there are hundreds of chemicals.
-
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
 stack_plot <- plot_tox_stacks(chemicalSummary, 
@@ -350,14 +365,9 @@ rank_df <- rank_sites(chemicalSummary,
                       category = "Biological",
                       hit_threshold = 0.1)
 
-rank_sites_DT(chemicalSummary, category = "Biological")
-# More options:
-# rank_sites_DT(chemicalSummary, 
-#               category = "Chemical Class", 
-#               hit_threshold = 0.1)
-# rank_sites_DT(chemicalSummary, 
-#               category = "Chemical", 
-#               hit_threshold = 0.1)
+rank_sites_DT(chemicalSummary, 
+              category = "Biological",
+              hit_threshold = 0.1)
 ```
 
 The tables show slightly different results for a single site. Instead of multiple columns for category, there is now 1 row per category (since the site is known).
@@ -368,60 +378,70 @@ rank_sites_DT(maumee, category = "Biological")
 
 ## hits_summary_DT {#hits_summary_DT}
 
-The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create a table with one several rows per site depending on which categories get hits based on a user specified `hit_threshold`. So for example, if "Biological" is chosen, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
+The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create a table with several rows per site depending on which categories get hits. A "hit" is based on a user specified `hit_threshold`. For example, if "Biological" is the category, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
 
-For each row, there are 5 colums. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" 
+For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples at that site had hits (based on `hit_threshold`) for the category. "Number of Samples" is how many individual samples were collected at an individual site based on unique date.
 
 
 ```{r hits_summary_DT, warning=FALSE}
 
-hit_df <- hits_summary(chemicalSummary, category = "Biological")
+hit_df <- hits_summary(chemicalSummary,
+                       category = "Biological",
+                       hit_threshold = 0.1 )
 
-hits_summary_DT(chemicalSummary, category = "Biological")
-# More options:
-# hits_summary_DT(chemicalSummary, category = "Chemical Class")
-# hits_summary_DT(chemicalSummary, category = "Chemical")
+hits_summary_DT(chemicalSummary, 
+                category = "Biological",
+                hit_threshold = 0.1)
 ```
 
-The tables show slightly different results for a single site:
+The tables show slightly different results for a single site. Instead of one row per site/category, there is one row per category.
 
 ```{r hits_summary_DT_site, warning=FALSE}
 hits_summary_DT(maumee, category = "Biological")
 ```
 
 
-## table_endpoint_hits {#table_endpoint_hits}
+## endpoint_hits_DT {#endpoint_hits_DT}
 
-```{r table_endpoint_hits, warning=FALSE}
+The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create a table with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are number of sites with hits in that endpoint/category combination, based on a user-specified threshold (defined by `hit_threshold`). One unique feature of this table is that if the category is "Chemical", there will be an "info" link to the ToxCast ("Actor Dashboard")[https://actor.epa.gov/dashboard], directly to the chemical/endpoint combination.
+.
+```{r endpoint_hits_DT, warning=FALSE}
 
-ep_hits <- endpoint_hits(chemicalSummary, category = "Biological")
+ep_hits <- endpoint_hits(chemicalSummary, 
+                         category = "Biological", 
+                         hit_threshold = 0.1)
 
-table_endpoint_hits(chemicalSummary, category = "Biological")
-# More options:
-# table_endpoint_hits(chemicalSummary, category = "Chemical Class")
-# table_endpoint_hits(chemicalSummary, category = "Chemical")
+endpoint_hits_DT(chemicalSummary, 
+                 category = "Biological",
+                 hit_threshold = 0.1)
+
 ```
 
-The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples.
+The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples with hits.
 
-```{r table_endpoint_hits_site, warning=FALSE}
-table_endpoint_hits(maumee, category = "Biological")
+```{r endpoint_hits_DT_site, warning=FALSE}
+endpoint_hits_DT(maumee, category = "Biological")
 ```
 
 
-## table_tox_endpoint {#table_tox_endpoint}
+## hits_by_groupings_DT {#hits_by_groupings_DT}
 
-```{r table_tox_endpoint, warning=FALSE}
-table_tox_endpoint(chemicalSummary, category = "Chemical Class")
-# More options:
-# table_tox_endpoint(chemicalSummary, category = "Biological")
-# table_tox_endpoint(chemicalSummary, category = "Chemical")
+The `hits_by_groupings_DT` (`DT` option) and `hits_by_groupings` (data frame option) functions create a table with one row per category("Biological", "Chemical", or "Chemical Class"). The columns are always the "Biological" groupings. The values in the table are how many sites have hits (based on `hit_threshold`), for that particular "Biological"/category combination. Note, if the user chooses "Biological", it is a simple 2-column table of "Biological" groupings and number of sites (nSites).
+
+```{r hits_by_groupings_DT, warning=FALSE}
+site_df <- hits_by_groupings(chemicalSummary, 
+                             category = "Chemical Class",
+                             hit_threshold = 0.1)
+
+hits_by_groupings_DT(chemicalSummary, 
+                     category = "Chemical Class",
+                     hit_threshold = 0.1)
 ```
 
 The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
 
-```{r table_tox_endpoint_site, warning=FALSE}
-table_tox_endpoint(maumee, category = "Chemical Class")
+```{r hits_by_groupings_DT_site, warning=FALSE}
+hits_by_groupings_DT(maumee, category = "Chemical Class")
 ```
 
 # Maps {#make_tox_map}

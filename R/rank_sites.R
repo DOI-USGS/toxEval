@@ -56,14 +56,11 @@ rank_sites_DT <- function(chemicalSummary,
                                    mean_logic = mean_logic)
 
   colToSort <- 1
-  if("nSamples" %in% names(statsOfColumn)){
-    colToSort <- 2
-  }
-  
+
   maxEARS <- grep("maxEAR",names(statsOfColumn))
   freqCol <- grep("freq",names(statsOfColumn))
   n <- length(maxEARS)
-  ignoreIndex <- which(names(statsOfColumn) %in% c("site","nSamples"))
+  ignoreIndex <- which(names(statsOfColumn) %in% c("site","category"))
   
   if(n > 20 & n<30){
     colors <- c(brewer.pal(n = 12, name = "Set3"),
@@ -144,7 +141,7 @@ rank_sites <- function(chemicalSummary,
   statsOfColumn <- chemicalSummary %>%
     group_by(site, date, category) %>%
     summarise(sumEAR = sum(EAR),
-              nHits = sum(EAR > hit_threshold)) %>%
+              nHits = sum(sumEAR > hit_threshold)) %>%
     group_by(site, category) %>%
     summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
               freq = sum(nHits > 0)/n()) %>%
@@ -185,6 +182,9 @@ rank_sites <- function(chemicalSummary,
   
   statsOfColumn <- statsOfColumn[order(statsOfColumn[[colToSort]], decreasing = TRUE),]
   
+  if(length(siteToFind) == 1){
+    names(statsOfColumn)[which(names(statsOfColumn) == "site")] <- "category"
+  }
   return(statsOfColumn)
 }
 

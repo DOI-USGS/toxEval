@@ -22,6 +22,7 @@
 #' @param manual_remove vector of categories to remove
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param plot_ND logical whether or not to plot the non-detects
+#' @param hit_threshold numeric threshold defining a "hit"
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot.
 #' @param pallette vector of color pallette for fill. Can be a named vector
@@ -58,6 +59,21 @@
 #' gt$layout$clip[gt$layout$name=="panel"] <- "off"
 #' 
 #' grid::grid.draw(gt) 
+#' 
+#' cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
+#'                "#0072B2", "#D55E00", "#CC79A7")
+#' graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+#'                               category = "Biological") 
+#' cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
+#' names(cbValues) <- levels(graphData$category)
+#' 
+#' plot_tox_boxplots(chemicalSummary, 
+#'                   hit_threshold = 0.1,
+#'                   category = "Biological",
+#'                   pallette = cbValues,
+#'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
+#' 
+#' 
 #' }
 plot_tox_boxplots <- function(chemicalSummary, 
                               category = "Biological",
@@ -66,7 +82,8 @@ plot_tox_boxplots <- function(chemicalSummary,
                               plot_ND = TRUE, 
                               font_size = NA,
                               title = NA,
-                              pallette = NA){
+                              pallette = NA,
+                              hit_threshold = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -79,7 +96,9 @@ plot_tox_boxplots <- function(chemicalSummary,
                                        mean_logic = mean_logic, 
                                        plot_ND = plot_ND,
                                        font_size = font_size,
-                                       title = title)
+                                       title = title,
+                                       pallette = pallette,
+                                       hit_threshold = hit_threshold)
     return(chemPlot)
     
   } else {
@@ -99,8 +118,11 @@ plot_tox_boxplots <- function(chemicalSummary,
       
       countNonZero <- chemicalSummary %>%
         group_by(category) %>%
-        summarise(nonZero = as.character(length(unique(CAS)))) %>%
+        summarise(nonZero = as.character(length(unique(CAS))),
+                  hits = as.character(sum(EAR > hit_threshold))) %>%
         data.frame() 
+      
+      countNonZero$hits[countNonZero$hits == "0"] <- ""
       
       label <- "# Chemicals"
       
@@ -132,7 +154,8 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
               axis.ticks = element_blank()) + 
-        scale_y_log10("EAR Per Sample",labels=fancyNumbers) 
+        scale_y_log10("EAR Per Sample",labels=fancyNumbers) +
+        geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
       
       if(!all(is.na(pallette))){
         bioPlot <- bioPlot +
@@ -152,8 +175,11 @@ plot_tox_boxplots <- function(chemicalSummary,
       
       countNonZero <- graphData %>%
         group_by(category) %>%
-        summarise(nonZero = as.character(length(unique(site[meanEAR>0])))) %>%
-        data.frame() 
+        summarise(nonZero = as.character(length(unique(site[meanEAR>0]))),
+                  hits = as.character(sum(meanEAR > hit_threshold))) %>%
+        data.frame()
+      
+      countNonZero$hits[countNonZero$hits == "0"] <- ""
       
       label <- "# Sites"
       
@@ -166,7 +192,8 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
               axis.ticks = element_blank()) +  
-        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) 
+        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) +
+        geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
       if(!all(is.na(pallette))){
         bioPlot <- bioPlot +
@@ -196,11 +223,29 @@ plot_tox_boxplots <- function(chemicalSummary,
       ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[2])
     }
     
+
     bioPlot_w_labels <- bioPlot + 
       geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
       geom_text(data=data.frame(x = Inf, y=xmin, label = label, stringsAsFactors = FALSE), 
                 aes(x = x,  y=y, label = label),
                 size=ifelse(is.na(font_size),3,0.30*font_size)) 
+    
+    nHitsEP <- countNonZero$hits
+    
+    if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {
+      bioPlot_w_labels <- bioPlot_w_labels +
+        geom_text(data=countNonZero, aes(x=category, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+        geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
+                  aes(x = x,  y=y, label = label),
+                  size=ifelse(is.na(font_size),3,0.30*font_size))
+    }
+    
+    if(!is.na(hit_threshold)) {
+      bioPlot_w_labels <- bioPlot_w_labels +
+        geom_text(data=data.frame(x = Inf, y=hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
+                  aes(x = x,  y=y, label = label),
+                  size=ifelse(is.na(font_size),3,0.30*font_size))
+    }
     
     if(!is.na(title)){
       bioPlot_w_labels <- bioPlot_w_labels +
