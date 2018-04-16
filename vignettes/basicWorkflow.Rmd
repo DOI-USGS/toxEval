@@ -370,7 +370,7 @@ rank_sites_DT(maumee, category = "Biological")
 
 The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create a table with several rows per site depending on which categories get hits. A "hit" is based on a user specified `hit_threshold`. For example, if "Biological" is the category, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
 
-For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples at that site had hits (based on `hit_threshold`) for the category. "nSamples" is number of samples.
+For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples at that site had hits (based on `hit_threshold`) for the category. "Number of Samples" is how many individual samples were collected at an individual site based on unique date.
 
 
 ```{r hits_summary_DT, warning=FALSE}
