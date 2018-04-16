@@ -116,7 +116,7 @@ test_that("Plotting stacked summaries", {
   chemStackPlot <- plot_tox_stacks(chemicalSummary, chem_site,
                                    category = "Chemical",include_legend = FALSE)
   expect_true(all(names(chemStackPlot$data) %in% c("site","category","meanEAR",
-                                                  "site_grouping","Short Name")))
+                                                  "site_grouping","Short Name","Class")))
   
 })
 
@@ -155,12 +155,9 @@ test_that("Table functions", {
   
   groupStuff <- hits_summary(chemicalSummary, "Biological", hit_threshold = 1)
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
-  expect_true(all(c("site","category","Hits per Sample",
-                    "Individual Hits","nSamples") %in% names(groupStuff)))
-  expect_equal(groupStuff[["Hits per Sample"]][which(groupStuff[["site"]] == "Raisin" &
+  expect_true(all(c("site","category","Samples with hits","nSamples") %in% names(groupStuff)))
+  expect_equal(groupStuff[["Samples with hits"]][which(groupStuff[["site"]] == "Raisin" &
                                                            groupStuff[["category"]] == "DNA Binding")],28)
-  expect_equal(groupStuff[["Individual Hits"]][which(groupStuff[["site"]] == "Raisin" &
-                                                       groupStuff[["category"]] == "DNA Binding")],19)
   expect_equal(groupStuff[["nSamples"]][which(groupStuff[["site"]] == "Raisin" &
                                                        groupStuff[["category"]] == "DNA Binding")],44)
   
@@ -271,19 +268,19 @@ test_that("hits_summary_DT", {
   bt <- hits_summary_DT(chemicalSummary, category = "Biological")
   expect_type(bt, "list")
   expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
-  expect_true(all(c("site","category","Hits per Sample","Individual Hits","nSamples") %in% names(bt$x$data)))
+  expect_true(all(c("site","category","Samples with hits","nSamples") %in% names(bt$x$data)))
   
   expect_error(hits_summary_DT(chemicalSummary, category = "Class"))
   
   ct <- hits_summary_DT(chemicalSummary, category = "Chemical Class")
   expect_type(ct, "list")
   
-  expect_true(all(names(ct$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))
+  expect_true(all(names(ct$x$data) %in% c("site","category","Samples with hits","nSamples")))
   
   cht <- hits_summary_DT(chemicalSummary, category = "Chemical")
   expect_type(cht, "list")
   
-  expect_true(all(names(cht$x$data) %in% c("site","category","Hits per Sample","Individual Hits","nSamples")))
+  expect_true(all(names(cht$x$data) %in% c("site","category","Samples with hits","nSamples")))
 })
 
 test_that("rank_sites_DT", {
