@@ -368,9 +368,9 @@ rank_sites_DT(maumee, category = "Biological")
 
 ## hits_summary_DT {#hits_summary_DT}
 
-The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create a table with one several rows per site depending on which categories get hits based on a user specified `hit_threshold`. So for example, if "Biological" is chosen, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
+The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create a table with several rows per site depending on which categories get hits. A "hit" is based on a user specified `hit_threshold`. For example, if "Biological" is the category, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
 
-For each row, there are 5 colums. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" 
+For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples at that site had hits (based on `hit_threshold`) for the category. "nSamples" is number of samples.
 
 
 ```{r hits_summary_DT, warning=FALSE}
@@ -383,7 +383,7 @@ hits_summary_DT(chemicalSummary, category = "Biological")
 # hits_summary_DT(chemicalSummary, category = "Chemical")
 ```
 
-The tables show slightly different results for a single site:
+The tables show slightly different results for a single site. Instead of one row per site/category, there is one row per category.
 
 ```{r hits_summary_DT_site, warning=FALSE}
 hits_summary_DT(maumee, category = "Biological")
@@ -392,9 +392,13 @@ hits_summary_DT(maumee, category = "Biological")
 
 ## endpoint_hits_DT {#endpoint_hits_DT}
 
+The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create a table with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are number of sites with hits in that endpoint/category combination, based on a user-specified threshold (defined by `hit_threshold`)
+.
 ```{r endpoint_hits_DT, warning=FALSE}
 
-ep_hits <- endpoint_hits(chemicalSummary, category = "Biological")
+ep_hits <- endpoint_hits(chemicalSummary, 
+                         category = "Biological", 
+                         hit_threshold = 0.1)
 
 endpoint_hits_DT(chemicalSummary, category = "Biological")
 # More options:
@@ -402,7 +406,7 @@ endpoint_hits_DT(chemicalSummary, category = "Biological")
 # endpoint_hits_DT(chemicalSummary, category = "Chemical")
 ```
 
-The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples.
+The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples with hits.
 
 ```{r endpoint_hits_DT_site, warning=FALSE}
 endpoint_hits_DT(maumee, category = "Biological")

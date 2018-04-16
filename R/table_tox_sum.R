@@ -1,6 +1,17 @@
-#' hits_summary_DT
+#' Summary of hits per site/category
 #' 
-#' Table of sums
+#' These functions create a table with several rows per site depending on which 
+#' categories get hits. A "hit" is based on a user specified hit_threshold. For example, 
+#' if "Biological" is the category, and a site has hits above a threshold for 
+#' "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
+#'
+#' For each row, there are 4 columns. Site and category (as defined by the category argument) 
+#' define the row. "Hits per Sample" are how many samples at that site had hits (based on 
+#' hit_threshold) for the category. "Number of Samples" is number of samples.
+#' 
+#' The tables show slightly different results for a single site. Instead of one row per 
+#' site/category, there is one row per category.
+#' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
@@ -58,12 +69,6 @@ hits_summary_DT <- function(chemicalSummary,
                                             dom = 'Bfrtip',
                                             buttons = list('colvis')))
   
-  # tableGroup <- formatStyle(tableGroup, names(hits_summaryOrdered)[maxChem],
-  #                           background = styleColorBar(range(hits_summaryOrdered[,maxChem],na.rm=TRUE), 'goldenrod'),
-  #                           backgroundSize = '100% 90%',
-  #                           backgroundRepeat = 'no-repeat',
-  #                           backgroundPosition = 'center' )
-  
   tableGroup <- formatStyle(tableGroup, names(hits_summaryOrdered)[meanChem],
                             background = styleColorBar(range(hits_summaryOrdered[,meanChem],na.rm=TRUE), 'wheat'),
                             backgroundSize = '100% 90%',
@@ -108,6 +113,12 @@ hits_summary <- function(chemicalSummary, category,
     summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
               nSamples = n()) %>%
     arrange(desc(`Samples with hits`))
+  
+  if(length(siteToFind) == 1){
+    hits_summary <- hits_summary[,c("category","Samples with hits","nSamples")]
+  }
+  
+  hits_summary <- rename(hits_summary, `Number of Samples`=nSamples)
   
   return(hits_summary)
 }
