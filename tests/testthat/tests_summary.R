@@ -61,15 +61,15 @@ test_that("Plotting summaries", {
                                category = "Biological")
 
   expect_true(all(names(bioPlot$data) %in% c("site","category","meanEAR")))
-  expect_equal(bioPlot$layers[[1]]$geom_params$outlier.shape, 19)
-  expect_equal(bioPlot$layers[[1]]$aes_params$fill, "steelblue")
+  expect_equal(bioPlot$layers[[2]]$geom_params$outlier.shape, 19)
+  expect_equal(bioPlot$layers[[2]]$aes_params$fill, "steelblue")
   
   classPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = "Chemical Class")
 
   expect_true(all(names(classPlot$data) %in% c("site","category","meanEAR")))
-  expect_equal(classPlot$layers[[1]]$geom_params$outlier.shape, 19)
-  expect_equal(classPlot$layers[[1]]$aes_params$fill, "steelblue")
+  expect_equal(classPlot$layers[[2]]$geom_params$outlier.shape, 19)
+  expect_equal(classPlot$layers[[2]]$aes_params$fill, "steelblue")
   
   chemPlot <- suppressWarnings(plot_tox_boxplots(chemicalSummary, 
                                  category = "Chemical"))
