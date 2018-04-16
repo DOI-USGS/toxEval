@@ -53,9 +53,13 @@ table_endpoint_hits <- function(chemicalSummary,
     for(k in 1:nrow(fullData)){
       for(z in 2:ncol(fullData)){
         if(!is.na(fullData[k,z])){
-          hits[k,z] <- createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]],
-                                  endpoint = fullData[k,1],
-                                  hits = fullData[k,z])
+          if(fullData[k,z] < 10){
+            hit_char <- paste0("0",fullData[k,z])
+          } else{
+            hit_char <- as.character(fullData[k,z])
+          }
+          hits[k,z] <- paste(hit_char,createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]],
+                                  endpoint = fullData[k,1]))
         }
       }
     }
@@ -69,7 +73,7 @@ table_endpoint_hits <- function(chemicalSummary,
                               options = list(dom = 'Bfrtip',
                                              buttons = list('colvis'),
                                              scrollX = TRUE,
-                                             order=list(list(2,'desc'))))
+                                             order=list(list(1,'desc'))))
   return(fullData)
 }
 
@@ -143,6 +147,6 @@ endpoint_hits <- function(chemicalSummary,
 #' @param hits character
 #' @export
 #' @keywords internal
-createLink <- function(cas, endpoint, hits) {
-  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",endpoint,'" target="_blank" >',hits,'</a>')
+createLink <- function(cas, endpoint) {
+  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",endpoint,'" target="_blank">&#9432;</a>')
 }
