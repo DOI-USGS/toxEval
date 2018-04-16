@@ -67,6 +67,19 @@ grid::grid.draw(gt)
 # plot_tox_boxplots(chemicalSummary, "Chemical Class")
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
 
+## ----plot_box_thres, warning=FALSE, message=FALSE------------------------
+bio_box_thresh <- plot_tox_boxplots(chemicalSummary, 
+                             category = "Biological",
+                             hit_threshold = 0.001)
+
+# The graph can be plotted without these additional lines,
+# but they allow the labels to look nicer:
+gb <- ggplot2::ggplot_build(bio_box_thresh)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
+
 ## ----filtersiteBox, message=FALSE, warning=FALSE-------------------------
 library(dplyr)
 

@@ -171,6 +171,22 @@ grid::grid.draw(gt)
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
 ```
 
+It is also possible to show a threshold line using the `hit_threshold` argument. The graph will then include the number of sites with detections, the threshold line, and the number of sites with "hits" as defined by measured concentration higher than the `hit_threshold`.
+
+```{r plot_box_thres, warning=FALSE, message=FALSE}
+bio_box_thresh <- plot_tox_boxplots(chemicalSummary, 
+                             category = "Biological",
+                             hit_threshold = 0.001)
+
+# The graph can be plotted without these additional lines,
+# but they allow the labels to look nicer:
+gb <- ggplot2::ggplot_build(bio_box_thresh)
+gt <- ggplot2::ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid::grid.draw(gt)
+
+```
+
 The graph shows a slightly different result for a single site. First, let's set up a subset of data that we will use throughout this document to show a single site. We'll use the Maumee River data.
 
 ```{r filtersiteBox, message=FALSE, warning=FALSE}
@@ -198,7 +214,6 @@ grid::grid.draw(gt)
 ## plot_tox_stacks {#plot_tox_stacks}
 
 The `plot_tox_stacks` function creates a set of stacked bar charts based on the original input data modified by the processing steps above, and the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation. There is an option `include_legend` to turn on and off the legend. It may be impractical for instance to show the legend for "Chemical" if there are hundreds of chemicals.
-
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
 stack_plot <- plot_tox_stacks(chemicalSummary, 
