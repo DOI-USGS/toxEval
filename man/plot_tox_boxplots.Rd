@@ -15,7 +15,7 @@ graph_chem_data(chemicalSummary, manual_remove = NULL, mean_logic = FALSE)
 
 plot_tox_boxplots(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, plot_ND = TRUE,
-  font_size = NA, title = NA, pallette = NA)
+  font_size = NA, title = NA, pallette = NA, hit_threshold = NA)
 
 tox_boxplot_data(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE)
@@ -37,6 +37,8 @@ tox_boxplot_data(chemicalSummary, category = "Biological",
 
 \item{pallette}{vector of color pallette for fill. Can be a named vector
 to specify specific color for specific categories.}
+
+\item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
 This function creates a set of boxplots based on the original input data 

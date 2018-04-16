@@ -6,7 +6,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                    mean_logic = FALSE,
                                    plot_ND = TRUE,
                                    font_size = NA,
-                                   title = NA){
+                                   title = NA,
+                                   hit_threshold = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
@@ -41,7 +42,10 @@ plot_chemical_boxplots <- function(chemicalSummary,
     countNonZero <- chemicalSummary %>%
       select(chnm, Class, EAR) %>%
       group_by(chnm, Class) %>%
-      summarize(nonZero = as.character(sum(EAR>0)))
+      summarize(nonZero = as.character(sum(EAR>0)),
+                hits = as.character(sum(EAR > hit_threshold)))
+    
+    countNonZero$hits[countNonZero$hits == "0"] <- ""
     
     label <- "# Endpoints"
     
@@ -57,7 +61,10 @@ plot_chemical_boxplots <- function(chemicalSummary,
     countNonZero <- graphData %>%
       select(chnm, Class, maxEAR) %>%
       group_by(chnm, Class) %>%
-      summarize(nonZero = as.character(sum(maxEAR>0)))
+      summarize(nonZero = as.character(sum(maxEAR>0)),
+                hits = as.character(sum(maxEAR > hit_threshold)))
+    
+    countNonZero$hits[countNonZero$hits == "0"] <- ""
     
     label <- "# Sites"
     toxPlot_All <- ggplot(data=graphData) +
@@ -70,6 +77,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
     theme_bw() +
     scale_x_discrete(drop = TRUE) +
     coord_flip() +
+    geom_hline(yintercept = hit_threshold, linetype="dashed", color="black") +
     theme(axis.text = element_text( color = "black"),
           axis.title=element_blank(),
           panel.background = element_blank(),
@@ -96,8 +104,10 @@ plot_chemical_boxplots <- function(chemicalSummary,
   
   if(packageVersion("ggplot2") >= "2.2.1.9000"){
     ymin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
+    ymax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
   } else {
     ymin <- 10^(layout_stuff$panel_ranges[[1]]$x.range[1])
+    ymax <- 10^(layout_stuff$panel_ranges[[1]]$x.range[2])
   }
   
   toxPlot_All_withLabels <- toxPlot_All +
@@ -105,6 +115,16 @@ plot_chemical_boxplots <- function(chemicalSummary,
     geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
             aes(x=x,  y=y, label = label),
             size=ifelse(is.na(font_size),3,0.30*font_size)) 
+  
+  nHitsEP <- countNonZero$hits
+  
+  if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {
+    toxPlot_All_withLabels <- toxPlot_All_withLabels +
+      geom_text(data=countNonZero, aes(x=chnm, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+      geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
+                aes(x = x,  y=y, label = label),
+                size=ifelse(is.na(font_size),3,0.30*font_size))
+  }
   
   if(!is.na(title)){
     toxPlot_All_withLabels <- toxPlot_All_withLabels +
@@ -114,6 +134,13 @@ plot_chemical_boxplots <- function(chemicalSummary,
       toxPlot_All_withLabels <- toxPlot_All_withLabels +
         theme(plot.title = element_text(size=font_size))
     }
+  }
+  
+  if(!is.na(hit_threshold)) {
+    toxPlot_All_withLabels <- toxPlot_All_withLabels +
+      geom_text(data=data.frame(x = Inf, y=hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
+                aes(x = x,  y=y, label = label),
+                size=ifelse(is.na(font_size),3,0.30*font_size))
   }
   
   return(toxPlot_All_withLabels)
