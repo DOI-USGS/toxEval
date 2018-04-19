@@ -115,13 +115,13 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)")
   
   } else {
     setupCode <- paste0(setupCode,"
-chemicalSummary <- get_chemical_summary(rawData)" )  
+chemicalSummary <- get_chemical_summary(tox_list)" )  
   }
     
   if(sites != "All"){
     setupCode <- paste0(setupCode,"
-                        site <- '",sites,"'
-                        chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
+site <- '",sites,"'
+chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
   }
     setupCode <- paste0(setupCode,"
 ######################################")

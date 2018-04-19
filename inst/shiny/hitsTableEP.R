@@ -11,9 +11,10 @@ output$hitsTableEPs <- DT::renderDataTable({
   hitThres <- hitThresValue()
   
   tableEPs <- endpoint_hits_DT(chemicalSummary, 
-                                  category = c("Biological","Chemical","Chemical Class")[catType],
-                                  mean_logic = mean_logic,
-                                  hit_threshold = hitThres)
+                               category = c("Biological","Chemical","Chemical Class")[catType],
+                               mean_logic = mean_logic,
+                               hit_threshold = hitThres,
+                               include_links = toxCast())
   updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
   tableEPs
 })
