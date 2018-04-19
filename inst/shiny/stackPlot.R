@@ -50,7 +50,7 @@ stackTitle <- reactive({
   title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
                  "grouped by", pretty_cat)
   site <- input$sites
-  browser()
+
   siteTable <- rawData()[["chem_site"]]
   if(site != "All"){
     title <- paste("Individual samples grouped by",pretty_cat,"
