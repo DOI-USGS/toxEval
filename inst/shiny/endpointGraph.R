@@ -89,6 +89,7 @@ epTitle <- reactive({
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- as.logical(input$meanEAR)
   site <- input$sites
+  siteTable <- rawData()[["chem_site"]]
   category <- c("Biological","Chemical","Chemical Class")[catType]
   filterBy <- epDF[['epGroup']]
   title <- paste(filterBy, ifelse(mean_logic,"Mean","Maximum"),"EAR",
@@ -96,7 +97,7 @@ epTitle <- reactive({
   
   if(site != "All"){
     title <- paste(title,"
-                   ",rawData()[["chem_site"]][["Fullname"]])
+                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })

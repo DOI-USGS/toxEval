@@ -12,6 +12,8 @@
 #' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
+#' @param include_links logical, whether or not to include a link to the ToxCast dashboard. Only
+#' needed for the "Chemical" category.
 #' @export
 #' @import DT
 #' @rdname endpoint_hits_DT
@@ -42,7 +44,8 @@
 endpoint_hits_DT <- function(chemicalSummary, 
                            category = "Biological",
                            mean_logic = FALSE,
-                           hit_threshold = 0.1){
+                           hit_threshold = 0.1,
+                           include_links = TRUE){
   
   chnm <- CAS <- ".dplyr"
   
@@ -60,20 +63,21 @@ endpoint_hits_DT <- function(chemicalSummary,
     numeric_hits <- fullData
     hits <- sapply(fullData, function(x) as.character(x))
 
-    for(k in 1:nrow(fullData)){
-      for(z in 2:ncol(fullData)){
-        if(!is.na(fullData[k,z])){
-          if(fullData[k,z] < 10){
-            hit_char <- paste0("0",fullData[k,z])
-          } else{
-            hit_char <- as.character(fullData[k,z])
+    if(include_links){
+      for(k in 1:nrow(fullData)){
+        for(z in 2:ncol(fullData)){
+          if(!is.na(fullData[k,z])){
+            if(fullData[k,z] < 10){
+              hit_char <- paste0("0",fullData[k,z])
+            } else{
+              hit_char <- as.character(fullData[k,z])
+            }
+            hits[k,z] <- paste(hit_char,createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]],
+                                    endpoint = fullData[k,1]))
           }
-          hits[k,z] <- paste(hit_char,createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]],
-                                  endpoint = fullData[k,1]))
         }
       }
     }
-
     fullData <- data.frame(hits, stringsAsFactors = FALSE)
     names(fullData) <- orig_names
   }

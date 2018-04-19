@@ -7,7 +7,6 @@ boxPlots_create <- reactive({
   category <- c("Biological","Chemical","Chemical Class")[catType]
   mean_logic <- as.logical(input$meanEAR)
 
-  
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
                                mean_logic = mean_logic,
@@ -106,6 +105,8 @@ boxTitle <- reactive({
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
   site <- input$sites
+  siteTable <- rawData()[["chem_site"]]
+  
   pretty_cat <- tolower(category)
   if(pretty_cat == "biological"){
     pretty_cat <- "biological activity grouping"
@@ -116,7 +117,7 @@ boxTitle <- reactive({
                  "per site, grouped by", pretty_cat)
   if(site != "All"){
     title <- paste(title,"
-                   ",rawData()[["chem_site"]][["Fullname"]])
+                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })

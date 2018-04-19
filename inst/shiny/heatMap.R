@@ -6,7 +6,7 @@ heatMap_create <- reactive({
   rawData <- rawData()
   chem_site <- rawData$chem_site
   mean_logic <- as.logical(input$meanEAR)
-  
+
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
@@ -36,6 +36,8 @@ heatTitle <- reactive({
   mean_logic <- as.logical(input$meanEAR)
   site <- input$sites
   
+  siteTable <- rawData()[["chem_site"]]
+  
   category <-  c("Biological","Chemical","Chemical Class")[catType]
   
   pretty_cat <- tolower(category)
@@ -46,7 +48,7 @@ heatTitle <- reactive({
                  "grouped by", pretty_cat)
   if(site != "All"){
     title <- paste(title,"
-                   ",rawData()[["chem_site"]][["Fullname"]])
+                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })

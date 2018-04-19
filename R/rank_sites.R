@@ -56,8 +56,12 @@ rank_sites_DT <- function(chemicalSummary,
                                    mean_logic = mean_logic)
 
   colToSort <- 1
-
-  maxEARS <- grep("maxEAR",names(statsOfColumn))
+  if(mean_logic){
+    maxEARS <- grep("meanEAR",names(statsOfColumn))
+  } else {
+    maxEARS <- grep("maxEAR",names(statsOfColumn))
+  }
+  
   freqCol <- grep("freq",names(statsOfColumn))
   n <- length(maxEARS)
   ignoreIndex <- which(names(statsOfColumn) %in% c("site","category"))
