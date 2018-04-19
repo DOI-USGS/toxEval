@@ -6,7 +6,7 @@
 \title{Rank endpoints by category}
 \usage{
 endpoint_hits_DT(chemicalSummary, category = "Biological",
-  mean_logic = FALSE, hit_threshold = 0.1)
+  mean_logic = FALSE, hit_threshold = 0.1, include_links = TRUE)
 
 endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
   hit_threshold = 0.1)
@@ -19,6 +19,9 @@ endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
 \item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
+
+\item{include_links}{logical, whether or not to include a link to the ToxCast dashboard. Only
+needed for the "Chemical" category.}
 }
 \description{
 These functions create a table with one row per endPoint, and one 
