@@ -113,8 +113,8 @@ boxTitle <- reactive({
   }
   
   mean_logic <- as.logical(input$meanEAR)
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "per site, grouped by", pretty_cat)
+  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"(",expression(Sigma["sample"]),"EAR",
+                 ") per site, grouped by", pretty_cat)
   if(site != "All"){
     title <- paste(title,"
                    ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])

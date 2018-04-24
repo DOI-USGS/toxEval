@@ -9,7 +9,11 @@
 #' number of sites with hits above a threshold, it is now the number of samples with hits.
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @param include_links logical, whether or not to include a link to the ToxCast dashboard. Only
@@ -48,6 +52,8 @@ endpoint_hits_DT <- function(chemicalSummary,
                            include_links = TRUE){
   
   chnm <- CAS <- ".dplyr"
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
   fullData <- endpoint_hits(chemicalSummary = chemicalSummary,
                            category = category,
@@ -131,6 +137,15 @@ endpoint_hits <- function(chemicalSummary,
   endPoint <- meanEAR <- nSites <- CAS <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
+  if(mean_logic %in% c("TRUE","mean")){
+    mean_logic <- TRUE
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    mean_logic <- FALSE
+  }
   
   fullData_init <- data.frame(endPoint="",stringsAsFactors = FALSE)
   fullData <- fullData_init
@@ -145,24 +160,39 @@ endpoint_hits <- function(chemicalSummary,
   
   if(length(unique(chemicalSummary$site)) > 1){
     
-    fullData <- chemicalSummary %>%
-      group_by(site, category, endPoint, date) %>%
-      summarize(sumEAR = sum(EAR)) %>%
-      group_by(site, category, endPoint) %>%
-      summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-      group_by(category, endPoint) %>%
-      summarize(nSites = sum(meanEAR > hit_threshold)) %>%
-      spread(category, nSites)
+    if(mean_logic == "noSum"){
+      fullData <- chemicalSummary %>%
+        group_by(site, category, endPoint, date) %>%
+        summarize(meanEAR = max(EAR)) %>%
+        group_by(category, endPoint) %>%
+        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        spread(category, nSites)       
+    } else {
+      fullData <- chemicalSummary %>%
+        group_by(site, category, endPoint, date) %>%
+        summarize(sumEAR = sum(EAR)) %>%
+        group_by(site, category, endPoint) %>%
+        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
+        group_by(category, endPoint) %>%
+        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        spread(category, nSites)      
+    }
+
     
   } else {
-    
-    fullData <- chemicalSummary %>%
-      group_by(category, endPoint, date) %>%
-      summarize(sumEAR = sum(EAR)) %>%
-      group_by(category, endPoint) %>%
-      summarise(nSites = sum(sumEAR > hit_threshold)) %>%
-      spread(category, nSites)
-    
+    if(mean_logic == "noSum"){
+      fullData <- chemicalSummary %>%
+        group_by(category, endPoint) %>%
+        summarise(nSites = sum(EAR > hit_threshold)) %>%
+        spread(category, nSites)        
+    } else {
+      fullData <- chemicalSummary %>%
+        group_by(category, endPoint, date) %>%
+        summarize(sumEAR = sum(EAR)) %>%
+        group_by(category, endPoint) %>%
+        summarise(nSites = sum(sumEAR > hit_threshold)) %>%
+        spread(category, nSites)      
+    }
   }
 
   fullData <- fullData[(rowSums(fullData[,-1],na.rm = TRUE) != 0),]

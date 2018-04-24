@@ -14,7 +14,11 @@
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param filterBy character either "All" or one of the filtered categories.
 #' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot. 
@@ -65,6 +69,19 @@ plot_tox_endpoints <- function(chemicalSummary,
                               pallette = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
+  y_label <- "Maximum EAR Per Site"
+
+  if(mean_logic %in% c("TRUE","mean")){
+    mean_logic <- TRUE
+    y_label <- "Mean sum of EAR per sample per site"
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    mean_logic <- FALSE
+    y_label <-"Max sum of EAR per sample per site"
+  }
   
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
   
@@ -133,14 +150,23 @@ plot_tox_endpoints <- function(chemicalSummary,
     }
     
   } else {
-    graphData <- chemicalSummary %>%
-      group_by(site,date,category,endPoint) %>%
-      summarise(sumEAR=sum(EAR)) %>%
-      data.frame() %>%
-      group_by(site, category,endPoint) %>%
-      summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
-      data.frame() %>%
-      mutate(category=as.character(category))
+    
+    if(mean_logic == "noSum"){
+      graphData <- chemicalSummary %>%
+        group_by(site, category,endPoint) %>%
+        summarise(meanEAR=max(EAR)) %>%
+        data.frame() %>%
+        mutate(category=as.character(category))      
+    } else {
+      graphData <- chemicalSummary %>%
+        group_by(site,date,category,endPoint) %>%
+        summarise(sumEAR=sum(EAR)) %>%
+        data.frame() %>%
+        group_by(site, category,endPoint) %>%
+        summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
+        data.frame() %>%
+        mutate(category=as.character(category))      
+    }
   
     countNonZero <- graphData %>%
       group_by(endPoint) %>%
@@ -168,7 +194,7 @@ plot_tox_endpoints <- function(chemicalSummary,
     graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
     
     stackedPlot <- ggplot(graphData)+
-      scale_y_log10(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site"),labels=fancyNumbers) +
+      scale_y_log10(y_label,labels=fancyNumbers) +
       theme_minimal() +
       xlab("") +
       theme(axis.text.y = element_text(vjust = .25,hjust=1)) 

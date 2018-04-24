@@ -13,6 +13,14 @@ plot_chemical_boxplots <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
     
+  y_label <- "Maximum EAR per Site"
+  if(mean_logic %in% c("TRUE","mean")){
+    y_label <- "Mean sum of EAR per sample per site"
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    y_label <- "Max sum of EAR per sample per site"
+  }
+  
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
@@ -93,13 +101,13 @@ plot_chemical_boxplots <- function(chemicalSummary,
   }
   
   toxPlot_All <- toxPlot_All +
-    scale_y_log10(labels=fancyNumbers)  +
+    scale_y_log10(y_label, labels=fancyNumbers)  +
     theme_bw() +
     scale_x_discrete(drop = TRUE) +
     coord_flip() +
     geom_hline(yintercept = hit_threshold, linetype="dashed", color="black") +
     theme(axis.text = element_text( color = "black"),
-          axis.title=element_blank(),
+          axis.title.y = element_blank(),
           panel.background = element_blank(),
           plot.background = element_rect(fill = "transparent",colour = NA),
           strip.background = element_rect(fill = "transparent",colour = NA),
@@ -180,13 +188,30 @@ graph_chem_data <- function(chemicalSummary,
   
   site <- chnm <- Class <- EAR <- sumEAR <- maxEAR <- ".dplyr"
 
-  graphData <- chemicalSummary %>%
-    group_by(site,date,chnm, Class) %>%
-    summarise(sumEAR=sum(EAR)) %>%
-    data.frame() %>%
-    group_by(site, chnm, Class) %>%
-    summarise(maxEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
-    data.frame() 
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
+  if(mean_logic %in% c("TRUE","mean")){
+    mean_logic <- TRUE
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    mean_logic <- FALSE
+  }
+  
+  if(mean_logic == "noSum"){
+    graphData <- chemicalSummary %>%
+      group_by(site, chnm, Class) %>%
+      summarise(maxEAR=max(EAR)) %>%
+      data.frame()     
+  } else {
+    graphData <- chemicalSummary %>%
+      group_by(site,date,chnm, Class) %>%
+      summarise(sumEAR=sum(EAR)) %>%
+      data.frame() %>%
+      group_by(site, chnm, Class) %>%
+      summarise(maxEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
+      data.frame() 
+  }
   
   if(!is.null(manual_remove)){
     graphData <- filter(graphData, !(chnm %in% manual_remove))

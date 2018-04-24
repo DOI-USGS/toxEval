@@ -20,7 +20,11 @@
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @param font_size numeric to adjust the axis font size
@@ -86,10 +90,21 @@ plot_tox_boxplots <- function(chemicalSummary,
                               hit_threshold = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
-
+  
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   x <- y <- CAS <- ".dplyr"
 
+  y_label <- "Maximum EAR per Site"
+  if(mean_logic %in% c("TRUE","mean")){
+    y_label <- "Mean sum of EAR per sample per site"
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    y_label <- "Max sum of EAR per sample per site"
+  }
+  
   if(category == "Chemical"){
 
     chemPlot <- plot_chemical_boxplots(chemicalSummary, 
@@ -192,7 +207,7 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
               axis.ticks = element_blank()) +  
-        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) +
+        scale_y_log10(y_label,labels=fancyNumbers) +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
       if(!all(is.na(pallette))){
@@ -271,8 +286,18 @@ tox_boxplot_data <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class"))
   
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-
+  
+  if(mean_logic %in% c("TRUE","mean")){
+    mean_logic <- TRUE
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    mean_logic <- FALSE
+  }
+  
   
   if(category == "Biological"){
     chemicalSummary$category <- chemicalSummary$Bio_category
@@ -280,13 +305,22 @@ tox_boxplot_data <- function(chemicalSummary,
     chemicalSummary$category <- chemicalSummary$Class
   }
   
-  tox_boxplot_data <- chemicalSummary %>%
-    group_by(site,date,category) %>%
-    summarise(sumEAR=sum(EAR)) %>%
-    data.frame() %>%
-    group_by(site, category) %>%
-    summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
-    data.frame() 
+  if(mean_logic == "noSum"){
+    tox_boxplot_data <- chemicalSummary %>%
+      group_by(site,date,category) %>%
+      group_by(site, category) %>%
+      summarise(meanEAR=max(EAR)) %>%
+      data.frame()     
+  } else {
+    tox_boxplot_data <- chemicalSummary %>%
+      group_by(site,date,category) %>%
+      summarise(sumEAR=sum(EAR)) %>%
+      data.frame() %>%
+      group_by(site, category) %>%
+      summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+      data.frame()     
+  }
+
   
   if(!is.null(manual_remove)){
     tox_boxplot_data <- filter(tox_boxplot_data, !(category %in% manual_remove))
