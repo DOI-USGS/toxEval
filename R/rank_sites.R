@@ -50,7 +50,7 @@ rank_sites_DT <- function(chemicalSummary,
                           mean_logic = FALSE,
                           hit_threshold = 0.1){
   
-  Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
+  Bio_category <- Class <- EAR <- maxEAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   mean_logic <- as.character(mean_logic)
@@ -136,7 +136,7 @@ rank_sites <- function(chemicalSummary,
                            mean_logic = FALSE){
   
   sumEAR <- nHits <- n <- calc <- value <- choice_calc <- ".dplyr"
-  chnm <- Class <- Bio_category <- site <- EAR <- ".dplyr"
+  chnm <- Class <- Bio_category <- site <- EAR <- maxEAR <- ".dplyr"
   mean_logic <- as.character(mean_logic)
   match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
