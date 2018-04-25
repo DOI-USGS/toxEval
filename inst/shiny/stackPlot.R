@@ -56,12 +56,12 @@ stackTitle <- reactive({
                          "Biological" = "for chemicals within a specified biological activity grouping",
                          "Chemical Class" = "for chemicals within a specified class"
     )
-    if(mean_logic == "mean"){
+    if(mean_logic == "noSum"){
       title <- paste("Maximum EARs",pretty_cat)
     } else if (mean_logic == "max"){
       title <- paste("Summing EARs",pretty_cat, "
 for a given sample, taking the maxiumum of each site")
-    } else if (mean_logic == "noSum"){
+    } else if (mean_logic == "mean"){
       title <- paste("Summing EARs",pretty_cat, "
 for a given sample, taking the mean of each site")
     }
@@ -71,7 +71,11 @@ for a given sample, taking the mean of each site")
                          "Biological" = "Biological Activity Grouping",
                          "Chemical Class" = "Chemical Class"
     )
-    title <- paste0("EAR per ",category)
+    word <- switch(mean_logic,
+                   "mean"="Mean",
+                   "max"="Maximum",
+                   "noSum" = "Max")
+    title <- paste(word,"EAR per",category)
     
     title <- paste(title,"
 ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])

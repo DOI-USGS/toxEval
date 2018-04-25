@@ -92,7 +92,33 @@ epTitle <- reactive({
   category <- c("Biological","Chemical","Chemical Class")[catType]
   filterBy <- epDF[['epGroup']]
  
-  title <- "something"
+  if(site == "All"){
+    pretty_cat <- switch(category, 
+                         "Chemical" = "for all chemicals",
+                         "Biological" = "for chemicals within a specified biological activity grouping",
+                         "Chemical Class" = "for chemicals within a specified class"
+    )
+    if(mean_logic == "noSum"){
+      title <- paste("EARs",pretty_cat)
+    } else if (mean_logic == "max"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maxiumum of each site")
+    } else if (mean_logic == "mean"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the mean of each site")
+    }
+  } else {
+      pretty_cat <- switch(category, 
+                           "Chemical" = "Chemical",
+                           "Biological" = "Biological Activity Grouping",
+                           "Chemical Class" = "Chemical Class"
+      )
+      title <- paste0("EAR per ",category)
+      
+      title <- paste(title,"
+                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+  }
+
   return(title)
 })
 
