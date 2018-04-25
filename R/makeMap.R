@@ -90,6 +90,13 @@ make_tox_map <- function(chemicalSummary,
                      stroke=FALSE,
                      opacity = 0.8)
   
+  title_words <- switch(mean_logic,
+                        "mean"="Mean",
+                        "TRUE"="Mean",
+                        "FALSE"="Max",
+                        "max" = "Max",
+                        "noSum" = "Max")
+  
   if(length(siteToFind) > 1){
     map <- leaflet::addLegend(map,pal = pal,
                      position = 'bottomleft',
@@ -97,7 +104,7 @@ make_tox_map <- function(chemicalSummary,
                      opacity = 0.8,
                      labFormat = leaflet::labelFormat(digits = 2), #transform = function(x) as.integer(x)),
                      title = paste("Sum of",category,"EAR<br>",
-                                   ifelse(mean_logic,'Mean','Max'),"at site"))
+                                   title_words,"at site"))
   }
   
   return(map)

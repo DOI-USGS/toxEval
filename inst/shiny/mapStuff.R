@@ -75,9 +75,12 @@ observe({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  meanEARlogic <- as.logical(input$meanEAR)
+  meanEARlogic <- input$meanEAR
   
-  maxEARWords <- ifelse(meanEARlogic,"Mean","Max")
+  maxEARWords <- switch(meanEARlogic,
+                        "mean"="Mean",
+                        "max" = "Max",
+                        "noSum" = "Max")
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   mapDataList <- mapDataINFO()
@@ -114,9 +117,6 @@ observe({
                   lng2 = max(mapData$dec_lon, na.rm = TRUE), 
                   lat2 = max(mapData$dec_lat, na.rm = TRUE)) 
     }
-
-    
-  
   
   if(length(siteToFind) > 1){
     map <- addLegend(map,pal = pal,
