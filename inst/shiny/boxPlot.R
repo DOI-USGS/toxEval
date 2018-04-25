@@ -107,23 +107,25 @@ boxTitle <- reactive({
   site <- input$sites
   siteTable <- rawData()[["chem_site"]]
   
-  pretty_cat <- tolower(category)
-  if(pretty_cat == "biological"){
-    pretty_cat <- "biological activity grouping"
-  }
+  pretty_cat <- switch(category, 
+                       "Chemical" = "for all chemicals",
+                       "Biological" = "for chemicals within a specified biological activity grouping",
+                       "Chemical Class" = "for chemicals within a specified class"
+  )
   
   mean_logic <- input$meanEAR
   if(mean_logic == "mean"){
-    title <- bquote("Mean" ~ Sigma ~ "EAR")
+    title <- paste("Maximum EARs",pretty_cat)
   } else if (mean_logic == "max"){
-    title <- bquote("Max" ~ Sigma ~ "EAR")
+    title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maxiumum of each site")
   } else if (mean_logic == "noSum"){
-    title <- bquote("Max" ~ "EAR")
+    title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the mean of each site")
   }
-
   if(site != "All"){
     title <- paste(title,"
-                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+                   ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })
@@ -135,7 +137,7 @@ boxCode <- reactive({
   plot_ND = input$plot_ND
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
-
+  x <- as.character(boxTitle())
   bioPlotCode <- paste0(rCodeSetup(),"
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
                   category = '",category,"',

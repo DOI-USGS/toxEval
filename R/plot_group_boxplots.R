@@ -97,12 +97,19 @@ plot_tox_boxplots <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   x <- y <- CAS <- ".dplyr"
 
-  y_label <- "Maximum EAR per Site"
+  pretty_cat <- switch(category, 
+                       "Chemical" = "k = all chemicals for a given sample",
+                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
+                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
+                       )
+
+  
+  y_label <- bquote(atop("max" ~ group("[", EAR[chemicals*"[" *k* "]"], "]")[site],  .(pretty_cat)))
   if(mean_logic %in% c("TRUE","mean")){
-    y_label <- "Mean sum of EAR per sample per site"
+    y_label <- bquote(atop("mean" ~ group("[", sum(group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site], .(pretty_cat)))
   }
   if(mean_logic %in% c("FALSE","max")){
-    y_label <- "Max sum of EAR per sample per site"
+    y_label <- bquote(atop("max" ~ group("[", sum(group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site],  .(pretty_cat)))
   }
   
   if(category == "Chemical"){
@@ -168,7 +175,8 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.y = element_text(color = "black", vjust = 0.2), 
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
-              axis.ticks = element_blank()) + 
+              axis.ticks = element_blank(),
+              plot.title = element_text(hjust = 0.5)) + 
         scale_y_log10("EAR Per Sample",labels=fancyNumbers) +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
       
@@ -204,9 +212,10 @@ plot_tox_boxplots <- function(chemicalSummary,
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
               axis.text.y = element_text(color = "black", vjust = 0.2), 
-              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
+              axis.text.x = element_text(color = "black", vjust = 0),
               panel.border = element_blank(),
-              axis.ticks = element_blank()) +  
+              axis.ticks = element_blank(),
+              plot.title = element_text(hjust = 0.5, vjust = 0, margin = margin(-0.5,0,0,0))) +  
         scale_y_log10(y_label,labels=fancyNumbers) +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
@@ -262,7 +271,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                   size=ifelse(is.na(font_size),3,0.30*font_size))
     }
     
-    if(!is.na(title)){
+    if(!all(is.na(title))){
       bioPlot_w_labels <- bioPlot_w_labels +
         ggtitle(title)
       

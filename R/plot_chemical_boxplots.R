@@ -12,13 +12,13 @@ plot_chemical_boxplots <- function(chemicalSummary,
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
-    
-  y_label <- "Maximum EAR per Site"
+
+  y_label <- bquote(atop("max" ~ group("[", EAR[chemicals*"[" *k* "]"], "]")[site],  "k = all chemicals for a given sample"))
   if(mean_logic %in% c("TRUE","mean")){
-    y_label <- "Mean sum of EAR per sample per site"
+    y_label <- bquote(atop("mean" ~ group("[", sum(group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site], "k = all chemicals for a given sample"))
   }
   if(mean_logic %in% c("FALSE","max")){
-    y_label <- "Max sum of EAR per sample per site"
+    y_label <- bquote(atop("max" ~ group("[", sum(group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site],  "k = all chemicals for a given sample"))
   }
   
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
@@ -113,7 +113,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
           strip.background = element_rect(fill = "transparent",colour = NA),
           strip.text.y = element_blank(),
           panel.border = element_blank(),
-          axis.ticks = element_blank())  
+          axis.ticks = element_blank(),
+          plot.title = element_text(hjust = 0.5))  
   
   if(all(is.na(pallette))){
     toxPlot_All <- toxPlot_All +
@@ -159,7 +160,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                 size=ifelse(is.na(font_size),3,0.30*font_size))
   }
   
-  if(!is.na(title)){
+  if(!all(is.na(title))){
     toxPlot_All_withLabels <- toxPlot_All_withLabels +
       ggtitle(title)
     
