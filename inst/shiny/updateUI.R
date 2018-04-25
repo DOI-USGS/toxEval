@@ -138,3 +138,14 @@ observe({
   updateSelectInput(session, "epGroup", choices = valueText, selected = first_pick)
 })
 
+observe({
+  isTox <- toxCast()
+  if(isTox){
+    updateRadioButtons(session, "meanEAR", selected = "max",
+                       choices = list("MeanEAR"="mean", "MaxEAR" = "max"))
+  } else {
+    updateRadioButtons(session, "meanEAR", selected = "noSum",
+                       choices = list("MeanEAR"="mean", "MaxEAR" = "max", "NoSum" = "noSum"))
+  }
+  
+})

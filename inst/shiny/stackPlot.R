@@ -2,7 +2,7 @@ stackBarGroup_create <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   
   chemicalSummary <- chemicalSummary()
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   rawData <- rawData()
   chem_site <- rawData$chem_site
@@ -39,7 +39,7 @@ stackBarGroup_create <- reactive({
 stackTitle <- reactive({
 
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
@@ -109,7 +109,7 @@ barCode <- reactive({
 stack_plot <- plot_tox_stacks(chemicalSummary, 
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
-                  mean_logic = ",as.logical(input$meanEAR),",
+                  mean_logic = '",input$meanEAR,"',
                   title = '",stackTitle(),"',
                   include_legend = ",include_legend,")
 gb <- ggplot2::ggplot_build(stack_plot)

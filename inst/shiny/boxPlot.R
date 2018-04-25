@@ -5,7 +5,7 @@ boxPlots_create <- reactive({
   plot_ND = input$plot_ND
   chemicalSummary <- chemicalSummary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
 
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
@@ -33,7 +33,7 @@ boxPlot_prints <- reactive({
   
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
-                               mean_logic = as.logical(input$meanEAR),
+                               mean_logic = input$meanEAR,
                                plot_ND = plot_ND,
                                font_size = text_size)
   return(bioPlot)
@@ -112,9 +112,15 @@ boxTitle <- reactive({
     pretty_cat <- "biological activity grouping"
   }
   
-  mean_logic <- as.logical(input$meanEAR)
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"(",expression(Sigma["sample"]),"EAR",
-                 ") per site, grouped by", pretty_cat)
+  mean_logic <- input$meanEAR
+  if(mean_logic == "mean"){
+    title <- bquote("Mean" ~ Sigma ~ "EAR")
+  } else if (mean_logic == "max"){
+    title <- bquote("Max" ~ Sigma ~ "EAR")
+  } else if (mean_logic == "noSum"){
+    title <- bquote("Max" ~ "EAR")
+  }
+
   if(site != "All"){
     title <- paste(title,"
                    ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
@@ -125,7 +131,7 @@ boxTitle <- reactive({
 boxCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   plot_ND = input$plot_ND
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -133,7 +139,7 @@ boxCode <- reactive({
   bioPlotCode <- paste0(rCodeSetup(),"
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
                   category = '",category,"',
-                  mean_logic = ",mean_logic,",
+                  mean_logic = '",mean_logic,"',
                   title = '",boxTitle(),"',
                   plot_ND = ",plot_ND,")
 gb <- ggplot2::ggplot_build(bio_plot)

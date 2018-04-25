@@ -211,7 +211,7 @@ rank_sites <- function(chemicalSummary,
   freqCol <- grep("freq",names(statsOfColumn))
   maxEARS <- grep("maxEAR",names(statsOfColumn))
   
-  if(mean_logic != "noSum" | isTRUE(mean_logic)){
+  if(isTRUE(mean_logic)){
     names(statsOfColumn)[maxEARS] <- gsub("max","mean",names(statsOfColumn)[maxEARS])
   } 
   

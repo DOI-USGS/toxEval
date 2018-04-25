@@ -1,11 +1,10 @@
 endpointGraph_create <- reactive({
 
   filterBy <- epDF[['epGroup']]
-  meanEARlogic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
@@ -87,7 +86,7 @@ output$downloadEndpoint_csv <- downloadHandler(
 
 epTitle <- reactive({
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   site <- input$sites
   siteTable <- rawData()[["chem_site"]]
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -111,7 +110,7 @@ epGraphCode <- reactive({
   epGraphCode <- paste0(rCodeSetup(),"
 ep_plot <- plot_tox_endpoints(chemicalSummary, 
                     category = '",category,"',
-                    mean_logic = ",as.logical(input$meanEAR),",
+                    mean_logic = '",input$meanEAR,"',
                     hit_threshold = ",hitThres,",
                     title = '",epTitle(),"'
                     filterBy = '",filterBy,"')

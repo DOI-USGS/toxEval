@@ -5,7 +5,7 @@ heatMap_create <- reactive({
   chemicalSummary <- chemicalSummary()
   rawData <- rawData()
   chem_site <- rawData$chem_site
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
 
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
@@ -33,7 +33,7 @@ heatMap_create <- reactive({
 
 heatTitle <- reactive({
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   site <- input$sites
   
   siteTable <- rawData()[["chem_site"]]
@@ -96,7 +96,7 @@ heatCode <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   plot_ND = input$plot_ND_heat
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   heatCode <- paste0(rCodeSetup(),"
 # To re-order the x-axis, 
@@ -105,7 +105,7 @@ heatCode <- reactive({
 plot_tox_heatmap(chemicalSummary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
-                 mean_logic = ",mean_logic,",
+                 mean_logic = '",mean_logic,"',
                  title = '",heatTitle(),"',
                  plot_ND = ",plot_ND,")")
   

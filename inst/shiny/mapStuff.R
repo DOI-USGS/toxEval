@@ -43,7 +43,7 @@ mapDataINFO <- reactive({
     catType = as.numeric(input$radioMaxGroup)
     category <- c("Biological","Chemical","Chemical Class")[catType]
     
-    meanEARlogic <- as.logical(input$meanEAR)
+    meanEARlogic <- input$meanEAR
     
     mapDataList <- map_tox_data(chemicalSummary, 
                               chem_site = chem_site, 
@@ -144,7 +144,7 @@ mapCode <- reactive({
 make_tox_map(chemicalSummary, 
         chem_site = tox_list$chem_site,
         category = '",category,"',
-        mean_logic = ",as.logical(input$meanEAR),")")
+        mean_logic = '",input$meanEAR,"')")
 
   return(mapCode)
   

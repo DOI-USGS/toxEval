@@ -19,7 +19,11 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
 
-\item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
+\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
+TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+the values plotted are the overall max of the sample (not the max of the sum
+of the sample).}
 
 \item{font_size}{numeric to adjust the axis font size}
 
