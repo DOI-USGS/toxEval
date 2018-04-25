@@ -6,7 +6,7 @@ endpointGraph_create <- reactive({
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- input$meanEAR
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  
+
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
                                       category = category,
                                       mean_logic = mean_logic,
@@ -91,13 +91,8 @@ epTitle <- reactive({
   siteTable <- rawData()[["chem_site"]]
   category <- c("Biological","Chemical","Chemical Class")[catType]
   filterBy <- epDF[['epGroup']]
-  title <- paste(filterBy, ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "per site End Point Distribution")
-  
-  if(site != "All"){
-    title <- paste(title,"
-                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
-  }
+ 
+  title <- "something"
   return(title)
 })
 
