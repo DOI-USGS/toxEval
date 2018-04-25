@@ -44,17 +44,37 @@ stackTitle <- reactive({
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   pretty_cat <- tolower(category)
+  
   if(pretty_cat == "biological"){
     pretty_cat <- "biological activity grouping"
   }
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "grouped by", pretty_cat)
   site <- input$sites
-
   siteTable <- rawData()[["chem_site"]]
-  if(site != "All"){
-    title <- paste("Individual samples grouped by",pretty_cat,"
-                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+  if(site == "All"){
+    pretty_cat <- switch(category, 
+                         "Chemical" = "for all chemicals",
+                         "Biological" = "for chemicals within a specified biological activity grouping",
+                         "Chemical Class" = "for chemicals within a specified class"
+    )
+    if(mean_logic == "mean"){
+      title <- paste("Maximum EARs",pretty_cat)
+    } else if (mean_logic == "max"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maxiumum of each site")
+    } else if (mean_logic == "noSum"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the mean of each site")
+    }
+  } else {
+    pretty_cat <- switch(category, 
+                         "Chemical" = "Chemical",
+                         "Biological" = "Biological Activity Grouping",
+                         "Chemical Class" = "Chemical Class"
+    )
+    title <- paste0("EAR per ",category)
+    
+    title <- paste(title,"
+", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })

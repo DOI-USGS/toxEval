@@ -118,10 +118,10 @@ boxTitle <- reactive({
       title <- paste("Maximum EARs",pretty_cat)
     } else if (mean_logic == "max"){
       title <- paste("Summing EARs",pretty_cat, "
-  for a given sample, taking the maxiumum of each site")
+for a given sample, taking the maxiumum of each site")
     } else if (mean_logic == "noSum"){
       title <- paste("Summing EARs",pretty_cat, "
-  for a given sample, taking the mean of each site")
+for a given sample, taking the mean of each site")
     }
   } else {
     pretty_cat <- switch(category, 
@@ -132,7 +132,7 @@ boxTitle <- reactive({
     title <- paste0("EAR per ",category)
 
     title <- paste(title,"
-                   ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })

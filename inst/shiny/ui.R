@@ -172,7 +172,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
-            h5("maxEAR = Maximum summation of EARs per sample"),
+            textOutput("meanText"),
             h5("freq = Fraction of samples with hits"),
             DT::dataTableOutput('tableSumm'),
             downloadButton('downloadTable', 'Download CSV'),

@@ -81,13 +81,7 @@ plot_tox_stacks <- function(chemicalSummary,
   mean_logic <- as.character(mean_logic)
   match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
-  y_label <- "Maximum EAR per Site"
-  if(mean_logic %in% c("TRUE","mean")){
-    y_label <- "Mean sum of EAR per sample per site"
-  }
-  if(mean_logic %in% c("FALSE","max")){
-    y_label <- "Max sum of EAR per sample per site"
-  }
+
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- ""
   }
@@ -126,7 +120,22 @@ plot_tox_stacks <- function(chemicalSummary,
 
   siteLimits <- chem_site$`Short Name`
   
+  pretty_cat <- switch(category, 
+                       "Chemical" = "k = all chemicals for a given sample",
+                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
+                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
+  )
+  
   if(length(siteToFind) > 1){
+    
+    y_label <- bquote(atop("max" ~ group("[",EAR[chemicals*"[" *k* "]"], "]")[site]))
+    if(mean_logic %in% c("TRUE","mean")){
+      y_label <- bquote(atop("mean" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site]))
+    }
+    if(mean_logic %in% c("FALSE","max")){
+      y_label <- bquote(atop("max" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site]))
+    }
+    
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
@@ -158,10 +167,14 @@ plot_tox_stacks <- function(chemicalSummary,
                 size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
       geom_text(data = label_samples,hjust=1,
                 aes(x=x,y=y,label=label),
-                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE)
+                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE) +
+      labs(caption = pretty_cat)  
 
   } else {
 
+
+    y_label <- "EARs per Individual Sample"
+    
     graphData <- chemicalSummary %>%
       select(-site) 
     
@@ -186,7 +199,7 @@ plot_tox_stacks <- function(chemicalSummary,
       theme(axis.text.x=element_blank(),
             axis.ticks.x=element_blank()) +
       xlab("Individual Samples") +
-      ylab("EAR") 
+      ylab(y_label) 
 
   }
   
@@ -217,9 +230,10 @@ plot_tox_stacks <- function(chemicalSummary,
     
     if(!is.na(font_size)){
       upperPlot <- upperPlot +
-        theme(plot.title = element_text(size=font_size))
+        theme(plot.title = element_text(size=font_size),
+              axis.title =   element_text(size=font_size))
     }
   }
-  
+
   return(upperPlot)
 }

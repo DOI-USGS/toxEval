@@ -164,7 +164,6 @@ plot_tox_boxplots <- function(chemicalSummary,
       chemicalSummary$category <- factor(chemicalSummary$category,
                                          levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
       
-      
       if(category == "Chemical Class"){
         y_label <- "All EARs within a chemical class"
       } else {
