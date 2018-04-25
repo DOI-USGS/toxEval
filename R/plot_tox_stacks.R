@@ -21,7 +21,11 @@
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param manual_remove vector of categories to remove
 #' @param include_legend logical to include legend or not
 #' @param font_size numeric to adjust the axis font size
@@ -73,7 +77,11 @@ plot_tox_stacks <- function(chemicalSummary,
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   SiteID <- site_grouping <- n <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
-    
+  
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
+
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- ""
   }
@@ -112,7 +120,22 @@ plot_tox_stacks <- function(chemicalSummary,
 
   siteLimits <- chem_site$`Short Name`
   
+  pretty_cat <- switch(category, 
+                       "Chemical" = "k = all chemicals for a given sample",
+                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
+                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
+  )
+  
   if(length(siteToFind) > 1){
+    
+    y_label <- bquote(atop("max" ~ group("[",EAR[chemicals*"[" *k* "]"], "]")[site]))
+    if(mean_logic %in% c("TRUE","mean")){
+      y_label <- bquote(atop("mean" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site]))
+    }
+    if(mean_logic %in% c("FALSE","max")){
+      y_label <- bquote(atop("max" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site]))
+    }
+    
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
@@ -136,7 +159,7 @@ plot_tox_stacks <- function(chemicalSummary,
                         aes(x=`Short Name`, y=meanEAR, fill = category)) +
       theme_minimal() +
       xlab("") +
-      ylab(paste(ifelse(mean_logic,"Mean","Maximum"), "EAR Per Site")) +
+      ylab(y_label) +
       facet_grid(. ~ site_grouping, scales="free", space="free") +
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))+
       geom_text(data = counts, 
@@ -144,10 +167,14 @@ plot_tox_stacks <- function(chemicalSummary,
                 size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
       geom_text(data = label_samples,hjust=1,
                 aes(x=x,y=y,label=label),
-                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE)
+                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE) +
+      labs(caption = pretty_cat)  
 
   } else {
 
+
+    y_label <- "EARs per Individual Sample"
+    
     graphData <- chemicalSummary %>%
       select(-site) 
     
@@ -172,7 +199,7 @@ plot_tox_stacks <- function(chemicalSummary,
       theme(axis.text.x=element_blank(),
             axis.ticks.x=element_blank()) +
       xlab("Individual Samples") +
-      ylab("EAR") 
+      ylab(y_label) 
 
   }
   
@@ -203,9 +230,10 @@ plot_tox_stacks <- function(chemicalSummary,
     
     if(!is.na(font_size)){
       upperPlot <- upperPlot +
-        theme(plot.title = element_text(size=font_size))
+        theme(plot.title = element_text(size=font_size),
+              axis.title =   element_text(size=font_size))
     }
   }
-  
+
   return(upperPlot)
 }

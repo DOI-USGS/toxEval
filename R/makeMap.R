@@ -9,7 +9,11 @@
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param chem_site data frame with at least columns SiteID, site_grouping, 
 #' Short Name, dec_lon, and dec_lat
 #' @export
@@ -42,8 +46,10 @@ make_tox_map <- function(chemicalSummary,
                     category = "Biological",
                     mean_logic = FALSE){
   
-  SiteID <- ".dplyr
-  "
+  SiteID <- ".dplyr"
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
   maxEARWords <- ifelse(mean_logic,"meanEAR","maxEAR")
   
   mapDataList <- map_tox_data(chemicalSummary, 
@@ -84,6 +90,13 @@ make_tox_map <- function(chemicalSummary,
                      stroke=FALSE,
                      opacity = 0.8)
   
+  title_words <- switch(mean_logic,
+                        "mean"="Mean",
+                        "TRUE"="Mean",
+                        "FALSE"="Max",
+                        "max" = "Max",
+                        "noSum" = "Max")
+  
   if(length(siteToFind) > 1){
     map <- leaflet::addLegend(map,pal = pal,
                      position = 'bottomleft',
@@ -91,7 +104,7 @@ make_tox_map <- function(chemicalSummary,
                      opacity = 0.8,
                      labFormat = leaflet::labelFormat(digits = 2), #transform = function(x) as.integer(x)),
                      title = paste("Sum of",category,"EAR<br>",
-                                   ifelse(mean_logic,'Mean','Max'),"at site"))
+                                   title_words,"at site"))
   }
   
   return(map)
@@ -106,6 +119,8 @@ map_tox_data <- function(chemicalSummary,
                        mean_logic = FALSE){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
   site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- n <- ".dplyr"
   

@@ -15,7 +15,11 @@
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot. 
@@ -86,6 +90,17 @@ plot_tox_heatmap <- function(chemicalSummary,
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
+
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
+  fill_label <- "Maximum EAR\nper Site"
+  if(mean_logic %in% c("TRUE","mean")){
+    fill_label <- "Mean sum of EAR\nper sample per site"
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    fill_label <- "Max sum of EAR\nper sample per site"
+  }
   
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- "Sites"
@@ -118,7 +133,7 @@ plot_tox_heatmap <- function(chemicalSummary,
       theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 0.975)) +
       ylab("") +
       xlab("") +
-      labs(fill="Maximum EAR") +
+      labs(fill=fill_label) +
       scale_fill_gradient( guide = "legend",
                            trans = 'log',
                            low = "white", high = "steelblue",
@@ -163,6 +178,9 @@ plot_heat_chemicals <- function(chemicalSummary,
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
+  
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
   graphData <- graph_chem_data(chemicalSummary, mean_logic=mean_logic)
   

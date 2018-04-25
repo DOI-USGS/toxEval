@@ -20,7 +20,11 @@
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @param font_size numeric to adjust the axis font size
@@ -86,9 +90,18 @@ plot_tox_boxplots <- function(chemicalSummary,
                               hit_threshold = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
-
+  
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   x <- y <- CAS <- ".dplyr"
+
+  pretty_cat <- switch(category, 
+                       "Chemical" = "k = all chemicals for a given sample",
+                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
+                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
+                       )
 
   if(category == "Chemical"){
 
@@ -115,6 +128,12 @@ plot_tox_boxplots <- function(chemicalSummary,
       } else {
         chemicalSummary$category <- chemicalSummary$Class
       }
+      
+      pretty_range <- range(chemicalSummary$EAR[chemicalSummary$EAR > 0])
+      pretty_logs <- 10^(-10:10)
+      log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
+      log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
+      pretty_logs_new <-  pretty_logs[log_index] 
       
       countNonZero <- chemicalSummary %>%
         group_by(category) %>%
@@ -145,6 +164,12 @@ plot_tox_boxplots <- function(chemicalSummary,
       chemicalSummary$category <- factor(chemicalSummary$category,
                                          levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
       
+      if(category == "Chemical Class"){
+        y_label <- "All EARs within a chemical class"
+      } else {
+        y_label <- "All EARs within a biological grouping"
+      }
+      
       bioPlot <- ggplot(data = chemicalSummary)+
         coord_flip() +
         theme_bw() +
@@ -153,8 +178,9 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.text.y = element_text(color = "black", vjust = 0.2), 
               axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
               panel.border = element_blank(),
-              axis.ticks = element_blank()) + 
-        scale_y_log10("EAR Per Sample",labels=fancyNumbers) +
+              axis.ticks = element_blank(),
+              plot.title = element_text(hjust = 0.5)) + 
+        scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
       
       if(!all(is.na(pallette))){
@@ -168,10 +194,24 @@ plot_tox_boxplots <- function(chemicalSummary,
       }
       
     } else {
+      
+      y_label <- bquote(atop("max" ~ group("[",EAR[chemicals*"[" *k* "]"], "]")[site],  .(pretty_cat)))
+      if(mean_logic %in% c("TRUE","mean")){
+        y_label <- bquote(atop("mean" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site], .(pretty_cat)))
+      }
+      if(mean_logic %in% c("FALSE","max")){
+        y_label <- bquote(atop("max" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site],  .(pretty_cat)))
+      }
       graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                              category = category,
                              manual_remove = manual_remove,
                              mean_logic = mean_logic)
+      
+      pretty_range <- range(graphData$meanEAR[graphData$meanEAR > 0])
+      pretty_logs <- 10^(-10:10)
+      log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
+      log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
+      pretty_logs_new <-  pretty_logs[log_index] 
       
       countNonZero <- graphData %>%
         group_by(category) %>%
@@ -185,14 +225,15 @@ plot_tox_boxplots <- function(chemicalSummary,
       
       bioPlot <- ggplot(data = graphData)+
         coord_flip() +
+        scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
         theme_bw() +
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
               axis.text.y = element_text(color = "black", vjust = 0.2), 
-              axis.text.x = element_text(color = "black", vjust = 0, margin = margin(-0.5,0,0,0)),
+              axis.text.x = element_text(color = "black", vjust = 0),
               panel.border = element_blank(),
-              axis.ticks = element_blank()) +  
-        scale_y_log10("Maximum EAR Per Site",labels=fancyNumbers) +
+              axis.ticks = element_blank(),
+              plot.title = element_text(hjust = 0.5, vjust = 0, margin = margin(-0.5,0,0,0))) +  
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
       if(!all(is.na(pallette))){
@@ -207,7 +248,8 @@ plot_tox_boxplots <- function(chemicalSummary,
     }
     if(!is.na(font_size)){
       bioPlot <- bioPlot +
-        theme(axis.text = element_text(size = font_size))
+        theme(axis.text = element_text(size = font_size),
+              axis.title =   element_text(size=font_size))
     }
     
     plot_info <- ggplot_build(bioPlot)
@@ -223,12 +265,12 @@ plot_tox_boxplots <- function(chemicalSummary,
       ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[2])
     }
     
-
     bioPlot_w_labels <- bioPlot + 
       geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
       geom_text(data=data.frame(x = Inf, y=xmin, label = label, stringsAsFactors = FALSE), 
                 aes(x = x,  y=y, label = label),
-                size=ifelse(is.na(font_size),3,0.30*font_size)) 
+                size=ifelse(is.na(font_size),3,0.30*font_size))
+      
     
     nHitsEP <- countNonZero$hits
     
@@ -247,7 +289,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                   size=ifelse(is.na(font_size),3,0.30*font_size))
     }
     
-    if(!is.na(title)){
+    if(!all(is.na(title))){
       bioPlot_w_labels <- bioPlot_w_labels +
         ggtitle(title)
       
@@ -271,8 +313,18 @@ tox_boxplot_data <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class"))
   
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
+  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-
+  
+  if(mean_logic %in% c("TRUE","mean")){
+    mean_logic <- TRUE
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    mean_logic <- FALSE
+  }
+  
   
   if(category == "Biological"){
     chemicalSummary$category <- chemicalSummary$Bio_category
@@ -280,13 +332,22 @@ tox_boxplot_data <- function(chemicalSummary,
     chemicalSummary$category <- chemicalSummary$Class
   }
   
-  tox_boxplot_data <- chemicalSummary %>%
-    group_by(site,date,category) %>%
-    summarise(sumEAR=sum(EAR)) %>%
-    data.frame() %>%
-    group_by(site, category) %>%
-    summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
-    data.frame() 
+  if(mean_logic == "noSum"){
+    tox_boxplot_data <- chemicalSummary %>%
+      group_by(site,date,category) %>%
+      group_by(site, category) %>%
+      summarise(meanEAR=max(EAR)) %>%
+      data.frame()     
+  } else {
+    tox_boxplot_data <- chemicalSummary %>%
+      group_by(site,date,category) %>%
+      summarise(sumEAR=sum(EAR)) %>%
+      data.frame() %>%
+      group_by(site, category) %>%
+      summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+      data.frame()     
+  }
+
   
   if(!is.null(manual_remove)){
     tox_boxplot_data <- filter(tox_boxplot_data, !(category %in% manual_remove))

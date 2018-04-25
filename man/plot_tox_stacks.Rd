@@ -15,7 +15,11 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{logical \code{TRUE} is mean, \code{FALSE} is maximum}
+\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
+TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+the values plotted are the overall max of the sample (not the max of the sum
+of the sample).}
 
 \item{manual_remove}{vector of categories to remove}
 

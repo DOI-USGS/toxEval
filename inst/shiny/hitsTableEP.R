@@ -5,9 +5,8 @@ output$hitsTableEPs <- DT::renderDataTable({
   )
   
   chemicalSummary <- chemicalSummary()
-  meanEARlogic <- as.logical(input$meanEAR)
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   hitThres <- hitThresValue()
   
   tableEPs <- endpoint_hits_DT(chemicalSummary, 
@@ -29,7 +28,7 @@ hitsTableEPCode <- reactive({
 # Use the endpoint_hits_DT for a formatted DT table
 hitTable <- endpoint_hits(chemicalSummary, 
               category = '",category,"',
-              mean_logic = ",as.logical(input$meanEAR),",
+              mean_logic = '",input$meanEAR,"',
               hit_threshold = ",hitThres,")")
   
   return(hitsTableEPCode)
@@ -45,7 +44,7 @@ hitTableData <- reactive({
   
   chemicalSummary <- chemicalSummary()
   hitThres <- hitThresValue()
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   tableGroup <- endpointHits(chemicalSummary, 
                              category = c("Biological","Chemical","Chemical Class")[catType],

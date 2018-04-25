@@ -2,7 +2,7 @@ stackBarGroup_create <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   
   chemicalSummary <- chemicalSummary()
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   rawData <- rawData()
   chem_site <- rawData$chem_site
@@ -39,22 +39,46 @@ stackBarGroup_create <- reactive({
 stackTitle <- reactive({
 
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   pretty_cat <- tolower(category)
+  
   if(pretty_cat == "biological"){
     pretty_cat <- "biological activity grouping"
   }
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "grouped by", pretty_cat)
   site <- input$sites
-
   siteTable <- rawData()[["chem_site"]]
-  if(site != "All"){
-    title <- paste("Individual samples grouped by",pretty_cat,"
-                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+  if(site == "All"){
+    pretty_cat <- switch(category, 
+                         "Chemical" = "for all chemicals",
+                         "Biological" = "for chemicals within a specified biological activity grouping",
+                         "Chemical Class" = "for chemicals within a specified class"
+    )
+    if(mean_logic == "noSum"){
+      title <- paste("Maximum EARs",pretty_cat)
+    } else if (mean_logic == "max"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maxiumum of each site")
+    } else if (mean_logic == "mean"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the mean of each site")
+    }
+  } else {
+    pretty_cat <- switch(category, 
+                         "Chemical" = "Chemical",
+                         "Biological" = "Biological Activity Grouping",
+                         "Chemical Class" = "Chemical Class"
+    )
+    word <- switch(mean_logic,
+                   "mean"="Mean",
+                   "max"="Maximum",
+                   "noSum" = "Max")
+    title <- paste(word,"EAR per",category)
+    
+    title <- paste(title,"
+", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })
@@ -109,7 +133,7 @@ barCode <- reactive({
 stack_plot <- plot_tox_stacks(chemicalSummary, 
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
-                  mean_logic = ",as.logical(input$meanEAR),",
+                  mean_logic = '",input$meanEAR,"',
                   title = '",stackTitle(),"',
                   include_legend = ",include_legend,")
 gb <- ggplot2::ggplot_build(stack_plot)

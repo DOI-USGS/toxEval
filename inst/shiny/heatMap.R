@@ -5,7 +5,7 @@ heatMap_create <- reactive({
   chemicalSummary <- chemicalSummary()
   rawData <- rawData()
   chem_site <- rawData$chem_site
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
 
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
@@ -33,22 +33,41 @@ heatMap_create <- reactive({
 
 heatTitle <- reactive({
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  
+  mean_logic <- input$meanEAR
   site <- input$sites
-  
   siteTable <- rawData()[["chem_site"]]
-  
-  category <-  c("Biological","Chemical","Chemical Class")[catType]
-  
-  pretty_cat <- tolower(category)
-  if(pretty_cat == "biological"){
-    pretty_cat <- "biological activity grouping"
-  }
-  title <- paste(ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "grouped by", pretty_cat)
-  if(site != "All"){
-    title <- paste(title,"
-                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+
+  if(site == "All"){
+    pretty_cat <- switch(category, 
+                         "Chemical" = "for all chemicals",
+                         "Biological" = "for chemicals within a specified biological activity grouping",
+                         "Chemical Class" = "for chemicals within a specified class"
+    )
+    if(mean_logic == "noSum"){
+      title <- paste("Maximum EARs",pretty_cat)
+    } else if (mean_logic == "max"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maxiumum of each site")
+    } else if (mean_logic == "mean"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the mean of each site")
+    }
+  } else {
+      pretty_cat <- switch(category, 
+                           "Chemical" = "Chemical",
+                           "Biological" = "Biological Activity Grouping",
+                           "Chemical Class" = "Chemical Class"
+      )
+      word <- switch(mean_logic,
+                     "mean"="Mean",
+                     "max"="Maximum",
+                     "noSum" = "Max")
+      title <- paste(word,"EAR per",category)
+      
+      title <- paste(title,"
+                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })
@@ -96,7 +115,7 @@ heatCode <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   plot_ND = input$plot_ND_heat
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   heatCode <- paste0(rCodeSetup(),"
 # To re-order the x-axis, 
@@ -105,7 +124,7 @@ heatCode <- reactive({
 plot_tox_heatmap(chemicalSummary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
-                 mean_logic = ",mean_logic,",
+                 mean_logic = '",mean_logic,"',
                  title = '",heatTitle(),"',
                  plot_ND = ",plot_ND,")")
   

@@ -8,7 +8,7 @@ output$tableGroupSumm <- DT::renderDataTable({
   
   chemicalSummary <- chemicalSummary()
   hitThres <- hitThresValue()
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   tableGroup <- hits_summary_DT(chemicalSummary, 
                               category = c("Biological","Chemical","Chemical Class")[catType],
@@ -64,6 +64,7 @@ tableGroupCode <- reactive({
 # Use the hits_summary_DT function for a formatted DT table
 tableGroupSum <- hits_summary(chemicalSummary, 
                   category = '",category,"',
+                  mean_logic = '",input$meanEAR,"',
                   hit_threshold = ",hitThres,")")
   
   return(tableGroupCode)
@@ -80,7 +81,7 @@ tableSummGroupData <- reactive({
   
   chemicalSummary <- chemicalSummary()
   hitThres <- hitThresValue()
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   
   tableGroup <- hits_summary(chemicalSummary, 
                               category = c("Biological","Chemical","Chemical Class")[catType],

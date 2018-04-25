@@ -197,8 +197,20 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     return(toxCast_val)
   })
 
-  output$title_text <- renderText({
-
+  output$meanText <- renderText({
+    
+    mean_logic <- input$meanEAR
+    if(mean_logic == "mean"){
+      textUI <- "meanEAR = Summation of EARs per sample, Mean per site"
+    } else {
+      textUI <- "maxEAR = Summation of EARs per sample, Maximum per site"
+    }
+    
+    HTML(textUI)
+  })
+  
+  output$columnText <- renderText({
+    
     if(toxCast()){
       textUI <- "Analysis using ToxCast endPoints"
     } else {

@@ -13,7 +13,11 @@
 #' site/category, there is one row per category.
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param mean_logic logical \code{TRUE} is mean, \code{FALSE} is maximum
+#' @param mean_logic character. Options are "mean", "max", or "noSum". 
+#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
+#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
+#' the values plotted are the overall max of the sample (not the max of the sum
+#' of the sample).
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @export
@@ -52,6 +56,8 @@ hits_summary_DT <- function(chemicalSummary,
   hits` <- ".dplyr"
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
   hits_summaryOrdered <- hits_summary(chemicalSummary = chemicalSummary,
                category = category,
@@ -87,8 +93,16 @@ hits_summary <- function(chemicalSummary, category,
                          hit_threshold = 0.1, mean_logic = FALSE){
   
   Class <- Bio_category <- `Samples with hits` <- nSamples <- site <- EAR <- sumEAR <- chnm <- n <- hits <- ".dplyr"
+  mean_logic <- as.character(mean_logic)
+  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
   siteToFind <- unique(chemicalSummary$site)
+  if(mean_logic %in% c("TRUE","mean")){
+    mean_logic <- TRUE
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    mean_logic <- FALSE
+  }
   
   if(category == "Chemical"){
     chemicalSummary <- mutate(chemicalSummary, category = chnm)
@@ -106,14 +120,25 @@ hits_summary <- function(chemicalSummary, category,
     chemicalSummary$site <- chemicalSummary$shortName
   }
   
-  hits_summary <- chemicalSummary %>%
-    group_by(site, date,category) %>%
-    summarise(sumEAR = sum(EAR),
-              hits = sum(EAR > hit_threshold)) %>%
-    group_by(site,category) %>%
-    summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
-              nSamples = n()) %>%
-    arrange(desc(`Samples with hits`))
+  if(mean_logic == "noSum"){
+    hits_summary <- chemicalSummary %>%
+      group_by(site,category,date) %>%
+      summarise(hits = sum(EAR > hit_threshold)) %>%
+      group_by(site,category) %>%
+      summarise(`Samples with hits` = sum(hits >= 1),
+                nSamples = n()) %>%   
+      arrange(desc(`Samples with hits`))    
+  } else {
+    hits_summary <- chemicalSummary %>%
+      group_by(site, date,category) %>%
+      summarise(sumEAR = sum(EAR),
+                hits = sum(EAR > hit_threshold)) %>%
+      group_by(site,category) %>%
+      summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
+                nSamples = n()) %>%
+      arrange(desc(`Samples with hits`))    
+  }
+
   
   if(length(siteToFind) == 1){
     hits_summary <- hits_summary[,c("category","Samples with hits","nSamples")]

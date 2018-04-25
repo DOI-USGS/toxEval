@@ -1,13 +1,12 @@
 endpointGraph_create <- reactive({
 
   filterBy <- epDF[['epGroup']]
-  meanEARlogic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  
+
   endpointGraph <- plot_tox_endpoints(chemicalSummary, 
                                       category = category,
                                       mean_logic = mean_logic,
@@ -87,18 +86,39 @@ output$downloadEndpoint_csv <- downloadHandler(
 
 epTitle <- reactive({
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
+  mean_logic <- input$meanEAR
   site <- input$sites
   siteTable <- rawData()[["chem_site"]]
   category <- c("Biological","Chemical","Chemical Class")[catType]
   filterBy <- epDF[['epGroup']]
-  title <- paste(filterBy, ifelse(mean_logic,"Mean","Maximum"),"EAR",
-                 "per site End Point Distribution")
-  
-  if(site != "All"){
-    title <- paste(title,"
-                   ",siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+ 
+  if(site == "All"){
+    pretty_cat <- switch(category, 
+                         "Chemical" = "for all chemicals",
+                         "Biological" = "for chemicals within a specified biological activity grouping",
+                         "Chemical Class" = "for chemicals within a specified class"
+    )
+    if(mean_logic == "noSum"){
+      title <- paste("EARs",pretty_cat)
+    } else if (mean_logic == "max"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maxiumum of each site")
+    } else if (mean_logic == "mean"){
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the mean of each site")
+    }
+  } else {
+      pretty_cat <- switch(category, 
+                           "Chemical" = "Chemical",
+                           "Biological" = "Biological Activity Grouping",
+                           "Chemical Class" = "Chemical Class"
+      )
+      title <- paste0("EAR per ",category)
+      
+      title <- paste(title,"
+                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
+
   return(title)
 })
 
@@ -111,7 +131,7 @@ epGraphCode <- reactive({
   epGraphCode <- paste0(rCodeSetup(),"
 ep_plot <- plot_tox_endpoints(chemicalSummary, 
                     category = '",category,"',
-                    mean_logic = ",as.logical(input$meanEAR),",
+                    mean_logic = '",input$meanEAR,"',
                     hit_threshold = ",hitThres,",
                     title = '",epTitle(),"'
                     filterBy = '",filterBy,"')
