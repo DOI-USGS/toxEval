@@ -47,9 +47,9 @@ What's going on with this workflow?
 
 ## get_ACC
 
-The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`) values for the specified chemicals. The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of the toxEval package release, this information was found
+The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`) values for the specified chemicals. The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" directory. At the time of the toxEval package release, this information was found
 [here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-The function `get_ACC` will convert the ACC values in the ToxCast database from units of log(uM) to units of ug/L, and reformat the data to a format that can be used in `toxEval`.
+The function `get_ACC` will convert the ACC values in the ToxCast database from units of log($\mu$M) to units of $\mu$g/L, and reformat the data to a format that can be used in `toxEval`.
 
 ## remove_flags
 
@@ -106,12 +106,13 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 ## get_chemical_summary
 
-The function `get_chemical_summary` takes the measured user data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast, as filtered by the functions described above.
+The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above.
 
 ## Custom configuration{#custom_config}
 
-Let's say we want to trim some names to make the labels more readable in graphs. Here, we clean up some chemical class labels:
+There are numerous ways to customize the display of the graphics. Included below are two examples of customization options. 
 
+1. Trim chemical class names to make the labels more readable in graphs
 ```{r clean}
 #Trim some names:
 levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
@@ -119,7 +120,8 @@ levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabo
 levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
 ```
 
-And here, we convert the site lists to factors. This will make any site graph in an order that we define. Here, we take Great Lakes sites and make the order up-to-down stream:
+
+2. Rearrange the order of sites and lakes within the graphics: This example converts the site and lake lists to factors and orders these Great Lakes tributary sites in a logical manner by lake and location within each lake:
 
 ```{r sites}
 #Ordering the sites to flow "downstream" of the Great Lakes:
@@ -150,11 +152,15 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 ```
 
+See the `plot_tox_stacks` and `plot_tox_heatmap` function desriptions below for an example of how the ordering is rendered from these examples within graphics functions.
+
 # Visualize Data
+
+There are numerous ways to visualize data within `toxEval` that can serve different objectives. Each function described below provides a unique method for exploring EAR data that can be customized to fit a user's specific study objectives. All of these functions rely on EAR values computed by the `get_chemical_summary` function.
 
 ## plot_tox_boxplots {#plot_tox_boxplots}
 
-The `plot_tox_boxplots` function creates a set of boxplots based on the original input data modified by the processing steps above, and the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. Choosing "Chemical Class" in the `category` argument will generate separate boxplots for each unique class. "Chemical" will generate boxplots for each individual chemical, and "Biological" will generate boxplots for each group in the selected ToxCast annotation.
+The `plot_tox_boxplots` function creates a set of boxplots representing EAR values computed from the original input data that was modified by the processing steps above, and dependent on the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description of how the EAR values are computed, aggregated, and summarized. Choosing "Chemical Class" in the `category` argument will generate separate boxplots for each unique class. "Chemical" will generate boxplots for each individual chemical, and "Biological" will generate boxplots for each group in the selected ToxCast annotation.
 
 ```{r boxplots1, warning=FALSE, message=FALSE}
 
@@ -171,7 +177,7 @@ grid::grid.draw(gt)
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
 ```
 
-It is also possible to show a threshold line using the `hit_threshold` argument. The graph will then include the number of sites with detections, the threshold line, and the number of sites with "hits" as defined by measured concentration higher than the `hit_threshold`.
+It is also possible to display a threshold line using the `hit_threshold` argument. The graph will then include the number of sites with detections, the threshold line, and the number of "hits" indicating how many sites that have EAR values exceeding the `hit_threshold`.
 
 ```{r plot_box_thres, warning=FALSE, message=FALSE}
 bio_box_thresh <- plot_tox_boxplots(chemicalSummary, 
@@ -187,7 +193,7 @@ grid::grid.draw(gt)
 
 ```
 
-The graph shows a slightly different result for a single site. First, let's set up a subset of data that we will use throughout this document to show a single site. We'll use the Maumee River data.
+The graph shows a slightly different result for a single site. In the example below, a subset of data from the Maumee River is defined that will be used throughout this document to facilitate single site examples.
 
 ```{r filtersiteBox, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -196,8 +202,7 @@ maumee <- filter(chemicalSummary, shortName == "Maumee")
 maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
 ```
 
-Now, we'll run `plot_tox_boxplots` on that single site. The difference in the output is that instead of listing the number of sites, it lists the number of unique chemical/endpoint combinations used to create the box plot. We've also included
-the code to add a custom title to the output:
+In this example, the funtion `plot_tox_boxplots` is used with the subset of data from the Maumee River. For this single site graph, the number of chemicals that were detected and have associated endpoint ACCs represented are displayed. 
 
 ```{r maumeePlot, message=FALSE, warning=FALSE}
 library(ggplot2)
@@ -213,7 +218,7 @@ grid::grid.draw(gt)
 
 ## plot_tox_stacks {#plot_tox_stacks}
 
-The `plot_tox_stacks` function creates a set of stacked bar charts based on the original input data modified by the processing steps above, and the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation. There is an option `include_legend` to turn on and off the legend. It may be impractical for instance to show the legend for "Chemical" if there are hundreds of chemicals.
+The `plot_tox_stacks` function creates a set of stacked bar charts representing EAR values computed from the original input data that was modified by the processing steps above, and dependent on the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are computed, aggregated, and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation. There is an option `include_legend` to turn on and off the legend. It may be impractical for instance to show the legend for "Chemical" if there are hundreds of chemicals.
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
 stack_plot <- plot_tox_stacks(chemicalSummary, 
@@ -249,7 +254,7 @@ grid::grid.draw(gt)
 
 ## plot_tox_heatmap {#plot_tox_heatmap}
 
-The `plot_tox_heatmap` function creates heat (tile) map with sites on the x-axis, a specified grouping on the y-axis (defined by the `category` argument), and color shading defining the mean or max EAR. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are aggregated and summarized. The y-axis grouping can be "Biological","Chemical Class", or "Chemical". The breaks for the color scale can be customized with the `breaks` argument.
+The `plot_tox_heatmap` function creates a heat (tile) map with sites on the x-axis, a specified grouping on the y-axis (defined by the `category` argument), and color shading defining the mean or max EAR. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are computed, aggregated, and summarized. The y-axis grouping can be "Biological","Chemical Class", or "Chemical". When specifying the "Chemical" option, a secondary y-axis is automatically included to group chemicals into chemical class. The function computes default breaks for the color scale to match the spread of the data, but breaks can also be customized with the `breaks` argument.
 
 This is a function where it may be ideal to create a custom order to the sites (for example, west-to-east). See the above section ["Custom configuration"](#custom_config) for instructions on how to convert the character vector `sites` to a factor with ordered levels.
 
@@ -268,9 +273,9 @@ plot_tox_heatmap(chemicalSummary,
 
 ## plot_tox_endpoints {#plot_tox_endpoints}
 
-The `plot_tox_endpoints` function creates a set of boxplots for each endPoint based on a selected filter. The data is first filtered down to what group is specified in the `filterBy` argument. The `filterBy` argument must match one of the unique options in the `category`. So for example, if the `category` is "Chemical Class", then the `filterBy` argument must be one of the defined "Chemical Class" options such as "Herbicide". 
+The `plot_tox_endpoints` function creates a set of boxplots representing EAR values for each endPoint based on a selected filter. The data is first filtered down to what group is specified in the `filterBy` argument. The `filterBy` argument must match one of the unique options in the `category`. For example, if the `category` is "Chemical Class", then the `filterBy` argument must be one of the defined "Chemical Class" options such as "Herbicide". 
 
-After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are still the mean or max (as defined by `mean_logic`) of each site as described in ["Summarizing the data"](Introduction.html#summarize_data).
+After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or max (as defined by `mean_logic`) for each site as described in ["Summarizing the data"](Introduction.html#summarize_data).
 
 ```{r endpoints, warning=FALSE}
 ep_plot <- plot_tox_endpoints(chemicalSummary, 
@@ -293,7 +298,9 @@ grid::grid.draw(gt)
 
 ## What is the "clipping" code???
 
-You might notice that all of the plotting examples here have 4 extra lines of code after the plot is generated. This is required to have the labels extend past the plotting area (such as "# Sites", "Threshold", etc.). The reason we did not embed that code into the functions themselves is that those lines no longer make the output a `ggplot2` object. By leaving them outside of the function, the user could set additional `ggplot2` themes or other parts of the plots. That is, the plots as they are now can be additionally customizable, but they lose that feature once we do those final lines:
+As shown, all of the plotting examples above have 4 extra lines of code after the plot is generated. This is required to allow the labels to extend past the plotting area (such as "# Sites", "Threshold", etc.). The reason these lines of code were not embedded into the functions themselves is that they change the form of plotting object so it is no longer a `ggplot2` object. By leaving them outside of the function, the user can set additional `ggplot2` themes or other parts of the plots. That is, the plots as they are now can be additionally customized, but they lose that feature once these extra lines of code are executed:
+
+## 
 
 ```{r clipping, eval=FALSE}
 gb <- ggplot2::ggplot_build(ep_plot)
@@ -302,11 +309,11 @@ gt$layout$clip[gt$layout$name=="panel"] <- "off"
 grid::grid.draw(gt)
 ```
 
-You will notice that some of the examples above use "panel" and others use "panel-1-1". This is an affect of using `ggplot2`'s `facet_grid` options. It will be important to get those right for nice plotting.
+Some of the examples above use "panel" and others use "panel-1-1" as the argument in this code. This is an affect of using `ggplot2`'s `facet_grid` options, and it is important to follow the format provided for the individual functions shown above.
 
 ## How to save a plot?
 
-If you don't mind having some of the labels slightly clipped off, the `ggsave` function is really nice. It takes away the guessing game of how big or resolved the plot should be. For RStudio users, the size by default is determined by how large you have your "Plots" tab sized. This could be handy when sharing plots with colleagues during project analysis. An example of using the `ggsave` function is:
+The `ggsave` function can be used to save plots, but at times, some of the text gets clipped off using this technique. This technique does have an advantage by taking away much of the guessing game for how big or resolved the plot should be. For RStudio users, the size by default is determined by how large the "Plots" tab is sized. This could be handy when sharing plots with colleagues during project analysis. An example of using the `ggsave` function is:
 
 ```{r ggsave1, eval=FALSE}
 
@@ -321,7 +328,7 @@ ggsave(ep_plot, file = "ep_plot.png")
 ggsave(ep_plot, file = "ep_plot.pdf")
 ```
 
-But now you would like to save a nice plot for a presentation or manuscript. First, you will need to turn off clipping, then you need to save it via the standard "base R" methods:
+For a more refined plot for a presentations or manuscripts, you will need to turn off clipping, and then it is necessary to save it via the standard "base R" methods:
 
 ```{r basesave1, eval=FALSE}
 
@@ -346,15 +353,15 @@ dev.off()
 
 ```
 
-On the `ggplot2` horizon, there may be easier ways to accomplish the labeling, and hopefully these directions will not be necessary.
+On the future `ggplot2` development horizon, there may be easier ways to accomplish the labeling, making these directions unnecessary.
 
 # Tables
 
-Several tables are also provided in `toxEval`. Each table can be returned in the form of a data frame (to be used further in R), or a `DT` table, which is a nicely formatted HTML table. For general exploration, the `DT` options are nice. To use the outputs in R for further analysis, the data frame options are needed. 
+Several tables are also provided in `toxEval`. Each table can be returned in the form of a data frame (to be used further in R), or a `DT` table, which is a nicely formatted HTML table. For general exploration, the `DT` options provide helpful functionality. To use the outputs in R for further analysis, the data frame options are needed. All of these functions rely on EAR values computed by the `get_chemical_summary` function.
 
 ## rank_sites_DT {#rank_sites_DT}
 
-The `rank_sites_DT` (`DT` option) and `rank_sites` (data frame option) functions create a table with one row per site. There are columns of the max or mean EAR (depending on the `mean_logic` argument) for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, there are columns of the frequency of the max or mean EAR being above a user specified `hit_threshold`.
+The `rank_sites_DT` (`DT` option) and `rank_sites` (data frame option) functions create tables with one row per site. There are columns of the max or mean EAR (depending on the `mean_logic` argument) for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, columns specifying the frequency of the max or mean EAR exceeding a user specified `hit_threshold` are provided.
 
 
 ```{r rank_sites_DT, warning=FALSE}
@@ -378,9 +385,9 @@ rank_sites_DT(maumee, category = "Biological")
 
 ## hits_summary_DT {#hits_summary_DT}
 
-The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create a table with several rows per site depending on which categories get hits. A "hit" is based on a user specified `hit_threshold`. For example, if "Biological" is the category, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
+The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) functions create tables with several rows per site depending on which categories have resulting EARs above the threshold as defined by a user specified `hit_threshold`. For example, if "Biological" is the category, and a site has hits above a threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
 
-For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples at that site had hits (based on `hit_threshold`) for the category. "Number of Samples" is how many individual samples were collected at an individual site based on unique date.
+For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples exceeded the `hit_threshold` for the specified category. "Number of Samples" is how many individual samples were collected at an individual site based on unique date.
 
 
 ```{r hits_summary_DT, warning=FALSE}
@@ -394,7 +401,7 @@ hits_summary_DT(chemicalSummary,
                 hit_threshold = 0.1)
 ```
 
-The tables show slightly different results for a single site. Instead of one row per site/category, there is one row per category.
+The tables show slightly different results for a single site. Rather than one row per site/category, there is one row per category.
 
 ```{r hits_summary_DT_site, warning=FALSE}
 hits_summary_DT(maumee, category = "Biological")
@@ -403,7 +410,7 @@ hits_summary_DT(maumee, category = "Biological")
 
 ## endpoint_hits_DT {#endpoint_hits_DT}
 
-The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create a table with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are number of sites with hits in that endpoint/category combination, based on a user-specified threshold (defined by `hit_threshold`). One unique feature of this table is that if the category is "Chemical", there will be an "info" link to the ToxCast ("Actor Dashboard")[https://actor.epa.gov/dashboard], directly to the chemical/endpoint combination.
+The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create tables with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are the number of sites where the EAR exceeded the `hit_threshold` in that endpoint/category combination. If the category "Chemical" is chosen, an "info" link is provided to the chemical/endpoint information available in the ("ToxCast Dashboard")[https://actor.epa.gov/dashboard].
 .
 ```{r endpoint_hits_DT, warning=FALSE}
 
@@ -417,7 +424,7 @@ endpoint_hits_DT(chemicalSummary,
 
 ```
 
-The tables show slightly different results for a single site. Instead of the number of sites with hits above a threshold, it is now the number of samples with hits.
+The tables show slightly different results for a single site. Rather than the number of sites with hits above a threshold, the number of samples with hits id presented.
 
 ```{r endpoint_hits_DT_site, warning=FALSE}
 endpoint_hits_DT(maumee, category = "Biological")
@@ -426,7 +433,7 @@ endpoint_hits_DT(maumee, category = "Biological")
 
 ## hits_by_groupings_DT {#hits_by_groupings_DT}
 
-The `hits_by_groupings_DT` (`DT` option) and `hits_by_groupings` (data frame option) functions create a table with one row per category("Biological", "Chemical", or "Chemical Class"). The columns are always the "Biological" groupings. The values in the table are how many sites have hits (based on `hit_threshold`), for that particular "Biological"/category combination. Note, if the user chooses "Biological", it is a simple 2-column table of "Biological" groupings and number of sites (nSites).
+The `hits_by_groupings_DT` (`DT` option) and `hits_by_groupings` (data frame option) functions create tables with one row per category("Biological", "Chemical", or "Chemical Class"). The columns indicate the "Biological" groupings. The values in the table signify how many sites have exceeded the `hit_threshold` for that particular "Biological"/category combination. If the user chooses "Biological" as the category, it is a simple 2-column table of "Biological" groupings and number of sites (nSites).
 
 ```{r hits_by_groupings_DT, warning=FALSE}
 site_df <- hits_by_groupings(chemicalSummary, 
@@ -438,7 +445,7 @@ hits_by_groupings_DT(chemicalSummary,
                      hit_threshold = 0.1)
 ```
 
-The tables show slightly different results for a single site, showing the number of samples with hits (instead of number of sites).
+The tables show slightly different results for a single site, presenting the number of samples where EAR exceeded the `hit_threshold` rather than the number of sites.
 
 ```{r hits_by_groupings_DT_site, warning=FALSE}
 hits_by_groupings_DT(maumee, category = "Chemical Class")
@@ -446,7 +453,7 @@ hits_by_groupings_DT(maumee, category = "Chemical Class")
 
 # Maps {#make_tox_map}
 
-There is one function included that creates a `leaflet` map of the data `make_tox_map`. The function `map_tox_data` creates the data that is then plotted in `make_tox_map`. These are the only function that requires "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the `chem_site` argument.
+The function `make_tox_map` creates a `leaflet` map of the data. This function places symbols at the location of each site in the data file that represent the magnitude of EAR (color) and the number of samples in the data set (size).  This is the only function that requires "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the `chem_site` argument.
 
 ```{r makeMap, warning=FALSE, message=FALSE}
 make_tox_map(chemicalSummary, 

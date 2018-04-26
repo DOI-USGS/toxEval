@@ -108,12 +108,16 @@ By default, the analysis is done on all the sites. However, you can dig down to 
 There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits) that will calculate the number of "Hits"...which is simply the number of times the EAR is above a designated threshold. That threshold value is defined here. Changing the threshold will not have an immedate affect until the "Change Hit Threshold" button is clicked.
 
 ## Main Output
+<table>
+<tr><td>
 
 Each plot and table offered in the app is described in the [Basic Workflow vignette](basicWorkflow.html). Please refer there for more information.
 
 For each plot, there is an option to download the plot or data that is in the plot. The R-code to generate the output is also provided under each output. This would be the ideal way to customize any additional output.
 
-The following table shows the main function that each tab in the app uses:
+The table to the right shows the main function that each tab in the app uses:
+
+</td><td>
 
 | Tab   |  Function |
 |----------|------:|
@@ -127,8 +131,7 @@ The following table shows the main function that each tab in the app uses:
 | Endpoint | [`plot_tox_endpoints`](basicWorkFlow.html#plot_tox_endpoints)|
 | Heat Map | [`plot_tox_heatmap`](basicWorkFlow.html#plot_tox_heatmap)|
 
-
-
+</td></tr> </table>
 
 # Logistics
 

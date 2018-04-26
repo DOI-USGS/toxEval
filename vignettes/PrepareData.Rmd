@@ -30,7 +30,7 @@ The "Data" sheet needs to have at a minimum of 4 columns: "CAS", "SiteID", "Valu
 
 * SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Sites" sheet. There are no requirements on formatting for this column.
 
-* Value: This column is numeric. It should be the concentration of the chemical in $\mu$g/L.
+* Value: This column is numeric. It *must* be the concentration of the chemical in $\mu$g/L.
 
 * Sample Date: Currently this column only serves to identify unique samples.  Dates and times as formatted in Excel, as well as integer values are acceptable. The actual date and times are not currently used to perform any time series analysis. 
 
