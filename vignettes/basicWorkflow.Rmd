@@ -15,7 +15,7 @@ vignette: >
 
 # Load Data
 
-Once the data is prepared as described in the  [Prepare Data vignette]("PrepareData.html"), it can be loaded into R using the `create_toxEval` function.
+Once the data is prepared as described in the  [Prepare Data](PrepareData.html) vignette. It can be loaded into R using the `create_toxEval` function.
 
 ```{r startup, message=FALSE}
 library(toxEval)

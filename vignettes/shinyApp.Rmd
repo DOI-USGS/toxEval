@@ -57,7 +57,7 @@ The sidebar offers a host of options for customizing the analysis. This document
 
 ### A. Load Excel File 
 
-Once the Shiny App has been started, the first step is to load the data. The data should be prepared as described in the ["Prepare Data" vignette](PrepareData.html). Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is picked, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to compute.
+Once the Shiny App has been started, the first step is to load the data. The data should be prepared as described in the [Prepare Data vignette](PrepareData.html). Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is picked, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to compute.
 
 ### B. 'Group By' option
 
@@ -109,7 +109,7 @@ There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits)
 
 ## Main Output
 
-Each plot and table offered in the app is described in the ["Basic Workflow" vignette](basicWorkflow.html). Please refer there for more information.
+Each plot and table offered in the app is described in the [Basic Workflow vignette](basicWorkflow.html). Please refer there for more information.
 
 For each plot, there is an option to download the plot or data that is in the plot. The R-code to generate the output is also provided under each output. This would be the ideal way to customize any additional output.
 
