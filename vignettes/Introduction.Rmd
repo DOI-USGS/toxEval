@@ -12,15 +12,15 @@ vignette: >
 ---
 
 
-The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package. There is less customization from the application, but it is a convenient way to explore the data. 
+The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. These functions allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package. The application is based on functions within the R-package and includes many convenient analysis and visualization options for users to choose. Use of the functions within the R-package directly allows for additional flexibility within the functions beyond what the application offers, and options for the user to interact directly with the data.  
 
-This vignette describes the process to prepare the data and use the shiny application. There is also a section on installing and updating the package, since it is located on the Geological Survey R Archive Network (GRAN) rather than CRAN. 
+This vignette provides a general overview of the concepts within `toxEval`, definitions of common terminology used throughout the package and application, and links to information to help understand fundamentals of the ToxCast database used within `toxEval`. In addition, instructions are provided for installing and updating the package from the Geological Survey R Archive Network (GRAN). 
 
 # Introduction
 
-The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). By default, the workflow uses the ToxCast information, but there is also a way to provide alternative benchmarks. This could be useful for comparing ToxCast results with other toxicity benchmark databases.
+The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.
 
-When using the ToxCast endPoints for analysis, it will be important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">ToxCast Dashboard</a> that has a wealth of information on ToxCast data.
+When using the ToxCast endPoints for analysis, it is important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to your study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">ToxCast Dashboard</a> that has a wealth of information on ToxCast data.
 
 So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
 
@@ -32,7 +32,7 @@ In order to get consistent EAR results, it is important to use the correct units
 
 ## What is an "endPoint"?
 
-ToxCast uses high-throughput assays to create dose-response curves for each of these chemical/endPoint combinations. An endPoint is "associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards" <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a very specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast databse, the activity concentration at cutoff (ACC) was choosen to compute EAR values within the `toxEval` package consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. The ACC values of these dose response curves are provided within the `toxEval` package. 
+ToxCast uses high-throughput assays to create concentration-response curves for each of these chemical/endPoint combinations. An endPoint is "associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards" <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast database, the activity concentration at cutoff (ACC) was choosen to compute EAR values within the `toxEval` package consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. The ACC values of these dose response curves are provided within the `toxEval` package. 
 
 ## Grouping options
 
@@ -62,11 +62,11 @@ Some functions will also include a calculation for a "hit". A threshold is defin
 
 ## Installation of R and RStudio
 
-This section should only need to be done once per computer. The following link walks you through an installation of R and RStudio:
+The following link provides instructions for installation of R and RStudio:
 
 [Installation Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
 
-If you follow those instructions exactly, you should have the USGS R repository (GRAN) added to your R profile. If that step doesn't ring a bell, paste the following into your R console:
+Following these instructions will add the USGS R repository (GRAN) the users R profile. For users who have previously installed R and RStudio, GRAn can be added the R profile by pasting the following into your R console:
 
 ```{r, eval=FALSE}
 rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
@@ -91,7 +91,7 @@ Useful links:
 
 ## Installation of toxEval
 
-This section should also only have to be done once. It assumes the USGS R repository (GRAN) was added to your R profile as described above.
+This section assumes GRAN was added to your R profile as described above.
 
 ```{r, eval=FALSE}
 install.packages("toxEval")
@@ -101,7 +101,7 @@ install.packages("toxEval")
 
 <img style="float: right;" src="update.png">
 
-Regularly, it is a good idea to update *ALL* of your packages in R. If using RStudio, this is done quite easily by using the Update button in the "Packages" tab. Selecting this option checks CRAN and GRAN for updates. 
+Regularly, it is a good idea to update *ALL* of installed packages in R. If using RStudio, this is done by using the Update button in the "Packages" tab. Selecting this option checks CRAN and GRAN for updates. 
 
 
 Within the R-console, packages can be updated with the command:
