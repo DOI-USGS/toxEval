@@ -14,8 +14,8 @@ vignette: >
 ---
 
 # Load Data
-
-Once the data is prepared as described in the  [Prepare Data](PrepareData.html) vignette. It can be loaded into R using the `create_toxEval` function.
+ 
+Once the data is prepared as described in the  [Prepare Data vignette](PrepareData.html),  it can be loaded into R using the `create_toxEval` function.
 
 ```{r startup, message=FALSE}
 library(toxEval)
@@ -49,7 +49,7 @@ What's going on with this workflow?
 
 The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`) values for the specified chemicals. The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" folder. At the time of the toxEval package release, this information was found
 [here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-The function `get_ACC` will convert the ACC values the ToxCast database from units of log(uM) to units of ug/L, and reformat the data to a format that can be used in `toxEval`.
+The function `get_ACC` will convert the ACC values in the ToxCast database from units of log(uM) to units of ug/L, and reformat the data to a format that can be used in `toxEval`.
 
 ## remove_flags
 
@@ -69,13 +69,13 @@ The function is written to exclude results with the flags "Borderline", "OnlyHig
 
 ## clean_endPoint_info
 
-The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on [Blackwell](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes in the removal of endPoints that are ATG sources with signal loss, and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
+The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of [Blackwell te al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
 
 ## filter_groups
 
 <table>
 <tr><td>
-This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group(s) from the category. The default is to remove "Background Measurement" and "Undefined", but a different list of priorities may need to be used based on individual study objectives.
+This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group(s) from the category. The default is to remove "Background Measurement" and "Undefined". Choices for this should be reconsidered based on individual study objectives.
 
 The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame `endPointInfo`:
 
