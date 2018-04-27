@@ -5,6 +5,7 @@
 \alias{ACC}
 \title{ACC values included with toxEval.}
 \description{
+Data frame containing concentrations for the ToxCast activity concentration at cutoff (ACC). 
 Downloaded on October 2015 from ToxCast. The data were
 combined from files in the "INVITRODB_V2_LEVEL5" folder. 
 At the time of toxEval package release, this information was found:
@@ -12,10 +13,7 @@ At the time of toxEval package release, this information was found:
 in the "ToxCast & Tox21 Data Spreadsheet" data set.
 }
 \details{
-The data has been provided in a "wide" format, however
-the \code{get_ACC} function is an easy way to get the data
-in a "long" format. AC50gain values are the reported modl_ga (winning model) and units are 
-log micro-Molarity (log uM).
+Columns include the Chemical Abstract Service Registry Number (CAS), the chemical name (chnm), data quality flags (flags)as the first three columns. The remaining columns are ACC values for individual endpoints (column names) for each chemical represented. The data has been provided in a "wide" format; however, the \code{get_ACC} function provides a method to transform the data into a "long" format. ACC values are the reported modl_ga (winning model) and units are in log micro-Molarity (log $\mu$M).
 }
 \examples{
 ACCColumnNames <- names(ACC)
