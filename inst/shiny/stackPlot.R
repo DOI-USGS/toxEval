@@ -136,12 +136,7 @@ stack_plot <- plot_tox_stacks(chemicalSummary,
                   mean_logic = '",input$meanEAR,"',
                   title = '",stackTitle(),"',
                   include_legend = ",include_legend,")
-gb <- ggplot2::ggplot_build(stack_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-
-gt$layout$clip[gt$layout$name=='panel-1-1'] = 'off'
-
-grid::grid.draw(gt)")
+stack_plot")
   
   return(stackPlotCode)
   
