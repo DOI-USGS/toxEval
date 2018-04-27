@@ -27,7 +27,11 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Using the Shiny Application
 
-All of the output on the Shiny app can be created directly in R as well. Using the app is a quick and convenient way to explore your data. For more customization, the R-code to produce each graph and table is displayed in the app which serves as a good starting-point for a custom analysis. The help file each function provides instructions and example workflows for their use.
+The Shiny application (the app) is a quick and convenient way to explore your data through a graphical user interface in the user's default browser. As with the R-package, ToxCast is the default biological endpoint database used to evaluate data. A user can override this default by providing a custom set of endpoints (e.g. aquatic life benchmarks).  
+
+The interaction with the app is primarily "point and click". The app includes multiple ways to visualize data through boxplots, barcharts, tables and an overview map. Numerous options can be selected to customize presentation of data by choosing to focus on chemicals, chemical classes, biologically relevant endpoing groupings, and specific suites of ToxCast assays. All resulting graphics, tables, and data can be downloaded for use outside of the app.
+
+While the app is useful and quite flexible as is, it also serves as a good starting point for a more in-depth user- and study-specific analysis. All of the output on the Shiny app can be created directly in R as well. For flexibility beyond what the app offers, the R-code to produce each graph and table is displayed in the app and can then be customized for specific study needs. The help file for each function provides instructions and example workflows (R code) for their use.
 
 To run the app, load the `toxEval` package, and run the `explore_endpoints` function:
 
@@ -40,24 +44,24 @@ The computer's default browser will open up and display the following page:
 
 ![Main Layout of Shiny App](main.png)
 
-Generally the app can be divided into 3 main sections:
+The app can be divided into 3 main sections:
 
 The left sidebar (with the black background) is used to load the data and set up the conditions for analysis. Options for this section are described in the "Sidebar" section below.
 
-The top main section includes a variety of tabs to choose from to explore the data in different ways. Each section is described in the section "Main Output".
+The main visualization display section includes a variety of tabs to choose from to explore the data in different ways. Each section is described in the section "Main Output".
 
-The bottom section, "R Code:", displays the R code to reproduce the analysis directly in R using the `toxEval` R-package functions. The code can be copied and pasted directly into the R console, or (preferred for reproduciblity!) saved in an R script. One important note is that the local path to the file is not recorded, so if the data file is not located in the current working directory, a file path will need to be added to the file name.
+The bottom section, "R Code:", displays the R code to reproduce the analysis directly in R using the `toxEval` R-package functions. The code can be copied and pasted directly into the R console, or (preferred for reproduciblity!) saved in an R script. Information on this option is provided below in the "R Code" section. 
 
 ## Sidebar options
 
 <img style="float: right;" src="sidebar.png">
 
-The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will NOT go into the scientific details of what options to choose. These details are dependent on individual study objectives as defined by the user. An example case study that has defined options for a specific study of water quality has been published in [Blackwell te al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613).
+The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will not go into the scientific details of what options to choose. These details are dependent on individual study objectives as defined by the user. An example case study that has defined options for a specific study of water quality has been published in [Blackwell te al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613).
 
 
 ### A. Load Excel File 
 
-Once the Shiny App has been started, the first step is to load the data. The data should be prepared as described in the [Prepare Data vignette](PrepareData.html). Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is selected, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to develop.
+Once the Shiny App has been launched, the first step is to load the data. The data should be prepared as described in the [Prepare Data vignette](PrepareData.html). Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is selected, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to develop.
 
 ### B. 'Group By' option
 
@@ -132,6 +136,9 @@ The table to the right shows the main function that each tab in the app uses:
 | Heat Map | [`plot_tox_heatmap`](basicWorkFlow.html#plot_tox_heatmap)|
 
 </td></tr> </table>
+
+## R Code
+One important note is that the local path to the file is not recorded, so if the data file is not located in the current working directory, a file path will need to be added to the file name.
 
 # Logistics
 
