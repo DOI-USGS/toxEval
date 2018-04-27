@@ -135,10 +135,7 @@ ep_plot <- plot_tox_endpoints(chemicalSummary,
                     hit_threshold = ",hitThres,",
                     title = '",epTitle(),"'
                     filterBy = '",filterBy,"')
-gb <- ggplot2::ggplot_build(ep_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=='panel'] <- 'off'
-grid::grid.draw(gt)")
+ep_plot")
   
   return(epGraphCode)
   

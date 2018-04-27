@@ -155,10 +155,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
                   mean_logic = '",mean_logic,"',
                   title = '",boxTitle(),"',
                   plot_ND = ",plot_ND,")
-gb <- ggplot2::ggplot_build(bio_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=='panel'] <- 'off'
-grid::grid.draw(gt)")
+bio_plot")
   
   return(bioPlotCode)
   
