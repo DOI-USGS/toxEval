@@ -71,15 +71,15 @@ The "Group" choice will group all of the endPoints that have similar groupings b
 
 The "Chemical" choice will group all of the endPoints in a single chemical (as defined by unique CAS).
 
-The "Class" choice will group all of the endpoints in all of the chemicals as defined in the "Chemical" tab in the Excel file.
+The "Class" choice will group all of the endpoints in all of the chemicals for each chemical class as defined in the "Chemical" tab in the Excel file.
 
 ### C. Mean and Max: Summarize by site
 
-The options are "MeanEAR" and "MaxEAR", and they dictate how to summarize the EARs per site. Each site may have different numbers of collected samples, and depending on the scope of your study, it may be more important to analyze the mean of the site, or look at the maximum at each site.
+The options are "MeanEAR" and "MaxEAR", and they dictate how to summarize the EARs per site. Each site may have different numbers of collected samples. Mean or max can be chosen based on the objectives of specific analyses. 
 
 ### D. Download benchmarks
 
-Clicking on this button will download the a comma delimited (csv) file that could be used in the "Benchmark" tab (as described in the "Prepare Data" vignette). The provided columns are "CAS", "Chemical" (name), "flags", "endPoint", "ACC", "MlWt", "Value", "groupCol", and "assaysFull".
+Clicking on this button will download the current set of benchmarks that is currently being used for `toxEval` computations as a comma delimited (csv) file. This file is formateed such that it could be used in the "Benchmark" tab (as described in the "Prepare Data" vignette). The provided columns are "CAS", "Chemical" (name), "flags", "endPoint", "ACC", "MlWt", "Value", "groupCol", and "assaysFull".
 
 The "ACC" column is in log(μM), and the "Value" column is the conversion from that log(μM) to μg/L.
  
@@ -87,29 +87,29 @@ The "ACC" column is in log(μM), and the "Value" column is the conversion from t
 
 <img style="float: right;" src="assays.png">
 
-The assays dropdown menu offers the option to remove certain assays from the analysis. By default, the "BioSeek" assay is not included. Clicking on any of the options will not have an immediate affect until the "Switch Assays" button is clicked.
+The "Assay" dropdown menu offers the option to remove certain sets of assays from the analysis (see image to the right). By default, the "BioSeek" assay is not included. Clicking on any of the options will not have an immediate affect until the "Switch Assays" button is clicked.
 
 ### F. Annotations
 
-The "Annotations" dropdown offers the choice of which ToxCast grouping to analyze. By default, the "intended_target_family" is picked, but there may be other more appropriate options based on the scope of the analysis. Choosing a new annotation will not have an immediate affect until the "Switch Annotation" button is clicked.
+The "Annotation" dropdown offers the choice of which ToxCast grouping to analyze. These options include columns that are available directly in the ToxCast database file. By default, the "intended_target_family" is picked, but there may be other more appropriate options based on the scope of the analysis. Choosing a new annotation will not have an immediate affect until the "Switch Annotation" button is clicked.
 
 ### G. Group
 
-The options in the "Group" dropdown change depending on the choice in Annotations. For "intended_target_family" for example, there would be the choices such as "Nuclear Receptors", "Cell Cycle", "DNA Binding", etc. You can ignore certain groups ("Background Measurement" for instance) by leaving the options unchecked. Clicking on and off the checkboxes will not have an immediate affect until the "Switch Groups" button is clicked.
+The options in the "Group" dropdown change depending on the choice in Annotations. For "intended_target_family" for example, there are 26 choices such as "Nuclear Receptors", "Cell Cycle", "DNA Binding", etc. Selected groups may be ignored in the analysis ("Background Measurement" for instance) by leaving the options unchecked. Clicking on and off the checkboxes will not have an immediate affect until the "Switch Groups" button is clicked.
 
 ### H. Flags
 
 <img style="float: right;" src="flags.png">
 
-The choices in the "Flags" dropdown are which flags to include in your analysis. By default, endPoints flagged with "Noisy Data", "Only one conc above baseline, active", and "Hit-call potentially confounded by overfitting" are included in the analysis. The scope of the analysis may cause you to want to include more or less flagged endPoints. Clicking on the flag checkboxes will not have an immediate affect until the "Switch Flags" button is clicked.
+ToxCast endpoint:chemical assay results may have data quality flags associated with them. The "Flags" dropdown menu provide the user with a choice to include or exclude endpoints with specific flags associated with them. By default, endPoints flagged with "Noisy Data", "Only one conc above baseline, active", and "Hit-call potentially confounded by overfitting" are included in the analysis, and all other endpoints with associated flags are excluded.. The scope of the analysis may cause you to want to include more or less flagged endPoints. Clicking on the flag checkboxes will not have an immediate affect until the "Switch Flags" button is clicked.
 
 ### I. Sites
 
-By default, the analysis is done on all the sites. However, you can dig down to an individual sites using this dropdown menu. Each graph and table may show the individual site data a bit different than the full data set analysis, and that is described in the "Basic Workflow" vignette
+By default, the analysis is done on all sites within the data set; however, the user can choose to explore results from individual sites using this dropdown menu. Each graph and table may show the individual site data a bit different than the full data set analysis. These differences are described in the "Basic Workflow" vignette.
 
 ### J. Hit Threshold
 
-There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits) that will calculate the number of "Hits"...which is simply the number of times the EAR is above a designated threshold. That threshold value is defined here. Changing the threshold will not have an immedate affect until the "Change Hit Threshold" button is clicked.
+There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits) that will calculate the number of "Hits" which is simply the number of times the EAR is above a designated threshold. That threshold value is defined here. Changing the threshold will not have an immedate affect until the "Change Hit Threshold" button is clicked.
 
 ## Main Output
 <table>
@@ -117,9 +117,11 @@ There are a few outputs (from the tabs: Hit Count, Site Hits, and Endpoint Hits)
 
 Each plot and table offered in the app is described in the [Basic Workflow vignette](basicWorkflow.html). Please refer there for more information.
 
-For each plot, there is an option to download the plot or data that is in the plot. The R-code to generate the output is also provided under each output. This would be the ideal way to customize any additional output.
+Each plot, table, and the map are generated by functions within the R-package. The table to the right indicates the function used for each tab in the app.
 
-The table to the right shows the main function that each tab in the app uses:
+All resulting graphics, tables, and data can be downloaded for use outside of the app. Graphics are downloaded in "png" format and tables and data are are downloaded in "csv" format. In addition, R code to reproduce each analysis in the R environment is provided at the bottom of each tab. See the "R Code" section for details.
+
+
 
 </td><td>
 
@@ -138,7 +140,12 @@ The table to the right shows the main function that each tab in the app uses:
 </td></tr> </table>
 
 ## R Code
-One important note is that the local path to the file is not recorded, so if the data file is not located in the current working directory, a file path will need to be added to the file name.
+
+Each tab is generated based on specific functions within the R-Package, and the appropriate code to reproduce results from each tab is provided at the bottom of the tab. Modification of this code in the R environment allows the user to customize plots and tables based on specific study needs. 
+
+The current version of the 'ggplot2' package "clips" off some of the text that is shown in the app graphics, so it is necessary to add "clipping code" as described in the basic workflow in order for text outside of the plot to render properly.
+
+The app provides many graphics and tables to work through a data analysis, some users may wish to have a record of what has been done, or to save specific analyses that prove to be particularly useful. By copying and pasting the R code, users by developing a "workflow" script that has all analysis saved in one place rather than needing to go through the process of choosing the many options needed to reproduce exactly what was done previously in the app. This workflow can serve as a valuable resource that results in reliably reproducible research. In the event of a need to modify a data set, it can also be used to efficiently update a data analysis without having to reproduce each step in the app manually.
 
 # Logistics
 
