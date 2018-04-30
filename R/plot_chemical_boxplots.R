@@ -1,6 +1,5 @@
 
-#' @rdname plot_tox_boxplots
-#' @export
+
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
@@ -13,7 +12,6 @@ plot_chemical_boxplots <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
 
-  
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
@@ -39,10 +37,12 @@ plot_chemical_boxplots <- function(chemicalSummary,
 
   }
   
-  if(length(unique(chemicalSummary$site)) == 1){
+  single_site <- length(unique(chemicalSummary$site)) == 1
+  
+  y_label <- fancyLabels(category = "Chemical", mean_logic, single_site)
+  
+  if(single_site){
     
-    y_label <- "All EARs for each chemical"
-
     countNonZero <- chemicalSummary %>%
       select(chnm, Class, EAR) %>%
       group_by(chnm, Class) %>%
@@ -74,17 +74,10 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
   } else {
     
-    y_label <- bquote(atop("max" ~ group("[", EAR[chemicals*"[" *k* "]"], "]")[site],  "k = all chemicals for a given sample"))
-    if(mean_logic %in% c("TRUE","mean")){
-      y_label <- bquote(atop("mean" ~ group("[", sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site], "k = all chemicals for a given sample"))
-    }
-    if(mean_logic %in% c("FALSE","max")){
-      y_label <- bquote(atop("max" ~ group("[", sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site],  "k = all chemicals for a given sample"))
-    }
-    
     graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
                                  manual_remove=manual_remove,
                                  mean_logic=mean_logic)
+    
     pretty_range <- range(graphData$maxEAR[graphData$maxEAR > 0])
     pretty_logs <- 10^(-10:10)
     log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])

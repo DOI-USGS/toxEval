@@ -97,12 +97,6 @@ plot_tox_boxplots <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   x <- y <- CAS <- ".dplyr"
 
-  pretty_cat <- switch(category, 
-                       "Chemical" = "k = all chemicals for a given sample",
-                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
-                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
-                       )
-
   if(category == "Chemical"){
 
     chemPlot <- plot_chemical_boxplots(chemicalSummary, 
@@ -120,6 +114,8 @@ plot_tox_boxplots <- function(chemicalSummary,
       chemicalSummary <- chemicalSummary[chemicalSummary$EAR > 0,]
     }
     single_site <- length(unique(chemicalSummary$site)) == 1
+    
+    y_label <- fancyLabels(category, mean_logic, single_site)
     
     if(single_site){
       
@@ -164,12 +160,6 @@ plot_tox_boxplots <- function(chemicalSummary,
       chemicalSummary$category <- factor(chemicalSummary$category,
                                          levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
       
-      if(category == "Chemical Class"){
-        y_label <- "All EARs within a chemical class"
-      } else {
-        y_label <- "All EARs within a biological grouping"
-      }
-      
       bioPlot <- ggplot(data = chemicalSummary)+
         coord_flip() +
         theme_bw() +
@@ -195,13 +185,6 @@ plot_tox_boxplots <- function(chemicalSummary,
       
     } else {
       
-      y_label <- bquote(atop("max" ~ group("[",EAR[chemicals*"[" *k* "]"], "]")[site],  .(pretty_cat)))
-      if(mean_logic %in% c("TRUE","mean")){
-        y_label <- bquote(atop("mean" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site], .(pretty_cat)))
-      }
-      if(mean_logic %in% c("FALSE","max")){
-        y_label <- bquote(atop("max" ~ group("[",sum(" "  ~ group("(",EAR[chemicals*"[" *k* "]"],")")), "]")[site],  .(pretty_cat)))
-      }
       graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                              category = category,
                              manual_remove = manual_remove,
@@ -395,4 +378,42 @@ fancyNumbers <- function(n){
   return(textReturn)
 }
 
+fancyLabels <- function(category, mean_logic, single_site){
+  
+  if(single_site){
+    if(category == "Chemical Class"){
+      y_label <- "All EARs within a chemical class"
+    } else if(category == "Biological") {
+      y_label <- "All EARs within a grouping"
+    } else {
+      y_label <- "All EARs for each chemical"
+    }
+  } else {
+  
+    pretty_cat <- switch(category, 
+                         "Chemical" = "k = chemicals, j = samples, k = sites",
+                         "Biological" = "k = chemicals within a specified grouping, j = samples, k = sites",
+                         "Chemical Class" = "k = chemicals within a specified class, j = samples, k = sites"
+    )
+    
+    y_label <- bquote(atop("max" ~ group("[",EAR[chemicals*"[" *k* "]"], "]")[site],  .(pretty_cat)))
+    
+    if(mean_logic %in% c("TRUE","mean")){
+      word_stat <- "mean"
+    }
+    if(mean_logic %in% c("FALSE","max")){
+      word_stat <- "max"
+    }
+    
+    y_label <- bquote(atop(.(word_stat) ~ 
+                             group("[", 
+                                   group("(",
+                                         sum(" "  ~ EAR[chemicals*"[" *i* "]"]),
+                                         ")")[j],
+                                   "]")
+                           [site*"[" *k* "]"], .(pretty_cat)))
+  }
+  
+  return(y_label)
+}
   
