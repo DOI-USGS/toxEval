@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Using the Shiny Application
 
-The Shiny application (the app) is a quick and convenient way to explore your data through a graphical user interface in the user's default browser. As with the R-package, ToxCast is the default biological endpoint database used to evaluate data. A user can override this default by providing a custom set of endpoints (e.g. aquatic life benchmarks).  
+The Shiny application (the app) is a quick and convenient way to explore data through a graphical user interface in the user's default browser. As with the R-package, ToxCast is the default biological endpoint database used to evaluate data. A user can override this default by providing a custom set of endpoints (e.g. aquatic life benchmarks).  
 
 The interaction with the app is primarily "point and click". The app includes multiple ways to visualize data through boxplots, barcharts, tables and an overview map. Numerous options can be selected to customize presentation of data by choosing to focus on chemicals, chemical classes, biologically relevant endpoing groupings, and specific suites of ToxCast assays. All resulting graphics, tables, and data can be downloaded for use outside of the app.
 
@@ -65,7 +65,7 @@ Once the Shiny App has been launched, the first step is to load the data. The da
 
 ### B. 'Group By' option
 
-The "Group By" radio buttons affect all output in the application. For each function, we will be summarizing the data by summing individual EARs. How we group those summations depends on this choice. 
+The "Group By" radio buttons affect all output in the application. For each function, the data will be summarized by summing individual EARs. How summations are grouped depends on this choice. 
 
 The "Group" choice will group all of the endPoints that have similar groupings based on the options as determined by the designated "Annotation". The default annotation is "intended_target_family". With that choice, the "Group" radio button groups all EARs by the unique categories in the "intended_target_family" category.
 
@@ -101,7 +101,7 @@ The options in the "Group" dropdown change depending on the choice in Annotation
 
 <img style="float: right;" src="flags.png">
 
-ToxCast endpoint:chemical assay results may have data quality flags associated with them. The "Flags" dropdown menu provide the user with a choice to include or exclude endpoints with specific flags associated with them. By default, endPoints flagged with "Noisy Data", "Only one conc above baseline, active", and "Hit-call potentially confounded by overfitting" are included in the analysis, and all other endpoints with associated flags are excluded.. The scope of the analysis may cause you to want to include more or less flagged endPoints. Clicking on the flag checkboxes will not have an immediate affect until the "Switch Flags" button is clicked.
+ToxCast endpoint:chemical assay results may have data quality flags associated with them. The "Flags" dropdown menu provide the user with a choice to include or exclude endpoints with specific flags associated with them. By default, endPoints flagged with "Noisy Data", "Only one conc above baseline, active", and "Hit-call potentially confounded by overfitting" are included in the analysis, and all other endpoints with associated flags are excluded. The scope of the analysis may user customization for flagged endPoints. Clicking on the flag checkboxes will not have an immediate affect until the "Switch Flags" button is clicked.
 
 ### I. Sites
 

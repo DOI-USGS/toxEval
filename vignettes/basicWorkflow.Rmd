@@ -328,7 +328,7 @@ ggsave(ep_plot, file = "ep_plot.png")
 ggsave(ep_plot, file = "ep_plot.pdf")
 ```
 
-For a more refined plot for a presentations or manuscripts, you will need to turn off clipping, and then it is necessary to save it via the standard "base R" methods:
+For a more refined plot for a presentations or manuscripts, the user will need to turn off clipping, and then it is necessary to save it via the standard "base R" methods:
 
 ```{r basesave1, eval=FALSE}
 

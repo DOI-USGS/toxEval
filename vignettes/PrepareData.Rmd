@@ -26,7 +26,7 @@ Each sheet has mandatory columns; the order of the columns is not important, but
 
 The "Data" sheet needs to have at a minimum of 4 columns: "CAS", "SiteID", "Value", and "Sample Date". The columns can be in any order, but the first row of the sheet should be the header (column names).
 
-* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Chemicals" sheet.
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Chemicals" sheet.
 
 * SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Sites" sheet. There are no requirements on formatting for this column.
 
@@ -44,7 +44,7 @@ As an example, the first several rows of a minimal example would look like this:
 
 The "Chemicals" sheet needs to have at a minimum of 2 columns: "CAS" and "Class". The columns can be in any order, but the first row of the sheet should be the header (column names).
 
-* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, you may need to pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
+* CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
 * Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping.
 
