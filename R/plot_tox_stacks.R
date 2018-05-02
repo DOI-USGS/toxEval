@@ -21,11 +21,11 @@
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
-#' @param mean_logic character. Options are "mean", "max", or "noSum". 
-#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-#' the values plotted are the overall max of the sample (not the max of the sum
-#' of the sample).
+#' @param mean_logic logical.  TRUE takes the mean sample of each site,
+#' FALSE takes the maximum sample of each site.
+#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' opposed to ToxCast benchmarks.
 #' @param manual_remove vector of categories to remove
 #' @param include_legend logical to include legend or not
 #' @param font_size numeric to adjust the axis font size
@@ -68,6 +68,7 @@ plot_tox_stacks <- function(chemicalSummary,
                             chem_site,
                             category = "Biological",
                             mean_logic = FALSE,
+                            sum_logic = TRUE,
                             manual_remove = NULL,
                             include_legend = TRUE, 
                             font_size = NA,
@@ -78,10 +79,6 @@ plot_tox_stacks <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   SiteID <- site_grouping <- n <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
   
-  mean_logic <- as.character(mean_logic)
-  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
-  
-
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- ""
   }
@@ -89,14 +86,16 @@ plot_tox_stacks <- function(chemicalSummary,
   if(category == "Chemical"){
     graphData <- graph_chem_data(chemicalSummary = chemicalSummary,
                            manual_remove = manual_remove,
-                           mean_logic = mean_logic)   
+                           mean_logic = mean_logic,
+                           sum_logic = sum_logic)   
     names(graphData)[names(graphData) == "maxEAR"] <- "meanEAR"
     names(graphData)[names(graphData) == "chnm"] <- "category"
   } else {
     graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                            category = category,
                            manual_remove = manual_remove,
-                           mean_logic = mean_logic) 
+                           mean_logic = mean_logic,
+                           sum_logic = sum_logic) 
     if(category == "Chemical"){
       graphData$category <- graphData$chnm
     } 
@@ -119,18 +118,11 @@ plot_tox_stacks <- function(chemicalSummary,
   cbValues <- sample(cbValues)
 
   siteLimits <- chem_site$`Short Name`
-  
-  pretty_cat <- switch(category, 
-                       "Chemical" = "k = all chemicals for a given sample",
-                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
-                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
-  )
-  
   single_site <- length(siteToFind) == 1
   
   if(!single_site){
     
-    y_label <- fancyLabels(category, mean_logic, single_site, sep = TRUE)
+    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE)
     
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],

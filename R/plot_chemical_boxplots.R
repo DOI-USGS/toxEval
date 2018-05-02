@@ -3,6 +3,7 @@
 plot_chemical_boxplots <- function(chemicalSummary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
+                                   sum_logic = TRUE,
                                    plot_ND = TRUE,
                                    font_size = NA,
                                    title = NA,
@@ -39,7 +40,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
   
   single_site <- length(unique(chemicalSummary$site)) == 1
   
-  y_label <- fancyLabels(category = "Chemical", mean_logic, single_site)
+  y_label <- fancyLabels(category = "Chemical", mean_logic, sum_logic, single_site)
   
   if(single_site){
     
@@ -72,7 +73,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
     graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
                                  manual_remove=manual_remove,
-                                 mean_logic=mean_logic)
+                                 mean_logic=mean_logic,
+                                 sum_logic=sum_logic)
     
     pretty_logs_new <-  prettyLogs(graphData$maxEAR)
     
@@ -192,24 +194,16 @@ plot_chemical_boxplots <- function(chemicalSummary,
 #' @rdname plot_tox_boxplots
 graph_chem_data <- function(chemicalSummary, 
                             manual_remove=NULL,
-                            mean_logic = FALSE){
+                            mean_logic = FALSE,
+                            sum_logic = TRUE){
   
   site <- chnm <- Class <- EAR <- sumEAR <- maxEAR <- ".dplyr"
 
-  mean_logic <- as.character(mean_logic)
-  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
-  
-  if(mean_logic %in% c("TRUE","mean")){
-    mean_logic <- TRUE
-  }
-  if(mean_logic %in% c("FALSE","max")){
-    mean_logic <- FALSE
-  }
-  
-  if(mean_logic == "noSum"){
+
+  if(!sum_logic){
     graphData <- chemicalSummary %>%
       group_by(site, chnm, Class) %>%
-      summarise(maxEAR=max(EAR)) %>%
+      summarise(maxEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
       data.frame()     
   } else {
     graphData <- chemicalSummary %>%

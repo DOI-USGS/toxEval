@@ -20,11 +20,11 @@
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
-#' @param mean_logic character. Options are "mean", "max", or "noSum". 
-#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-#' the values plotted are the overall max of the sample (not the max of the sum
-#' of the sample).
+#' @param mean_logic logical.  TRUE takes the mean sample of each site,
+#' FALSE takes the maximum sample of each site.
+#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' opposed to ToxCast benchmarks.
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param hit_threshold numeric threshold defining a "hit"
 #' @param font_size numeric to adjust the axis font size
@@ -83,6 +83,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                               category = "Biological",
                               manual_remove = NULL,
                               mean_logic = FALSE,
+                              sum_logic = TRUE,
                               plot_ND = TRUE, 
                               font_size = NA,
                               title = NA,
@@ -91,16 +92,14 @@ plot_tox_boxplots <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  mean_logic <- as.character(mean_logic)
-  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
-  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   x <- y <- CAS <- ".dplyr"
 
   if(category == "Chemical"){
 
     chemPlot <- plot_chemical_boxplots(chemicalSummary, 
-                                       mean_logic = mean_logic, 
+                                       mean_logic = mean_logic,
+                                       sum_logic = sum_logic,
                                        plot_ND = plot_ND,
                                        font_size = font_size,
                                        title = title,
@@ -115,7 +114,7 @@ plot_tox_boxplots <- function(chemicalSummary,
     }
     single_site <- length(unique(chemicalSummary$site)) == 1
     
-    y_label <- fancyLabels(category, mean_logic, single_site)
+    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site)
     
     if(single_site){
       
@@ -183,7 +182,8 @@ plot_tox_boxplots <- function(chemicalSummary,
       graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                              category = category,
                              manual_remove = manual_remove,
-                             mean_logic = mean_logic)
+                             mean_logic = mean_logic,
+                             sum_logic = sum_logic)
       
       pretty_logs_new <- prettyLogs(graphData$meanEAR)
       
@@ -290,22 +290,12 @@ plot_tox_boxplots <- function(chemicalSummary,
 tox_boxplot_data <- function(chemicalSummary, 
                       category = "Biological",
                       manual_remove = NULL, 
-                      mean_logic = FALSE){
+                      mean_logic = FALSE,
+                      sum_logic = TRUE){
   
   match.arg(category, c("Biological","Chemical Class"))
-  
-  mean_logic <- as.character(mean_logic)
-  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
-  
+
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  
-  if(mean_logic %in% c("TRUE","mean")){
-    mean_logic <- TRUE
-  }
-  if(mean_logic %in% c("FALSE","max")){
-    mean_logic <- FALSE
-  }
-  
   
   if(category == "Biological"){
     chemicalSummary$category <- chemicalSummary$Bio_category
@@ -313,11 +303,10 @@ tox_boxplot_data <- function(chemicalSummary,
     chemicalSummary$category <- chemicalSummary$Class
   }
   
-  if(mean_logic == "noSum"){
+  if(!sum_logic){
     tox_boxplot_data <- chemicalSummary %>%
       group_by(site,date,category) %>%
-      group_by(site, category) %>%
-      summarise(meanEAR=max(EAR)) %>%
+      summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
       data.frame()     
   } else {
     tox_boxplot_data <- chemicalSummary %>%
@@ -329,7 +318,6 @@ tox_boxplot_data <- function(chemicalSummary,
       data.frame()     
   }
 
-  
   if(!is.null(manual_remove)){
     tox_boxplot_data <- filter(tox_boxplot_data, !(category %in% manual_remove))
   }
@@ -384,7 +372,7 @@ fancyNumbers <- function(n){
   return(textReturn)
 }
 
-fancyLabels <- function(category, mean_logic, single_site, sep=FALSE){
+fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE){
   
   pretty_cat <- switch(category, 
                        "Chemical" = "k = chemicals, j = samples, k = sites",
@@ -392,13 +380,8 @@ fancyLabels <- function(category, mean_logic, single_site, sep=FALSE){
                        "Chemical Class" = "k = chemicals within a specified class, j = samples, k = sites"
   )
   
-  if(mean_logic %in% c("TRUE","mean")){
-    word_stat <- "mean"
-  }
-  if(mean_logic %in% c("FALSE","max")){
-    word_stat <- "max"
-  }
-  
+  word_stat <- ifelse(mean_logic, "mean", "max")
+
   if(single_site){
     if(category == "Chemical Class"){
       y_label <- "All EARs within a chemical class"
