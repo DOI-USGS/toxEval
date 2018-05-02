@@ -6,7 +6,8 @@
 \usage{
 plot_tox_endpoints(chemicalSummary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = NA,
-  mean_logic = FALSE, font_size = NA, title = NA, pallette = NA)
+  mean_logic = FALSE, sum_logic = TRUE, font_size = NA, title = NA,
+  pallette = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -19,11 +20,12 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
 
-\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
-TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-the values plotted are the overall max of the sample (not the max of the sum
-of the sample).}
+\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
+FALSE takes the maximum sample of each site.}
+
+\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+FALSE does not. FALSE may be better for traditional benchmarks as
+opposed to ToxCast benchmarks.}
 
 \item{font_size}{numeric to adjust the axis font size}
 
