@@ -106,7 +106,7 @@ sidebar <- dashboardSidebar(
    conditionalPanel(
      condition = "output.isTox == false",
      radioButtons("sumEAR", choices = list("Sum"=TRUE, "No Sum" = FALSE),
-                  inline = TRUE, label = NULL, selected = FALSE)
+                  inline = TRUE, label = NULL, selected = TRUE)
    ),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",

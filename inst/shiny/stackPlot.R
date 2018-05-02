@@ -1,8 +1,9 @@
 stackBarGroup_create <- reactive({
   catType = as.numeric(input$radioMaxGroup)
-  
+
   chemicalSummary <- chemicalSummary()
-  mean_logic <- input$meanEAR
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   
   rawData <- rawData()
   chem_site <- rawData$chem_site
@@ -27,6 +28,7 @@ stackBarGroup_create <- reactive({
                                chem_site, 
                                category = category,
                                mean_logic = mean_logic,
+                               sum_logic = sum_logic,
                                include_legend = include_legend,
                                font_size = ifelse(catType == 2, 14, 17),
                                title = stackTitle())
@@ -39,31 +41,31 @@ stackBarGroup_create <- reactive({
 stackTitle <- reactive({
 
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- input$meanEAR
+  
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   pretty_cat <- tolower(category)
   
   if(pretty_cat == "biological"){
-    pretty_cat <- "biological activity grouping"
+    pretty_cat <- "grouping"
   }
   site <- input$sites
   siteTable <- rawData()[["chem_site"]]
   if(site == "All"){
     pretty_cat <- switch(category, 
                          "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a specified biological activity grouping",
+                         "Biological" = "for chemicals within a specified grouping",
                          "Chemical Class" = "for chemicals within a specified class"
     )
-    if(mean_logic == "noSum"){
-      title <- paste("Maximum EARs",pretty_cat)
-    } else if (mean_logic == "max"){
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the maxiumum of each site")
-    } else if (mean_logic == "mean"){
+    if (mean_logic){
       title <- paste("Summing EARs",pretty_cat, "
 for a given sample, taking the mean of each site")
+    } else{
+      title <- paste("Summing EARs",pretty_cat, "
+for a given sample, taking the maximum of each site")
     }
   } else {
     pretty_cat <- switch(category, 
@@ -125,7 +127,23 @@ barCode <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   include_legend <- !(catType == 2)
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   
+  if(!sum_logic){
+    stackPlotCode <- paste0(rCodeSetup(),"
+# To re-order the x-axis, 
+# Convert tox_list$chem_site$`Short Name` to a factor,
+# and re-order the 'levels' of that factor
+stack_plot <- plot_tox_stacks(chemicalSummary, 
+                  chem_site = tox_list$chem_site,
+                  category = '",category,"',
+                  mean_logic = ",mean_logic,",
+                  sum_logic = FALSE,
+                  title = '",stackTitle(),"',
+                  include_legend = ",include_legend,")
+stack_plot")    
+  } else {
   stackPlotCode <- paste0(rCodeSetup(),"
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
@@ -133,10 +151,12 @@ barCode <- reactive({
 stack_plot <- plot_tox_stacks(chemicalSummary, 
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
-                  mean_logic = '",input$meanEAR,"',
+                  mean_logic = ",mean_logic,",
                   title = '",stackTitle(),"',
                   include_legend = ",include_legend,")
-stack_plot")
+stack_plot")    
+  }
+
   
   return(stackPlotCode)
   
