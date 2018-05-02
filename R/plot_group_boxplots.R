@@ -125,12 +125,8 @@ plot_tox_boxplots <- function(chemicalSummary,
         chemicalSummary$category <- chemicalSummary$Class
       }
       
-      pretty_range <- range(chemicalSummary$EAR[chemicalSummary$EAR > 0])
-      pretty_logs <- 10^(-10:10)
-      log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-      log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
-      pretty_logs_new <-  pretty_logs[log_index] 
-      
+      pretty_logs_new <- prettyLogs(chemicalSummary$EAR)
+
       countNonZero <- chemicalSummary %>%
         group_by(category) %>%
         summarise(nonZero = as.character(length(unique(CAS))),
@@ -161,7 +157,6 @@ plot_tox_boxplots <- function(chemicalSummary,
                                          levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
       
       bioPlot <- ggplot(data = chemicalSummary)+
-        coord_flip() +
         theme_bw() +
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
@@ -190,11 +185,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                              manual_remove = manual_remove,
                              mean_logic = mean_logic)
       
-      pretty_range <- range(graphData$meanEAR[graphData$meanEAR > 0])
-      pretty_logs <- 10^(-10:10)
-      log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-      log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
-      pretty_logs_new <-  pretty_logs[log_index] 
+      pretty_logs_new <- prettyLogs(graphData$meanEAR)
       
       countNonZero <- graphData %>%
         group_by(category) %>%
@@ -207,7 +198,6 @@ plot_tox_boxplots <- function(chemicalSummary,
       label <- "# Sites"
       
       bioPlot <- ggplot(data = graphData)+
-        coord_flip() +
         scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
         theme_bw() +
         xlab("") +
@@ -233,6 +223,14 @@ plot_tox_boxplots <- function(chemicalSummary,
       bioPlot <- bioPlot +
         theme(axis.text = element_text(size = font_size),
               axis.title =   element_text(size=font_size))
+    }
+    
+    if(packageVersion("ggplot2") >= '2.2.1.9000'){
+      bioPlot <- bioPlot +
+        coord_flip(clip = "off")
+    } else {
+      bioPlot <- bioPlot +
+        coord_flip()      
     }
     
     plot_info <- ggplot_build(bioPlot)
@@ -280,7 +278,7 @@ plot_tox_boxplots <- function(chemicalSummary,
         bioPlot_w_labels <- bioPlot_w_labels +
           theme(plot.title = element_text(size=font_size))
       }
-    }  
+    } 
     
     return(bioPlot_w_labels)
   }
@@ -354,6 +352,15 @@ tox_boxplot_data <- function(chemicalSummary,
   return(tox_boxplot_data)
 }
 
+prettyLogs <- function(x){
+  pretty_range <- range(x[x > 0])
+  pretty_logs <- 10^(-10:10)
+  log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
+  log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
+  pretty_logs_new <-  pretty_logs[log_index] 
+  return(pretty_logs_new)
+}
+
 
 fancyNumbers2 <- function(n){
   textReturn <-  signif(n,digits = 2)
@@ -362,7 +369,6 @@ fancyNumbers2 <- function(n){
   textReturn[1] <- paste("<",textReturn[1])
   return(textReturn)
 }
-
 
 fancyNumbers <- function(n){
   nNoNA <- n[!is.na(n)]
@@ -378,7 +384,20 @@ fancyNumbers <- function(n){
   return(textReturn)
 }
 
-fancyLabels <- function(category, mean_logic, single_site){
+fancyLabels <- function(category, mean_logic, single_site, sep=FALSE){
+  
+  pretty_cat <- switch(category, 
+                       "Chemical" = "k = chemicals, j = samples, k = sites",
+                       "Biological" = "k = chemicals within a specified grouping, j = samples, k = sites",
+                       "Chemical Class" = "k = chemicals within a specified class, j = samples, k = sites"
+  )
+  
+  if(mean_logic %in% c("TRUE","mean")){
+    word_stat <- "mean"
+  }
+  if(mean_logic %in% c("FALSE","max")){
+    word_stat <- "max"
+  }
   
   if(single_site){
     if(category == "Chemical Class"){
@@ -388,32 +407,30 @@ fancyLabels <- function(category, mean_logic, single_site){
     } else {
       y_label <- "All EARs for each chemical"
     }
+    
   } else {
   
-    pretty_cat <- switch(category, 
-                         "Chemical" = "k = chemicals, j = samples, k = sites",
-                         "Biological" = "k = chemicals within a specified grouping, j = samples, k = sites",
-                         "Chemical Class" = "k = chemicals within a specified class, j = samples, k = sites"
-    )
-    
-    y_label <- bquote(atop("max" ~ group("[",EAR[chemicals*"[" *k* "]"], "]")[site],  .(pretty_cat)))
-    
-    if(mean_logic %in% c("TRUE","mean")){
-      word_stat <- "mean"
+    if(sep){
+      y_label <- bquote(.(word_stat) ~ 
+                               group("[", 
+                                     group("(",
+                                           sum(" "  ~ EAR[chemicals*"[" *i* "]"]),
+                                           ")")["[" *j* "]"],
+                                     "]")
+                             [site*"[" *k* "]"])
+      y_label <- list(y_label = y_label, caption = pretty_cat)
+    } else {
+
+      y_label <- bquote(atop(.(word_stat) ~ 
+                               group("[", 
+                                     group("(",
+                                           sum(" "  ~ EAR[chemicals*"[" *i* "]"]),
+                                           ")")["[" *j* "]"],
+                                     "]")
+                             [site*"[" *k* "]"], .(pretty_cat)))
     }
-    if(mean_logic %in% c("FALSE","max")){
-      word_stat <- "max"
-    }
-    
-    y_label <- bquote(atop(.(word_stat) ~ 
-                             group("[", 
-                                   group("(",
-                                         sum(" "  ~ EAR[chemicals*"[" *i* "]"]),
-                                         ")")[j],
-                                   "]")
-                           [site*"[" *k* "]"], .(pretty_cat)))
   }
-  
+    
   return(y_label)
 }
   

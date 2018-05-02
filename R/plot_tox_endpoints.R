@@ -72,12 +72,6 @@ plot_tox_endpoints <- function(chemicalSummary,
   mean_logic <- as.character(mean_logic)
   match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
   
-  pretty_cat <- switch(category, 
-                       "Chemical" = "k = all chemicals for a given sample",
-                       "Biological" = "k = chemicals within a specified biological activity grouping for a given sample",
-                       "Chemical Class" = "k = chemicals within a specified class for a given sample"
-  )
-  
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
   
   if(category == "Biological"){
@@ -99,15 +93,9 @@ plot_tox_endpoints <- function(chemicalSummary,
       filter_(paste0("category == '", filterBy,"'"))
   }
   
+  y_label <- fancyLabels(category, mean_logic, single_site)
+  
   if(single_site){
-    
-    if(category == "Chemical Class"){
-      y_label <- "All EARs within a chemical class"
-    } else if (category == "Biological") {
-      y_label <- "All EARs within a biological grouping"
-    } else {
-      y_label <- "All EARs"
-    }
     
     countNonZero <- chemicalSummary %>%
       group_by(endPoint) %>%
@@ -132,12 +120,7 @@ plot_tox_endpoints <- function(chemicalSummary,
                            orderColsBy$endPoint[!is.na(orderColsBy$median)])
     }
     
-    chemicalSummary$endPoint <- factor(chemicalSummary$endPoint, levels = orderedLevelsEP)
-    pretty_range <- range(chemicalSummary$EAR[chemicalSummary$EAR > 0])
-    pretty_logs <- 10^(-10:10)
-    log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-    log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
-    pretty_logs_new <-  pretty_logs[log_index] 
+    pretty_logs_new <-  prettyLogs(chemicalSummary$EAR)
     
     stackedPlot <- ggplot(data = chemicalSummary)+
       scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
@@ -157,14 +140,6 @@ plot_tox_endpoints <- function(chemicalSummary,
     }
     
   } else {
-    
-    y_label <- bquote(atop("max" ~ group("[",EAR[chemical*"[" *k* "]"], "]")[site],  .(pretty_cat)))
-    if(mean_logic %in% c("TRUE","mean")){
-      y_label <- bquote(atop("mean" ~ group("[",sum(" "  ~ group("(",EAR[chemical*"[" *k* "]"],")")), "]")[site], .(pretty_cat)))
-    }
-    if(mean_logic %in% c("FALSE","max")){
-      y_label <- bquote(atop("max" ~ group("[",sum(" "  ~ group("(",EAR[chemical*"[" *k* "]"],")")), "]")[site],  .(pretty_cat)))
-    }
     
     if(mean_logic == "noSum"){
       graphData <- chemicalSummary %>%
@@ -190,12 +165,8 @@ plot_tox_endpoints <- function(chemicalSummary,
         data.frame() %>%
         mutate(category=as.character(category))      
     }
-  
-    pretty_range <- range(graphData$meanEAR[graphData$meanEAR > 0])
-    pretty_logs <- 10^(-10:10)
-    log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-    log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
-    pretty_logs_new <-  pretty_logs[log_index] 
+
+    pretty_logs_new <- prettyLogs(graphData$meanEAR)
     
     countNonZero <- graphData %>%
       group_by(endPoint) %>%
@@ -290,9 +261,10 @@ plot_tox_endpoints <- function(chemicalSummary,
 
   if(!is.na(font_size)){
     stackedPlot <- stackedPlot +
-      theme(axis.text = element_text(size = font_size))
+      theme(axis.text = element_text(size = font_size),
+            axis.title =   element_text(size=font_size))
   }
-  
+
   if(!is.na(title)){
     stackedPlot <- stackedPlot +
       ggtitle(title)

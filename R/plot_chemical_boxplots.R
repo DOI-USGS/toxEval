@@ -52,12 +52,8 @@ plot_chemical_boxplots <- function(chemicalSummary,
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     
     label <- "# Endpoints"
-    
-    pretty_range <- range(chemicalSummary$EAR[chemicalSummary$EAR > 0])
-    pretty_logs <- 10^(-10:10)
-    log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-    log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
-    pretty_logs_new <-  pretty_logs[log_index]
+
+    pretty_logs_new <-  prettyLogs(chemicalSummary$EAR)
     
     toxPlot_All <- ggplot(data=chemicalSummary)
     
@@ -78,11 +74,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                  manual_remove=manual_remove,
                                  mean_logic=mean_logic)
     
-    pretty_range <- range(graphData$maxEAR[graphData$maxEAR > 0])
-    pretty_logs <- 10^(-10:10)
-    log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-    log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
-    pretty_logs_new <-  pretty_logs[log_index] 
+    pretty_logs_new <-  prettyLogs(graphData$maxEAR)
     
     countNonZero <- graphData %>%
       select(chnm, Class, maxEAR) %>%
@@ -112,7 +104,6 @@ plot_chemical_boxplots <- function(chemicalSummary,
     scale_y_log10(y_label, labels=fancyNumbers,breaks=pretty_logs_new)  +
     theme_bw() +
     scale_x_discrete(drop = TRUE) +
-    coord_flip() +
     geom_hline(yintercept = hit_threshold, linetype="dashed", color="black") +
     theme(axis.text = element_text( color = "black"),
           axis.title.y = element_blank(),
@@ -139,6 +130,14 @@ plot_chemical_boxplots <- function(chemicalSummary,
     toxPlot_All <- toxPlot_All +
       theme(axis.text = element_text(size = font_size),
             axis.title =   element_text(size=font_size))
+  }
+  
+  if(packageVersion("ggplot2") >= '2.2.1.9000'){
+    toxPlot_All <- toxPlot_All +
+      coord_flip(clip = "off")
+  } else {
+    toxPlot_All <- toxPlot_All +
+      coord_flip()      
   }
   
   plot_info <- ggplot_build(toxPlot_All)
