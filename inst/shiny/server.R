@@ -189,14 +189,29 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
   })
   
   toxCast <- reactive({
-    
     rawData <- rawData()
-    
+
     toxCast_val <- all(is.null(rawData$benchmarks))
     
     return(toxCast_val)
   })
+  
+  output$isTox <- reactive(toxCast())
+  outputOptions(output, "isTox", suspendWhenHidden = FALSE)
 
+  
+  output$title_text <- renderText({
+    
+    if(toxCast()){
+      textUI <- "Analysis using ToxCast endPoints"
+    } else {
+      textUI <- "Analysis using CUSTOM endPoints:
+      Many dropdowns on sidebar will have no effect"
+    }
+    
+    HTML(textUI)
+    })
+  
   output$meanText <- renderText({
     
     mean_logic <- input$meanEAR

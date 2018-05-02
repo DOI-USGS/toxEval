@@ -101,8 +101,13 @@ sidebar <- dashboardSidebar(
    radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
-   radioButtons("meanEAR", choices = list("MeanEAR"="mean", "MaxEAR" = "max"),
-                inline = TRUE, label = NULL, selected = "max"),
+   radioButtons("meanEAR", choices = list("Mean EAR"=TRUE, "Max EAR" = FALSE),
+                inline = TRUE, label = NULL, selected = FALSE),
+   conditionalPanel(
+     condition = "output.isTox == false",
+     radioButtons("sumEAR", choices = list("Sum"=TRUE, "No Sum" = FALSE),
+                  inline = TRUE, label = NULL, selected = TRUE)
+   ),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
         checkboxGroupInput("assay", "Assays:",
