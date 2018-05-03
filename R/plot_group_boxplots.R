@@ -302,12 +302,13 @@ tox_boxplot_data <- function(chemicalSummary,
   } else {
     chemicalSummary$category <- chemicalSummary$Class
   }
-  
+
   if(!sum_logic){
     tox_boxplot_data <- chemicalSummary %>%
-      group_by(site,date,category) %>%
+      group_by(site,category) %>%
       summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
-      data.frame()     
+      data.frame() 
+      
   } else {
     tox_boxplot_data <- chemicalSummary %>%
       group_by(site,date,category) %>%
