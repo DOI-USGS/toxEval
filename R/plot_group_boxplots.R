@@ -384,9 +384,9 @@ fancyNumbers <- function(n){
 fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE){
   
   pretty_cat <- switch(category, 
-                       "Chemical" = "k = chemicals, j = samples, k = sites",
-                       "Biological" = "k = chemicals within a specified grouping, j = samples, k = sites",
-                       "Chemical Class" = "k = chemicals within a specified class, j = samples, k = sites"
+                       "Chemical" = "i = chemicals, j = samples, k = sites",
+                       "Biological" = "i = chemicals in a specified grouping, j = samples, k = sites",
+                       "Chemical Class" = "i = chemicals in a specified class, j = samples, k = sites"
   )
   
   word_stat <- ifelse(mean_logic, "mean", "max")
@@ -406,10 +406,10 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE)
       y_label <- bquote(.(word_stat) ~ 
                                group("[", 
                                      group("(",
-                                           sum(" "  ~ EAR[chemicals*"[" *i* "]"]),
+                                           sum(" "  ~ EAR["[" *i* "]"]),
                                            ")")["[" *j* "]"],
                                      "]")
-                             [site*"[" *k* "]"])
+                             ["[" *k* "]"])
       y_label <- list(y_label = y_label, caption = pretty_cat)
     } else {
 
