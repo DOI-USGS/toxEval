@@ -149,7 +149,7 @@ rank_sites <- function(chemicalSummary,
   } else {
     chemicalSummary$site <- chemicalSummary$shortName
   }
-  browser()
+
   if(!sum_logic){
     statsOfColumn <- chemicalSummary %>%
       group_by(site, category) %>%
