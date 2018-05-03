@@ -160,7 +160,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
                           mean_logic = ",mean_logic,",
                           title = '",boxTitle(),"',
                           plot_ND = ",plot_ND,")
-                          bio_plot")    
+bio_plot")    
   } else {
     bioPlotCode <- paste0(rCodeSetup(),"
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
@@ -169,7 +169,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
                           sum_logic = FALSE,
                           title = '",boxTitle(),"',
                           plot_ND = ",plot_ND,")
-                          bio_plot")
+bio_plot")
   }
 
   

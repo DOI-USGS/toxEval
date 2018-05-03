@@ -6,7 +6,7 @@ output$hitsTableEPs <- DT::renderDataTable({
   
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- input$meanEAR
+  mean_logic <- as.logical(input$meanEAR)
   hitThres <- hitThresValue()
   
   tableEPs <- endpoint_hits_DT(chemicalSummary, 
