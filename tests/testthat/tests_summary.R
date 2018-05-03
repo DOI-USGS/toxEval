@@ -74,7 +74,7 @@ test_that("Plotting summaries", {
   chemPlot <- suppressWarnings(plot_tox_boxplots(chemicalSummary, 
                                  category = "Chemical"))
   
-  expect_true(all(names(chemPlot$data) %in% c("site","chnm","Class","maxEAR")))
+  expect_true(all(names(chemPlot$data) %in% c("site","chnm","Class","meanEAR")))
   expect_equal(chemPlot$layers[[1]]$geom_params$outlier.shape, 19)
   expect_true(is.null(chemPlot$layers[[1]]$aes_params$fill))
   
@@ -95,7 +95,7 @@ test_that("Plotting heatmap summaries", {
   
   chemHeatPlot <- plot_tox_heatmap(chemicalSummary, chem_site,
                                     category = "Chemical")
-  expect_true(all(names(chemHeatPlot$data) %in% c("site","chnm","Class","maxEAR",
+  expect_true(all(names(chemHeatPlot$data) %in% c("site","chnm","Class","meanEAR",
                                                    "site_grouping","Short Name")))
   
 })
@@ -167,12 +167,12 @@ test_that("Chem plotting functions", {
   testthat::skip_on_cran()
   
   graphData <- graph_chem_data(chemicalSummary)
-  expect_true(all(names(graphData) %in% c("site","chnm","Class","maxEAR")))
+  expect_true(all(names(graphData) %in% c("site","chnm","Class","meanEAR")))
   expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
-  expect_equal(signif(graphData[["maxEAR"]][graphData[["site"]] == "USGS-04024000" &
+  expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
                                        graphData[["chnm"]] == "1-Methylnaphthalene"],4),2.279e-06)
-  expect_equal(signif(graphData[["maxEAR"]][graphData[["site"]] == "USGS-04024000" &
+  expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
                                               graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.9975)
   
   
