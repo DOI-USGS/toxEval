@@ -6,10 +6,10 @@
 \title{Create an interactive map of the data}
 \usage{
 make_tox_map(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE)
+  mean_logic = FALSE, sum_logic = TRUE)
 
 map_tox_data(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE)
+  mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -19,11 +19,12 @@ Short Name, dec_lon, and dec_lat}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
-TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-the values plotted are the overall max of the sample (not the max of the sum
-of the sample).}
+\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
+FALSE takes the maximum sample of each site.}
+
+\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+FALSE does not. FALSE may be better for traditional benchmarks as
+opposed to ToxCast benchmarks.}
 }
 \description{
 This function takes the data and summarizes it based on the 

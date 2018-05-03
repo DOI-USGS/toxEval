@@ -137,11 +137,11 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
 
 orderClass <- function(graphData){
   
-  chnm <- Class <- maxEAR <- median <- max_med <- ".dplyr"
+  chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
   
   orderClass_df <- graphData %>%
     group_by(chnm, Class) %>%
-    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
+    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
     group_by(Class) %>%
     summarise(max_med = max(median, na.rm = TRUE)) %>%
     arrange(desc(max_med))
@@ -152,11 +152,11 @@ orderClass <- function(graphData){
 
 orderChem <- function(graphData, orderClass_df){
   
-  chnm <- Class <- maxEAR <- median <- ".dplyr"
+  chnm <- Class <- meanEAR <- median <- ".dplyr"
   
   orderChem_df <- graphData %>%
     group_by(chnm,Class) %>%
-    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
+    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
     data.frame() %>%
     mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
   

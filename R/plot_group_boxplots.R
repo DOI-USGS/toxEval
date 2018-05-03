@@ -293,8 +293,16 @@ tox_boxplot_data <- function(chemicalSummary,
                       mean_logic = FALSE,
                       sum_logic = TRUE){
   
-  match.arg(category, c("Biological","Chemical Class"))
+  match.arg(category, c("Biological","Chemical Class","Chemical"))
 
+  if(category == "Chemical"){
+    chm_sum <- graph_chem_data(chemicalSummary = chemicalSummary,
+                               mean_logic = mean_logic,
+                               sum_logic = sum_logic,
+                               manual_remove = manual_remove)
+    return(chm_sum)
+  }
+  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   
   if(category == "Biological"){

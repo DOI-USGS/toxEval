@@ -11,7 +11,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                    hit_threshold = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  chnm <- Class <- maxEAR <- x <- y <- ".dplyr"
+  chnm <- Class <- meanEAR <- x <- y <- ".dplyr"
 
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
@@ -76,13 +76,13 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                  mean_logic=mean_logic,
                                  sum_logic=sum_logic)
     
-    pretty_logs_new <-  prettyLogs(graphData$maxEAR)
+    pretty_logs_new <-  prettyLogs(graphData$meanEAR)
     
     countNonZero <- graphData %>%
-      select(chnm, Class, maxEAR) %>%
+      select(chnm, Class, meanEAR) %>%
       group_by(chnm, Class) %>%
-      summarize(nonZero = as.character(sum(maxEAR>0)),
-                hits = as.character(sum(maxEAR > hit_threshold)))
+      summarize(nonZero = as.character(sum(meanEAR>0)),
+                hits = as.character(sum(meanEAR > hit_threshold)))
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     
@@ -91,12 +91,12 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
     if(!all(is.na(pallette))){
       toxPlot_All <- toxPlot_All +
-        geom_boxplot(aes(x=chnm, y=maxEAR, fill=chnm),lwd=0.1,outlier.size=1) +
+        geom_boxplot(aes(x=chnm, y=meanEAR, fill=chnm),lwd=0.1,outlier.size=1) +
         scale_fill_manual(values = pallette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
-        geom_boxplot(aes(x=chnm, y=maxEAR, fill=Class),
+        geom_boxplot(aes(x=chnm, y=meanEAR, fill=Class),
                      lwd=0.1,outlier.size=1)
     }
  
@@ -197,13 +197,13 @@ graph_chem_data <- function(chemicalSummary,
                             mean_logic = FALSE,
                             sum_logic = TRUE){
   
-  site <- chnm <- Class <- EAR <- sumEAR <- maxEAR <- ".dplyr"
+  site <- chnm <- Class <- EAR <- sumEAR <- meanEAR <- ".dplyr"
 
 
   if(!sum_logic){
     graphData <- chemicalSummary %>%
       group_by(site, chnm, Class) %>%
-      summarise(maxEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
+      summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
       data.frame()     
   } else {
     graphData <- chemicalSummary %>%
@@ -211,7 +211,7 @@ graph_chem_data <- function(chemicalSummary,
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
       group_by(site, chnm, Class) %>%
-      summarise(maxEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
+      summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
       data.frame() 
   }
   
