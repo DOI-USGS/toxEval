@@ -416,10 +416,10 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE)
       y_label <- bquote(atop(.(word_stat) ~ 
                                group("[", 
                                      group("(",
-                                           sum(" "  ~ EAR[chemicals*"[" *i* "]"]),
+                                           sum(" "  ~ EAR["[" *i* "]"]),
                                            ")")["[" *j* "]"],
                                      "]")
-                             [site*"[" *k* "]"], .(pretty_cat)))
+                             ["[" *k* "]"], .(pretty_cat)))
     }
   }
     
