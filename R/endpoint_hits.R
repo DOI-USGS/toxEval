@@ -172,7 +172,6 @@ endpoint_hits <- function(chemicalSummary,
         spread(category, nSites)      
     }
 
-    
   } else {
     if(!sum_logic){
       fullData <- chemicalSummary %>%

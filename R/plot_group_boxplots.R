@@ -225,13 +225,13 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.title =   element_text(size=font_size))
     }
     
-    if(packageVersion("ggplot2") >= '2.2.1.9000'){
-      bioPlot <- bioPlot +
-        coord_flip(clip = "off")
-    } else {
+    # if(packageVersion("ggplot2") >= '2.2.1.9000'){
+    #   bioPlot <- bioPlot +
+    #     coord_flip(clip = "off")
+    # } else {
       bioPlot <- bioPlot +
         coord_flip()      
-    }
+    # }
     
     plot_info <- ggplot_build(bioPlot)
     layout_stuff <- plot_info$layout

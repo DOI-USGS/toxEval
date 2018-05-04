@@ -134,13 +134,14 @@ plot_chemical_boxplots <- function(chemicalSummary,
             axis.title =   element_text(size=font_size))
   }
   
-  if(packageVersion("ggplot2") >= '2.2.1.9000'){
-    toxPlot_All <- toxPlot_All +
-      coord_flip(clip = "off")
-  } else {
+  #Saving for later!!!!
+  # if(packageVersion("ggplot2") >= '2.2.1.9000'){
+  #   toxPlot_All <- toxPlot_All +
+  #     coord_flip(clip = "off")
+  # } else {
     toxPlot_All <- toxPlot_All +
       coord_flip()      
-  }
+  # }
   
   plot_info <- ggplot_build(toxPlot_All)
   layout_stuff <- plot_info$layout

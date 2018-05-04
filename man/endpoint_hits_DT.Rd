@@ -6,21 +6,23 @@
 \title{Rank endpoints by category}
 \usage{
 endpoint_hits_DT(chemicalSummary, category = "Biological",
-  mean_logic = FALSE, hit_threshold = 0.1, include_links = TRUE)
+  mean_logic = FALSE, sum_logic = TRUE, hit_threshold = 0.1,
+  include_links = TRUE)
 
 endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
-  hit_threshold = 0.1)
+  sum_logic = TRUE, hit_threshold = 0.1)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
-TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-the values plotted are the overall max of the sample (not the max of the sum
-of the sample).}
+\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
+FALSE takes the maximum sample of each site.}
+
+\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+FALSE does not. FALSE may be better for traditional benchmarks as
+opposed to ToxCast benchmarks.}
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
 
