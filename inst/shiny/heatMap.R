@@ -44,27 +44,23 @@ heatTitle <- reactive({
   if(site == "All"){
     pretty_cat <- switch(category, 
                          "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a specified biological activity grouping",
-                         "Chemical Class" = "for chemicals within a specified class"
+                         "Biological" = "for chemicals within a grouping",
+                         "Chemical Class" = "for chemicals within a class"
     )
-    if (mean_logic == "max"){
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the mean of each site")
+    title <- paste("Summing EARs",pretty_cat, "for a given sample,")
+    if (mean_logic){
+      title <- paste(title,"taking the mean of each site")
     } else {
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the maximum of each site")
+      title <- paste(title,"taking the max of each site")
     }
   } else {
       pretty_cat <- switch(category, 
-                           "Chemical" = "Chemical",
-                           "Biological" = "Biological Activity Grouping",
-                           "Chemical Class" = "Chemical Class"
+                           "Chemical" = "chemical",
+                           "Biological" = "grouping",
+                           "Chemical Class" = "chemical class"
       )
-      word <- switch(mean_logic,
-                     "mean"="Mean",
-                     "max"="Maximum",
-                     "noSum" = "Max")
-      title <- paste(word,"EAR per",category)
+      word <- ifelse(mean_logic,"Mean","Maximum")
+      title <- paste(word,"EAR per",pretty_cat)
       
       title <- paste(title,"
                      ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])

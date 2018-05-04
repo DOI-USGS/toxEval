@@ -272,11 +272,14 @@ plot_tox_boxplots <- function(chemicalSummary,
     
     if(!all(is.na(title))){
       bioPlot_w_labels <- bioPlot_w_labels +
-        ggtitle(title)
+        ggtitle(title) 
       
       if(!is.na(font_size)){
         bioPlot_w_labels <- bioPlot_w_labels +
-          theme(plot.title = element_text(size=font_size))
+          theme(plot.title = element_text(size=font_size, margin = margin(b = 5)))
+      } else {
+        bioPlot_w_labels <- bioPlot_w_labels +
+          theme(plot.title = element_text(size=font_size, margin = margin(b = 5)))        
       }
     } 
     

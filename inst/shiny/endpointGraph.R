@@ -97,27 +97,28 @@ epTitle <- reactive({
  
   if(site == "All"){
     pretty_cat <- switch(category, 
-                         "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a specified grouping",
-                         "Chemical Class" = "for chemicals within a specified class"
+                         "Chemical" = paste("for",filterBy),
+                         "Biological" = paste("for chemicals within the",filterBy,"class"),
+                         "Chemical Class" = paste("for chemicals within the",filterBy,"group")
     )
-    if(mean_logic == "max"){
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the mean of each site")
+    pretty_cat <- paste(pretty_cat,"
+")
+    title <- paste("Summing EARs",pretty_cat,"for a given sample,")
+    if(mean_logic){
+      title <- paste(title, "taking the mean of each site")
     } else {
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the max of each site")
+      title <- paste(title, "taking the max of each site")
     }
   } else {
-      pretty_cat <- switch(category, 
-                           "Chemical" = "Chemical",
-                           "Biological" = "Biological Activity Grouping",
-                           "Chemical Class" = "Chemical Class"
-      )
-      title <- paste0("EAR per ",category)
+    pretty_cat <- switch(category, 
+                         "Chemical" = filterBy,
+                         "Biological" = paste("chemicals within",filterBy),
+                         "Chemical Class" = paste("chemicals within",filterBy)
+    )
+    title <- paste0("EAR per ",category)
       
-      title <- paste(title,"
-                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+    title <- paste(title,"
+", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
 
   return(title)
