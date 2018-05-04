@@ -7,11 +7,13 @@ output$hitsTableEPs <- DT::renderDataTable({
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   hitThres <- hitThresValue()
-  
+
   tableEPs <- endpoint_hits_DT(chemicalSummary, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
+                               sum_logic = sum_logic,
                                hit_threshold = hitThres,
                                include_links = toxCast())
   updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
@@ -28,7 +30,7 @@ hitsTableEPCode <- reactive({
 # Use the endpoint_hits_DT for a formatted DT table
 hitTable <- endpoint_hits(chemicalSummary, 
               category = '",category,"',
-              mean_logic = '",input$meanEAR,"',
+              mean_logic = ",as.logical(input$meanEAR),",
               hit_threshold = ",hitThres,")")
   
   return(hitsTableEPCode)
@@ -44,11 +46,12 @@ hitTableData <- reactive({
   
   chemicalSummary <- chemicalSummary()
   hitThres <- hitThresValue()
-  mean_logic <- input$meanEAR
-  
-  tableGroup <- endpointHits(chemicalSummary, 
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
+  tableGroup <- endpoint_hits(chemicalSummary, 
                              category = c("Biological","Chemical","Chemical Class")[catType],
                              mean_logic = mean_logic,
+                             sum_logic = sum_logic,
                              hit_threshold = hitThres)
 })
 
