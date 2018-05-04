@@ -303,8 +303,12 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     }
     
     if(site == "All"){
-
-      title <- paste("Summing EARs",pretty_cat, "for a given sample,")
+      
+      if(sum_logic){
+        title <- paste("Summing EARs",pretty_cat, "of a sample,")
+      } else {
+        title <- paste("Max EARs",pretty_cat, "of a sample,")
+      }
       
       if(mean_logic){
         title <- paste(title,"taking the mean of each site")
@@ -327,7 +331,9 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
                              "Chemical Class" = "chemical class"
         )
       }
+      
       title <- paste("EAR per",pretty_cat)
+      
       if(tab == "summaryBar"){
         title <- paste(title, "for individual samples")
       }

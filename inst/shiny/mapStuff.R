@@ -44,11 +44,13 @@ mapDataINFO <- reactive({
     category <- c("Biological","Chemical","Chemical Class")[catType]
     
     meanEARlogic <- as.logical(input$meanEAR)
+    sum_logic <- as.logical(input$sumEAR)
     
     mapDataList <- map_tox_data(chemicalSummary, 
                               chem_site = chem_site, 
                               category = category,
-                              mean_logic = meanEARlogic)
+                              mean_logic = meanEARlogic,
+                              sum_logic = sum_logic)
     latest_map <<- mapDataList
   }
   updateAceEditor(session, editorId = "mapCode_out", value = mapCode() )
@@ -75,7 +77,8 @@ observe({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  meanEARlogic <- input$meanEAR
+  meanEARlogic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   
   maxEARWords <- ifelse(meanEARlogic,"Mean","Max")
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -115,13 +118,15 @@ observe({
                   lat2 = max(mapData$dec_lat, na.rm = TRUE)) 
     }
   
+  sum_words <- ifelse(sum_logic, "Sum of","Max")
+  
   if(length(siteToFind) > 1){
     map <- addLegend(map,pal = pal,
                      position = 'bottomleft',
                      values=~meanMax,
                      opacity = 0.8,
                      labFormat = labelFormat(digits = 2), #transform = function(x) as.integer(x)),
-                     title = paste("Sum of",category,"EAR<br>",
+                     title = paste(sum_words,category,"EAR<br>",
                                    maxEARWords,"at site"))
   }
   
