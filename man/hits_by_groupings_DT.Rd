@@ -26,12 +26,13 @@ opposed to ToxCast benchmarks.}
 \item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
-These functions create a table with one row per category("Biological", 
-"Chemical", or "Chemical Class"). The columns are always the "Biological" 
-groupings. The values in the table are how many sites have hits (based on 
-hit_threshold), for that particular "Biological"/category combination. Note, 
-if the user chooses "Biological", it is a simple 2-column table of 
-"Biological" groupings and number of sites (nSites).
+The \code{hits_by_groupings_DT} (DT option) and \code{hits_by_groupings} (data frame 
+option) functions create tables with one row per category("Biological", 
+"Chemical", or "Chemical Class"). The columns indicate the "Biological" 
+groupings. The values in the table signify how many sites have exceeded 
+the hit_threshold for that particular "Biological"/category combination. 
+If the user chooses "Biological" as the category, it is a simple 2-column 
+table of "Biological" groupings and number of sites (nSites).
 }
 \details{
 The tables show slightly different results for a single site, showing the 

@@ -30,10 +30,13 @@ opposed to ToxCast benchmarks.}
 needed for the "Chemical" category.}
 }
 \description{
-These functions create a table with one row per endPoint, and one 
-column per category("Biological", "Chemical", or "Chemical Class"). 
-The values in the table are number of sites with hits in that endpoint/category 
-combination, based on a user-specified threshold (defined by hit_threshold).
+The \code{endpoint_hits_DT} (DT option) and \code{endpoint_hits} (data frame option) 
+functions create tables with one row per endPoint, and one column per 
+category("Biological", "Chemical", or "Chemical Class"). The values in 
+the table are the number of sites where the EAR exceeded the hit_threshold 
+in that endpoint/category combination. If the category "Chemical" is chosen, 
+an "info" link is provided to the chemical/endpoint information available 
+in the "ToxCast Dashboard" \url{https://actor.epa.gov/dashboard/}.
 }
 \details{
 The tables show slightly different results for a single site. Instead of the 

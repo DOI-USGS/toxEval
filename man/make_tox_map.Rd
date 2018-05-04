@@ -27,10 +27,10 @@ FALSE does not. FALSE may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 }
 \description{
-This function takes the data and summarizes it based on the 
-selected 'category' ("Chemical Class", "Chemical", or "Biological") using
-the \code{map_tox_data} function. Then the summarized data is plotted on
-an interactive "leaflet" map. This is the only function that requires
+The function \code{make_tox_map} creates a leaflet map of the data. 
+This function places symbols at the location of each site in the data 
+file that represent the magnitude of EAR (color) and the number of 
+samples in the data set (size). This is the only function that requires 
 "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
 chem_site argument.
 }

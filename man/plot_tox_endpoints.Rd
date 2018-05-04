@@ -35,16 +35,16 @@ opposed to ToxCast benchmarks.}
 to specify specific color for specific categories.}
 }
 \description{
-This function creates a set of boxplots for each endPoint based on a selected 
-filter. The data is first filtered down to what group is specified in the 'filterBy' 
-argument. The 'filterBy' argument must match one of the unique options in the 'category'. 
-So for example, if the 'category' is "Chemical Class", then the 'filterBy' argument must 
-be one of the defined "Chemical Class" options such as "Herbicide".
-}
-\details{
-After the data is filtered, a boxplot is generated for each endPoint. The EAR values 
-that are used to create the boxplots are still the mean or max (as defined by 'mean_logic') 
-of each site.
+The \code{plot_tox_endpoints} function creates a set of boxplots representing EAR 
+values for each endPoint based on a selected filter. The data is first 
+filtered down to what group is specified in the filterBy argument. The 
+filterBy argument must match one of the unique options in the category. 
+For example, if the category is "Chemical Class", then the filterBy argument 
+must be one of the defined "Chemical Class" options such as "Herbicide".
+After the data is filtered, a boxplot is generated for each endPoint. 
+The EAR values that are used to create the boxplots are the mean or max 
+(as defined by mean_logic) for each site as described in "Summarizing the data"
+in the Introduction vignette: \url{../doc/Introduction.html#summarize_data}.
 }
 \examples{
 # This is the example workflow:
