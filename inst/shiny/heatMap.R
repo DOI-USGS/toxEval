@@ -26,46 +26,11 @@ heatMap_create <- reactive({
                               mean_logic = mean_logic,
                               sum_logic = sum_logic,
                               font_size = ifelse(catType == 2, 14, 17),
-                              title = heatTitle())
+                              title = genericTitle())
   
   updateAceEditor(session, editorId = "heat_out", value = heatCode() )
   
   return(heatMap)
-})
-
-heatTitle <- reactive({
-  catType = as.numeric(input$radioMaxGroup)
-  category <- c("Biological","Chemical","Chemical Class")[catType]
-  
-  mean_logic <- as.logical(input$meanEAR)
-  site <- input$sites
-  siteTable <- rawData()[["chem_site"]]
-
-  if(site == "All"){
-    pretty_cat <- switch(category, 
-                         "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a grouping",
-                         "Chemical Class" = "for chemicals within a class"
-    )
-    title <- paste("Summing EARs",pretty_cat, "for a given sample,")
-    if (mean_logic){
-      title <- paste(title,"taking the mean of each site")
-    } else {
-      title <- paste(title,"taking the max of each site")
-    }
-  } else {
-      pretty_cat <- switch(category, 
-                           "Chemical" = "chemical",
-                           "Biological" = "grouping",
-                           "Chemical Class" = "chemical class"
-      )
-      word <- ifelse(mean_logic,"Mean","Maximum")
-      title <- paste(word,"EAR per",pretty_cat)
-      
-      title <- paste(title,"
-", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
-  }
-  return(title)
 })
 
 output$graphHeat <- renderPlot({
@@ -122,7 +87,7 @@ plot_tox_heatmap(chemicalSummary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
                  mean_logic = ",mean_logic,",
-                 title = '",heatTitle(),"',
+                 title = '",genericTitle(),"',
                  plot_ND = ",plot_ND,")")
   } else {
     heatCode <- paste0(rCodeSetup(),"
@@ -134,7 +99,7 @@ plot_tox_heatmap(chemicalSummary,
                  category = '",category,"',
                  mean_logic = ",mean_logic,",
                  sum_logic = FALSE,
-                 title = '",heatTitle(),"',
+                 title = '",genericTitle(),"',
                  plot_ND = ",plot_ND,")")    
   }
   

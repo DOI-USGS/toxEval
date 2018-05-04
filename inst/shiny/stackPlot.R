@@ -31,55 +31,11 @@ stackBarGroup_create <- reactive({
                                sum_logic = sum_logic,
                                include_legend = include_legend,
                                font_size = ifelse(catType == 2, 14, 17),
-                               title = stackTitle())
+                               title = genericTitle())
   
   updateAceEditor(session, editorId = "barCode_out", value = barCode() )
   
   return(upperPlot)
-})
-
-stackTitle <- reactive({
-
-  catType = as.numeric(input$radioMaxGroup)
-  
-  mean_logic <- as.logical(input$meanEAR)
-  sum_logic <- as.logical(input$sumEAR)
-  
-  category <- c("Biological","Chemical","Chemical Class")[catType]
-  
-  pretty_cat <- tolower(category)
-  
-  if(pretty_cat == "biological"){
-    pretty_cat <- "grouping"
-  }
-  site <- input$sites
-  siteTable <- rawData()[["chem_site"]]
-  if(site == "All"){
-    pretty_cat <- switch(category, 
-                         "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a grouping",
-                         "Chemical Class" = "for chemicals within a class"
-    )
-    
-    title <- paste("Summing EARs",pretty_cat, "for a given sample,")
-    if (mean_logic){
-      title <- paste(title,"taking the mean of each site")
-    } else{
-      title <- paste(title,"taking the max of each site")
-    }
-  } else {
-    pretty_cat <- switch(category, 
-                         "Chemical" = "Chemical",
-                         "Biological" = "Biological Activity Grouping",
-                         "Chemical Class" = "Chemical Class"
-    )
-    word <- ifelse(mean_logic,"Mean","Maximum")
-    title <- paste(word,"EAR per",pretty_cat)
-    
-    title <- paste(title,"
-", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
-  }
-  return(title)
 })
 
 output$stackBarGroup <- renderPlot({
@@ -137,7 +93,7 @@ stack_plot <- plot_tox_stacks(chemicalSummary,
                   category = '",category,"',
                   mean_logic = ",mean_logic,",
                   sum_logic = FALSE,
-                  title = '",stackTitle(),"',
+                  title = '",genericTitle(),"',
                   include_legend = ",include_legend,")
 stack_plot")    
   } else {
@@ -149,7 +105,7 @@ stack_plot <- plot_tox_stacks(chemicalSummary,
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
                   mean_logic = ",mean_logic,",
-                  title = '",stackTitle(),"',
+                  title = '",genericTitle(),"',
                   include_legend = ",include_legend,")
 stack_plot")    
   }

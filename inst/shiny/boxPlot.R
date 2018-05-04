@@ -15,7 +15,7 @@ boxPlots_create <- reactive({
                                sum_logic = sum_logic,
                                plot_ND = plot_ND,
                                font_size = 18,
-                               title = boxTitle())
+                               title = genericTitle())
   return(bioPlot)
   
 })
@@ -103,45 +103,6 @@ output$downloadBoxPlot_csv <- downloadHandler(
   }
 )
 
-boxTitle <- reactive({
-  
-  catType = as.numeric(input$radioMaxGroup)
-  category <- c("Biological","Chemical","Chemical Class")[catType]
-
-  site <- input$sites
-  siteTable <- rawData()[["chem_site"]]
-  
-  mean_logic <- as.logical(input$meanEAR)
-  sum_logic <- as.logical(input$sumEAR)
-  if(site == "All"){
-    pretty_cat <- switch(category, 
-                         "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a grouping",
-                         "Chemical Class" = "for chemicals within a class"
-    )
-    title <- paste("Summing EARs",pretty_cat, "for a given sample,")
-    
-    if(mean_logic){
-      title <- paste(title,"taking the mean of each site")
-    } else {
-      title <- paste(title,"taking the max of each site")
-    }
-  } else {
-    pretty_cat <- switch(category, 
-                         "Chemical" = "chemical",
-                         "Biological" = "grouping",
-                         "Chemical Class" = "chemical class"
-    )
-    word <- ifelse(mean_logic,"Mean","Maximum")
-    
-    title <- paste(word,"EAR per",pretty_cat)
-
-    title <- paste(title,"
-", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
-  }
-  return(title)
-})
-
 boxCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
@@ -150,13 +111,13 @@ boxCode <- reactive({
   plot_ND = input$plot_ND
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  x <- as.character(boxTitle())
+  
   if(sum_logic){
     bioPlotCode <- paste0(rCodeSetup(),"
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
                           category = '",category,"',
                           mean_logic = ",mean_logic,",
-                          title = '",boxTitle(),"',
+                          title = '",genericTitle(),"',
                           plot_ND = ",plot_ND,")
 bio_plot")    
   } else {
@@ -165,7 +126,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
                           category = '",category,"',
                           mean_logic = ",mean_logic,",
                           sum_logic = FALSE,
-                          title = '",boxTitle(),"',
+                          title = '",genericTitle(),"',
                           plot_ND = ",plot_ND,")
 bio_plot")
   }

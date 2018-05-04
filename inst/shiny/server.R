@@ -273,6 +273,51 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     hitThresValue
   })
   
+  genericTitle <- reactive({
+
+    tab <- input$mainOut
+    
+    catType = as.numeric(input$radioMaxGroup)
+    category <- c("Biological","Chemical","Chemical Class")[catType]
+    
+    site <- input$sites
+    siteTable <- rawData()[["chem_site"]]
+    
+    mean_logic <- as.logical(input$meanEAR)
+    sum_logic <- as.logical(input$sumEAR)
+    
+    if(site == "All"){
+      pretty_cat <- switch(category, 
+                           "Chemical" = "for all chemicals",
+                           "Biological" = "for chemicals within a grouping",
+                           "Chemical Class" = "for chemicals within a class"
+      )
+      title <- paste("Summing EARs",pretty_cat, "for a given sample,")
+      
+      if(mean_logic){
+        title <- paste(title,"taking the mean of each site")
+      } else {
+        title <- paste(title,"taking the max of each site")
+      }
+    } else {
+      pretty_cat <- switch(category, 
+                           "Chemical" = "chemical",
+                           "Biological" = "grouping",
+                           "Chemical Class" = "chemical class"
+      )
+
+      title <- paste("EAR per",pretty_cat)
+      if(tab == "summaryBar"){
+        title <- paste(title, "for individual samples")
+      }
+      
+      title <- paste(title,"
+                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+    }
+    return(title)
+    
+  })
+  
   source("updateUI.R",local=TRUE)$value
   
 #############################################################   
