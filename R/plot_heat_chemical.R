@@ -187,7 +187,7 @@ plot_heat_chemicals <- function(chemicalSummary,
   fill_text <- ifelse(mean_logic, "Mean EAR", "Max EAR")
   
   heat <- ggplot(data = graphData) +
-    geom_tile(aes(x = `Short Name`, y=chnm, fill=maxEAR)) +
+    geom_tile(aes(x = `Short Name`, y=chnm, fill=meanEAR)) +
     theme_bw() +
     theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
     ylab("") +
