@@ -137,11 +137,11 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
 
 orderClass <- function(graphData){
   
-  chnm <- Class <- maxEAR <- median <- max_med <- ".dplyr"
+  chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
   
   orderClass_df <- graphData %>%
     group_by(chnm, Class) %>%
-    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
+    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
     group_by(Class) %>%
     summarise(max_med = max(median, na.rm = TRUE)) %>%
     arrange(desc(max_med))
@@ -152,11 +152,11 @@ orderClass <- function(graphData){
 
 orderChem <- function(graphData, orderClass_df){
   
-  chnm <- Class <- maxEAR <- median <- ".dplyr"
+  chnm <- Class <- meanEAR <- median <- ".dplyr"
   
   orderChem_df <- graphData %>%
     group_by(chnm,Class) %>%
-    summarise(median = quantile(maxEAR[maxEAR != 0],0.5)) %>%
+    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
     data.frame() %>%
     mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
   
@@ -169,8 +169,14 @@ orderChem <- function(graphData, orderClass_df){
 
 #' Remove endpoints with specific flags from data
 #' 
-#' Remove endpoints with specific flags associated with the ACC values. The set
-#' of flags that are included are: 
+#' Through the ToxCast program quality assurance procedures, information 
+#' is examined and at times, it is necessary to assign a data quality flag 
+#' to a specific chemical: assay result. A toxEval user may want to include 
+#' or exclude assay results with certain flags depending on the objectives 
+#' of a given study. Assay results with specific data quality flags assigned 
+#' to them can be removed based on their designated flag with the 
+#' remove_flags function. The flags included in ToxCast, and the associated 
+#' flagsShort value (used in the remove_flags function) are as follows:
 #' \tabular{ll}{
 #' Flag \tab flagsShort\cr
 #' Borderline active \tab Borderline \cr

@@ -2,14 +2,12 @@
 % Please edit documentation in R/plot_heat_chemical.R
 \name{plot_tox_heatmap}
 \alias{plot_tox_heatmap}
-\alias{plot_heat_chemicals}
 \title{plot_tox_heatmap}
 \usage{
 plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
   breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 5), manual_remove = NULL,
-  mean_logic = FALSE, plot_ND = TRUE, font_size = NA, title = NA)
-
-plot_heat_chemicals(chemicalSummary, chem_site, mean_logic)
+  mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE, font_size = NA,
+  title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -22,11 +20,12 @@ plot_heat_chemicals(chemicalSummary, chem_site, mean_logic)
 
 \item{manual_remove}{vector of categories to remove}
 
-\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
-TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-the values plotted are the overall max of the sample (not the max of the sum
-of the sample).}
+\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
+FALSE takes the maximum sample of each site.}
+
+\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+FALSE does not. FALSE may be better for traditional benchmarks as
+opposed to ToxCast benchmarks.}
 
 \item{plot_ND}{logical whether or not to plot the non-detects}
 

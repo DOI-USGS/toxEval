@@ -15,11 +15,11 @@
 #' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
 #' @param category either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove vector of categories to remove
-#' @param mean_logic character. Options are "mean", "max", or "noSum". 
-#' TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-#' The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-#' the values plotted are the overall max of the sample (not the max of the sum
-#' of the sample).
+#' @param mean_logic logical.  TRUE takes the mean sample of each site,
+#' FALSE takes the maximum sample of each site.
+#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' opposed to ToxCast benchmarks.
 #' @param plot_ND logical whether or not to plot the non-detects
 #' @param font_size numeric to adjust the axis font size
 #' @param title character title for plot. 
@@ -82,6 +82,7 @@ plot_tox_heatmap <- function(chemicalSummary,
                              breaks = c(0.00001,0.0001,0.001,0.01,0.1,1,5),
                              manual_remove = NULL,
                              mean_logic = FALSE,
+                             sum_logic = TRUE,
                              plot_ND = TRUE, 
                              font_size = NA,
                              title = NA){
@@ -91,16 +92,7 @@ plot_tox_heatmap <- function(chemicalSummary,
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
 
-  mean_logic <- as.character(mean_logic)
-  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
-  
-  fill_label <- "Maximum EAR\nper Site"
-  if(mean_logic %in% c("TRUE","mean")){
-    fill_label <- "Mean sum of EAR\nper sample per site"
-  }
-  if(mean_logic %in% c("FALSE","max")){
-    fill_label <- "Max sum of EAR\nper sample per site"
-  }
+  fill_label <- ifelse(mean_logic, "Mean EAR", "Max EAR")
   
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- "Sites"
@@ -112,7 +104,8 @@ plot_tox_heatmap <- function(chemicalSummary,
   
   if(category == "Chemical"){
     plot_back <- plot_heat_chemicals(chemicalSummary=chemicalSummary, 
-                                     mean_logic=mean_logic, 
+                                     mean_logic=mean_logic,
+                                     sum_logic=sum_logic,
                                      chem_site=chem_site)
     
   } else {
@@ -120,7 +113,8 @@ plot_tox_heatmap <- function(chemicalSummary,
     graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
                            category = category,
                            manual_remove = manual_remove,
-                           mean_logic = mean_logic)
+                           mean_logic = mean_logic,
+                           sum_logic = sum_logic)
 
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
@@ -170,19 +164,17 @@ plot_tox_heatmap <- function(chemicalSummary,
 }
 
 
-#' @rdname plot_tox_heatmap
-#' @export
 plot_heat_chemicals <- function(chemicalSummary,
                                 chem_site,
-                                mean_logic){
+                                mean_logic,
+                                sum_logic){
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
-  mean_logic <- as.character(mean_logic)
-  match.arg(mean_logic, c("mean","max","noSum","TRUE","FALSE"))
-  
-  graphData <- graph_chem_data(chemicalSummary, mean_logic=mean_logic)
+  graphData <- graph_chem_data(chemicalSummary, 
+                               mean_logic=mean_logic,
+                               sum_logic = sum_logic)
   
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- "Sites"
@@ -192,13 +184,15 @@ plot_heat_chemicals <- function(chemicalSummary,
     left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
               by=c("site"="SiteID"))
   
+  fill_text <- ifelse(mean_logic, "Mean EAR", "Max EAR")
+  
   heat <- ggplot(data = graphData) +
-    geom_tile(aes(x = `Short Name`, y=chnm, fill=maxEAR)) +
+    geom_tile(aes(x = `Short Name`, y=chnm, fill=meanEAR)) +
     theme_bw() +
     theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
     ylab("") +
     xlab("") +
-    labs(fill="Maximum EAR") +
+    labs(fill=fill_text) +
     scale_fill_gradient( guide = "legend",
                          trans = 'log',
                          low = "white", high = "steelblue",

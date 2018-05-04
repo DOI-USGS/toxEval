@@ -5,14 +5,17 @@ boxPlots_create <- reactive({
   plot_ND = input$plot_ND
   chemicalSummary <- chemicalSummary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  mean_logic <- input$meanEAR
+
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
 
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
                                mean_logic = mean_logic,
+                               sum_logic = sum_logic,
                                plot_ND = plot_ND,
                                font_size = 18,
-                               title = boxTitle())
+                               title = genericTitle())
   return(bioPlot)
   
 })
@@ -33,7 +36,8 @@ boxPlot_prints <- reactive({
   
   bioPlot <- plot_tox_boxplots(chemicalSummary, 
                                category = category,
-                               mean_logic = input$meanEAR,
+                               mean_logic = as.logical(input$meanEAR),
+                               sum_logic = as.logical(input$sumEAR),
                                plot_ND = plot_ND,
                                font_size = text_size)
   return(bioPlot)
@@ -99,63 +103,34 @@ output$downloadBoxPlot_csv <- downloadHandler(
   }
 )
 
-boxTitle <- reactive({
-  
-  catType = as.numeric(input$radioMaxGroup)
-  category <- c("Biological","Chemical","Chemical Class")[catType]
-
-  site <- input$sites
-  siteTable <- rawData()[["chem_site"]]
-  
-  mean_logic <- input$meanEAR
-  if(site == "All"){
-    pretty_cat <- switch(category, 
-                         "Chemical" = "for all chemicals",
-                         "Biological" = "for chemicals within a specified biological activity grouping",
-                         "Chemical Class" = "for chemicals within a specified class"
-    )
-    if(mean_logic == "noSum"){
-      title <- paste("Maximum EARs",pretty_cat)
-    } else if (mean_logic == "max"){
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the maxiumum of each site")
-    } else if (mean_logic == "mean"){
-      title <- paste("Summing EARs",pretty_cat, "
-for a given sample, taking the mean of each site")
-    }
-  } else {
-    pretty_cat <- switch(category, 
-                         "Chemical" = "Chemical",
-                         "Biological" = "Biological Activity Grouping",
-                         "Chemical Class" = "Chemical Class"
-    )
-    word <- switch(mean_logic,
-                   "mean"="Mean",
-                   "max"="Maximum",
-                   "noSum" = "Max")
-    title <- paste(word,"EAR per",category)
-
-    title <- paste(title,"
-", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
-  }
-  return(title)
-})
-
 boxCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
-  mean_logic <- input$meanEAR
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   plot_ND = input$plot_ND
   
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  x <- as.character(boxTitle())
-  bioPlotCode <- paste0(rCodeSetup(),"
+  
+  if(sum_logic){
+    bioPlotCode <- paste0(rCodeSetup(),"
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
-                  category = '",category,"',
-                  mean_logic = '",mean_logic,"',
-                  title = '",boxTitle(),"',
-                  plot_ND = ",plot_ND,")
+                          category = '",category,"',
+                          mean_logic = ",mean_logic,",
+                          title = '",genericTitle(),"',
+                          plot_ND = ",plot_ND,")
+bio_plot")    
+  } else {
+    bioPlotCode <- paste0(rCodeSetup(),"
+bio_plot <- plot_tox_boxplots(chemicalSummary, 
+                          category = '",category,"',
+                          mean_logic = ",mean_logic,",
+                          sum_logic = FALSE,
+                          title = '",genericTitle(),"',
+                          plot_ND = ",plot_ND,")
 bio_plot")
+  }
+
   
   return(bioPlotCode)
   

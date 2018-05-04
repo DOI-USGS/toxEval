@@ -189,21 +189,68 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
   })
   
   toxCast <- reactive({
-    
     rawData <- rawData()
-    
+
     toxCast_val <- all(is.null(rawData$benchmarks))
     
     return(toxCast_val)
   })
+  
+  output$isTox <- reactive(toxCast())
+  outputOptions(output, "isTox", suspendWhenHidden = FALSE)
 
-  output$meanText <- renderText({
+  
+  output$title_text <- renderText({
     
-    mean_logic <- input$meanEAR
-    if(mean_logic == "mean"){
-      textUI <- "meanEAR = Summation of EARs per sample, Mean per site"
+    if(toxCast()){
+      textUI <- "Analysis using ToxCast endPoints"
     } else {
-      textUI <- "maxEAR = Summation of EARs per sample, Maximum per site"
+      textUI <- "Analysis using CUSTOM endPoints:
+      Many dropdowns on sidebar will have no effect"
+    }
+    
+    HTML(textUI)
+    })
+  
+  output$siteText <- renderText({
+
+    site <- input$sites
+    
+    if(site == "All"){
+      textUI <- ""
+    } else {
+      siteTable <- rawData()[["chem_site"]]
+      textUI <- siteTable[["Fullname"]][which(siteTable$`Short Name` == site)]
+    }
+
+    HTML(textUI)
+
+  })
+  
+  output$meanText <- renderText({
+    catType = as.numeric(input$radioMaxGroup)
+    category <- c("group","chemical","chemical class")[catType]
+    
+    mean_logic <- as.logical(input$meanEAR)
+    sum_logic <- as.logical(input$sumEAR)
+    
+    mean_word <- ifelse(mean_logic,"mean","max")
+    sum_word <- ifelse(sum_logic,"Summation of EARs","Maximum EAR")
+    textUI <- paste0(mean_word,"EAR = ",sum_word," within a ", category," per sample, ",mean_word," at each site")
+    
+    HTML(textUI)
+  })
+  
+  output$freqText <- renderText({
+    catType = as.numeric(input$radioMaxGroup)
+    category <- c("group","chemical","chemical class")[catType]
+    
+    hit_thres <- hitThresValue()
+    sum_logic <- as.logical(input$sumEAR)
+    if(sum_logic){
+      textUI <- paste("freq = Fraction of samples where the sum of EARs within a specified",category,"is greater than",hit_thres)
+    } else {
+      textUI <- paste("freq = Fraction of samples where the max EAR within a specified",category,"is greater than",hit_thres)      
     }
     
     HTML(textUI)
@@ -224,6 +271,78 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
   hitThresValue <- eventReactive(input$changeHit, ignoreNULL = FALSE, {
     hitThresValue <- input$hitThres
     hitThresValue
+  })
+  
+  genericTitle <- reactive({
+
+    tab <- input$mainOut
+    
+    catType = as.numeric(input$radioMaxGroup)
+    category <- c("Biological","Chemical","Chemical Class")[catType]
+    
+    site <- input$sites
+    siteTable <- rawData()[["chem_site"]]
+    
+    mean_logic <- as.logical(input$meanEAR)
+    sum_logic <- as.logical(input$sumEAR)
+
+    if(tab == "endpoint"){
+      filterBy <- epDF[['epGroup']]
+      
+      pretty_cat <- switch(category, 
+                           "Chemical" = paste("for",filterBy),
+                           "Biological" = paste("for chemicals within the",filterBy,"class"),
+                           "Chemical Class" = paste("for chemicals within the",filterBy,"group")
+      )
+    } else {
+      pretty_cat <- switch(category, 
+                           "Chemical" = "for all chemicals",
+                           "Biological" = "for chemicals within a grouping",
+                           "Chemical Class" = "for chemicals within a class"
+      )      
+    }
+    
+    if(site == "All"){
+      
+      if(sum_logic){
+        title <- paste("Summing EARs",pretty_cat, "of a sample,")
+      } else {
+        title <- paste("Max EARs",pretty_cat, "of a sample,")
+      }
+      
+      if(mean_logic){
+        title <- paste(title,"taking the mean of each site")
+      } else {
+        title <- paste(title,"taking the max of each site")
+      }
+    } else {
+      
+      if(tab == "endpoint"){
+        filterBy <- epDF[['epGroup']]
+        pretty_cat <- switch(category, 
+                             "Chemical" = filterBy,
+                             "Biological" = paste("chemicals within",filterBy),
+                             "Chemical Class" = paste("chemicals within",filterBy)
+        )
+      } else {
+        pretty_cat <- switch(category, 
+                             "Chemical" = "chemical",
+                             "Biological" = "grouping",
+                             "Chemical Class" = "chemical class"
+        )
+      }
+      
+      title <- paste("EAR per",pretty_cat)
+      
+      if(tab == "summaryBar"){
+        title <- paste(title, "for individual samples")
+      }
+      
+      title <- paste(title,"
+                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+    }
+    return(title)
+    
   })
   
   source("updateUI.R",local=TRUE)$value

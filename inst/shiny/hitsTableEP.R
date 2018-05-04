@@ -6,12 +6,14 @@ output$hitsTableEPs <- DT::renderDataTable({
   
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- input$meanEAR
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
   hitThres <- hitThresValue()
-  
+
   tableEPs <- endpoint_hits_DT(chemicalSummary, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
+                               sum_logic = sum_logic,
                                hit_threshold = hitThres,
                                include_links = toxCast())
   updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
@@ -23,14 +25,23 @@ hitsTableEPCode <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   hitThres <- hitThresValue()
-  
-  hitsTableEPCode <- paste0(rCodeSetup(),"
+  sum_logic <- input$sumEAR
+  if(sum_logic){
+    hitsTableEPCode <- paste0(rCodeSetup(),"
 # Use the endpoint_hits_DT for a formatted DT table
 hitTable <- endpoint_hits(chemicalSummary, 
               category = '",category,"',
-              mean_logic = '",input$meanEAR,"',
+              mean_logic = ",as.logical(input$meanEAR),",
               hit_threshold = ",hitThres,")")
-  
+  } else {
+    hitsTableEPCode <- paste0(rCodeSetup(),"
+# Use the endpoint_hits_DT for a formatted DT table
+hitTable <- endpoint_hits(chemicalSummary, 
+              category = '",category,"',
+              mean_logic = ",as.logical(input$meanEAR),",
+              sum_logic = FALSE,
+              hit_threshold = ",hitThres,")")    
+  }
   return(hitsTableEPCode)
   
 })
@@ -44,11 +55,12 @@ hitTableData <- reactive({
   
   chemicalSummary <- chemicalSummary()
   hitThres <- hitThresValue()
-  mean_logic <- input$meanEAR
-  
-  tableGroup <- endpointHits(chemicalSummary, 
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
+  tableGroup <- endpoint_hits(chemicalSummary, 
                              category = c("Biological","Chemical","Chemical Class")[catType],
                              mean_logic = mean_logic,
+                             sum_logic = sum_logic,
                              hit_threshold = hitThres)
 })
 
@@ -59,3 +71,24 @@ output$downloadHitTable <- downloadHandler(
     write.csv(hitTableData(), file = file, row.names = FALSE)
   }
 )
+
+output$epHitTitle <- renderText({
+  
+  hitThres <- hitThresValue()
+  mean_logic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)  
+  
+  site_word <- ifelse(input$sites == "All","sites","samples")
+  
+  sum_word <- ifelse(sum_logic, "sum","max")
+  
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("group","chemical","chemical class")[catType]
+  
+  text_ui <- paste("Number of",site_word,"where the",sum_word,
+                   "of the EARs in a", category,"is greater than",hitThres)
+  
+  
+  return(HTML(text_ui))
+  
+})

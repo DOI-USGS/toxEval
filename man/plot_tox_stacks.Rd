@@ -5,8 +5,8 @@
 \title{Plot stacked bar charts}
 \usage{
 plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
-  mean_logic = FALSE, manual_remove = NULL, include_legend = TRUE,
-  font_size = NA, title = NA)
+  mean_logic = FALSE, sum_logic = TRUE, manual_remove = NULL,
+  include_legend = TRUE, font_size = NA, title = NA)
 }
 \arguments{
 \item{chemicalSummary}{data frame from \code{get_chemical_summary}}
@@ -15,11 +15,12 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
 
 \item{category}{either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{character. Options are "mean", "max", or "noSum". 
-TRUE will default to "mean" and FALSE to "max". The default value is "mean". 
-The most appropriate use of "noSum" is for non-ToxCast benchmarks. In this case
-the values plotted are the overall max of the sample (not the max of the sum
-of the sample).}
+\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
+FALSE takes the maximum sample of each site.}
+
+\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+FALSE does not. FALSE may be better for traditional benchmarks as
+opposed to ToxCast benchmarks.}
 
 \item{manual_remove}{vector of categories to remove}
 
