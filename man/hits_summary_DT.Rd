@@ -27,15 +27,18 @@ data frame with columns "Hits per Sample", "Individual Hits",
 "nSample", "site", and "category"
 }
 \description{
-These functions create a table with several rows per site depending on which 
-categories get hits. A "hit" is based on a user specified hit_threshold. For example, 
-if "Biological" is the category, and a site has hits above a threshold for 
-"DNA Binding" and "Nuclear Receptors", that site will have 2 rows of data in this table.
+The hits_summary_DT (DT option) and hits_summary (data frame option) functions 
+create tables with several rows per site depending on which categories have 
+resulting EARs above the threshold as defined by a user specified hit_threshold. 
+For example, if "Biological" is the category, and a site has hits above a 
+threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows 
+of data in this table.
 }
 \details{
-For each row, there are 4 columns. Site and category (as defined by the category argument) 
-define the row. "Hits per Sample" are how many samples at that site had hits (based on 
-hit_threshold) for the category. "Number of Samples" is number of samples.
+For each row, there are 4 columns. Site and category (as defined by the category 
+argument) define the row. "Hits per Sample" are how many samples exceeded the 
+hit_threshold for the specified category. "Number of Samples" is how many individual 
+samples were collected at an individual site based on unique date.
 
 The tables show slightly different results for a single site. Instead of one row per 
 site/category, there is one row per category.

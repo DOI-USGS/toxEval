@@ -1,10 +1,10 @@
 #' Rank sites by EAR
 #' 
-#' These functions create a table (either data frame or DT) with one row per site. 
-#' There are columns of the max or mean EAR (depending on the 'mean_logic' argument) 
-#' for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, 
-#' there are columns of the frequency of the max or mean EAR being above a user 
-#' specified 'hit_threshold'.
+#' The rank_sites_DT (DT option) and rank_sites (data frame option) functions 
+#' create tables with one row per site. There are columns of the max or mean EAR 
+#' (depending on the mean_logic argument) for each category ("Chemical Class", 
+#' "Chemical", or "Biological"). Additionally, columns specifying the frequency 
+#' of the max or mean EAR exceeding a user specified hit_threshold are provided.
 #' 
 #' The tables show slightly different results for a single site. Instead of multiple 
 #' columns for category, there is now 1 row per category (since the site is known).
