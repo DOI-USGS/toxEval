@@ -1,21 +1,23 @@
 #' Grouped Boxplots
 #' 
-#' This function creates a set of boxplots based on the original input data 
-#' modified by the processing steps above, and the choice of several input options. 
-#' The result includes boxplots of the maximum or mean value per site based on 
-#' the mean_logic argument This ensures that each site is represented equally 
-#' regardless of how many samples are available per site. Boxplots are generated 
-#' by the chosen category. Categories include "Biological", "Chemical Class", or 
-#' "Chemical". Biological refers to the chosen toxCast annotation as defined 
-#' in the groupCol argument of the \code{filter_groups} function. Chemical Class 
-#' refers to the groupings of chemicals as defined in the "Class" column of the 
-#' "Chemicals" tab of the input file. Choosing Chemical Class will generate a 
-#' separate boxplot for each unique class. Choosing Chemical will generate a 
-#' separate boxplot for each individual chemical in the data set.
+#' The plot_tox_boxplots function creates a set of boxplots representing EAR 
+#' values computed from the original input data that was modified by the processing 
+#' steps above, and dependent on the choice of several input options. See
+#' "Summarizing the data" in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
+#' for a description of how the EAR values are computed, 
+#' aggregated, and summarized. Choosing "Chemical Class" in the category argument 
+#' will generate separate boxplots for each unique class. "Chemical" will generate 
+#' boxplots for each individual chemical, and "Biological" will generate boxplots 
+#' for each group in the selected ToxCast annotation.
 #' 
-#' The difference in the single-site output is that instead of listing the number 
-#' of sites, it lists the number of unique chemical/endpoint combinations used to 
-#' create the box plot.
+#' It is also possible to display a threshold line using the hit_threshold argument. 
+#' The graph will then include the number of sites with detections, the threshold 
+#' line, and the number of "hits" indicating how many sites that have EAR values 
+#' exceeding the hit_threshold.
+#' 
+#' The graph shows a slightly different result for a single site. For a single 
+#' site graph, the number of chemicals that were detected and have associated endpoint 
+#' ACCs represented are displayed.
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
 #' @param category either "Biological", "Chemical Class", or "Chemical"
