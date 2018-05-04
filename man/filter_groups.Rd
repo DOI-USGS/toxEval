@@ -21,7 +21,7 @@ filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
 \item{remove_groups}{vector of groups to remove}
 }
 \description{
-This function takes the data frame from 'endPointInfo' and 
+This function takes the data frame from the supplied data frame 'endPointInfo' and 
 filters the endpoints in 3 steps. First, the user specifies 
 the 'groupCol' argument, which is a column header from 'endPointInfo'. 
 Second, the user specifies the assays to use. Finally, the user can 

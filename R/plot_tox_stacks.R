@@ -1,6 +1,6 @@
 #' Plot stacked bar charts
 #' 
-#' The plot_tox_stacks function creates a set of stacked bar charts representing 
+#' The \code{plot_tox_stacks} function creates a set of stacked bar charts representing 
 #' EAR values computed from the original input data that was modified by the 
 #' processing steps above, and dependent on the choice of several input options. 
 #' See "Summarizing the data" in the Introduction vignette: \url{../doc/Introduction.html#summarize_data}

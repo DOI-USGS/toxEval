@@ -1,6 +1,6 @@
 #' Rank sites by EAR
 #' 
-#' The rank_sites_DT (DT option) and rank_sites (data frame option) functions 
+#' The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions 
 #' create tables with one row per site. There are columns of the max or mean EAR 
 #' (depending on the mean_logic argument) for each category ("Chemical Class", 
 #' "Chemical", or "Biological"). Additionally, columns specifying the frequency 

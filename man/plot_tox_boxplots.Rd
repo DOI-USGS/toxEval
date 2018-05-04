@@ -44,7 +44,7 @@ to specify specific color for specific categories.}
 \item{hit_threshold}{numeric threshold defining a "hit"}
 }
 \description{
-The plot_tox_boxplots function creates a set of boxplots representing EAR 
+The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
 values computed from the original input data that was modified by the processing 
 steps above, and dependent on the choice of several input options. See
 "Summarizing the data" in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 

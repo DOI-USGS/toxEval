@@ -13,12 +13,12 @@ get_ACC(CAS)
 data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
 }
 \description{
-The get_ACC function will retrieve the activity concentration at 
+The \code{get_ACC} function will retrieve the activity concentration at 
 cutoff (ACC) values for the specified chemicals. The data was originally 
 downloaded for toxEval on October 2015 from ToxCast. The data were 
 combined from files in the "INVITRODB_V2_LEVEL5" directory. At the time 
 of the toxEval package release, this information was found here in the 
-"ToxCast & Tox21 Data Spreadsheet" data set. The function get_ACC will 
+"ToxCast & Tox21 Data Spreadsheet" data set. The function \code{get_ACC} will 
 convert the ACC values in the ToxCast database from units of (log \eqn{\mu}M) 
 to units of \eqn{\mu}g/L, and reformat the data to a format that can be used 
 in toxEval.

@@ -35,7 +35,7 @@ opposed to ToxCast benchmarks.}
 to specify specific color for specific categories.}
 }
 \description{
-The plot_tox_endpoints function creates a set of boxplots representing EAR 
+The \code{plot_tox_endpoints} function creates a set of boxplots representing EAR 
 values for each endPoint based on a selected filter. The data is first 
 filtered down to what group is specified in the filterBy argument. The 
 filterBy argument must match one of the unique options in the category. 

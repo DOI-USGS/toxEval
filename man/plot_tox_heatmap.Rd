@@ -34,7 +34,7 @@ opposed to ToxCast benchmarks.}
 \item{title}{character title for plot.}
 }
 \description{
-The plot_tox_heatmap function creates a heat (tile) map with sites on the x-axis, 
+The \code{plot_tox_heatmap} function creates a heat (tile) map with sites on the x-axis, 
 a specified grouping on the y-axis (defined by the category argument), and color shading 
 defining the mean or max EAR. See "Summarizing the data" in the Introduction vignette:  
 \url{../doc/Introduction.html#summarize_data} for a description on how the 
