@@ -392,13 +392,16 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE)
   word_stat <- ifelse(mean_logic, "mean", "max")
 
   if(single_site){
-    if(category == "Chemical Class"){
-      y_label <- "All EARs within a chemical class"
-    } else if(category == "Biological") {
-      y_label <- "All EARs within a grouping"
-    } else {
-      y_label <- "All EARs for each chemical"
+    
+    y_label <- switch(category,
+                      "Chemical Class" = "All EARs within a chemical class",
+                      "Biological" = "All EARs within a grouping",
+                      "Chemical" = "All EARs for each chemical")
+    
+    if(sep){
+      y_label <- list(y_label=y_label, caption = NULL)
     }
+
     
   } else {
   

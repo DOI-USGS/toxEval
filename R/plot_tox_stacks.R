@@ -186,8 +186,7 @@ plot_tox_stacks <- function(chemicalSummary,
       theme(axis.text.x=element_blank(),
             axis.ticks.x=element_blank()) +
       xlab("Individual Samples") +
-      ylab(y_label[["y_label"]]) 
-
+      ylab(y_label) 
   }
   
   upperPlot <- upperPlot +
