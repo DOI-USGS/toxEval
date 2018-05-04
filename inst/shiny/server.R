@@ -285,13 +285,25 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     
     mean_logic <- as.logical(input$meanEAR)
     sum_logic <- as.logical(input$sumEAR)
-    
-    if(site == "All"){
+
+    if(tab == "endpoint"){
+      filterBy <- epDF[['epGroup']]
+      
+      pretty_cat <- switch(category, 
+                           "Chemical" = paste("for",filterBy),
+                           "Biological" = paste("for chemicals within the",filterBy,"class"),
+                           "Chemical Class" = paste("for chemicals within the",filterBy,"group")
+      )
+    } else {
       pretty_cat <- switch(category, 
                            "Chemical" = "for all chemicals",
                            "Biological" = "for chemicals within a grouping",
                            "Chemical Class" = "for chemicals within a class"
-      )
+      )      
+    }
+    
+    if(site == "All"){
+
       title <- paste("Summing EARs",pretty_cat, "for a given sample,")
       
       if(mean_logic){
@@ -300,12 +312,21 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
         title <- paste(title,"taking the max of each site")
       }
     } else {
-      pretty_cat <- switch(category, 
-                           "Chemical" = "chemical",
-                           "Biological" = "grouping",
-                           "Chemical Class" = "chemical class"
-      )
-
+      
+      if(tab == "endpoint"){
+        filterBy <- epDF[['epGroup']]
+        pretty_cat <- switch(category, 
+                             "Chemical" = filterBy,
+                             "Biological" = paste("chemicals within",filterBy),
+                             "Chemical Class" = paste("chemicals within",filterBy)
+        )
+      } else {
+        pretty_cat <- switch(category, 
+                             "Chemical" = "chemical",
+                             "Biological" = "grouping",
+                             "Chemical Class" = "chemical class"
+        )
+      }
       title <- paste("EAR per",pretty_cat)
       if(tab == "summaryBar"){
         title <- paste(title, "for individual samples")

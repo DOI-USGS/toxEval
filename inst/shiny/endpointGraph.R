@@ -14,7 +14,7 @@ endpointGraph_create <- reactive({
                                       sum_logic = sum_logic,
                                       hit_threshold = hitThresValue(),
                                       filterBy = filterBy,
-                                      title = epTitle(),
+                                      title = genericTitle(),
                                       font_size = 18) 
   
   updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
@@ -86,44 +86,6 @@ output$downloadEndpoint_csv <- downloadHandler(
   }
 )
 
-epTitle <- reactive({
-  catType <- as.numeric(input$radioMaxGroup)
-  mean_logic <- as.logical(input$meanEAR)
-  sum_logic <- as.logical(input$sumEAR)
-  site <- input$sites
-  siteTable <- rawData()[["chem_site"]]
-  category <- c("Biological","Chemical","Chemical Class")[catType]
-  filterBy <- epDF[['epGroup']]
- 
-  if(site == "All"){
-    pretty_cat <- switch(category, 
-                         "Chemical" = paste("for",filterBy),
-                         "Biological" = paste("for chemicals within the",filterBy,"class"),
-                         "Chemical Class" = paste("for chemicals within the",filterBy,"group")
-    )
-    pretty_cat <- paste(pretty_cat,"
-")
-    title <- paste("Summing EARs",pretty_cat,"for a given sample,")
-    if(mean_logic){
-      title <- paste(title, "taking the mean of each site")
-    } else {
-      title <- paste(title, "taking the max of each site")
-    }
-  } else {
-    pretty_cat <- switch(category, 
-                         "Chemical" = filterBy,
-                         "Biological" = paste("chemicals within",filterBy),
-                         "Chemical Class" = paste("chemicals within",filterBy)
-    )
-    title <- paste0("EAR per ",category)
-      
-    title <- paste(title,"
-", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
-  }
-
-  return(title)
-})
-
 epGraphCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
@@ -138,7 +100,7 @@ ep_plot <- plot_tox_endpoints(chemicalSummary,
                     category = '",category,"',
                     mean_logic = ",mean_logic,",
                     hit_threshold = ",hitThres,",
-                    title = '",epTitle(),"'
+                    title = '",genericTitle(),"'
                     filterBy = '",filterBy,"')
 ep_plot")
   } else {
@@ -148,7 +110,7 @@ ep_plot <- plot_tox_endpoints(chemicalSummary,
                         mean_logic = ",mean_logic,",
                         sum_logic = FALSE,
                         hit_threshold = ",hitThres,",
-                        title = '",epTitle(),"'
+                        title = '",genericTitle(),"'
                         filterBy = '",filterBy,"')
 ep_plot")    
   }
