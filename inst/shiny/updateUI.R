@@ -125,8 +125,8 @@ observe({
   valueText <- "All"
 
   if (input$radioMaxGroup == 2){
-    valueText <- c(chems())
-    first_pick <- chems()[1]
+    valueText <- rev(c(chems()))
+    first_pick <- rev(c(chems()))[1]
   } else if(input$radioMaxGroup == 3){
     valueText <- c(classes())
     first_pick <- classes()[1]
