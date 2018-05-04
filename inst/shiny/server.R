@@ -212,13 +212,45 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     HTML(textUI)
     })
   
-  output$meanText <- renderText({
+  output$siteText <- renderText({
+
+    site <- input$sites
     
-    mean_logic <- input$meanEAR
-    if(mean_logic == "mean"){
-      textUI <- "meanEAR = Summation of EARs per sample, Mean per site"
+    if(site == "All"){
+      textUI <- ""
     } else {
-      textUI <- "maxEAR = Summation of EARs per sample, Maximum per site"
+      siteTable <- rawData()[["chem_site"]]
+      textUI <- siteTable[["Fullname"]][which(siteTable$`Short Name` == site)]
+    }
+
+    HTML(textUI)
+
+  })
+  
+  output$meanText <- renderText({
+    catType = as.numeric(input$radioMaxGroup)
+    category <- c("group","chemical","chemical class")[catType]
+    
+    mean_logic <- as.logical(input$meanEAR)
+    sum_logic <- as.logical(input$sumEAR)
+    
+    mean_word <- ifelse(mean_logic,"mean","max")
+    sum_word <- ifelse(sum_logic,"Summation of EARs","Maximum EAR")
+    textUI <- paste0(mean_word,"EAR = ",sum_word," within a ", category," per sample, ",mean_word," at each site")
+    
+    HTML(textUI)
+  })
+  
+  output$freqText <- renderText({
+    catType = as.numeric(input$radioMaxGroup)
+    category <- c("group","chemical","chemical class")[catType]
+    
+    hit_thres <- hitThresValue()
+    sum_logic <- as.logical(input$sumEAR)
+    if(sum_logic){
+      textUI <- paste("freq = Fraction of samples where the sum of EARs within a specified",category,"is greater than",hit_thres)
+    } else {
+      textUI <- paste("freq = Fraction of samples where the max EAR within a specified",category,"is greater than",hit_thres)      
     }
     
     HTML(textUI)

@@ -146,6 +146,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  h3(textOutput("siteText")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
@@ -177,8 +178,8 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
-            textOutput("meanText"),
-            h5("freq = Fraction of samples with hits"),
+            h3(textOutput("meanText")),
+            h3(textOutput("freqText")),
             DT::dataTableOutput('tableSumm'),
             downloadButton('downloadTable', 'Download CSV'),
             h4("R Code:"),
@@ -186,7 +187,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
-            htmlOutput("nGroup"),
+             h3(textOutput("nGroup")),
             DT::dataTableOutput('tableGroupSumm'),
             downloadButton('downloadGroupTable', 'Download CSV'),
             h4("R Code:"),
@@ -194,7 +195,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
-            htmlOutput("siteHitText"),
+            h3(textOutput("siteHitText")),
             div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
             downloadButton('downloadSiteHitTable', 'Download CSV'),
             h4("R Code:"),

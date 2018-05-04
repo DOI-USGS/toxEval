@@ -20,36 +20,20 @@ output$tableGroupSumm <- DT::renderDataTable({
   
 })
 
-output$nGroup <- renderUI({
+output$nGroup <- renderText({
+
+  sum_logic <- as.logical(input$sumEAR)
+  hit_thres <- hitThresValue()
+  catType = as.numeric(input$radioMaxGroup)
   
-  radio <- input$radioMaxGroup
-  chemicalSummary <- chemicalSummary()
-  siteToFind <- length(unique(chemicalSummary$site))
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("group","chemical","chemical class")[catType]
   
-  if(radio == "2"){
-    word <- "chemicals"
-  } else if (radio == "3") {
-    word <- "classes"
-  } else if(radio == "4"){
-    word <- "endPoints"
-  } else {
-    word <- "groups"
-  }
-  
-  if(length(siteToFind) > 1){
-    place <- "per site"
-  } else {
-    place <- ""
-  }
-  
-  if(length(siteToFind) > 1){
-    textUI <- paste("<h5>max = Maximum number of",word,"with hits per site</h5>",
-                    "<h5>mean = Mean number of",word,"with hits per site</h5>",
-                    "<h5>nSamples = Number of samples per site</h5>")
-  } else {
-    textUI <- paste("<h5>hits = Number of samples with hits </h5>",
-                    "<h5>nSamples = Number of samples per site</h5>")
-  }
+
+  sum_word <- ifelse(sum_logic, "sum of EARs", "maximum EAR")
+
+  textUI <- paste("Samples with hits = Number of samples where the",sum_word,"within a",category," is greater than",hit_thres)
+
   HTML(textUI)
   
 })

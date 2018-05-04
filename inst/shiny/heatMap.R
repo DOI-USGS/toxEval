@@ -63,7 +63,7 @@ heatTitle <- reactive({
       title <- paste(word,"EAR per",pretty_cat)
       
       title <- paste(title,"
-                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
   }
   return(title)
 })
