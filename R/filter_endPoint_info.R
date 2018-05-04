@@ -1,13 +1,15 @@
 #' Filter endPoints based on groups and assays.
 #' 
-#' This function takes the data frame from \code{\link{endPointInfo}} 
-#' and filters the endpoints in 3 steps. First, the user specifies
-#' the "groupCol" which is a column header from \code{\link{endPointInfo}}. 
-#' The default category is intended_target_family. Second, the user specifies the assays to use. By default, the BioSeek
-#' set of assays are removed. Finally, the user can also choose to remove
-#' specific group from the category. The default is to remove "Background Measurement"
-#' and "Undefined", but it is a good idea to check if other groups may 
-#' not be relevant to the study.
+#' This function takes the data frame from 'endPointInfo' and 
+#' filters the endpoints in 3 steps. First, the user specifies 
+#' the 'groupCol' argument, which is a column header from 'endPointInfo'. 
+#' Second, the user specifies the assays to use. Finally, the user can 
+#' also choose to remove specific group(s) from the category. The default 
+#' is to remove 'Background Measurement' and 'Undefined'. Choices for 
+#' this should be reconsidered based on individual study objectives.
+#' 
+#' The default category ('groupCol') is 'intended_target_family'. Depending 
+#' on the study, other categories may be more relevant. 
 #' 
 #' @param ep data frame Endpoint information from ToxCast
 #' @param groupCol character name of column to use as a group catetory
