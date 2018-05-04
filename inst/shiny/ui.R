@@ -203,6 +203,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
+             h3(textOutput("epHitTitle")),
              div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
              downloadButton('downloadHitTable', 'Download CSV'),
              h4("R Code:"),
