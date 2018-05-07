@@ -1,11 +1,13 @@
 #' Get the ACC values for a selection of chemicals
 #' 
 #' The \code{get_ACC} function retrieves the activity concentration at cutoff 
-#' (ACC) values for specified chemicals. The data used in toxEval were combined from files 
-#' in the "INVITRODB_V2_LEVEL5" directory that were included in the October 2015 
+#' (ACC) values for specified chemicals. 
+#' 
+#' The data used in toxEval were combined from files in the 
+#' "INVITRODB_V2_LEVEL5" directory that were included in the October 2015 
 #' release of the ToxCast database. The function \code{get_ACC} will 
 #' convert the ACC values in the ToxCast database from units of (log \eqn{\mu}M) 
-#' to units of \eqn{\mu}g/L, and reformat the data input to toxEval.
+#' to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.
 #' 
 #' @param CAS vector of CAS. 
 #' @return data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
