@@ -9,7 +9,7 @@
 #' convert the ACC values in the ToxCast database from units of (log \eqn{\mu}M) 
 #' to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.
 #' 
-#' @param CAS vector of CAS. 
+#' @param CAS Vector of CAS. 
 #' @return data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
 #' @export
 #' @importFrom tidyr gather

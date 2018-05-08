@@ -13,21 +13,21 @@
 #' endPoints that may not be important to the analysis at hand.
 #' 
 #' 
-#' @param tox_list list with data frames for chem_data, chem_info, chem_site, 
+#' @param tox_list List with data frames for chem_data, chem_info, chem_site, 
 #' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}
-#' @param ACClong data frame with columns: CAS, chnm, endPoint, and ACC_value 
+#' @param ACClong Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 #' for specific chemical/endpoint combinations generated using the 
 #' \code{\link{get_ACC}} function. EndPoints with specific data quality flags 
 #' may optionally be removed using the \code{\link{remove_flags}} function.
-#' @param filtered_ep data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
+#' @param filtered_ep Data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 #' filtering occurs.
-#' @param chem.data OPTIONAL data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
+#' @param chem.data emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.site OPTIONAL data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
+#' @param chem.site emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.info OPTIONAL data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
+#' @param chem.info emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param exclusion OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
+#' @param exclusion emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
 #' @export
 #' @importFrom tidyr gather
