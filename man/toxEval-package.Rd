@@ -3,7 +3,8 @@
 \docType{package}
 \name{toxEval-package}
 \alias{toxEval-package}
-\title{Evaluation of ToxCast data with measured concentrations}
+\title{Evaluation of measured concentration data using the ToxCast high-throughput 
+screening database or a user-defined set of concentration benchmarks}
 \description{
 \tabular{ll}{
 Package: \tab toxEval\cr

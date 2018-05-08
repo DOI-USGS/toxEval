@@ -7,7 +7,7 @@
 get_ACC(CAS)
 }
 \arguments{
-\item{CAS}{vector of CAS.}
+\item{CAS}{Vector of CAS.}
 }
 \value{
 data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value

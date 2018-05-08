@@ -10,15 +10,15 @@ filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
   "Undefined"))
 }
 \arguments{
-\item{ep}{data frame containing Endpoint information from ToxCast}
+\item{ep}{Data frame containing Endpoint information from ToxCast}
 
-\item{groupCol}{character name of ToxCast annotation column to use as a group catetory}
+\item{groupCol}{Character name of ToxCast annotation column to use as a group catetory}
 
-\item{assays}{vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
+\item{assays}{Vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
 "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
 "BSK" (BioSeek) assay is removed.}
 
-\item{remove_groups}{vector of groups within the selected 'groupCol' to remove}
+\item{remove_groups}{Vector of groups within the selected 'groupCol' to remove}
 }
 \description{
 This function provides a mechanism to specify 3 levels of information in the 

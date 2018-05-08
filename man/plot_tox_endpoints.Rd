@@ -10,18 +10,18 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
   pallette = NA)
 }
 \arguments{
-\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 
-\item{filterBy}{character either "All" or one of the filtered categories.}
+\item{filterBy}{Character. Either "All" or one of the filtered categories.}
 
-\item{manual_remove}{vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove}
 
 \item{hit_threshold}{numeric threshold defining a "hit"}
 
-\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
-FALSE takes the maximum sample of each site.}
+\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
+FALSE displays the maximum sample from each site.}
 
 \item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
 FALSE does not. FALSE may be better for traditional benchmarks as
@@ -36,15 +36,15 @@ to specify specific color for specific categories.}
 }
 \description{
 The \code{plot_tox_endpoints} function creates a set of boxplots representing EAR 
-values for each endPoint based on a selected filter. The data is first 
-filtered down to what group is specified in the filterBy argument. The 
+values for each endPoint based on the selected data. A subset of data is first
+chosen by specifying a group in the filterBy argument. The 
 filterBy argument must match one of the unique options in the category. 
 For example, if the category is "Chemical Class", then the filterBy argument 
 must be one of the defined "Chemical Class" options such as "Herbicide".
-After the data is filtered, a boxplot is generated for each endPoint. 
-The EAR values that are used to create the boxplots are the mean or max 
-(as defined by mean_logic) for each site as described in "Summarizing the data"
-in the Introduction vignette: \url{../doc/Introduction.html#summarize_data}.
+A boxplot is generated for each endPoint. The EAR values that are used to 
+create the boxplots are the mean or max (as defined by mean_logic) for each 
+site as described in "Summarizing the data"in the Introduction vignette: 
+\url{../doc/Introduction.html#summarize_data}.
 }
 \examples{
 # This is the example workflow:

@@ -31,7 +31,7 @@ The Shiny application (the app) is a quick and convenient way to explore data th
 
 The interaction with the app is primarily "point and click". The app includes multiple ways to visualize data through boxplots, barcharts, tables and an overview map. Numerous options can be selected to customize presentation of data by choosing to focus on chemicals, chemical classes, biologically relevant endpoing groupings, and specific suites of ToxCast assays. All resulting graphics, tables, and data can be downloaded for use outside of the app.
 
-While the app is useful and quite flexible as is, it also serves as a good starting point for a more in-depth user- and study-specific analysis. All of the output on the Shiny app can be created directly in R as well. For flexibility beyond what the app offers, the R-code to produce each graph and table is displayed in the app and can then be customized for specific study needs. The help file for each function provides instructions and example workflows (R code) for their use.
+While the app is useful and quite flexible as is, it also serves as a good starting point for a more in-depth user- and study-specific analysis. All of the output on the Shiny app can be created directly in R as well. For flexibility beyond what the app offers, the R-code to produce each graph and table is displayed in the app. The user may copy this code into a script and customize it for specific study needs. The help file for each function provides instructions and example workflows (R code) for their use.
 
 To run the app, load the `toxEval` package, and run the `explore_endpoints` function:
 

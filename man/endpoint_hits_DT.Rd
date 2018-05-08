@@ -13,21 +13,21 @@ endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
   sum_logic = TRUE, hit_threshold = 0.1)
 }
 \arguments{
-\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{logical.  TRUE returns the mean sample of each site,
-FALSE returns the maximum sample of each site.}
+\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
+FALSE displays the maximum sample from each site.}
 
-\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
 FALSE does not. FALSE indicates that EAR values are not considered to be 
 additive and often will be a more appropriate choice for traditional 
 benchmarks as opposed to ToxCast benchmarks.}
 
-\item{hit_threshold}{numeric EAR threshold defining a "hit"}
+\item{hit_threshold}{Numeric EAR threshold defining a "hit"}
 
-\item{include_links}{logical, whether or not to include a link to the ToxCast 
+\item{include_links}{Logical, whether or not to include a link to the ToxCast 
 dashboard. Only needed for the "Chemical" category.}
 }
 \description{

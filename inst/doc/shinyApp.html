@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Shiny App</h1>
-<h4 class="date"><em>04 May, 2018</em></h4>
+<h4 class="date"><em>08 May, 2018</em></h4>
 
 
 <div id="TOC">
@@ -100,7 +100,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1>Using the Shiny Application</h1>
 <p>The Shiny application (the app) is a quick and convenient way to explore data through a graphical user interface in the user’s default browser. As with the R-package, ToxCast is the default biological endpoint database used to evaluate data. A user can override this default by providing a custom set of endpoints (e.g. aquatic life benchmarks).</p>
 <p>The interaction with the app is primarily “point and click”. The app includes multiple ways to visualize data through boxplots, barcharts, tables and an overview map. Numerous options can be selected to customize presentation of data by choosing to focus on chemicals, chemical classes, biologically relevant endpoing groupings, and specific suites of ToxCast assays. All resulting graphics, tables, and data can be downloaded for use outside of the app.</p>
-<p>While the app is useful and quite flexible as is, it also serves as a good starting point for a more in-depth user- and study-specific analysis. All of the output on the Shiny app can be created directly in R as well. For flexibility beyond what the app offers, the R-code to produce each graph and table is displayed in the app and can then be customized for specific study needs. The help file for each function provides instructions and example workflows (R code) for their use.</p>
+<p>While the app is useful and quite flexible as is, it also serves as a good starting point for a more in-depth user- and study-specific analysis. All of the output on the Shiny app can be created directly in R as well. For flexibility beyond what the app offers, the R-code to produce each graph and table is displayed in the app. The user may copy this code into a script and customize it for specific study needs. The help file for each function provides instructions and example workflows (R code) for their use.</p>
 <p>To run the app, load the <code>toxEval</code> package, and run the <code>explore_endpoints</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
 <span class="kw">explore_endpoints</span>()</code></pre></div>

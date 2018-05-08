@@ -19,37 +19,38 @@ tox_boxplot_data(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}}
 
-\item{manual_remove}{vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove}
 
-\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
-FALSE takes the maximum sample of each site.}
+\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
+FALSE displays the maximum sample from each site.}
 
-\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
 FALSE does not. FALSE may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 
-\item{plot_ND}{logical whether or not to plot the non-detects}
+\item{plot_ND}{Logical. Logical. Whether or not to plot "Biological" groupings,
+"Chemical Class" groupings, or "Chemical" that do not have any detections.}
 
-\item{font_size}{numeric to adjust the axis font size}
+\item{font_size}{Numeric value to adjust the axis font size}
 
-\item{title}{character title for plot.}
+\item{title}{Character Title for plot.}
 
-\item{pallette}{vector of color pallette for fill. Can be a named vector
-to specify specific color for specific categories.}
+\item{pallette}{Vector of color pallette for boxplot fill. Can be a named vector
+to specify specific colors for specific categories.}
 
-\item{hit_threshold}{numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit"}
 }
 \description{
 The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
-values computed from the original input data that was modified by the processing 
-steps above, and dependent on the choice of several input options. See
-"Summarizing the data" in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
-for a description of how the EAR values are computed, 
-aggregated, and summarized. Choosing "Chemical Class" in the category argument 
+values computed with the \code{\link{get_chemical_summary}} function, and 
+dependent on the choice of several input options. See "Summarizing the data" 
+in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
+for a description of how the EAR values are computed, aggregated,
+and summarized. Choosing "Chemical Class" in the category argument 
 will generate separate boxplots for each unique class. "Chemical" will generate 
 boxplots for each individual chemical, and "Biological" will generate boxplots 
 for each group in the selected ToxCast annotation.
