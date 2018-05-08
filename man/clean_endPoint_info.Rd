@@ -18,7 +18,7 @@ are revised to look more appealing in graphs and tables.
 \description{
 Define a subset of the ToxCast database for relevance to toxEval analyses. 
 Subsetting is done based upon methods defined by 
-\href[https://pubs.acs.org/doi/10.1021/acs.est.7b01613]{Blackwell et al., 2017}. 
+\href{https://pubs.acs.org/doi/10.1021/acs.est.7b01613}{Blackwell et al., 2017}. 
 Specifically, this function removes endPoints that are ATG sources with 
 signal loss, and NVS with signal gain. Also, this function adds  additional 
 categories to intended_target_family and intended_target_family_sub as 
