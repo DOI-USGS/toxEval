@@ -64,8 +64,8 @@ NULL
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set. 
 #' 
 #' The data has been provided in a "wide" format, however
-#' the \code{get_ACC} function is an easy way to get the data
-#' in a "long" format. AC50gain values are the reported modl_ga (winning model) and units are 
+#' the \code{get_ACC} function converts the data to a
+#' "long" format. ACC values are the reported ACC_value (winning model) and units are 
 #' log micro-Molarity (log \eqn{\mu}M).
 #' 
 #'
@@ -131,7 +131,7 @@ NULL
 #' Downloaded on October 2015 from ToxCast. The file name of the
 #' raw data was "Assay_Summary_151020.csv" from the zip file 
 #' "Assay_Information_Oct_2015.zip". At the time
-#' of toxEval package release, this information was found:
+#' of the toxEval package release, this information was found:
 #' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #' in the section marked "Download Assay Information", in the 
 #' ToxCast & Tox21 high-throughput assay information data set.
