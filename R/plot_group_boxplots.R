@@ -1,7 +1,7 @@
 #' Grouped Boxplots
 #' 
 #' The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
-#' values computed the \code{\link{get_chemical_summary}} function, and 
+#' values computed with the \code{\link{get_chemical_summary}} function, and 
 #' dependent on the choice of several input options. See "Summarizing the data" 
 #' in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
 #' for a description of how the EAR values are computed, aggregated,
@@ -22,8 +22,8 @@
 #' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}
 #' @param category Either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove Vector of categories to remove
-#' @param mean_logic Logical.  TRUE displays the mean sample of each site,
-#' FALSE displays the maximum sample of each site.
+#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
+#' FALSE displays the maximum sample from each site.
 #' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.

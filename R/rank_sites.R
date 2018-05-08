@@ -10,8 +10,8 @@
 #' columns for category, there is now 1 row per category (since the site is known).
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param mean_logic logical.  TRUE takes the mean sample of each site,
-#' FALSE takes the maximum sample of each site.
+#' @param mean_logic logical.  TRUE displays the mean sample from each site,
+#' FALSE displays the maximum sample from each site.
 #' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.

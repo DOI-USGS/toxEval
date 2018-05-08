@@ -15,8 +15,8 @@
 #' with hits. 
 #' 
 #' @param chemicalSummary Data frame from \code{get_chemical_summary}
-#' @param mean_logic Logical.  TRUE returns the mean sample of each site,
-#' FALSE returns the maximum sample of each site.
+#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
+#' FALSE displays the maximum sample from each site.
 #' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE indicates that EAR values are not considered to be 
 #' additive and often will be a more appropriate choice for traditional 

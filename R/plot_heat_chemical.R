@@ -19,8 +19,8 @@
 #' @param chem_site Data frame with columns SiteID, site_grouping, and Short Name
 #' @param category Either "Biological", "Chemical Class", or "Chemical"
 #' @param manual_remove Vector of categories to remove
-#' @param mean_logic Logical.  TRUE takes the mean sample of each site,
-#' FALSE takes the maximum sample of each site.
+#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
+#' FALSE displays the maximum sample from each site.
 #' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
