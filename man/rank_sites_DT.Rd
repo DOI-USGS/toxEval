@@ -12,29 +12,29 @@ rank_sites(chemicalSummary, category, hit_threshold = 0.1,
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
-FALSE takes the maximum sample of each site.}
+\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
+FALSE displays the maximum sample from each site.}
 
-\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
 FALSE does not. FALSE may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{hit_threshold}{numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit"}
 }
 \description{
 The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions 
-create tables with one row per site. There are columns of the max or mean EAR 
+create tables with one row per site. Columns represent the maximum or mean EAR 
 (depending on the mean_logic argument) for each category ("Chemical Class", 
-"Chemical", or "Biological"). Additionally, columns specifying the frequency 
-of the max or mean EAR exceeding a user specified hit_threshold are provided.
+"Chemical", or "Biological") and the frequency of the maximum or mean EAR 
+exceeding a user specified hit_threshold.
 }
 \details{
-The tables show slightly different results for a single site. Instead of multiple 
-columns for category, there is now 1 row per category (since the site is known).
+The tables show slightly different results for a single site. Rather than multiple 
+columns for categories, there is now 1 row per category (since the site is known).
 }
 \examples{
 # This is the example workflow:

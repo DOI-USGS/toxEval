@@ -13,8 +13,8 @@ in the "ToxCast & Tox21 Data Spreadsheet" data set.
 }
 \details{
 The data has been provided in a "wide" format, however
-the \code{get_ACC} function is an easy way to get the data
-in a "long" format. AC50gain values are the reported modl_ga (winning model) and units are 
+the \code{get_ACC} function converts the data to a
+"long" format. ACC values are the reported ACC_value (winning model) and units are 
 log micro-Molarity (log \eqn{\mu}M).
 }
 \examples{
