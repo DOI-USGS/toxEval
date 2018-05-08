@@ -66,13 +66,13 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Exclude
 
-The "Exclude" sheet is optional. If used, the "Exclude" sheet needs to have a minimum of 2 columns: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
+At times, it may be appropriate to exclude endpionts, chemicals, or specific endpoint:chemical combinations from a data analysis due to lack of relevance to the study objecive or low confidence in specific portions of the data. The optional "Exclude" sheet is used for this purpose. 
+
+The "Exclude" sheet needs to have a minimum of 2 columns: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
 
 * endPoint: A character column to define a specific endpoint to ignore in the analysis. If the "CAS" in the corresponding row is empty, the endPoint will be completely excluded from the `toxEval` analysis. For example, if it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider for a given analysis, it can be excluded by adding it to the Exclude sheet in the endPoint column. If the "CAS" in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis. 
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. If the "endPoint" in the corresponding row is empty, the chemical will be completely excluded from the `toxEval` analysis. For example, consider that blank samples revealed that DEET was contaminated in the sampling method. All DEET measurements can be excluded by adding 134-62-3 to the Exclude sheet in the "CAS" column, leaving the "endPoint" column blank. If the "endPoint" in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis.
-
-There could be a variety of reasons to exclude chemical/endpoint combinations. This will be discussed further in section TODO: XXXXXXXXX.
 
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
