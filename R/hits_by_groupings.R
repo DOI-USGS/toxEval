@@ -1,7 +1,7 @@
 #' Biological hits per category
 #' 
-#' The \code{\link{hits_by_groupings_DT}} (DT option) and 
-#' \code{\link{hits_by_groupings}} (data frame option) functions create tables 
+#' The \code{hits_by_groupings_DT} (DT option) and 
+#' \code{hits_by_groupings} (data frame option) functions create tables 
 #' with one row per category("Biological", "Chemical", or "Chemical Class"). 
 #' The columns indicate the "Biological" groupings. The values in the table 
 #' signify how many sites have samples with EARs that exceeded the hit_threshold 
