@@ -27,8 +27,8 @@
 #' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param plot_ND Logical whether or not to plot the instances when a chemical
-#' was not detected. 
+#' @param plot_ND Logical. Logical. Whether or not to plot "Biological" groupings,
+#' "Chemical Class" groupings, or "Chemical" that do not have any detections. 
 #' @param hit_threshold Numeric threshold defining a "hit"
 #' @param font_size Numeric value to adjust the axis font size
 #' @param title Character Title for plot.
