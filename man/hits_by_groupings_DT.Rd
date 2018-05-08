@@ -12,31 +12,32 @@ hits_by_groupings(chemicalSummary, category, mean_logic = FALSE,
   sum_logic = TRUE, hit_threshold = 0.1)
 }
 \arguments{
-\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
-FALSE takes the maximum sample of each site.}
+\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
+FALSE displays the maximum sample from each site.}
 
-\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
 FALSE does not. FALSE may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{hit_threshold}{numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit"}
 }
 \description{
-The \code{hits_by_groupings_DT} (DT option) and \code{hits_by_groupings} (data frame 
-option) functions create tables with one row per category("Biological", 
-"Chemical", or "Chemical Class"). The columns indicate the "Biological" 
-groupings. The values in the table signify how many sites have exceeded 
-the hit_threshold for that particular "Biological"/category combination. 
-If the user chooses "Biological" as the category, it is a simple 2-column 
-table of "Biological" groupings and number of sites (nSites).
+The \code{hits_by_groupings_DT} (DT option) and 
+\code{hits_by_groupings} (data frame option) functions create tables 
+with one row per category("Biological", "Chemical", or "Chemical Class"). 
+The columns indicate the "Biological" groupings. The values in the table 
+signify how many sites have samples with EARs that exceeded the hit_threshold 
+for that particular "Biological"/category combination. If the user chooses 
+"Biological" as the category, it is a simple 2-column table of "Biological" 
+groupings and number of sites (nSites).
 }
 \details{
-The tables show slightly different results for a single site, showing the 
-number of samples with hits (instead of number of sites).
+The tables result in slightly different results for a single site, displaying 
+the number of samples with hits rather than the number of sites.
 }
 \examples{
 # This is the example workflow:

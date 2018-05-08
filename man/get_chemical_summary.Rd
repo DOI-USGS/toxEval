@@ -9,27 +9,27 @@ get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
   exclusion = NULL)
 }
 \arguments{
-\item{tox_list}{list with data frames for chem_data, chem_info, chem_site, 
+\item{tox_list}{List with data frames for chem_data, chem_info, chem_site, 
 and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
 
-\item{ACClong}{data frame with columns: CAS, chnm, endPoint, and ACC_value 
+\item{ACClong}{Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 for specific chemical/endpoint combinations generated using the 
 \code{\link{get_ACC}} function. EndPoints with specific data quality flags 
 may optionally be removed using the \code{\link{remove_flags}} function.}
 
-\item{filtered_ep}{data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
+\item{filtered_ep}{Data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 filtering occurs.}
 
-\item{chem.data}{OPTIONAL data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
+\item{chem.data}{\emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{chem.site}{OPTIONAL data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
+\item{chem.site}{\emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{chem.info}{OPTIONAL data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
+\item{chem.info}{\emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
+\item{exclusion}{\emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 }
 \description{

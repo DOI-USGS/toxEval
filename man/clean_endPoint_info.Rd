@@ -7,7 +7,7 @@
 clean_endPoint_info(endPointInfo)
 }
 \arguments{
-\item{endPointInfo}{data frame Endpoint information from ToxCast}
+\item{endPointInfo}{Data frame Endpoint information from ToxCast}
 }
 \value{
 The returned data frame is based on endPointInfo, but with some endPoints
@@ -17,12 +17,12 @@ are revised to look more appealing in graphs and tables.
 }
 \description{
 Define a subset of the ToxCast database for relevance to toxEval analyses. 
-Subsetting is done based upon methods defined by Blackwell et al., 2017 #' 
-(\url{https://pubs.acs.org/doi/10.1021/acs.est.7b01613}). Specifically, 
-this function removes endPoints that are ATG sources with signal loss, and 
-NVS with signal gain. Also, this function adds  additional categories to 
-intended_target_family and intended_target_family_sub as described in 
-the paper linked above.
+Subsetting is done based upon methods defined by 
+\link[=https://pubs.acs.org/doi/10.1021/acs.est.7b01613]{Blackwell et al., 2017}. 
+Specifically, this function removes endPoints that are ATG sources with 
+signal loss, and NVS with signal gain. Also, this function adds  additional 
+categories to intended_target_family and intended_target_family_sub as 
+described in the paper linked above.
 }
 \examples{
 endPointInfo <- endPointInfo

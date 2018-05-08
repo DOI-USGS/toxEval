@@ -9,44 +9,44 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
   include_legend = TRUE, font_size = NA, title = NA)
 }
 \arguments{
-\item{chemicalSummary}{data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
 
-\item{chem_site}{data frame with at least columns SiteID, site_grouping, and Short Name}
+\item{chem_site}{Data frame with at least columns SiteID, site_grouping, and Short Name}
 
-\item{category}{either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 
-\item{mean_logic}{logical.  TRUE takes the mean sample of each site,
-FALSE takes the maximum sample of each site.}
+\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
+FALSE displays the maximum sample from each site.}
 
-\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
+\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
 FALSE does not. FALSE may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{manual_remove}{vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove}
 
-\item{include_legend}{logical to include legend or not}
+\item{include_legend}{Logical. Used to include legend or not}
 
-\item{font_size}{numeric to adjust the axis font size}
+\item{font_size}{Numeric value to adjust the axis font size}
 
-\item{title}{character title for plot.}
+\item{title}{Character title for plot.}
 }
 \description{
-The \code{plot_tox_stacks} function creates a set of stacked bar charts representing 
-EAR values computed from the original input data that was modified by the 
-processing steps above, and dependent on the choice of several input options. 
-See "Summarizing the data" in the Introduction vignette: \url{../doc/Introduction.html#summarize_data}
+The \code{plot_tox_stacks} function creates a set of boxplots representing EAR 
+values computed with the \code{\link{get_chemical_summary}} function, and 
+dependent on the choice of several input options. See "Summarizing the data" 
+in the Introduction vignette: \url{../doc/Introduction.html#summarize_data}
 for a description on how the EAR values are computed, aggregated, and summarized. 
 Choosing "Chemical Class" in the category argument will generate separate stacked 
 bars for each unique class. "Chemical" will generate stacked bars for each individual 
 chemical, and "Biological" will generate stacked bars for each group in the selected 
-ToxCast annotation. There is an option include_legend to turn on and off the legend. 
-It may be impractical for instance to show the legend for "Chemical" if there are 
-hundreds of chemicals.
+ToxCast annotation. The legend can optionally be turned on or off using the
+include_legend argument. It may be impractical for instance to show the 
+legend for "Chemical" if there are hundreds of chemicals.
 }
 \details{
-The graph shows a slightly different result for a single site. The graph now shows each 
-individual sample. The EAR values are no longer the mean or max at the site, but rather 
-the sums of the individual EAR values.
+The graph displays a slightly different result for a single site. Providing 
+data with only one site displays each individual sample as a stacked bar 
+rather than the mean or maximum for a site.
 }
 \examples{
 # This is the example workflow:
