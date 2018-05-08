@@ -15,7 +15,8 @@ https://owi.usgs.gov/R/packages.html#research'),
 }
 
 
-#' Evaluation of ToxCast data with measured concentrations
+#' Evaluation of measured concentration data using the ToxCast high-throughput 
+#' screening database or a user-defined set of concentration benchmarks 
 #'
 #' \tabular{ll}{
 #' Package: \tab toxEval\cr
@@ -79,7 +80,7 @@ NULL
 
 # If we need to update the ACC data frame, here is
 # is a function that *should* do it, assuming
-# the format it the same. I might not count on that
+# the format is the same. I might not count on that
 # however....that is why it is an internal only function.
 # This is staying commented out because it adds 
 # extraneous notes:
