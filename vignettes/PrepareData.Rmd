@@ -20,11 +20,11 @@ Input data for toxEval should be prepared in a Microsoft &trade; Excel file. The
 
 ![Organize Sheets](tabs.png)
 
-Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet should contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data. 
+Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet must contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data. 
 
 ## Data
 
-The "Data" sheet needs to have at a minimum of 4 columns: "CAS", "SiteID", "Value", and "Sample Date". The columns can be in any order, but the first row of the sheet should be the header (column names).
+The "Data" sheet is used to define the measured concentrations to be evaluated in `toxEval`. Four columns are required in this sheet: "CAS", "SiteID", "Value", and "Sample Date". The columns can be in any order, but the first row of the sheet must be the header (column names).
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Chemicals" sheet.
 
@@ -42,7 +42,7 @@ As an example, the first several rows of a minimal example would look like this:
 
 ## Chemicals
 
-The "Chemicals" sheet needs to have at a minimum of 2 columns: "CAS" and "Class". The columns can be in any order, but the first row of the sheet should be the header (column names).
+The "Chemicals" sheet is used to define chemicals included in the "Data" sheet. Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names).
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
@@ -52,7 +52,7 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Sites
 
-The "Sites" sheet needs to have a minimum of 4 columns: "SiteID", "Short Name", "dec_lon", and "dec_lat". The columns can be in any order, but the first row of the sheet should be the header (column names).
+The "Sites" sheet is used to define site information for locations where samples were collected. Four columns are required in this sheet: "SiteID", "Short Name", "dec_lon", and "dec_lat". The columns can be in any order, but the first row of the sheet must be the header (column names).
 
 * SiteID: This character column identifies the sites (or sampling locations) of the measurement. The unique "SiteID" values *must* match the "SiteID" values in the "Data" sheet. There are no requirements on formatting for this column.
 
@@ -66,21 +66,21 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Exclude
 
-The "Exclude" sheet is optional. If used, the "Exclude" sheet needs to have a minimum of 2 columns: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
+At times, it may be appropriate to exclude endpionts, chemicals, or specific endpoint:chemical combinations from a data analysis due to lack of relevance to the study objecive or low confidence in specific portions of the data. The "Exclude" sheet is used for this purpose. 
+
+The "Exclude" sheet is optional, but if used, two columns are required: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
 
 * endPoint: A character column to define a specific endpoint to ignore in the analysis. If the "CAS" in the corresponding row is empty, the endPoint will be completely excluded from the `toxEval` analysis. For example, if it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider for a given analysis, it can be excluded by adding it to the Exclude sheet in the endPoint column. If the "CAS" in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis. 
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. If the "endPoint" in the corresponding row is empty, the chemical will be completely excluded from the `toxEval` analysis. For example, consider that blank samples revealed that DEET was contaminated in the sampling method. All DEET measurements can be excluded by adding 134-62-3 to the Exclude sheet in the "CAS" column, leaving the "endPoint" column blank. If the "endPoint" in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis.
 
-There could be a variety of reasons to exclude chemical/endpoint combinations. This will be discussed further in section TODO: XXXXXXXXX.
-
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
 ## Benchmarks
 
-The "Benchmarks" sheet is optional. The benchmarks sheet can be used to over-ride the ToxCast endpoints. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks rather than ToxCast endpoints. 
+The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose.
 
-For the functions to work seamlessly with all `toxEval` functions, the "Benchmarks" sheet needs to have a minimum of 5 columns: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of the sheet should be the header (column names).
+The "Benchmarks" sheet is optional, but if used, five columns are required: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of the sheet should be the header (column names).
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. 
 
