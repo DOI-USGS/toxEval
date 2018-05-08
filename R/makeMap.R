@@ -1,20 +1,20 @@
 #' Create an interactive map of the data
 #' 
-#' The function \code{make_tox_map} creates a leaflet map of the data. 
-#' This function places symbols at the location of each site in the data 
+#' The function \code{make_tox_map} creates a \code{\link[leaflet]{leaflet}} map 
+#' of the sites. This function places symbols at the location of each site in the data 
 #' file that represent the magnitude of EAR (color) and the number of 
 #' samples in the data set (size). This is the only function that requires 
 #' "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
-#' chem_site argument.
+#' data frame specified for the chem_site argument.
 #' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param mean_logic logical.  TRUE takes the mean sample of each site,
-#' FALSE takes the maximum sample of each site.
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param mean_logic Logical.  TRUE displays the mean EAR from each site,
+#' FALSE displays the maximum EAR from each site.
+#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param chem_site data frame with at least columns SiteID, site_grouping, 
+#' @param chem_site Data frame containing the columns SiteID, site_grouping, 
 #' Short Name, dec_lon, and dec_lat
 #' @export
 #' @rdname make_tox_map
