@@ -1,11 +1,11 @@
 #' Grouped Boxplots
 #' 
 #' The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
-#' values computed from the original input data that was modified by the processing 
-#' steps above, and dependent on the choice of several input options. See
-#' "Summarizing the data" in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
-#' for a description of how the EAR values are computed, 
-#' aggregated, and summarized. Choosing "Chemical Class" in the category argument 
+#' values computed the \code{\link{get_chemical_summary}} function, and 
+#' dependent on the choice of several input options. See "Summarizing the data" 
+#' in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
+#' for a description of how the EAR values are computed, aggregated,
+#' and summarized. Choosing "Chemical Class" in the category argument 
 #' will generate separate boxplots for each unique class. "Chemical" will generate 
 #' boxplots for each individual chemical, and "Biological" will generate boxplots 
 #' for each group in the selected ToxCast annotation.
@@ -19,20 +19,21 @@
 #' site graph, the number of chemicals that were detected and have associated endpoint 
 #' ACCs represented are displayed.
 #' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param manual_remove vector of categories to remove
-#' @param mean_logic logical.  TRUE takes the mean sample of each site,
-#' FALSE takes the maximum sample of each site.
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}
+#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param manual_remove Vector of categories to remove
+#' @param mean_logic Logical.  TRUE displays the mean sample of each site,
+#' FALSE displays the maximum sample of each site.
+#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param plot_ND logical whether or not to plot the non-detects
-#' @param hit_threshold numeric threshold defining a "hit"
-#' @param font_size numeric to adjust the axis font size
-#' @param title character title for plot.
-#' @param pallette vector of color pallette for fill. Can be a named vector
-#' to specify specific color for specific categories. 
+#' @param plot_ND Logical whether or not to plot the instances when a chemical
+#' was not detected. 
+#' @param hit_threshold Numeric threshold defining a "hit"
+#' @param font_size Numeric value to adjust the axis font size
+#' @param title Character Title for plot.
+#' @param pallette Vector of color pallette for boxplot fill. Can be a named vector
+#' to specify specific colors for specific categories. 
 #' @export
 #' @rdname plot_tox_boxplots
 #' @import ggplot2
