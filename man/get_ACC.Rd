@@ -13,15 +13,15 @@ get_ACC(CAS)
 data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
 }
 \description{
-The \code{get_ACC} function will retrieve the activity concentration at 
-cutoff (ACC) values for the specified chemicals. The data was originally 
-downloaded for toxEval on October 2015 from ToxCast. The data were 
-combined from files in the "INVITRODB_V2_LEVEL5" directory. At the time 
-of the toxEval package release, this information was found here in the 
-"ToxCast & Tox21 Data Spreadsheet" data set. The function \code{get_ACC} will 
+The \code{get_ACC} function retrieves the activity concentration at cutoff 
+(ACC) values for specified chemicals.
+}
+\details{
+The data used in toxEval were combined from files in the 
+"INVITRODB_V2_LEVEL5" directory that were included in the October 2015 
+release of the ToxCast database. The function \code{get_ACC} will 
 convert the ACC values in the ToxCast database from units of (log \eqn{\mu}M) 
-to units of \eqn{\mu}g/L, and reformat the data to a format that can be used 
-in toxEval.
+to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.
 }
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")

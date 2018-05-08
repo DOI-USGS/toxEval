@@ -180,16 +180,17 @@ orderChem <- function(graphData, orderClass_df){
 #' \code{remove_flags} function. The flags included in ToxCast, and the associated 
 #' flagsShort value (used in the remove_flags function) are as follows:
 #' \tabular{ll}{
-#' Flag \tab flagsShort\cr
+#' \strong{Flag} \tab \strong{flagsShort}\cr
 #' Borderline active* \tab Borderline \cr
 #' Only highest conc above baseline, active* \tab OnlyHighest \cr
 #' Only one conc above baseline, active \tab OneAbove \cr
 #' Noisy data \tab Noisy \cr
 #' Hit-call potentially confounded by overfitting \tab HitCall \cr
 #' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
-#' Biochemical assay with < 50% efficacy \tab Biochemical* \cr
-#' Asterisks indicate flags removed in the function as default.
+#' Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
 #' }
+#' Asterisks indicate flags removed in the function as default.
+#' 
 #' 
 #' @param ACClong data frame with columns: casn, chnm, endPoint, and ACC_value
 #' @param flagsShort vector of flags to to trigger REMOVAL of chemical:endPoint 
