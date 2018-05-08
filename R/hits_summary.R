@@ -1,26 +1,30 @@
 #' Summary of hits per site/category
 #' 
-#' The hits_summary_DT (DT option) and hits_summary (data frame option) functions 
-#' create tables with several rows per site depending on which categories have 
-#' resulting EARs above the threshold as defined by a user specified hit_threshold. 
-#' For example, if "Biological" is the category, and a site has hits above a 
-#' threshold for "DNA Binding" and "Nuclear Receptors", that site will have 2 rows 
-#' of data in this table.
+#' The \code{hits_summary_DT} (DT option) and \code{hits_summary} (data frame 
+#' option) functions create tables information on the number of 
+#' \code{hit_threshold} exceedances per site for each individual grouping. The 
+#' table has one row per group per site that has \code{hit_threshold} 
+#' exceedances. For example, if "Biological" is the category, and a 
+#' site has EAR levels above the specified \code{hit_threshold} for "DNA 
+#' Binding" and "Nuclear Receptors", that site will have 2 rows of data in this 
+#' table.
 #' 
 #' For each row, there are 4 columns. Site and category (as defined by the category 
-#' argument) define the row. "Hits per Sample" are how many samples exceeded the 
-#' hit_threshold for the specified category. "Number of Samples" is how many individual 
-#' samples were collected at an individual site based on unique date.
+#' argument) define the row. "Samples with hits" are how many samples exceeded the 
+#' hit_threshold for the specified category at the specified site. "Number of 
+#' Samples" indicates how many samples were collected at an individual site 
+#' based on unique date.
 #' 
-#' The tables show slightly different results for a single site. Instead of one row per 
-#' site/category, there is one row per category.
+#' The tables contain slightly different results for evaluation of a single site. 
+#' There are three columns (the Site column is dropped), and rather than one row 
+#' per site/category, there is one row per category.
 #' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold numeric threshold defining a "hit"
+#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param hit_threshold Numeric threshold defining a "hit"
 #' @export
 #' @rdname hits_summary_DT
 #' @import DT

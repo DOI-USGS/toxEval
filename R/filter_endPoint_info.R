@@ -12,12 +12,12 @@
 #' The default category ('groupCol') is 'intended_target_family'. Depending 
 #' on the study, other categories may be more relevant. 
 #' 
-#' @param ep data frame containing Endpoint information from ToxCast
-#' @param groupCol character name of ToxCast annotation column to use as a group catetory
-#' @param assays vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
+#' @param ep Data frame containing Endpoint information from ToxCast
+#' @param groupCol Character name of ToxCast annotation column to use as a group catetory
+#' @param assays Vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
 #' "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
 #' "BSK" (BioSeek) assay is removed.
-#' @param remove_groups vector of groups within the selected 'groupCol' to remove
+#' @param remove_groups Vector of groups within the selected 'groupCol' to remove
 #' @export
 #' @importFrom stringi stri_trans_totitle
 #' @importFrom dplyr rename

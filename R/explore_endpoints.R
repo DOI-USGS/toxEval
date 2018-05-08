@@ -6,7 +6,7 @@
 #' produce each graph and table is displayed in the app. That is 
 #' a good starting-point for a custom analysis.
 #' 
-#' @param browse use browser for map rendering
+#' @param browse Use browser for map rendering
 #' @export
 #' @importFrom shiny runApp
 #' @importFrom tools file_ext

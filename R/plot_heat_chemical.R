@@ -15,19 +15,20 @@
 #' \url{../doc/Introduction.html#custom_config} for instructions on how to convert 
 #' the character vector sites to a factor with ordered levels.
 #' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param chem_site data frame with at least columns SiteID, site_grouping,  and Short Name
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param manual_remove vector of categories to remove
-#' @param mean_logic logical.  TRUE takes the mean sample of each site,
-#' FALSE takes the maximum sample of each site.
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param chem_site Data frame with columns SiteID, site_grouping, and Short Name
+#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param manual_remove Vector of categories to remove
+#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
+#' FALSE displays the maximum sample from each site.
+#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param plot_ND logical whether or not to plot the non-detects
-#' @param font_size numeric to adjust the axis font size
-#' @param title character title for plot. 
-#' @param breaks numerical vector to define legend breaks
+#' @param plot_ND Logical. Whether or not to plot "Biological" groupings,
+#' "Chemical Class" groupings, or "Chemical" that do not have any detections. 
+#' @param font_size Numeric value to adjust the axis font size.
+#' @param title Character title for plot. 
+#' @param breaks Numerical vector to define data bins and legend breaks.
 #' @export
 #' @rdname plot_tox_heatmap
 #' @import ggplot2
