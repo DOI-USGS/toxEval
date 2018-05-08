@@ -16,18 +16,18 @@
 #' data with only one site displays each individual sample as a stacked bar 
 #' rather than the mean or maximum for a site. 
 #' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param chem_site data frame with at least columns SiteID, site_grouping, and Short Name
-#' @param mean_logic logical.  TRUE displays the mean sample from each site,
+#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param chem_site Data frame with at least columns SiteID, site_grouping, and Short Name
+#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
 #' FALSE displays the maximum sample from each site.
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param manual_remove vector of categories to remove
-#' @param include_legend logical to include legend or not
-#' @param font_size numeric to adjust the axis font size
-#' @param title character title for plot. 
+#' @param manual_remove Vector of categories to remove
+#' @param include_legend Logical. Used to include legend or not
+#' @param font_size Numeric value to adjust the axis font size
+#' @param title Character title for plot. 
 #' @export
 #' @import ggplot2
 #' @importFrom stats median

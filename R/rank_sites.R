@@ -1,22 +1,22 @@
 #' Rank sites by EAR
 #' 
 #' The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions 
-#' create tables with one row per site. There are columns of the max or mean EAR 
+#' create tables with one row per site. Columns represent the maximum or mean EAR 
 #' (depending on the mean_logic argument) for each category ("Chemical Class", 
-#' "Chemical", or "Biological"). Additionally, columns specifying the frequency 
-#' of the max or mean EAR exceeding a user specified hit_threshold are provided.
+#' "Chemical", or "Biological") and the frequency of the maximum or mean EAR 
+#' exceeding a user specified hit_threshold.
 #' 
-#' The tables show slightly different results for a single site. Instead of multiple 
-#' columns for category, there is now 1 row per category (since the site is known).
+#' The tables show slightly different results for a single site. Rather than multiple 
+#' columns for categories, there is now 1 row per category (since the site is known).
 #' 
-#' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param mean_logic logical.  TRUE displays the mean sample from each site,
+#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
 #' FALSE displays the maximum sample from each site.
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
+#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
 #' FALSE does not. FALSE may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold numeric threshold defining a "hit"
+#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param hit_threshold Numeric threshold defining a "hit"
 #' @export
 #' @import DT
 #' @rdname rank_sites_DT
