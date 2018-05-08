@@ -21,13 +21,13 @@
 #' may optionally be removed using the \code{\link{remove_flags}} function.
 #' @param filtered_ep Data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 #' filtering occurs.
-#' @param chem.data emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
+#' @param chem.data \emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.site emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
+#' @param chem.site \emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.info emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
+#' @param chem.info \emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param exclusion emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
+#' @param exclusion \emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
 #' @export
 #' @importFrom tidyr gather
