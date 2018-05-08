@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_chemical_summary.R
 \name{get_chemical_summary}
 \alias{get_chemical_summary}
-\title{Create a chemical summary of the data.}
+\title{Compute EAR values from measured concentrations and ACC values.}
 \usage{
 get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
   chem.data = NULL, chem.site = NULL, chem.info = NULL,
@@ -12,37 +12,39 @@ get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
 \item{tox_list}{list with data frames for chem_data, chem_info, chem_site, 
 and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
 
-\item{ACClong}{data frame with at least columns: CAS, chnm, endPoint, ACC_value. To use data
-provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish
-to remove endPoints with specific flags using the \code{\link{remove_flags}} function.}
+\item{ACClong}{data frame with columns: CAS, chnm, endPoint, and ACC_value 
+for specific chemical/endpoint combinations generated using the 
+\code{\link{get_ACC}} function. EndPoints with specific data quality flags 
+may optionally be removed using the \code{\link{remove_flags}} function.}
 
 \item{filtered_ep}{data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 filtering occurs.}
 
-\item{chem.data}{OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 
+\item{chem.data}{OPTIONAL data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{chem.site}{OPTIONAL data frame with (at least) columns: SiteID, Short Name. Default is \code{NULL}. 
+\item{chem.site}{OPTIONAL data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{chem.info}{OPTIONAL data frame with (at least) columns: CAS, class. Default is \code{NULL}. 
+\item{chem.info}{OPTIONAL data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
 \item{exclusion}{OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 }
 \description{
-This function takes the measured user data from the output of \code{\link{create_toxEval}},
-and joins the data with the endPoint information provided by ToxCast.
-Data from ToxCast is included with this package, but alternative 
+This function computes Exposure:Activity ratios using user-provided measured 
+concentration data from the output of \code{\link{create_toxEval}},
+and joins the data with the activity concentration at cutoff data provided by 
+ToxCast.Data from ToxCast is included with this package, but alternative 
 benchmark data can be provided to perform the same "toxEval" analysis.
 }
 \details{
 To use the data provided by the package, a sample workflow is shown below
-in the examples. It includes getting the ToxCast (ACC) values that will
-be used to calculate the EAR, filtering out the endToints that should
-be ignored based on "flags" in the data, and filtering out any groups
-that may not be important to the analysis at hand.
+in the examples. The examples include retrieving the ToxCast (ACC) values 
+that are used to calculate EARs, choosing endPoints that should be ignored 
+based on data quality "flags" in the ToxCast database, and removing groups of 
+endPoints that may not be important to the analysis at hand.
 }
 \examples{
 path_to_tox <-  system.file("extdata", package="toxEval")
