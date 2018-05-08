@@ -1,26 +1,30 @@
 #' Rank endpoints by category
 #' 
-#' The \code{endpoint_hits_DT} (DT option) and \code{endpoint_hits} (data frame option) 
-#' functions create tables with one row per endPoint, and one column per 
-#' category("Biological", "Chemical", or "Chemical Class"). The values in 
-#' the table are the number of sites where the EAR exceeded the hit_threshold 
-#' in that endpoint/category combination. If the category "Chemical" is chosen, 
-#' an "info" link is provided to the chemical/endpoint information available 
-#' in the "ToxCast Dashboard" \url{https://actor.epa.gov/dashboard/}.
+#' The \code{endpoint_hits_DT} (data.table (DT) option) and \code{endpoint_hits} 
+#' (data frame option) functions create tables with one row per endPoint, and 
+#' one column per category("Biological", "Chemical", or "Chemical Class"). The 
+#' values in the table are the number of sites where the EAR exceeded the 
+#' user-defined EAR hit_threshold in that endpoint/category combination. If the 
+#' category "Chemical" is chosen, an "info" link is provided to the 
+#' chemical/endpoint information available in the "ToxCast Dashboard" 
+#' \url{https://actor.epa.gov/dashboard/}.
 #' 
-#' The tables show slightly different results for a single site. Instead of the 
-#' number of sites with hits above a threshold, it is now the number of samples with hits.
+#' The tables show slightly different results when choosing to explore data
+#' from a single site rather than all sites. The value displayed in this 
+#' instance is the number of samples with hits rather than the number of sites
+#' with hits. 
 #' 
 #' @param chemicalSummary data frame from \code{get_chemical_summary}
-#' @param mean_logic logical.  TRUE takes the mean sample of each site,
-#' FALSE takes the maximum sample of each site.
+#' @param mean_logic logical.  TRUE returns the mean sample of each site,
+#' FALSE returns the maximum sample of each site.
 #' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
-#' FALSE does not. FALSE may be better for traditional benchmarks as
-#' opposed to ToxCast benchmarks.
+#' FALSE does not. FALSE indicates that EAR values are not considered to be 
+#' additive and often will be a more appropriate choice for traditional 
+#' benchmarks as opposed to ToxCast benchmarks.
 #' @param category either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold numeric threshold defining a "hit"
-#' @param include_links logical, whether or not to include a link to the ToxCast dashboard. Only
-#' needed for the "Chemical" category.
+#' @param hit_threshold numeric EAR threshold defining a "hit"
+#' @param include_links logical, whether or not to include a link to the ToxCast 
+#' dashboard. Only needed for the "Chemical" category.
 #' @export
 #' @import DT
 #' @rdname endpoint_hits_DT

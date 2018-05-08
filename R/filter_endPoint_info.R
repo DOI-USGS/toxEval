@@ -1,22 +1,23 @@
 #' Filter endPoints based on groups and assays.
 #' 
-#' This function takes the data frame from the supplied data frame 'endPointInfo' and 
-#' filters the endpoints in 3 steps. First, the user specifies 
-#' the 'groupCol' argument, which is a column header from 'endPointInfo'. 
-#' Second, the user specifies the assays to use. Finally, the user can 
-#' also choose to remove specific group(s) from the category. The default 
-#' is to remove 'Background Measurement' and 'Undefined'. Choices for 
-#' this should be reconsidered based on individual study objectives.
+#' This function provides a mechanism to specify 3 levels of information in the 
+#' supplied data frame 'endPointInfo' to be used in subsequent analysis steps. 
+#' First, the user specifies the ToxCast assay annotation using the 'groupCol' 
+#' argument, which is a column header in 'endPointInfo'. Second, the user 
+#' specifies the families of assays to use. Finally, the user can choose to 
+#' remove specific group(s) from the category. The default is to remove 
+#' 'Background Measurement' and 'Undefined'. Choices for this should be 
+#' reconsidered based on individual study objectives.
 #' 
 #' The default category ('groupCol') is 'intended_target_family'. Depending 
 #' on the study, other categories may be more relevant. 
 #' 
-#' @param ep data frame Endpoint information from ToxCast
-#' @param groupCol character name of column to use as a group catetory
-#' @param assays vector of assays to use. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
+#' @param ep data frame containing Endpoint information from ToxCast
+#' @param groupCol character name of ToxCast annotation column to use as a group catetory
+#' @param assays vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
 #' "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
 #' "BSK" (BioSeek) assay is removed.
-#' @param remove_groups vector of groups to remove
+#' @param remove_groups vector of groups within the selected 'groupCol' to remove
 #' @export
 #' @importFrom stringi stri_trans_totitle
 #' @importFrom dplyr rename

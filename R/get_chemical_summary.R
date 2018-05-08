@@ -1,29 +1,31 @@
-#' Create a chemical summary of the data.
+#' Compute EAR values from measured concentrations and ACC values.
 #' 
-#' This function takes the measured user data from the output of \code{\link{create_toxEval}},
-#' and joins the data with the endPoint information provided by ToxCast.
-#' Data from ToxCast is included with this package, but alternative 
+#' This function computes Exposure:Activity ratios using user-provided measured 
+#' concentration data from the output of \code{\link{create_toxEval}},
+#' and joins the data with the activity concentration at cutoff data provided by 
+#' ToxCast.Data from ToxCast is included with this package, but alternative 
 #' benchmark data can be provided to perform the same "toxEval" analysis.
 #' 
 #' To use the data provided by the package, a sample workflow is shown below
-#' in the examples. It includes getting the ToxCast (ACC) values that will
-#' be used to calculate the EAR, filtering out the endToints that should
-#' be ignored based on "flags" in the data, and filtering out any groups
-#' that may not be important to the analysis at hand.
+#' in the examples. The examples include retrieving the ToxCast (ACC) values 
+#' that are used to calculate EARs, choosing endPoints that should be ignored 
+#' based on data quality "flags" in the ToxCast database, and removing groups of 
+#' endPoints that may not be important to the analysis at hand.
 #' 
 #' 
 #' @param tox_list list with data frames for chem_data, chem_info, chem_site, 
 #' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}
-#' @param ACClong data frame with at least columns: CAS, chnm, endPoint, ACC_value. To use data
-#' provided by this package from ToxCast, use the \code{\link{get_ACC}} function. You may wish
-#' to remove endPoints with specific flags using the \code{\link{remove_flags}} function.
+#' @param ACClong data frame with columns: CAS, chnm, endPoint, and ACC_value 
+#' for specific chemical/endpoint combinations generated using the 
+#' \code{\link{get_ACC}} function. EndPoints with specific data quality flags 
+#' may optionally be removed using the \code{\link{remove_flags}} function.
 #' @param filtered_ep data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
 #' filtering occurs.
-#' @param chem.data OPTIONAL data frame with (at least) columns: CAS, SiteID, Value. Default is \code{NULL}. 
+#' @param chem.data OPTIONAL data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.site OPTIONAL data frame with (at least) columns: SiteID, Short Name. Default is \code{NULL}. 
+#' @param chem.site OPTIONAL data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.info OPTIONAL data frame with (at least) columns: CAS, class. Default is \code{NULL}. 
+#' @param chem.info OPTIONAL data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
 #' @param exclusion OPTIONAL data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
@@ -167,11 +169,11 @@ orderChem <- function(graphData, orderClass_df){
   return(orderChem_df)
 }
 
-#' Remove endpoints with specific flags from data
+#' Remove endpoints with specific data quality flags from data
 #' 
 #' Through the ToxCast program quality assurance procedures, information 
 #' is examined and at times, it is necessary to assign a data quality flag 
-#' to a specific chemical: assay result. A toxEval user may want to include 
+#' to a specific chemical/assay result. A toxEval user may want to include 
 #' or exclude assay results with certain flags depending on the objectives 
 #' of a given study. Assay results with specific data quality flags assigned 
 #' to them can be removed based on their designated flag with the 
@@ -179,18 +181,20 @@ orderChem <- function(graphData, orderClass_df){
 #' flagsShort value (used in the remove_flags function) are as follows:
 #' \tabular{ll}{
 #' Flag \tab flagsShort\cr
-#' Borderline active \tab Borderline \cr
-#' Only highest conc above baseline, active \tab OnlyHighest \cr
+#' Borderline active* \tab Borderline \cr
+#' Only highest conc above baseline, active* \tab OnlyHighest \cr
 #' Only one conc above baseline, active \tab OneAbove \cr
 #' Noisy data \tab Noisy \cr
 #' Hit-call potentially confounded by overfitting \tab HitCall \cr
-#' Gain AC50 < lowest conc & loss AC50 < mean conc \tab GainAC50 \cr
-#' Biochemical assay with < 50% efficacy \tab Biochemical \cr
+#' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
+#' Biochemical assay with < 50% efficacy \tab Biochemical* \cr
+#' Asterisks indicate flags removed in the function as default.
 #' }
 #' 
-#' @param ACClong data frame with columns: casn, chnm, endPoint, ACC_value
-#' @param flagsShort vector of flags to TAKE OUT. Possible values are 
-#' "Borderline", "OnlyHighest", "OneAbove","Noisy", "HitCall", "GainAC50", "Biochemical"
+#' @param ACClong data frame with columns: casn, chnm, endPoint, and ACC_value
+#' @param flagsShort vector of flags to to trigger REMOVAL of chemical:endPoint 
+#' combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
+#' "Noisy", "HitCall", "GainAC50", "Biochemical".
 #' @export
 #' @examples 
 #' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
