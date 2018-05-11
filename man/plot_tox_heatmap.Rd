@@ -10,21 +10,21 @@ plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
   title = NA)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{chem_site}{Data frame with columns SiteID, site_grouping, and Short Name}
+\item{chem_site}{Data frame with columns SiteID, site_grouping, and Short Name.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical".}
 
 \item{breaks}{Numerical vector to define data bins and legend breaks.}
 
-\item{manual_remove}{Vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove.}
 
-\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
-FALSE displays the maximum sample from each site.}
+\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\code{FALSE} displays the maximum sample from each site.}
 
-\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
 \item{plot_ND}{Logical. Whether or not to plot "Biological" groupings,
@@ -37,7 +37,7 @@ opposed to ToxCast benchmarks.}
 \description{
 The \code{plot_tox_heatmap} function creates a heat (tile) map with sites on the x-axis, 
 a specified grouping on the y-axis (defined by the category argument), and color shading 
-defining the mean or max EAR. See "Summarizing the data" in the Introduction vignette:  
+defining the mean or maximum EAR. See "Summarizing the data" in the Introduction vignette:  
 \url{../doc/Introduction.html#summarize_data} for a description on how the 
 EAR values are computed, aggregated, and summarized. The y-axis grouping can be "Biological",
 "Chemical Class", or "Chemical". When specifying the "Chemical" option, a secondary y-axis 

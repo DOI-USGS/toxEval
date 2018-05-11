@@ -8,23 +8,23 @@
 #' must be one of the defined "Chemical Class" options such as "Herbicide".
 
 #' A boxplot is generated for each endPoint. The EAR values that are used to 
-#' create the boxplots are the mean or max (as defined by mean_logic) for each 
+#' create the boxplots are the mean or maximum (as defined by mean_logic) for each 
 #' site as described in "Summarizing the data"in the Introduction vignette: 
 #' \url{../doc/Introduction.html#summarize_data}.
 #' 
-#' @param chemicalSummary Data frame from \code{get_chemical_summary}
-#' @param category Either "Biological", "Chemical Class", or "Chemical"
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param category Either "Biological", "Chemical Class", or "Chemical".
 #' @param filterBy Character. Either "All" or one of the filtered categories.
-#' @param manual_remove Vector of categories to remove
-#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
-#' FALSE displays the maximum sample from each site.
-#' @param sum_logic logical. TRUE sums the EARs in a specified grouping,
-#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' @param manual_remove Vector of categories to remove.
+#' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
+#' \code{FALSE} displays the maximum sample from each site.
+#' @param sum_logic logical. \code{TRUE} sums the EARs in a specified grouping,
+#' \code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param hit_threshold numeric threshold defining a "hit"
-#' @param font_size numeric to adjust the axis font size
-#' @param title character title for plot. 
-#' @param pallette vector of color pallette for fill. Can be a named vector
+#' @param hit_threshold Numeric threshold defining a "hit".
+#' @param font_size Numeric to adjust the axis font size.
+#' @param title Character title for plot. 
+#' @param pallette Vector of color pallette for fill. Can be a named vector
 #' to specify specific color for specific categories. 
 #' @export
 #' @import ggplot2

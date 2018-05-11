@@ -12,18 +12,18 @@ map_tox_data(chemicalSummary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{chem_site}{Data frame containing the columns SiteID, site_grouping, 
-Short Name, dec_lon, and dec_lat}
+Short Name, dec_lon, and dec_lat.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{mean_logic}{Logical.  TRUE displays the mean EAR from each site,
-FALSE displays the maximum EAR from each site.}
+\item{mean_logic}{Logical.  \code{TRUE} displays the mean EAR from each site,
+\code{FALSE} displays the maximum EAR from each site.}
 
-\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 }
 \description{

@@ -43,7 +43,7 @@
 #' purposes, but will not be used in toxEval. 
 #' 
 #' 
-#' For more information, see the "Prepare Data" vignette for the toEval package.
+#' For more information, see the "Prepare Data" vignette: \url{../doc/PrepareData.html}.
 #' 
 #' All remaining toxEval functions use data from via the list that is returned 
 #' from this function.
@@ -59,7 +59,7 @@
 #' "ACC_value" and "chnm")
 #' 
 #' @param excel_file_path Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
-#' and could optionally contain Exclude and Benchmarks
+#' and could optionally contain Exclude and Benchmarks.
 #'
 #' @export
 #' @examples 

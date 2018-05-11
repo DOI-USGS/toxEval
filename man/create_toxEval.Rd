@@ -8,7 +8,7 @@ create_toxEval(excel_file_path)
 }
 \arguments{
 \item{excel_file_path}{Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
-and could optionally contain Exclude and Benchmarks}
+and could optionally contain Exclude and Benchmarks.}
 }
 \value{
 The object returned from this function contains a list of between 
@@ -65,7 +65,7 @@ analysis with an older version of ToxCast may be reproduced by including the
 selected ToxCast endpoint database in this sheet. Additional columns may be included for user 
 purposes, but will not be used in toxEval.
 
-For more information, see the "Prepare Data" vignette for the toEval package.
+For more information, see the "Prepare Data" vignette: \url{../doc/PrepareData.html}.
 
 All remaining toxEval functions use data from via the list that is returned 
 from this function.

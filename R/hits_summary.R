@@ -19,12 +19,12 @@
 #' There are three columns (the Site column is dropped), and rather than one row 
 #' per site/category, there is one row per category.
 #' 
-#' @param chemicalSummary Data frame from \code{get_chemical_summary}
-#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
-#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
+#' \code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param category Either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold Numeric threshold defining a "hit"
+#' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
+#' @param hit_threshold Numeric threshold defining a "hit".
 #' @export
 #' @rdname hits_summary_DT
 #' @import DT

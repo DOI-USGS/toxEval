@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Introduction to toxEval</h1>
-<h4 class="date"><em>08 May, 2018</em></h4>
+<h4 class="date"><em>11 May, 2018</em></h4>
 
 
 <div id="TOC">
@@ -120,7 +120,7 @@ endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
 <h2>Summarizing the data</h2>
 <p>The functions in <code>toxEval</code> summarize the data as follows:</p>
 <p>First, individual EAR values are calculated for each chemical:endPoint combination. Then, the EAR values are summed together by samples (a sample is defined as a unique site/date) based on the grouping picked in the “category” argument. Categories include “Biological”, “Chemical Class”, or “Chemical”. “Biological” refers to the chosen ToxCast annotation as defined in the <code>groupCol</code> argument of the <code>filter_groups</code> function. “Chemical Class” refers to the groupings of chemicals as defined in the “Class” column of the “Chemicals” tab of the input file. “Chemical” refers to the individual chemical as defined by a unique CAS value. Finally, the maximum or mean EAR is calculated per site (based on the <code>mean_logic</code> option). This ensures that each site is represented equally regardless of how many samples are available per site.</p>
-<p>Some functions will also include a calculation for a “hit”. A threshold is defined by the user, and if the mean or max EAR (calculated as described above) is greater than the threshold, that is considered a “hit”.</p>
+<p>Some functions will also include a calculation for a “hit”. A threshold is defined by the user, and if the mean or maximum EAR (calculated as described above) is greater than the threshold, that is considered a “hit”.</p>
 </div>
 </div>
 <div id="package-logistics" class="section level1">

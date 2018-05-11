@@ -9,24 +9,24 @@ plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
   include_legend = TRUE, font_size = NA, title = NA)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{chem_site}{Data frame with at least columns SiteID, site_grouping, and Short Name}
+\item{chem_site}{Data frame with at least columns SiteID, site_grouping, and Short Name.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
-FALSE displays the maximum sample from each site.}
+\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\code{FALSE} displays the maximum sample from each site.}
 
-\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{manual_remove}{Vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove.}
 
-\item{include_legend}{Logical. Used to include legend or not}
+\item{include_legend}{Logical. Used to include legend or not.}
 
-\item{font_size}{Numeric value to adjust the axis font size}
+\item{font_size}{Numeric value to adjust the axis font size.}
 
 \item{title}{Character title for plot.}
 }

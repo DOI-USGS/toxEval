@@ -19,30 +19,30 @@ tox_boxplot_data(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{manual_remove}{Vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove.}
 
-\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
-FALSE displays the maximum sample from each site.}
+\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\code{FALSE} displays the maximum sample from each site.}
 
-\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
 \item{plot_ND}{Logical. Logical. Whether or not to plot "Biological" groupings,
 "Chemical Class" groupings, or "Chemical" that do not have any detections.}
 
-\item{font_size}{Numeric value to adjust the axis font size}
+\item{font_size}{Numeric value to adjust the axis font size.}
 
 \item{title}{Character Title for plot.}
 
 \item{pallette}{Vector of color pallette for boxplot fill. Can be a named vector
 to specify specific colors for specific categories.}
 
-\item{hit_threshold}{Numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit".}
 }
 \description{
 The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
