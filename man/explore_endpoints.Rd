@@ -7,7 +7,7 @@
 explore_endpoints(browse = TRUE)
 }
 \arguments{
-\item{browse}{Logical. Use browser for running shiny app.}
+\item{browse}{Logical. Use browser for running Shiny app.}
 }
 \description{
 Open an interactive app in a browser. See the "Shiny App" vignette:
