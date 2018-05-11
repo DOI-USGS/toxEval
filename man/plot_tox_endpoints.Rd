@@ -42,7 +42,7 @@ filterBy argument must match one of the unique options in the category.
 For example, if the category is "Chemical Class", then the filterBy argument 
 must be one of the defined "Chemical Class" options such as "Herbicide".
 A boxplot is generated for each endPoint. The EAR values that are used to 
-create the boxplots are the mean or max (as defined by mean_logic) for each 
+create the boxplots are the mean or maximum (as defined by mean_logic) for each 
 site as described in "Summarizing the data"in the Introduction vignette: 
 \url{../doc/Introduction.html#summarize_data}.
 }

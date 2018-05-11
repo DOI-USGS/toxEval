@@ -73,7 +73,7 @@ The "Chemical" choice will group all of the endPoints in a single chemical (as d
 
 The "Class" choice will group all of the endpoints in all of the chemicals for each chemical class as defined in the "Chemical" tab in the Excel file.
 
-### C. Mean and Max: Summarize by site
+### C. Mean and Maximum: Summarize by site
 
 The options are "MeanEAR" and "MaxEAR", and they dictate how to summarize the EARs per site. Each site may have different numbers of collected samples. Mean or max can be chosen based on the objectives of specific analyses. 
 
