@@ -8,7 +8,7 @@
 #' categories to intended_target_family and intended_target_family_sub as 
 #' described in the paper linked above.
 #' 
-#' @param endPointInfo Data frame Endpoint information from ToxCast
+#' @param endPointInfo Data frame Endpoint information from ToxCast.
 #' @export
 #' @return The returned data frame is based on endPointInfo, but with some endPoints
 #' filtered out and some additional categories in intended_target_family and

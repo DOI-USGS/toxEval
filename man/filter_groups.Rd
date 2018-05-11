@@ -18,7 +18,7 @@ filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
 "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
 "BSK" (BioSeek) assay is removed.}
 
-\item{remove_groups}{Vector of groups within the selected 'groupCol' to remove}
+\item{remove_groups}{Vector of groups within the selected 'groupCol' to remove.}
 }
 \description{
 This function provides a mechanism to specify 3 levels of information in the 

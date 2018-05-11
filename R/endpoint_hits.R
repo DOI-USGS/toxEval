@@ -15,15 +15,15 @@
 #' with hits. 
 #' 
 #' @param chemicalSummary Data frame from \code{get_chemical_summary}
-#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
+#' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
 #' FALSE displays the maximum sample from each site.
-#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
-#' FALSE does not. FALSE indicates that EAR values are not considered to be 
+#' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
+#' \code{FALSE} does not. \code{FALSE} indicates that EAR values are not considered to be 
 #' additive and often will be a more appropriate choice for traditional 
 #' benchmarks as opposed to ToxCast benchmarks.
-#' @param category Either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold Numeric EAR threshold defining a "hit"
-#' @param include_links Logical, whether or not to include a link to the ToxCast 
+#' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
+#' @param hit_threshold Numeric. EAR threshold defining a "hit".
+#' @param include_links Logical. whether or not to include a link to the ToxCast 
 #' dashboard. Only needed for the "Chemical" category.
 #' @export
 #' @import DT

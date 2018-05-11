@@ -12,18 +12,18 @@ rank_sites(chemicalSummary, category, hit_threshold = 0.1,
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
-FALSE displays the maximum sample from each site.}
+\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\code{FALSE} displays the maximum sample from each site.}
 
-\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{hit_threshold}{Numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit".}
 }
 \description{
 The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions 

@@ -7,7 +7,7 @@
 clean_endPoint_info(endPointInfo)
 }
 \arguments{
-\item{endPointInfo}{Data frame Endpoint information from ToxCast}
+\item{endPointInfo}{Data frame Endpoint information from ToxCast.}
 }
 \value{
 The returned data frame is based on endPointInfo, but with some endPoints

@@ -10,7 +10,7 @@ get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
 }
 \arguments{
 \item{tox_list}{List with data frames for chem_data, chem_info, chem_site, 
-and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}}
+and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}.}
 
 \item{ACClong}{Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 for specific chemical/endpoint combinations generated using the 

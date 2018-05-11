@@ -14,7 +14,7 @@
 #' 
 #' 
 #' @param tox_list List with data frames for chem_data, chem_info, chem_site, 
-#' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}
+#' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}.
 #' @param ACClong Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 #' for specific chemical/endpoint combinations generated using the 
 #' \code{\link{get_ACC}} function. EndPoints with specific data quality flags 

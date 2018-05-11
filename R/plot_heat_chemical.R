@@ -15,14 +15,14 @@
 #' \url{../doc/Introduction.html#custom_config} for instructions on how to convert 
 #' the character vector sites to a factor with ordered levels.
 #' 
-#' @param chemicalSummary Data frame from \code{get_chemical_summary}
-#' @param chem_site Data frame with columns SiteID, site_grouping, and Short Name
-#' @param category Either "Biological", "Chemical Class", or "Chemical"
-#' @param manual_remove Vector of categories to remove
-#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
-#' FALSE displays the maximum sample from each site.
-#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
-#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chem_site Data frame with columns SiteID, site_grouping, and Short Name.
+#' @param category Either "Biological", "Chemical Class", or "Chemical".
+#' @param manual_remove Vector of categories to remove.
+#' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
+#' \code{FALSE} displays the maximum sample from each site.
+#' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
+#' \code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
 #' @param plot_ND Logical. Whether or not to plot "Biological" groupings,
 #' "Chemical Class" groupings, or "Chemical" that do not have any detections. 

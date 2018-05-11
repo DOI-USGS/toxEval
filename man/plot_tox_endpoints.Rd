@@ -10,28 +10,28 @@ plot_tox_endpoints(chemicalSummary, category = "Biological",
   pallette = NA)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Either "Biological", "Chemical Class", or "Chemical".}
 
 \item{filterBy}{Character. Either "All" or one of the filtered categories.}
 
-\item{manual_remove}{Vector of categories to remove}
+\item{manual_remove}{Vector of categories to remove.}
 
-\item{hit_threshold}{numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit".}
 
-\item{mean_logic}{Logical.  TRUE displays the mean sample from each site,
-FALSE displays the maximum sample from each site.}
+\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\code{FALSE} displays the maximum sample from each site.}
 
-\item{sum_logic}{logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{font_size}{numeric to adjust the axis font size}
+\item{font_size}{Numeric to adjust the axis font size.}
 
-\item{title}{character title for plot.}
+\item{title}{Character title for plot.}
 
-\item{pallette}{vector of color pallette for fill. Can be a named vector
+\item{pallette}{Vector of color pallette for fill. Can be a named vector
 to specify specific color for specific categories.}
 }
 \description{

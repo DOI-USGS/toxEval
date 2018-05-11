@@ -7,7 +7,7 @@
 explore_endpoints(browse = TRUE)
 }
 \arguments{
-\item{browse}{Use browser for map rendering}
+\item{browse}{Logical. Use browser for running shiny app.}
 }
 \description{
 Open an interactive app in a browser. See the "Shiny App" vignette:

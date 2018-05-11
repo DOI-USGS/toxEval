@@ -17,7 +17,7 @@
 #' @param assays Vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
 #' "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
 #' "BSK" (BioSeek) assay is removed.
-#' @param remove_groups Vector of groups within the selected 'groupCol' to remove
+#' @param remove_groups Vector of groups within the selected 'groupCol' to remove.
 #' @export
 #' @importFrom stringi stri_trans_totitle
 #' @importFrom dplyr rename

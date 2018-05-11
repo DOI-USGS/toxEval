@@ -59,7 +59,7 @@
 #' "ACC_value" and "chnm")
 #' 
 #' @param excel_file_path Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
-#' and could optionally contain Exclude and Benchmarks
+#' and could optionally contain Exclude and Benchmarks.
 #'
 #' @export
 #' @examples 

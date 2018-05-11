@@ -12,14 +12,14 @@
 #' The tables result in slightly different results for a single site, displaying 
 #' the number of samples with hits rather than the number of sites.
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}
-#' @param mean_logic Logical.  TRUE displays the mean sample from each site,
-#' FALSE displays the maximum sample from each site.
-#' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,
-#' FALSE does not. FALSE may be better for traditional benchmarks as
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
+#' \code{FALSE} displays the maximum sample from each site.
+#' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
+#' \code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param category Either "Biological", "Chemical Class", or "Chemical"
-#' @param hit_threshold Numeric threshold defining a "hit"
+#' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
+#' @param hit_threshold Numeric threshold defining a "hit".
 #' @export
 #' @rdname hits_by_groupings_DT
 #' @import DT
