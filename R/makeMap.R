@@ -7,7 +7,7 @@
 #' "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
 #' data frame specified for the chem_site argument.
 #' 
-#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}
 #' @param category Either "Biological", "Chemical Class", or "Chemical"
 #' @param mean_logic Logical.  TRUE displays the mean EAR from each site,
 #' FALSE displays the maximum EAR from each site.

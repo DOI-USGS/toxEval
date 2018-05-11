@@ -22,7 +22,7 @@ filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
 }
 \description{
 This function provides a mechanism to specify 3 levels of information in the 
-supplied data frame 'endPointInfo' to be used in subsequent analysis steps. 
+supplied data frame \code{\link{endPointInfo}} to be used in subsequent analysis steps. 
 First, the user specifies the ToxCast assay annotation using the 'groupCol' 
 argument, which is a column header in 'endPointInfo'. Second, the user 
 specifies the families of assays to use. Finally, the user can choose to 

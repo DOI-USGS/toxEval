@@ -12,7 +12,7 @@ rank_sites(chemicalSummary, category, hit_threshold = 0.1,
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}}
 
 \item{category}{Either "Biological", "Chemical Class", or "Chemical"}
 

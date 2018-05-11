@@ -12,7 +12,7 @@ map_tox_data(chemicalSummary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}}
 
 \item{chem_site}{Data frame containing the columns SiteID, site_grouping, 
 Short Name, dec_lon, and dec_lat}

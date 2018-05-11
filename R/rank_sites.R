@@ -9,7 +9,7 @@
 #' The tables show slightly different results for a single site. Rather than multiple 
 #' columns for categories, there is now 1 row per category (since the site is known).
 #' 
-#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}
 #' @param mean_logic Logical.  TRUE displays the mean sample from each site,
 #' FALSE displays the maximum sample from each site.
 #' @param sum_logic Logical. TRUE sums the EARs in a specified grouping,

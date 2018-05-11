@@ -43,7 +43,7 @@
 #' purposes, but will not be used in toxEval. 
 #' 
 #' 
-#' For more information, see the "Prepare Data" vignette for the toEval package.
+#' For more information, see the "Prepare Data" vignette: \url{../doc/PrepareData.html}.
 #' 
 #' All remaining toxEval functions use data from via the list that is returned 
 #' from this function.
