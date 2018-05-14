@@ -34,7 +34,7 @@ The `create_toxEval` function will check that required columns are included, and
 
 # Setup Analysis
 
-The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. This data frame (`chemicalSummary`) is required for most functions within `toxEval`. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" tab in the Excel file. The general workflow for creating this data frame is:
+The next step for exploring the data in `toxEval` is to create a data frame that includes the EAR calculations for each measurement. This data frame (`chemicalSummary`) is required for most functions within `toxEval`. Since one chemical may have many more than one "endPoint", this data frame may be much larger then the "Data" sheet in the Excel file. The general workflow for creating this data frame is:
 
 ```{r chemicalSummary}
 ACClong <- get_ACC(tox_list$chem_info$CAS)
