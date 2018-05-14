@@ -1,7 +1,8 @@
 endpointGraph_create <- reactive({
 
   filterBy <- epDF[['epGroup']]
-  hitThres <- hitThresValue()
+  include_thresh <- as.logical(input$plot_thres_ep)
+  hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   chemicalSummary <- chemicalSummary()
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- as.logical(input$meanEAR)
@@ -12,7 +13,7 @@ endpointGraph_create <- reactive({
                                       category = category,
                                       mean_logic = mean_logic,
                                       sum_logic = sum_logic,
-                                      hit_threshold = hitThresValue(),
+                                      hit_threshold = hitThres,
                                       filterBy = filterBy,
                                       title = genericTitle(),
                                       font_size = 18) 
@@ -90,7 +91,8 @@ epGraphCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  hitThres <- hitThresValue()
+  include_thresh <- as.logical(input$plot_thres_ep)
+  hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   filterBy <- epDF[['epGroup']]
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)

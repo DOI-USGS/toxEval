@@ -157,6 +157,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
+             checkboxInput("plot_thres_box", "Consider Threshold?", FALSE),
              uiOutput("graphGroup.ui", width = "100%"),
              checkboxInput("plot_ND", "Plot ND's?", TRUE),
              fluidRow(
@@ -211,11 +212,14 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
-             selectInput("epGroup", label = "Choose Chemical",
-                         choices = "All",
-                         multiple = FALSE,
-                         selected = "All"),
-             div(style = 'overflow-y: scroll', uiOutput("endpointGraph.ui")),
+             fluidRow(
+               column(3,selectInput("epGroup", label = "Choose Chemical",
+                                    choices = "All",
+                                    multiple = FALSE,
+                                    selected = "All")),
+               column(3, checkboxInput("plot_thres_ep", "Consider Threshold?", FALSE))
+             ),
+            uiOutput("endpointGraph.ui"),
             fluidRow(
              column(3, downloadButton('downloadEndpoint', 'Download PNG')),
              column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
