@@ -1,7 +1,8 @@
 boxPlots_create <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
-  
+  include_thresh <- as.logical(input$plot_thres_box)
+  hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   plot_ND = input$plot_ND
   chemicalSummary <- chemicalSummary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -14,6 +15,7 @@ boxPlots_create <- reactive({
                                mean_logic = mean_logic,
                                sum_logic = sum_logic,
                                plot_ND = plot_ND,
+                               hit_threshold = hitThres,
                                font_size = 18,
                                title = genericTitle())
   return(bioPlot)
@@ -110,6 +112,8 @@ boxCode <- reactive({
   sum_logic <- as.logical(input$sumEAR)
   plot_ND = input$plot_ND
   
+  include_thresh <- as.logical(input$plot_thres_box)
+  hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   if(sum_logic){
@@ -117,6 +121,7 @@ boxCode <- reactive({
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
                           category = '",category,"',
                           mean_logic = ",mean_logic,",
+                          hit_threshold = ",hitThres,",
                           title = '",genericTitle(),"',
                           plot_ND = ",plot_ND,")
 bio_plot")    
@@ -125,6 +130,7 @@ bio_plot")
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
                           category = '",category,"',
                           mean_logic = ",mean_logic,",
+                          hit_threshold = ",hitThres,",
                           sum_logic = FALSE,
                           title = '",genericTitle(),"',
                           plot_ND = ",plot_ND,")

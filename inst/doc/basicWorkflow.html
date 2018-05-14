@@ -91,7 +91,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Basic Workflow</h1>
-<h4 class="date"><em>11 May, 2018</em></h4>
+<h4 class="date"><em>14 May, 2018</em></h4>
 
 
 <div id="TOC">
@@ -142,7 +142,7 @@ tox_list &lt;-<span class="st"> </span><span class="kw">create_toxEval</span>(fu
 </div>
 <div id="setup-analysis" class="section level1">
 <h1>Setup Analysis</h1>
-<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemicalSummary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” tab in the Excel file. The general workflow for creating this data frame is:</p>
+<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemicalSummary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” sheet in the Excel file. The general workflow for creating this data frame is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 

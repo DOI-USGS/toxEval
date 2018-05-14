@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Shiny App</h1>
-<h4 class="date"><em>11 May, 2018</em></h4>
+<h4 class="date"><em>14 May, 2018</em></h4>
 
 
 <div id="TOC">
@@ -126,7 +126,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The “Group By” radio buttons affect all output in the application. For each function, the data will be summarized by summing individual EARs. How summations are grouped depends on this choice.</p>
 <p>The “Group” choice will group all of the endPoints that have similar groupings based on the options as determined by the designated “Annotation”. The default annotation is “intended_target_family”. With that choice, the “Group” radio button groups all EARs by the unique categories in the “intended_target_family” category.</p>
 <p>The “Chemical” choice will group all of the endPoints in a single chemical (as defined by unique CAS).</p>
-<p>The “Class” choice will group all of the endpoints in all of the chemicals for each chemical class as defined in the “Chemical” tab in the Excel file.</p>
+<p>The “Class” choice will group all of the endpoints in all of the chemicals for each chemical class as defined in the “Chemical” sheet in the Excel file.</p>
 </div>
 <div id="c.-mean-and-maximum-summarize-by-site" class="section level3">
 <h3>C. Mean and Maximum: Summarize by site</h3>
@@ -134,8 +134,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="d.-download-benchmarks" class="section level3">
 <h3>D. Download benchmarks</h3>
-<p>Clicking on this button will download the current set of benchmarks that is currently being used for <code>toxEval</code> computations as a comma delimited (csv) file. This file is formateed such that it could be used in the “Benchmark” tab (as described in the “Prepare Data” vignette). The provided columns are “CAS”, “Chemical” (name), “flags”, “endPoint”, “ACC”, “MlWt”, “Value”, “groupCol”, and “assaysFull”.</p>
-<p>The “ACC” column is in log(μM), and the “Value” column is the conversion from that log(μM) to μg/L.</p>
+<p>Clicking on this button will download the current set of benchmarks that is currently being used for <code>toxEval</code> computations as a comma delimited (csv) file. This file is formated such that it could be used in the “Benchmark” sheet (as described in the “Prepare Data” vignette). The provided columns are “CAS”, “Chemical” (name), “flags”, “endPoint”, “ACC”, “MlWt”, “Value”, “groupCol”, and “assaysFull”.</p>
+<p>The “ACC” column is in log(<span class="math inline">\(\mu\)</span>M), and the “Value” column is the ACC converted to units of <span class="math inline">\(\mu\)</span>g/L.</p>
 </div>
 <div id="e.-assay" class="section level3">
 <h3>E. Assay</h3>

@@ -15,7 +15,7 @@ vignette: >
 
 The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. 
 
-The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `shiny` R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided in the  [shinyApp vignette](shinyApp.html).
+The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `Shiny` R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided in the  [ShinyApp vignette](shinyApp.html).
 
 This vignette provides a general overview of the concepts within `toxEval`, definitions of common terminology used throughout the package, and links to information to help understand fundamentals of the ToxCast database used within `toxEval`. In addition, instructions are provided for installing and updating the package from the Geological Survey R Archive Network (GRAN). 
 
@@ -56,7 +56,7 @@ The default grouping of ToxCast endPoints is "intended_target_family", but depen
 
 The functions in `toxEval` summarize the data as follows: 
 
-First, individual EAR values are calculated for each chemical:endPoint combination. Then, the EAR values are summed together by samples (a sample is defined as a unique site/date) based on the grouping picked in the "category" argument. Categories include "Biological", "Chemical Class", or "Chemical". "Biological" refers to the chosen ToxCast annotation as defined in the `groupCol` argument of the `filter_groups` function. "Chemical Class" refers to the groupings of chemicals as defined in the "Class" column of the "Chemicals" tab of the input file. "Chemical" refers to the individual chemical as defined by a unique CAS value. Finally, the maximum or mean EAR is calculated per site (based on the `mean_logic` option). This ensures that each site is represented equally regardless of how many samples are available per site. 
+First, individual EAR values are calculated for each chemical:endPoint combination. Then, the EAR values are summed together by samples (a sample is defined as a unique site/date) based on the grouping picked in the "category" argument. Categories include "Biological", "Chemical Class", or "Chemical". "Biological" refers to the chosen ToxCast annotation as defined in the `groupCol` argument of the `filter_groups` function. "Chemical Class" refers to the groupings of chemicals as defined in the "Class" column of the "Chemicals" sheet of the input file. "Chemical" refers to the individual chemical as defined by a unique CAS value. Finally, the maximum or mean EAR is calculated per site (based on the `mean_logic` option). This ensures that each site is represented equally regardless of how many samples are available per site. 
 
 Some functions will also include a calculation for a "hit". A threshold is defined by the user, and if the mean or maximum EAR (calculated as described above) is greater than the threshold, that is considered a "hit".
 
@@ -104,7 +104,7 @@ install.packages("toxEval")
 
 <img style="float: right;" src="update.png">
 
-Regularly, it is a good idea to update *ALL* of installed packages in R. If using RStudio, this is done by using the Update button in the "Packages" tab. Selecting this option checks CRAN and GRAN for updates. 
+Regularly, it is a good idea to update *ALL* of installed packages in R. If using RStudio, this is done by using the Update button in the "Packages" tab in RStudio. Selecting this option checks CRAN and GRAN for updates. 
 
 
 Within the R-console, packages can be updated with the command:
