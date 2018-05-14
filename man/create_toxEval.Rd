@@ -32,7 +32,7 @@ included for each sheet
 \details{
 Required columns in the Data sheet include "CAS", "SiteID", "Value", and 
 "Sample Date". The "Value" column includes concentration measurements in 
-units of ug/L. "Sample Date" can be either a date or date/time or an integer.
+units of \eqn{\mu}g/L. "Sample Date" can be either a date or date/time or an integer.
 Additional columns may be included for user purposes, but will not be used in
 toxEval.
 

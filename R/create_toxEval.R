@@ -180,7 +180,7 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
       stop(tab," tab missing ",miss_col," column")
     } else {
       warning(tab," tab missing optional column: ",miss_col,".\n
-              This could cause shiny app to not work properly")
+              This could cause Shiny app to not work properly")
     }
   }
   # Transform the column names the "required" names:
