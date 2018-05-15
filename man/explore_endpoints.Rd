@@ -7,11 +7,12 @@
 explore_endpoints(browse = TRUE)
 }
 \arguments{
-\item{browse}{Use browser for map rendering}
+\item{browse}{Logical. Use browser for running Shiny app.}
 }
 \description{
-Open an interactive app in a browser. See the vignette "Shiny App"
-for more details. Using this function is a quick and convenient way
+Open an interactive app in a browser. See the "Shiny App" vignette:
+\url{../doc/shinyApp.html} for more details. Using this 
+function is a quick and convenient way
 to explore data. For more customization, the R-code to 
 produce each graph and table is displayed in the app. That is 
 a good starting-point for a custom analysis.

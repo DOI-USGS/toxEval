@@ -71,17 +71,17 @@ The "Group" choice will group all of the endPoints that have similar groupings b
 
 The "Chemical" choice will group all of the endPoints in a single chemical (as defined by unique CAS).
 
-The "Class" choice will group all of the endpoints in all of the chemicals for each chemical class as defined in the "Chemical" tab in the Excel file.
+The "Class" choice will group all of the endpoints in all of the chemicals for each chemical class as defined in the "Chemical" sheet in the Excel file.
 
-### C. Mean and Max: Summarize by site
+### C. Mean and Maximum: Summarize by site
 
 The options are "MeanEAR" and "MaxEAR", and they dictate how to summarize the EARs per site. Each site may have different numbers of collected samples. Mean or max can be chosen based on the objectives of specific analyses. 
 
 ### D. Download benchmarks
 
-Clicking on this button will download the current set of benchmarks that is currently being used for `toxEval` computations as a comma delimited (csv) file. This file is formateed such that it could be used in the "Benchmark" tab (as described in the "Prepare Data" vignette). The provided columns are "CAS", "Chemical" (name), "flags", "endPoint", "ACC", "MlWt", "Value", "groupCol", and "assaysFull".
+Clicking on this button will download the current set of benchmarks that is currently being used for `toxEval` computations as a comma delimited (csv) file. This file is formated such that it could be used in the "Benchmark" sheet (as described in the "Prepare Data" vignette). The provided columns are "CAS", "Chemical" (name), "flags", "endPoint", "ACC", "MlWt", "Value", "groupCol", and "assaysFull".
 
-The "ACC" column is in log(μM), and the "Value" column is the conversion from that log(μM) to μg/L.
+The "ACC" column is in log($\mu$M), and the "Value" column is the ACC converted to units of $\mu$g/L.
  
 ### E. Assay
 

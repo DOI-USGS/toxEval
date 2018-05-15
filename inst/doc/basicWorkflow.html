@@ -91,7 +91,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Basic Workflow</h1>
-<h4 class="date"><em>08 May, 2018</em></h4>
+<h4 class="date"><em>14 May, 2018</em></h4>
 
 
 <div id="TOC">
@@ -142,7 +142,7 @@ tox_list &lt;-<span class="st"> </span><span class="kw">create_toxEval</span>(fu
 </div>
 <div id="setup-analysis" class="section level1">
 <h1>Setup Analysis</h1>
-<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemicalSummary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” tab in the Excel file. The general workflow for creating this data frame is:</p>
+<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemicalSummary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” sheet in the Excel file. The general workflow for creating this data frame is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ACClong &lt;-<span class="st"> </span><span class="kw">get_ACC</span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw">remove_flags</span>(ACClong)
 
@@ -385,7 +385,7 @@ grid<span class="op">::</span><span class="kw">grid.draw</span>(gt)</code></pre>
 <span class="co"># plot_tox_stacks(chemicalSummary, </span>
 <span class="co">#                 chem_site = tox_list$chem_site, </span>
 <span class="co">#                 category = &quot;Chemical&quot;, include_legend = FALSE)</span></code></pre></div>
-<p>The graph shows a slightly different result for a single site. The graph now shows each individual sample. The EAR values are no longer the mean or max at the site, but rather the sums of the individual EAR values.</p>
+<p>The graph shows a slightly different result for a single site. The graph now shows each individual sample. The EAR values are no longer the mean or maximum at the site, but rather the sums of the individual EAR values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">maumee_plot_stack &lt;-<span class="st"> </span><span class="kw">plot_tox_stacks</span>(maumee, maumee_site,<span class="st">&quot;Biological&quot;</span>, <span class="dt">title =</span> maumee_site<span class="op">$</span>Fullname[<span class="dv">1</span>])
 
 gb &lt;-<span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">ggplot_build</span>(maumee_plot_stack)
@@ -396,7 +396,7 @@ grid<span class="op">::</span><span class="kw">grid.draw</span>(gt)</code></pre>
 </div>
 <div id="plot_tox_heatmap" class="section level2">
 <h2>plot_tox_heatmap</h2>
-<p>The <code>plot_tox_heatmap</code> function creates a heat (tile) map with sites on the x-axis, a specified grouping on the y-axis (defined by the <code>category</code> argument), and color shading defining the mean or max EAR. See <a href="Introduction.html#summarize_data">“Summarizing the data”</a> for a description on how the EAR values are computed, aggregated, and summarized. The y-axis grouping can be “Biological”,“Chemical Class”, or “Chemical”. When specifying the “Chemical” option, a secondary y-axis is automatically included to group chemicals into chemical class. The function computes default breaks for the color scale to match the spread of the data, but breaks can also be customized with the <code>breaks</code> argument.</p>
+<p>The <code>plot_tox_heatmap</code> function creates a heat (tile) map with sites on the x-axis, a specified grouping on the y-axis (defined by the <code>category</code> argument), and color shading defining the mean or maximum EAR. See <a href="Introduction.html#summarize_data">“Summarizing the data”</a> for a description on how the EAR values are computed, aggregated, and summarized. The y-axis grouping can be “Biological”,“Chemical Class”, or “Chemical”. When specifying the “Chemical” option, a secondary y-axis is automatically included to group chemicals into chemical class. The function computes default breaks for the color scale to match the spread of the data, but breaks can also be customized with the <code>breaks</code> argument.</p>
 <p>This is a function where it may be ideal to create a custom order to the sites (for example, west-to-east). See the above section <a href="#custom_config">“Custom configuration”</a> for instructions on how to convert the character vector <code>sites</code> to a factor with ordered levels.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot_tox_heatmap</span>(chemicalSummary, 
                  <span class="dt">chem_site =</span> tox_list<span class="op">$</span>chem_site, 
@@ -413,7 +413,7 @@ grid<span class="op">::</span><span class="kw">grid.draw</span>(gt)</code></pre>
 <div id="plot_tox_endpoints" class="section level2">
 <h2>plot_tox_endpoints</h2>
 <p>The <code>plot_tox_endpoints</code> function creates a set of boxplots representing EAR values for each endPoint based on a selected filter. The data is first filtered down to what group is specified in the <code>filterBy</code> argument. The <code>filterBy</code> argument must match one of the unique options in the <code>category</code>. For example, if the <code>category</code> is “Chemical Class”, then the <code>filterBy</code> argument must be one of the defined “Chemical Class” options such as “Herbicide”.</p>
-<p>After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or max (as defined by <code>mean_logic</code>) for each site as described in <a href="Introduction.html#summarize_data">“Summarizing the data”</a>.</p>
+<p>After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or maximum (as defined by <code>mean_logic</code>) for each site as described in <a href="Introduction.html#summarize_data">“Summarizing the data”</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ep_plot &lt;-<span class="st"> </span><span class="kw">plot_tox_endpoints</span>(chemicalSummary, 
                               <span class="dt">category =</span> <span class="st">&quot;Biological&quot;</span>, 
                               <span class="dt">filterBy =</span> <span class="st">&quot;Cell Cycle&quot;</span>)
@@ -481,7 +481,7 @@ grid<span class="op">::</span><span class="kw">grid.draw</span>(gt)
 <p>Several tables are also provided in <code>toxEval</code>. Each table can be returned in the form of a data frame (to be used further in R), or a <code>DT</code> table, which is a nicely formatted HTML table. For general exploration, the <code>DT</code> options provide helpful functionality. To use the outputs in R for further analysis, the data frame options are needed. All of these functions rely on EAR values computed by the <code>get_chemical_summary</code> function.</p>
 <div id="rank_sites_DT" class="section level2">
 <h2>rank_sites_DT</h2>
-<p>The <code>rank_sites_DT</code> (<code>DT</code> option) and <code>rank_sites</code> (data frame option) functions create tables with one row per site. There are columns of the max or mean EAR (depending on the <code>mean_logic</code> argument) for each category (“Chemical Class”, “Chemical”, or “Biological”). Additionally, columns specifying the frequency of the max or mean EAR exceeding a user specified <code>hit_threshold</code> are provided.</p>
+<p>The <code>rank_sites_DT</code> (<code>DT</code> option) and <code>rank_sites</code> (data frame option) functions create tables with one row per site. There are columns of the maximum or mean EAR (depending on the <code>mean_logic</code> argument) for each category (“Chemical Class”, “Chemical”, or “Biological”). Additionally, columns specifying the frequency of the max or mean EAR exceeding a user specified <code>hit_threshold</code> are provided.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(DT)
 <span class="kw">options</span>(<span class="dt">DT.options =</span> <span class="kw">list</span>(<span class="dt">pageLength =</span> <span class="dv">5</span>))
 

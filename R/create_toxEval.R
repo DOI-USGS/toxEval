@@ -9,7 +9,7 @@
 #' 
 #' Required columns in the Data sheet include "CAS", "SiteID", "Value", and 
 #' "Sample Date". The "Value" column includes concentration measurements in 
-#' units of ug/L. "Sample Date" can be either a date or date/time or an integer.
+#' units of \eqn{\mu}g/L. "Sample Date" can be either a date or date/time or an integer.
 #' Additional columns may be included for user purposes, but will not be used in
 #' toxEval. 
 #' 
@@ -43,7 +43,7 @@
 #' purposes, but will not be used in toxEval. 
 #' 
 #' 
-#' For more information, see the "Prepare Data" vignette for the toEval package.
+#' For more information, see the "Prepare Data" vignette: \url{../doc/PrepareData.html}.
 #' 
 #' All remaining toxEval functions use data from via the list that is returned 
 #' from this function.
@@ -59,7 +59,7 @@
 #' "ACC_value" and "chnm")
 #' 
 #' @param excel_file_path Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
-#' and could optionally contain Exclude and Benchmarks
+#' and could optionally contain Exclude and Benchmarks.
 #'
 #' @export
 #' @examples 
@@ -180,7 +180,7 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
       stop(tab," tab missing ",miss_col," column")
     } else {
       warning(tab," tab missing optional column: ",miss_col,".\n
-              This could cause shiny app to not work properly")
+              This could cause Shiny app to not work properly")
     }
   }
   # Transform the column names the "required" names:

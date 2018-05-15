@@ -12,15 +12,15 @@ hits_summary(chemicalSummary, category, hit_threshold = 0.1,
   sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{category}{Either "Biological", "Chemical Class", or "Chemical"}
+\item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{sum_logic}{Logical. TRUE sums the EARs in a specified grouping,
-FALSE does not. FALSE may be better for traditional benchmarks as
+\item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
+\code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 opposed to ToxCast benchmarks.}
 
-\item{hit_threshold}{Numeric threshold defining a "hit"}
+\item{hit_threshold}{Numeric threshold defining a "hit".}
 }
 \value{
 data frame with columns "Hits per Sample", "Individual Hits",
