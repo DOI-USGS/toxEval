@@ -58,14 +58,6 @@
 #' plot_tox_boxplots(chemicalSummary, "Chemical Class")
 #' plot_tox_boxplots(chemicalSummary, "Chemical")
 #' 
-#'  # To turn off clipping:
-#' class_plot <- plot_tox_boxplots(chemicalSummary, "Chemical Class")
-#' gb <- ggplot2::ggplot_build(class_plot)
-#' gt <- ggplot2::ggplot_gtable(gb)
-#' 
-#' gt$layout$clip[gt$layout$name=="panel"] <- "off"
-#' 
-#' grid::grid.draw(gt) 
 #' 
 #' cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
 #'                "#0072B2", "#D55E00", "#CC79A7")
@@ -228,21 +220,21 @@ plot_tox_boxplots <- function(chemicalSummary,
               axis.title =   element_text(size=font_size))
     }
     
-    # if(packageVersion("ggplot2") >= '2.2.1.9000'){
-    #   bioPlot <- bioPlot +
-    #     coord_flip(clip = "off")
-    # } else {
+    if(packageVersion("ggplot2") >= '3.0.0'){
+      bioPlot <- bioPlot +
+        coord_flip(clip = "off")
+    } else {
       bioPlot <- bioPlot +
         coord_flip()      
-    # }
+    }
     
     plot_info <- ggplot_build(bioPlot)
     layout_stuff <- plot_info$layout
     
-    if(packageVersion("ggplot2") >= "2.2.1.9000"){
+    if(packageVersion("ggplot2") >= "3.0.0"){
       xmin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
       xmax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
-      ymax <- layout_stuff$panel_scales_x[[1]]$range$range[2]
+      ymax <- length(layout_stuff$panel_scales_x[[1]]$range$range)
     } else {
       xmin <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[1]))
       xmax <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[2]))

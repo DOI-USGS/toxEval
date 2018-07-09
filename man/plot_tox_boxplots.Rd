@@ -84,14 +84,6 @@ plot_tox_boxplots(chemicalSummary, "Biological")
 plot_tox_boxplots(chemicalSummary, "Chemical Class")
 plot_tox_boxplots(chemicalSummary, "Chemical")
 
- # To turn off clipping:
-class_plot <- plot_tox_boxplots(chemicalSummary, "Chemical Class")
-gb <- ggplot2::ggplot_build(class_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-
-grid::grid.draw(gt) 
 
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                "#0072B2", "#D55E00", "#CC79A7")

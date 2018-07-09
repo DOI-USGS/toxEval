@@ -44,12 +44,7 @@ output$stackBarGroup <- renderPlot({
   need(!is.null(input$data), "Please select a data set")
   )
   
-  gb <- ggplot2::ggplot_build(stackBarGroup_create())
-  gt <- ggplot2::ggplot_gtable(gb)
-  
-  gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
-  
-  grid::grid.draw(gt)
+  stackBarGroup_create()
 
 })
 

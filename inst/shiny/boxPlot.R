@@ -52,12 +52,7 @@ output$graphGroup <- renderPlot({
   )
   updateAceEditor(session, editorId = "boxCode_out", value = boxCode() )
   
-  gb <- ggplot2::ggplot_build(boxPlots_create())
-  gt <- ggplot2::ggplot_gtable(gb)
-
-  gt$layout$clip[gt$layout$name=="panel"] <- "off"
-
-  grid::grid.draw(gt)
+  boxPlots_create()
   
 })
 

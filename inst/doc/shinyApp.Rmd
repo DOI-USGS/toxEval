@@ -143,8 +143,6 @@ All resulting graphics, tables, and data can be downloaded for use outside of th
 
 Each tab is generated based on specific functions within the R-Package, and the appropriate code to reproduce results from each tab is provided at the bottom of the tab. Modification of this code in the R environment allows the user to customize plots and tables based on specific study needs. 
 
-The current version of the 'ggplot2' package "clips" off some of the text that is shown in the app graphics, so it is necessary to add "clipping code" as described in the basic workflow in order for text outside of the plot to render properly.
-
 The app provides many graphics and tables to work through a data analysis, some users may wish to have a record of what has been done, or to save specific analyses that prove to be particularly useful. By copying and pasting the R code, users by developing a "workflow" script that has all analysis saved in one place rather than needing to go through the process of choosing the many options needed to reproduce exactly what was done previously in the app. This workflow can serve as a valuable resource that results in reliably reproducible research. In the event of a need to modify a data set, it can also be used to efficiently update a data analysis without having to reproduce each step in the app manually.
 
 # Logistics
