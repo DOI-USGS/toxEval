@@ -28,10 +28,7 @@ output$endpointGraph <- renderPlot({
     need(!is.null(input$data), "Please select a data set")
   )
   
-  gb <- ggplot2::ggplot_build(endpointGraph_create())
-  gt <- ggplot2::ggplot_gtable(gb)
-  gt$layout$clip[gt$layout$name=="panel"] <- "off"
-  grid::grid.draw(gt)
+  endpointGraph_create()
 
 })
 

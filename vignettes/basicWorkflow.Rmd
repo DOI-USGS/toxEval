@@ -166,15 +166,8 @@ There are numerous ways to visualize data within `toxEval` that can serve differ
 The `plot_tox_boxplots` function creates a set of boxplots representing EAR values computed from the original input data that was modified by the processing steps above, and dependent on the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description of how the EAR values are computed, aggregated, and summarized. Choosing "Chemical Class" in the `category` argument will generate separate boxplots for each unique class. "Chemical" will generate boxplots for each individual chemical, and "Biological" will generate boxplots for each group in the selected ToxCast annotation.
 
 ```{r boxplots1, warning=FALSE, message=FALSE}
+plot_tox_boxplots(chemicalSummary, "Biological")
 
-bio_box <- plot_tox_boxplots(chemicalSummary, "Biological")
-
-# The graph can be plotted without these additional lines,
-# but they allow the labels to look nicer:
-gb <- ggplot2::ggplot_build(bio_box)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-grid::grid.draw(gt)
 # Other options:
 # plot_tox_boxplots(chemicalSummary, "Chemical Class")
 # plot_tox_boxplots(chemicalSummary, "Chemical") 
@@ -183,16 +176,9 @@ grid::grid.draw(gt)
 It is also possible to display a threshold line using the `hit_threshold` argument. The graph will then include the number of sites with detections, the threshold line, and the number of "hits" indicating how many sites that have EAR values exceeding the `hit_threshold`.
 
 ```{r plot_box_thres, warning=FALSE, message=FALSE}
-bio_box_thresh <- plot_tox_boxplots(chemicalSummary, 
-                             category = "Biological",
-                             hit_threshold = 0.001)
-
-# The graph can be plotted without these additional lines,
-# but they allow the labels to look nicer:
-gb <- ggplot2::ggplot_build(bio_box_thresh)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-grid::grid.draw(gt)
+plot_tox_boxplots(chemicalSummary, 
+                  category = "Biological",
+                  hit_threshold = 0.001)
 
 ```
 
@@ -210,12 +196,7 @@ In this example, the funtion `plot_tox_boxplots` is used with the subset of data
 ```{r maumeePlot, message=FALSE, warning=FALSE}
 library(ggplot2)
 
-maumee_plot <- plot_tox_boxplots(maumee, "Biological",title = maumee_site$Fullname[1])
-
-gb <- ggplot2::ggplot_build(maumee_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-grid::grid.draw(gt)
+plot_tox_boxplots(maumee, "Biological",title = maumee_site$Fullname[1])
 
 ```
 
@@ -224,14 +205,9 @@ grid::grid.draw(gt)
 The `plot_tox_stacks` function creates a set of stacked bar charts representing EAR values computed from the original input data that was modified by the processing steps above, and dependent on the choice of several input options. See ["Summarizing the data"](Introduction.html#summarize_data) for a description on how the EAR values are computed, aggregated, and summarized. Choosing "Chemical Class" in the `category` argument will generate separate stacked bars for each unique class. "Chemical" will generate stacked bars for each individual chemical, and "Biological" will generate stacked bars for each group in the selected ToxCast annotation. There is an option `include_legend` to turn on and off the legend. It may be impractical for instance to show the legend for "Chemical" if there are hundreds of chemicals.
 
 ```{r stackplots1, warning=FALSE, fig.width=10}
-stack_plot <- plot_tox_stacks(chemicalSummary, 
-                              chem_site = tox_list$chem_site, 
-                              category =  "Biological")
-
-gb <- ggplot2::ggplot_build(stack_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel-1-1"] = "off"
-grid::grid.draw(gt)
+plot_tox_stacks(chemicalSummary, 
+                chem_site = tox_list$chem_site, 
+                category =  "Biological")
 
 # More options:
 # plot_tox_stacks(chemicalSummary, 
@@ -245,12 +221,7 @@ grid::grid.draw(gt)
 The graph shows a slightly different result for a single site. The graph now shows each individual sample. The EAR values are no longer the mean or maximum at the site, but rather the sums of the individual EAR values. 
 
 ```{r siteStacks, message=FALSE, warning=FALSE, fig.width=10}
-maumee_plot_stack <- plot_tox_stacks(maumee, maumee_site,"Biological", title = maumee_site$Fullname[1])
-
-gb <- ggplot2::ggplot_build(maumee_plot_stack)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-grid::grid.draw(gt)
+plot_tox_stacks(maumee, maumee_site,"Biological", title = maumee_site$Fullname[1])
 
 ```
 
@@ -281,14 +252,9 @@ The `plot_tox_endpoints` function creates a set of boxplots representing EAR val
 After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or maximum (as defined by `mean_logic`) for each site as described in ["Summarizing the data"](Introduction.html#summarize_data).
 
 ```{r endpoints, warning=FALSE}
-ep_plot <- plot_tox_endpoints(chemicalSummary, 
-                              category = "Biological", 
-                              filterBy = "Cell Cycle")
-
-gb <- ggplot2::ggplot_build(ep_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-grid::grid.draw(gt)
+plot_tox_endpoints(chemicalSummary, 
+                    category = "Biological", 
+                    filterBy = "Cell Cycle")
 
 # More options:
 # plot_tox_endpoints(chemicalSummary,   
@@ -299,24 +265,9 @@ grid::grid.draw(gt)
 #                    filterBy = "Atrazine")
 ```
 
-## What is the "clipping" code???
-
-As shown, all of the plotting examples above have 4 extra lines of code after the plot is generated. This is required to allow the labels to extend past the plotting area (such as "# Sites", "Threshold", etc.). The reason these lines of code were not embedded into the functions themselves is that they change the form of plotting object so it is no longer a `ggplot2` object. By leaving them outside of the function, the user can set additional `ggplot2` themes or other parts of the plots. That is, the plots as they are now can be additionally customized, but they lose that feature once these extra lines of code are executed:
-
-## 
-
-```{r clipping, eval=FALSE}
-gb <- ggplot2::ggplot_build(ep_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-grid::grid.draw(gt)
-```
-
-Some of the examples above use "panel" and others use "panel-1-1" as the argument in this code. This is an affect of using `ggplot2`'s `facet_grid` options, and it is important to follow the format provided for the individual functions shown above.
-
 ## How to save a plot?
 
-The `ggsave` function can be used to save plots, but at times, some of the text gets clipped off using this technique. This technique does have an advantage by taking away much of the guessing game for how big or resolved the plot should be. For RStudio users, the size by default is determined by how large the "Plots" tab is sized. This could be handy when sharing plots with colleagues during project analysis. An example of using the `ggsave` function is:
+The `ggsave` function can be used to save plots. This technique does have an advantage by taking away much of the guessing game for how big or resolved the plot should be. For RStudio users, the size by default is determined by how large the "Plots" tab is sized. This could be handy when sharing plots with colleagues during project analysis. An example of using the `ggsave` function is:
 
 ```{r ggsave1, eval=FALSE}
 
@@ -331,32 +282,6 @@ ggsave(ep_plot, file = "ep_plot.png")
 ggsave(ep_plot, file = "ep_plot.pdf")
 ```
 
-For a more refined plot for a presentations or manuscripts, the user will need to turn off clipping, and then it is necessary to save it via the standard "base R" methods:
-
-```{r basesave1, eval=FALSE}
-
-ep_plot <- plot_tox_endpoints(chemicalSummary, 
-                              category = "Biological", 
-                              filterBy = "Cell Cycle")
-gb <- ggplot2::ggplot_build(ep_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-
-
-# To save a png:
-png("ep_plot.png", width = 1200, height = 1200, res = 142)
-grid::grid.draw(gt)
-dev.off()
-
-# To save a pdf:
-pdf("ep_plot.pdf", width = 9, height = 11)
-grid::grid.draw(gt)
-dev.off()
-
-
-```
-
-On the future `ggplot2` development horizon, there may be easier ways to accomplish the labeling, making these directions unnecessary.
 
 # Tables
 

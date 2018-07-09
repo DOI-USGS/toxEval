@@ -65,14 +65,5 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
 plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
 plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
-
- # To turn off clipping:
-class_plot <- plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-gb <- ggplot2::ggplot_build(class_plot)
-gt <- ggplot2::ggplot_gtable(gb)
-
-gt$layout$clip[gt$layout$name=="panel"] <- "off"
-
-grid::grid.draw(gt) 
 }
 }
