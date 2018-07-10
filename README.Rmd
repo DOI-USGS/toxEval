@@ -66,8 +66,10 @@ There are 4 vignettes to help introduce and navigate the `toxEval` package:
 
 |Name|R command|Description |
 |----------|------------|------------|
-|[Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) | `vignette("Introduction", package="toxEval")`|Introduction to the madness |
-
+|[Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) | `vignette("Introduction", package="toxEval")`|Introduction to the toxEval |
+|[Basic Workflow](https://github.com/USGS-R/toxEval/blob/master/vignettes/basicWorkflow.Rmd/) | `vignette("basicWorkflow", package="toxEval")`|Quickstart guide to get overview of available functions |
+|[Prepare Data](https://github.com/USGS-R/toxEval/blob/master/vignettes/PrepareData.Rmd/) | `vignette("PrepareData", package="toxEval")`|Guide to preparing your data for toxEval analysis|
+|[Shiny App Guide](https://github.com/USGS-R/toxEval/blob/master/vignettes/shinyApp.Rmd/) | `vignette("shinyApp", package="toxEval")`|Guide to the toxEval shiny application|
 
 ### Reporting bugs
 

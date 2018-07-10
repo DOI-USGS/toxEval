@@ -93,7 +93,22 @@ There are 4 vignettes to help introduce and navigate the `toxEval` package:
 <tr class="odd">
 <td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/">Introduction</a></td>
 <td><code>vignette(&quot;Introduction&quot;, package=&quot;toxEval&quot;)</code></td>
-<td>Introduction to the madness</td>
+<td>Introduction to the toxEval</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/basicWorkflow.Rmd/">Basic Workflow</a></td>
+<td><code>vignette(&quot;basicWorkflow&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Quickstart guide to get overview of available functions</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/PrepareData.Rmd/">Prepare Data</a></td>
+<td><code>vignette(&quot;PrepareData&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Guide to preparing your data for toxEval analysis</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/shinyApp.Rmd/">Shiny App Guide</a></td>
+<td><code>vignette(&quot;shinyApp&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Guide to the toxEval shiny application</td>
 </tr>
 </tbody>
 </table>
