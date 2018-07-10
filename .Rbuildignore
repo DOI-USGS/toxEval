@@ -23,7 +23,7 @@ Neonic_data_GLRI_Maumee.xlsx
 Neonic_data_GLRI.xlsx
 ^.*\.Rproj$
 ^\.Rproj\.user$
-README.md
+README.Rmd
 ^\.travis\.yml$
 ^\.Rproj\.gitignore
 ^\.Rproj\.RData
@@ -31,3 +31,5 @@ README.md
 ^\.Rproj\.travis.yml
 ^\.Rproj\appveyor.yml
 CONDUCT.md
+hexSticker.R
+
