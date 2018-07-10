@@ -17,7 +17,7 @@ for specific chemical/endpoint combinations generated using the
 \code{\link{get_ACC}} function. EndPoints with specific data quality flags 
 may optionally be removed using the \code{\link{remove_flags}} function.}
 
-\item{filtered_ep}{Data frame with colums: endPoints, groupCol. Default is \code{"All"}, where no
+\item{filtered_ep}{Data frame with columns: endPoints, groupCol. Default is \code{"All"}, where no
 filtering occurs.}
 
 \item{chem.data}{\emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 

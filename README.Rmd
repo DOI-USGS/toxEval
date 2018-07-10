@@ -26,6 +26,10 @@ The functions within this package allow great flexibly for exploring the potenti
 
 ## Quickstart
 
+<p align="center">
+  <img src="README_files/figure-markdown_github/app.gif" alt="app_demo">
+</p>
+
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
 ```{r eval=FALSE} 
@@ -59,6 +63,17 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
                           category = 'Chemical Class')
 bio_plot
 ```
+
+This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
+
+There are 4 vignettes to help introduce and navigate the `toxEval` package:
+
+|Name|R command|Description |
+|----------|------------|------------|
+|[Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) | `vignette("Introduction", package="toxEval")`|Introduction to the toxEval |
+|[Basic Workflow](https://github.com/USGS-R/toxEval/blob/master/vignettes/basicWorkflow.Rmd/) | `vignette("basicWorkflow", package="toxEval")`|Quickstart guide to get overview of available functions |
+|[Prepare Data](https://github.com/USGS-R/toxEval/blob/master/vignettes/PrepareData.Rmd/) | `vignette("PrepareData", package="toxEval")`|Guide to preparing your data for toxEval analysis|
+|[Shiny App Guide](https://github.com/USGS-R/toxEval/blob/master/vignettes/shinyApp.Rmd/) | `vignette("shinyApp", package="toxEval")`|Guide to the toxEval shiny application|
 
 ### Reporting bugs
 

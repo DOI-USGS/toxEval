@@ -32,7 +32,7 @@
 #' @param hit_threshold Numeric threshold defining a "hit".
 #' @param font_size Numeric value to adjust the axis font size.
 #' @param title Character Title for plot.
-#' @param pallette Vector of color pallette for boxplot fill. Can be a named vector
+#' @param palette Vector of color palette for boxplot fill. Can be a named vector
 #' to specify specific colors for specific categories. 
 #' @export
 #' @rdname plot_tox_boxplots
@@ -69,7 +69,7 @@
 #' plot_tox_boxplots(chemicalSummary, 
 #'                   hit_threshold = 0.1,
 #'                   category = "Biological",
-#'                   pallette = cbValues,
+#'                   palette = cbValues,
 #'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
 #' 
 #' 
@@ -82,7 +82,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                               plot_ND = TRUE, 
                               font_size = NA,
                               title = NA,
-                              pallette = NA,
+                              palette = NA,
                               hit_threshold = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
@@ -98,7 +98,7 @@ plot_tox_boxplots <- function(chemicalSummary,
                                        plot_ND = plot_ND,
                                        font_size = font_size,
                                        title = title,
-                                       pallette = pallette,
+                                       palette = palette,
                                        hit_threshold = hit_threshold)
     return(chemPlot)
     
@@ -162,10 +162,10 @@ plot_tox_boxplots <- function(chemicalSummary,
         scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
       
-      if(!all(is.na(pallette))){
+      if(!all(is.na(palette))){
         bioPlot <- bioPlot +
           geom_boxplot(aes(x=category, y=EAR),lwd=0.1,outlier.size=1, fill = "steelblue") +
-          scale_fill_manual(values = pallette) +
+          scale_fill_manual(values = palette) +
           theme(legend.position = "none")
       } else {
         bioPlot <- bioPlot +
@@ -204,10 +204,10 @@ plot_tox_boxplots <- function(chemicalSummary,
               plot.title = element_text(hjust = 0.5, vjust = 0, margin = margin(-0.5,0,0,0))) +  
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
-      if(!all(is.na(pallette))){
+      if(!all(is.na(palette))){
         bioPlot <- bioPlot +
           geom_boxplot(aes(x=category, y=meanEAR, fill = category),lwd=0.1,outlier.size=1) +
-          scale_fill_manual(values = pallette) +
+          scale_fill_manual(values = palette) +
           theme(legend.position = "none")
       } else {
         bioPlot <- bioPlot +

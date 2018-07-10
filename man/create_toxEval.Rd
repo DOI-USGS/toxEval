@@ -37,7 +37,7 @@ Additional columns may be included for user purposes, but will not be used in
 toxEval.
 
 Required columns in the Chemical sheet include "CAS", "Class". "CAS" values in 
-this sheet must exactly match coprresponding "CAS" values in the Data sheet. The 
+this sheet must exactly match corresponding "CAS" values in the Data sheet. The 
 "Class" designation allows  data to be grouped in a user-specified way. For 
 example, in a data set of multiple pesticides, it may be valuable to explore 
 differences and similarities to of insecticides, herbicides and fungicides. 

@@ -20,6 +20,9 @@ The functions within this package allow great flexibly for exploring the potenti
 Quickstart
 ----------
 
+<p align="center">
+<img src="README_files/figure-markdown_github/app.gif" alt="app_demo">
+</p>
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
 ``` r
@@ -71,6 +74,47 @@ bio_plot
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+
+This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
+
+There are 4 vignettes to help introduce and navigate the `toxEval` package:
+
+<table style="width:51%;">
+<colgroup>
+<col width="15%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>R command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/">Introduction</a></td>
+<td><code>vignette(&quot;Introduction&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Introduction to the toxEval</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/basicWorkflow.Rmd/">Basic Workflow</a></td>
+<td><code>vignette(&quot;basicWorkflow&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Quickstart guide to get overview of available functions</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/PrepareData.Rmd/">Prepare Data</a></td>
+<td><code>vignette(&quot;PrepareData&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Guide to preparing your data for toxEval analysis</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/shinyApp.Rmd/">Shiny App Guide</a></td>
+<td><code>vignette(&quot;shinyApp&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Guide to the toxEval shiny application</td>
+</tr>
+</tbody>
+</table>
 
 ### Reporting bugs
 
