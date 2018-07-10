@@ -46,15 +46,15 @@ boxPlot_prints <- reactive({
 })
 
 output$graphGroup <- renderPlot({ 
-
+  
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   updateAceEditor(session, editorId = "boxCode_out", value = boxCode() )
   
   boxPlots_create()
   
-})
+}) 
 
 PlotHeight = reactive({
   
@@ -76,7 +76,7 @@ output$graphGroup.ui <- renderUI({
   
   height <- PlotHeight()
 
-  plotOutput("graphGroup", height = height, width="100%")
+  withSpinner(plotOutput("graphGroup", height = height, width="100%"))
 })
 
 output$downloadBoxPlot <- downloadHandler(

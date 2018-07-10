@@ -25,7 +25,7 @@ endpointGraph_create <- reactive({
 output$endpointGraph <- renderPlot({ 
   
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   endpointGraph_create()
@@ -36,7 +36,7 @@ output$endpointGraph.ui <- renderUI({
   
   height <- PlotHeight_ep()
   
-  plotOutput("endpointGraph", height = height, width = "100%")
+  withSpinner(plotOutput("endpointGraph", height = height, width = "100%"))
 })
 
 PlotHeight_ep = reactive({

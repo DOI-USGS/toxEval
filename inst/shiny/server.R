@@ -6,9 +6,6 @@ library(data.table)
 library(tidyr)
 library(toxEval)
 library(RColorBrewer)
-library(grid)
-library(RColorBrewer)
-library(stringi)
 library(readxl)
 
 options(shiny.maxRequestSize=10*1024^2)
@@ -139,7 +136,7 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     removeFlags <- all_flags[!(all_flags %in% flags)]
 
     rawData <- rawData()
-    
+
     if(!is.null(rawData)){
 
       if(sites != "All"){

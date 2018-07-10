@@ -19,7 +19,6 @@
 #' "BSK" (BioSeek) assay is removed.
 #' @param remove_groups Vector of groups within the selected 'groupCol' to remove.
 #' @export
-#' @importFrom stringi stri_trans_totitle
 #' @importFrom dplyr rename
 #' @examples 
 #' endPointInfo <- endPointInfo

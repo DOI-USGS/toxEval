@@ -36,7 +36,7 @@ heatMap_create <- reactive({
 output$graphHeat <- renderPlot({
   
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   print(heatMap_create())
@@ -46,7 +46,7 @@ output$graphHeat <- renderPlot({
 output$graphHeat.ui <- renderUI({
   height <- PlotHeight()
   
-  plotOutput("graphHeat", height = height, width="100%")
+  withSpinner(plotOutput("graphHeat", height = height, width="100%"))
 })
 
 output$downloadHeatPlot <- downloadHandler(

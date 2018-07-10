@@ -22,16 +22,14 @@ Imports:
     DT (>= 0.1.24),
     leaflet  (>= 1.0.0),
     ggplot2 (>= 3.0.0),
-    gridExtra,
-    grid,
     shiny,
     shinydashboard,
     data.table,
     RColorBrewer,
-    stringi,
     readxl,
     tools,
-    shinyAce
+    shinyAce,
+    shinycssloaders
 Suggests:
     rmarkdown,
     testthat,
