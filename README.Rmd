@@ -58,11 +58,7 @@ filtered_ep <- filter_groups(cleaned_ep,
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 ######################################
 bio_plot <- plot_tox_boxplots(chemicalSummary, 
-                          category = 'Chemical Class',
-                          mean_logic = FALSE,
-                          hit_threshold = NA,
-                          title = 'Summing EARs for chemicals within a class of a sample, taking the max of each site',
-                          plot_ND = TRUE)
+                          category = 'Chemical Class')
 bio_plot
 ```
 
