@@ -36,7 +36,7 @@ output$endpointGraph.ui <- renderUI({
   
   height <- PlotHeight_ep()
   
-  plotOutput("endpointGraph", height = height, width = "100%")
+  withSpinner(plotOutput("endpointGraph", height = height, width = "100%"))
 })
 
 PlotHeight_ep = reactive({

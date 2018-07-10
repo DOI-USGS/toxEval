@@ -54,7 +54,7 @@ output$graphGroup <- renderPlot({
   
   boxPlots_create()
   
-})
+}) 
 
 PlotHeight = reactive({
   
@@ -76,7 +76,7 @@ output$graphGroup.ui <- renderUI({
   
   height <- PlotHeight()
 
-  plotOutput("graphGroup", height = height, width="100%")
+  withSpinner(plotOutput("graphGroup", height = height, width="100%"))
 })
 
 output$downloadBoxPlot <- downloadHandler(

@@ -46,7 +46,7 @@ output$graphHeat <- renderPlot({
 output$graphHeat.ui <- renderUI({
   height <- PlotHeight()
   
-  plotOutput("graphHeat", height = height, width="100%")
+  withSpinner(plotOutput("graphHeat", height = height, width="100%"))
 })
 
 output$downloadHeatPlot <- downloadHandler(
