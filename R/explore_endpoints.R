@@ -20,8 +20,6 @@
 #' @import ggplot2
 #' @import data.table
 #' @import RColorBrewer
-#' @import grid
-#' @import gridExtra 
 #' @import shinydashboard
 #' @import shinyAce
 #' @examples 

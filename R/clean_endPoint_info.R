@@ -14,7 +14,7 @@
 #' filtered out and some additional categories in intended_target_family and
 #' intended_target_family_sub. The names in intended_target_family
 #' are revised to look more appealing in graphs and tables.
-#' @importFrom stringi stri_trans_totitle
+#' @importFrom tools toTitleCase
 #' @examples 
 #' endPointInfo <- endPointInfo
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
@@ -55,7 +55,7 @@ clean_endPoint_info <- function(endPointInfo){
   endPointInfo$intended_target_family[is.na(endPointInfo$intended_target_family)] <- "Undefined"
   
   cleanUpNames <- endPointInfo$intended_target_family
-  cleanUpNames <- stringi::stri_trans_totitle(cleanUpNames)
+  cleanUpNames <- tools::toTitleCase(cleanUpNames)
   cleanUpNames[grep("Dna",cleanUpNames)] <- "DNA Binding"
   cleanUpNames[grep("Cyp",cleanUpNames)] <- "CYP"
   cleanUpNames[grep("Gpcr",cleanUpNames)] <- "GPCR"
@@ -77,7 +77,7 @@ clean_endPoint_info <- function(endPointInfo){
   
   
   cleanUpNames <- endPointInfo$intended_target_family_sub
-  cleanUpNames <- stri_trans_totitle(cleanUpNames)
+  cleanUpNames <- tools::toTitleCase(cleanUpNames)
   cleanUpNames[grep("Dna",cleanUpNames)] <- "DNA Conformation"
   endPointInfo$intended_target_family_sub <- cleanUpNames
   

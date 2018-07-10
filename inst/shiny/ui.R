@@ -7,8 +7,6 @@ library(leaflet)
 library(data.table)
 library(tidyr)
 library(RColorBrewer)
-library(grid)
-library(stringi)
 library(shinyAce)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
@@ -74,7 +72,7 @@ library(toxEval)
 path_to_file <- 'Choose File'"
 
 names(shortFlags) <- flagsALL
-header <- dashboardHeader(title = "BETA: toxEval",
+header <- dashboardHeader(title = "toxEval",
                           tags$li(class = "dropdown", 
                             div(style="text-align:center;
                                 font-size: 20px;
