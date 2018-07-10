@@ -56,13 +56,11 @@ library(toxEval)
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
-ACClong <- remove_flags(ACClong = ACClong,
-                        flagsShort = c('Borderline','OnlyHighest','GainAC50','Biochemical'))
+ACClong <- remove_flags(ACClong)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep, 
                   groupCol = 'intended_target_family',
-                  assays = c('ATG','NVS','OT','TOX21','CEETOX','APR','CLD','TANGUAY','NHEERL_PADILLA','NCCT_SIMMONS','ACEA'),
                   remove_groups = c('Background Measurement','Undefined'))
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
