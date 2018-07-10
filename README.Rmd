@@ -60,6 +60,19 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
 bio_plot
 ```
 
+This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
+
+There are 4 vignettes to help introduce and navigate the `toxEval` package:
+
+|Name|R command|Description |
+|----------|------------|------------|
+|[Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) | 
+```{r eval=FALSE}
+vignette("Introduction", package="toxEval")
+```
+|Introduction to the madness |
+
+
 ### Reporting bugs
 
 Please consider reporting bugs and asking questions on the Issues page:

@@ -72,6 +72,20 @@ bio_plot
 
 ![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
+This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
+
+There are 4 vignettes to help introduce and navigate the `toxEval` package:
+
+| Name                                                                                      | R command | Description |
+|-------------------------------------------------------------------------------------------|-----------|-------------|
+| [Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) |           |
+
+``` r
+vignette("Introduction", package="toxEval")
+```
+
+|Introduction to the madness |
+
 ### Reporting bugs
 
 Please consider reporting bugs and asking questions on the Issues page: <https://github.com/USGS-R/toxEval/issues>
