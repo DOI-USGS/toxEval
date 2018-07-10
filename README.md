@@ -20,8 +20,9 @@ The functions within this package allow great flexibly for exploring the potenti
 Quickstart
 ----------
 
-[App Demo](README_files/figure-markdown_github/app.gif)
-
+<p align="center">
+<img src="README_files/figure-markdown_github/app.gif" alt="app_demo">
+</p>
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
 ``` r
