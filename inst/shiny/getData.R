@@ -4,6 +4,9 @@ rawData_data <- reactiveValues(data = NULL)
 observeEvent(input$exampleData,{
   newPath <- file.path(system.file("extdata", package="toxEval"),"OWC_data_fromSup.xlsx")
   rawData_data$data <- create_toxEval(newPath)
+
+  epDF[["fileName"]] <- newPath
+  
 })
 
 observeEvent(input$data,{
