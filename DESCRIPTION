@@ -28,7 +28,8 @@ Imports:
     RColorBrewer,
     readxl,
     tools,
-    shinyAce
+    shinyAce,
+    shinycssloaders
 Suggests:
     rmarkdown,
     testthat,

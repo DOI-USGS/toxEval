@@ -136,7 +136,7 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
     removeFlags <- all_flags[!(all_flags %in% flags)]
 
     rawData <- rawData()
-    
+
     if(!is.null(rawData)){
 
       if(sites != "All"){

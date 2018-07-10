@@ -1,7 +1,7 @@
 output$tableGroupSumm <- DT::renderDataTable({
   
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   catType = as.numeric(input$radioMaxGroup)
@@ -68,7 +68,7 @@ tableGroupSum <- hits_summary(chemicalSummary,
 tableSummGroupData <- reactive({
   
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   catType = as.numeric(input$radioMaxGroup)

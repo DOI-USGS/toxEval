@@ -16,6 +16,7 @@
 #' @importFrom leaflet addCircles
 #' @importFrom leaflet clearControls
 #' @importFrom leaflet clearShapes
+#' @importFrom shinycssloaders withSpinner
 #' @import DT
 #' @import ggplot2
 #' @import data.table

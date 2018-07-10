@@ -41,7 +41,7 @@ stackBarGroup_create <- reactive({
 output$stackBarGroup <- renderPlot({
   
   validate(
-  need(!is.null(input$data), "Please select a data set")
+  need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   stackBarGroup_create()

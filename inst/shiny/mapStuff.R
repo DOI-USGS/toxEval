@@ -1,17 +1,20 @@
 output$mymap <- leaflet::renderLeaflet({
   
-  map <- leaflet() %>%
-    addProviderTiles("CartoDB.Positron") %>%
-    setView(lng = -83.5, lat = 44.5, zoom=6)
+  input$exampleData
+  input$data
   
-  map
-  
+  isolate({
+    map <- leaflet() %>%
+      addProviderTiles("CartoDB.Positron") %>%
+      setView(lng = -83.5, lat = 44.5, zoom=6)    
+  })
+
 })
 
 output$mapFooter <- renderUI({
   
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   chemicalSummary <- chemicalSummary()
@@ -61,7 +64,7 @@ mapDataINFO <- reactive({
 observe({
   
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
 
   rawData <- rawData()

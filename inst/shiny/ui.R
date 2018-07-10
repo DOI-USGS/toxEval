@@ -8,6 +8,7 @@ library(data.table)
 library(tidyr)
 library(RColorBrewer)
 library(shinyAce)
+library(shinycssloaders)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
   rename(endPoint = assay_component_endpoint_name)
@@ -96,6 +97,7 @@ header <- dashboardHeader(title = "toxEval",
 sidebar <- dashboardSidebar(
   sidebarMenu(
    fileInput("data", "Load Excel File",multiple = FALSE),
+   actionButton("exampleData", label = "Load Example Data"),
    radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
                 selected = 3),
@@ -148,7 +150,7 @@ body <- dashboardBody(
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-             leaflet::leafletOutput("mymap",height = "500px"),
+             withSpinner(leaflet::leafletOutput("mymap",height = "500px")),
             htmlOutput("mapFooter"),
             h4("R Code:"),
             aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -167,7 +169,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
-             plotOutput("stackBarGroup", width = "100%", height = "750px"),
+             withSpinner(plotOutput("stackBarGroup", width = "100%", height = "750px")),
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
@@ -179,7 +181,7 @@ body <- dashboardBody(
              value="maxEAR",
             h3(textOutput("meanText")),
             h3(textOutput("freqText")),
-            DT::dataTableOutput('tableSumm'),
+            withSpinner(DT::dataTableOutput('tableSumm')),
             downloadButton('downloadTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -187,7 +189,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
              h3(textOutput("nGroup")),
-            DT::dataTableOutput('tableGroupSumm'),
+             withSpinner(DT::dataTableOutput('tableGroupSumm')),
             downloadButton('downloadGroupTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -195,7 +197,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
             h3(textOutput("siteHitText")),
-            div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
+            div(withSpinner(DT::dataTableOutput("hitsTable")), style="font-size:90%"),
             downloadButton('downloadSiteHitTable', 'Download CSV'),
             h4("R Code:"),
             aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -203,7 +205,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              h3(textOutput("epHitTitle")),
-             div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
+             div(withSpinner(DT::dataTableOutput("hitsTableEPs")), style="font-size:90%"),
              downloadButton('downloadHitTable', 'Download CSV'),
              h4("R Code:"),
              aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -228,7 +230,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
              checkboxInput("plot_ND_heat", "Plot ND's?", TRUE),
-                   uiOutput("graphHeat.ui"),
+             uiOutput("graphHeat.ui"),
              fluidRow(
                column(3, downloadButton('downloadHeatPlot', 'Download PNG')),
                column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))

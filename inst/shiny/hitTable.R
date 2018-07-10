@@ -1,6 +1,6 @@
 output$hitsTable <- DT::renderDataTable({    
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   catType = as.numeric(input$radioMaxGroup)
@@ -70,7 +70,7 @@ hitSiteTable <- hits_by_groupings(chemicalSummary,
 
 siteHitTableData <- reactive({
   validate(
-    need(!is.null(input$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "Please select a data set")
   )
   
   catType = as.numeric(input$radioMaxGroup)
