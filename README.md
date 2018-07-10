@@ -76,15 +76,27 @@ This code opens up the example file, loads it into a `toxEval` object, grabs the
 
 There are 4 vignettes to help introduce and navigate the `toxEval` package:
 
-| Name                                                                                      | R command | Description |
-|-------------------------------------------------------------------------------------------|-----------|-------------|
-| [Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) |           |
-
-``` r
-vignette("Introduction", package="toxEval")
-```
-
-|Introduction to the madness |
+<table style="width:51%;">
+<colgroup>
+<col width="15%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>R command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/">Introduction</a></td>
+<td><code>vignette(&quot;Introduction&quot;, package=&quot;toxEval&quot;)</code></td>
+<td>Introduction to the madness</td>
+</tr>
+</tbody>
+</table>
 
 ### Reporting bugs
 
