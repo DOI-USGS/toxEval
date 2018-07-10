@@ -1,5 +1,5 @@
-toxEval
-=======
+toxEval <img src="README_files/figure-markdown_github/hexSticker.png" alt="toxEvalSticker" height="150px" align="right" />
+==========================================================================================================================
 
 Initial code for studying ToxCast data in relation to measured concentrations.
 
