@@ -41,7 +41,7 @@ Once the data is loaded in the app, sample R code is shown below each tab. This 
 
 Alternatively, an example workflow is shown here (also using example data provided in the package):
 
-```{r }
+```{r warning=FALSE}
 library(toxEval)
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)

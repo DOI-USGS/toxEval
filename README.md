@@ -73,21 +73,8 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
                           hit_threshold = NA,
                           title = 'Summing EARs for chemicals within a class of a sample, taking the max of each site',
                           plot_ND = TRUE)
-```
-
-    ## Warning: Transformation introduced infinite values in continuous y-axis
-
-    ## Warning: Removed 502 rows containing non-finite values (stat_boxplot).
-
-``` r
 bio_plot
 ```
-
-    ## Warning: Transformation introduced infinite values in continuous y-axis
-
-    ## Warning: Removed 502 rows containing non-finite values (stat_boxplot).
-
-    ## Warning: Removed 1 rows containing missing values (geom_hline).
 
 ![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
