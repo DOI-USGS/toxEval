@@ -26,6 +26,8 @@ The functions within this package allow great flexibly for exploring the potenti
 
 ## Quickstart
 
+[App Demo](README_files/figure-markdown_github/app.gif)
+
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
 ```{r eval=FALSE} 

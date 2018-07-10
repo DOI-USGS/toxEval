@@ -30,7 +30,7 @@ https://owi.usgs.gov/R/packages.html#research'),
 #' LazyLoad: \tab yes\cr
 #' }
 #'
-#'  Initial code for studying ToxCast data in relation to measured concentrations.
+#' Code for studying ToxCast data in relation to measured concentrations.
 #'
 #' @name toxEval-package
 #' @docType package

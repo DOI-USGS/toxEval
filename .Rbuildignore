@@ -24,6 +24,7 @@ Neonic_data_GLRI.xlsx
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.Rmd
+README_files
 ^\.travis\.yml$
 ^\.Rproj\.gitignore
 ^\.Rproj\.RData
