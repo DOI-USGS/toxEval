@@ -31,3 +31,5 @@ README.Rmd
 ^\.Rproj\.travis.yml
 ^\.Rproj\appveyor.yml
 CONDUCT.md
+hexSticker.R
+
