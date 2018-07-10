@@ -24,7 +24,7 @@
 #' @param hit_threshold Numeric threshold defining a "hit".
 #' @param font_size Numeric to adjust the axis font size.
 #' @param title Character title for plot. 
-#' @param pallette Vector of color pallette for fill. Can be a named vector
+#' @param palette Vector of color palette for fill. Can be a named vector
 #' to specify specific color for specific categories. 
 #' @export
 #' @import ggplot2
@@ -60,7 +60,7 @@ plot_tox_endpoints <- function(chemicalSummary,
                               sum_logic = TRUE,
                               font_size = NA,
                               title = NA,
-                              pallette = NA){
+                              palette = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -121,10 +121,10 @@ plot_tox_endpoints <- function(chemicalSummary,
       theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
       geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     
-    if(!all(is.na(pallette))){
+    if(!all(is.na(palette))){
       stackedPlot <- stackedPlot +
         geom_boxplot(aes(x=endPoint, y=EAR, fill = endPoint)) +
-        scale_fill_manual(values = pallette) +
+        scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       stackedPlot <- stackedPlot +
@@ -190,10 +190,10 @@ plot_tox_endpoints <- function(chemicalSummary,
     }
       
     
-    if(!all(is.na(pallette))){
+    if(!all(is.na(palette))){
       stackedPlot <- stackedPlot +
         geom_boxplot(aes(x=endPoint, y=meanEAR, fill = endPoint)) +
-        scale_fill_manual(values = pallette) +
+        scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       stackedPlot <- stackedPlot +

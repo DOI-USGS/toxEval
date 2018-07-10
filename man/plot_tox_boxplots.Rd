@@ -12,7 +12,7 @@ graph_chem_data(chemicalSummary, manual_remove = NULL, mean_logic = FALSE,
 
 plot_tox_boxplots(chemicalSummary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
-  plot_ND = TRUE, font_size = NA, title = NA, pallette = NA,
+  plot_ND = TRUE, font_size = NA, title = NA, palette = NA,
   hit_threshold = NA)
 
 tox_boxplot_data(chemicalSummary, category = "Biological",
@@ -39,7 +39,7 @@ opposed to ToxCast benchmarks.}
 
 \item{title}{Character Title for plot.}
 
-\item{pallette}{Vector of color pallette for boxplot fill. Can be a named vector
+\item{palette}{Vector of color palette for boxplot fill. Can be a named vector
 to specify specific colors for specific categories.}
 
 \item{hit_threshold}{Numeric threshold defining a "hit".}
@@ -95,7 +95,7 @@ names(cbValues) <- levels(graphData$category)
 plot_tox_boxplots(chemicalSummary, 
                   hit_threshold = 0.1,
                   category = "Biological",
-                  pallette = cbValues,
+                  palette = cbValues,
                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
 
 

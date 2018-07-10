@@ -7,7 +7,7 @@
 plot_tox_endpoints(chemicalSummary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = NA,
   mean_logic = FALSE, sum_logic = TRUE, font_size = NA, title = NA,
-  pallette = NA)
+  palette = NA)
 }
 \arguments{
 \item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -31,7 +31,7 @@ opposed to ToxCast benchmarks.}
 
 \item{title}{Character title for plot.}
 
-\item{pallette}{Vector of color pallette for fill. Can be a named vector
+\item{palette}{Vector of color palette for fill. Can be a named vector
 to specify specific color for specific categories.}
 }
 \description{

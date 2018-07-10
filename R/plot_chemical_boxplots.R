@@ -7,7 +7,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
                                    plot_ND = TRUE,
                                    font_size = NA,
                                    title = NA,
-                                   pallette = NA,
+                                   palette = NA,
                                    hit_threshold = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
@@ -58,10 +58,10 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
     toxPlot_All <- ggplot(data=chemicalSummary)
     
-    if(!all(is.na(pallette))){
+    if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x=chnm, y=EAR, fill=chnm),lwd=0.1,outlier.size=1) +
-        scale_fill_manual(values = pallette) +
+        scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
@@ -89,10 +89,10 @@ plot_chemical_boxplots <- function(chemicalSummary,
     label <- "# Sites"
     toxPlot_All <- ggplot(data=graphData) 
     
-    if(!all(is.na(pallette))){
+    if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x=chnm, y=meanEAR, fill=chnm),lwd=0.1,outlier.size=1) +
-        scale_fill_manual(values = pallette) +
+        scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
@@ -117,7 +117,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
           axis.ticks = element_blank(),
           plot.title = element_text(hjust = 0.5))  
   
-  if(all(is.na(pallette))){
+  if(all(is.na(palette))){
     toxPlot_All <- toxPlot_All +
       scale_fill_manual(values = cbValues, drop=FALSE) +
       guides(fill=guide_legend(ncol=6)) +
