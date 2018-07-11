@@ -56,7 +56,7 @@ file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
-\dontrun{
+
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
@@ -68,5 +68,4 @@ plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")
 plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
 plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 
-}
 }

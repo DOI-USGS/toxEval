@@ -1,17 +1,7 @@
-toxEval <img src="README_files/figure-markdown_github/hexSticker.png" alt="toxEvalSticker" height="150px" align="right" />
-==========================================================================================================================
+toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
+=====================================================================================
 
-Initial code for studying ToxCast data in relation to measured concentrations.
-
-Package Status
---------------
-
-| Linux                                                                                                     | Windows                                                                                                                                         | Test Coverage                                                                                                                                            | USGS Status                                                                                                     |
-|-----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| [![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval) | [![Build status](https://ci.appveyor.com/api/projects/status/i2hr35abwxx85vgs?svg=true)](https://ci.appveyor.com/project/ldecicco-USGS/toxEval) | [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master) | [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research) |
-
-Introduction
-------------
+[![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval) [![Build status](https://ci.appveyor.com/api/projects/status/i2hr35abwxx85vgs?svg=true)](https://ci.appveyor.com/project/ldecicco-USGS/toxEval) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master) [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 
 The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.
 
@@ -21,7 +11,7 @@ Quickstart
 ----------
 
 <p align="center">
-<img src="README_files/figure-markdown_github/app.gif" alt="app_demo">
+<img src="man/figures/app.gif" alt="app_demo">
 </p>
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
@@ -42,20 +32,16 @@ Alternatively, an example workflow is shown here (also using example data provid
 
 ``` r
 library(toxEval)
-```
-
-    ## This information is preliminary or provisional and is subject to
-    ## revision. It is being provided to meet the need for timely best
-    ## science. The information has not received final approval by the
-    ## U.S. Geological Survey (USGS) and is provided on the condition
-    ## that neither the USGS nor the U.S. Government shall be held liable
-    ## for any damages resulting from the authorized or unauthorized use
-    ## of the information.
-    ## 
-    ## USGS Research Package:
-    ## https://owi.usgs.gov/R/packages.html#research
-
-``` r
+#> This information is preliminary or provisional and is subject to
+#> revision. It is being provided to meet the need for timely best
+#> science. The information has not received final approval by the
+#> U.S. Geological Survey (USGS) and is provided on the condition
+#> that neither the USGS nor the U.S. Government shall be held liable
+#> for any damages resulting from the authorized or unauthorized use
+#> of the information.
+#> 
+#> USGS Research Package:
+#> https://owi.usgs.gov/R/packages.html#research
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -73,7 +59,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
 bio_plot
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](man/figures/unnamed-chunk-4-1.png)
 
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
 

@@ -3,24 +3,8 @@ appveyor.yml
 toxEval.Rproj
 .Rhistory
 .git
-duluth.RData
-passive.xlsx
-duluth.xlsx
-NPS_Eagle_plasma.xlsx
-Elliott_NPSData.xlsx
-kLee.xlsx
-mixtures_Org_and_Inorg.xlsx
-TCuster data set_birds_toxcast.xlsx
-WolfCreek.xlsx
 images
 alternative_benchmark.R
-neonic_bench.xlsx
-neonic.xlsx
-ILCarp_R2_toxEval_input.xlsx
-SESQA MIX.TOXEVAL.NO DEGRADATES.4-COL.2017 06 23.xlsx
-SESQA MIX.MAX-TOXEVAL.xlsx
-Neonic_data_GLRI_Maumee.xlsx
-Neonic_data_GLRI.xlsx
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.Rmd
@@ -32,5 +16,6 @@ README_files
 ^\.Rproj\.travis.yml
 ^\.Rproj\appveyor.yml
 CONDUCT.md
+^docs$
 hexSticker.R
 

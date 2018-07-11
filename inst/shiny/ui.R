@@ -145,8 +145,12 @@ sidebar <- dashboardSidebar(
   )
 )
 
+# vig_path <<- system.file("doc", package="toxEval")
+
 body <- dashboardBody(
   h3(textOutput("siteText")),
+  HTML(paste0("<a href=\"\" target=\"_blank\">Introduction</a>")),
+  h4(""),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
@@ -157,9 +161,12 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
-             checkboxInput("plot_thres_box", "Consider Threshold?", FALSE),
+             fluidRow(
+               column(3, checkboxInput("plot_thres_box", "Consider Threshold?", FALSE)),
+               column(3, checkboxInput("plot_ND", "Plot non-detects's?", TRUE))
+             ),
              uiOutput("graphGroup.ui", width = "100%"),
-             checkboxInput("plot_ND", "Plot ND's?", TRUE),
+             
              fluidRow(
                column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
@@ -229,7 +236,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
-             checkboxInput("plot_ND_heat", "Plot ND's?", TRUE),
+             checkboxInput("plot_ND_heat", "Plot non-detects's?", TRUE),
              uiOutput("graphHeat.ui"),
              fluidRow(
                column(3, downloadButton('downloadHeatPlot', 'Download PNG')),

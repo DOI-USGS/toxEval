@@ -34,7 +34,7 @@
 #' full_path <- file.path(path_to_tox, file_name)
 #' 
 #' tox_list <- create_toxEval(full_path)
-#' \dontrun{
+#' 
 #' ACClong <- get_ACC(tox_list$chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
 #' 
@@ -46,7 +46,7 @@
 #' hits_by_groupings_DT(chemicalSummary, category = "Biological")
 #' hits_by_groupings_DT(chemicalSummary, category = "Chemical Class")
 #' hits_by_groupings_DT(chemicalSummary, category = "Chemical")
-#' }
+#' 
 hits_by_groupings_DT <- function(chemicalSummary, 
                            category = "Biological",
                            mean_logic = FALSE,
