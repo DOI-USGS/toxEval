@@ -110,20 +110,22 @@ observe({
                      stroke=FALSE,
                      opacity = 0.8)
   
-    if(length(siteToFind) > 1){
-      map <- map %>%
-        clearControls() %>%
-        setView(lng = mean(mapData$dec_lon, na.rm = TRUE), 
-                lat = mean(mapData$dec_lat, na.rm = TRUE), zoom=6) %>%
-        fitBounds(lng1 = min(mapData$dec_lon, na.rm = TRUE), 
-                  lat1 = min(mapData$dec_lat, na.rm = TRUE), 
-                  lng2 = max(mapData$dec_lon, na.rm = TRUE), 
-                  lat2 = max(mapData$dec_lat, na.rm = TRUE)) 
-    }
+    # if(length(siteToFind) > 1){
+    #   map <- map %>%
+    #     clearControls() %>%
+    #     setView(lng = mean(mapData$dec_lon, na.rm = TRUE), 
+    #             lat = mean(mapData$dec_lat, na.rm = TRUE), zoom=6) %>%
+    #     fitBounds(lng1 = min(mapData$dec_lon, na.rm = TRUE), 
+    #               lat1 = min(mapData$dec_lat, na.rm = TRUE), 
+    #               lng2 = max(mapData$dec_lon, na.rm = TRUE), 
+    #               lat2 = max(mapData$dec_lat, na.rm = TRUE)) 
+    # }
   
   sum_words <- ifelse(sum_logic, "Sum of","Max")
   
   if(length(siteToFind) > 1){
+    map <- map %>% clearControls() 
+    
     map <- addLegend(map,pal = pal,
                      position = 'bottomleft',
                      values=~meanMax,
