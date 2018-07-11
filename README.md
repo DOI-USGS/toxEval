@@ -1,5 +1,5 @@
-toxEval <img src="README_files/figure-markdown_github/hexSticker.png" alt="toxEvalSticker" height="150px" align="right" />
-==========================================================================================================================
+toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
+=====================================================================================
 
 [![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval) [![Build status](https://ci.appveyor.com/api/projects/status/i2hr35abwxx85vgs?svg=true)](https://ci.appveyor.com/project/ldecicco-USGS/toxEval) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master) [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 
