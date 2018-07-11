@@ -96,7 +96,7 @@ header <- dashboardHeader(title = "toxEval",
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-   fileInput("data", "Load Excel File",multiple = FALSE),
+   fileInput("data", "Load Data File(Excel Worksheet)",multiple = FALSE),
    actionButton("exampleData", label = "Load Example Data"),
    radioButtons("radioMaxGroup", label = NULL,
                 choices = list("Group" = 1, "Chemical" = 2, "Class" = 3), 
@@ -145,11 +145,15 @@ sidebar <- dashboardSidebar(
   )
 )
 
-# vig_path <<- system.file("doc", package="toxEval")
-
 body <- dashboardBody(
   h3(textOutput("siteText")),
-  HTML(paste0("<a href=\"\" target=\"_blank\">Introduction</a>")),
+  fluidRow(
+    column(1, HTML("<b>Documentation:</b>")),
+    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/Introduction.html\" target=\"_blank\">Introduction</a>")),
+    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/basicWorkflow.html\" target=\"_blank\">Basic Workflow</a>")),
+    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/PrepareData.html\" target=\"_blank\">Prepare Your Data</a>")),
+    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/shinyApp.html\" target=\"_blank\">Using the Shiny App</a>"))
+  ),
   h4(""),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
