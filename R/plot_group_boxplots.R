@@ -46,7 +46,6 @@
 #'
 #' full_path <- file.path(path_to_tox, file_name)
 #' 
-#' \dontrun{
 #' tox_list <- create_toxEval(full_path)
 #' ACClong <- get_ACC(tox_list$chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
@@ -72,8 +71,6 @@
 #'                   palette = cbValues,
 #'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
 #' 
-#' 
-#' }
 plot_tox_boxplots <- function(chemicalSummary, 
                               category = "Biological",
                               manual_remove = NULL,

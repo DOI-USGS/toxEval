@@ -44,7 +44,7 @@ file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
-\dontrun{
+
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
@@ -57,5 +57,5 @@ stats_df <- rank_sites(chemicalSummary, "Biological")
 rank_sites_DT(chemicalSummary, category = "Biological")
 rank_sites_DT(chemicalSummary, category = "Chemical Class")
 rank_sites_DT(chemicalSummary, category = "Chemical")
-}
+
 }
