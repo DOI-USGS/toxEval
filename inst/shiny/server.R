@@ -89,8 +89,7 @@ shinyServer(function(input, output,session) {
     removeFlags <- paste0("c('",paste0(removeFlags, collapse = "','"),"')")
     assays <- paste0("c('",paste0(assays, collapse = "','"),"')")
     remove_groups <- paste0("c('",paste0(remove_groups, collapse = "','"),"')")
-    setupCode <- paste0("######################################
-# Setup:
+    setupCode <- paste0("#### Setup ####
 library(toxEval)
 #NOTE: Add path to path_to_file!!!
 path_to_file <- '",fileName,"' 

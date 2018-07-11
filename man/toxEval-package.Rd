@@ -19,7 +19,7 @@ LazyLoad: \tab yes\cr
 }
 }
 \details{
-Initial code for studying ToxCast data in relation to measured concentrations.
+Code for studying ToxCast data in relation to measured concentrations.
 }
 \author{
 Steven Corsi \email{srcorsi@usgs.gov}, Laura De Cicco \email{ldecicco@usgs.gov}
