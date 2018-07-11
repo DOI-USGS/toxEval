@@ -1,0 +1,5 @@
+toxEval.Rproj
+.Rproj.user
+.Rhistory
+.RData
+inst/shiny/*.png
