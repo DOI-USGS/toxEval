@@ -19,11 +19,12 @@ The functions within this package allow great flexibly for exploring the potenti
 
 This vignette provides a general overview of the concepts within `toxEval`, definitions of common terminology used throughout the package, and links to information to help understand fundamentals of the ToxCast database used within `toxEval`. In addition, instructions are provided for installing and updating the package from the Geological Survey R Archive Network (GRAN). 
 
-The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.
+## What is ToxCast?
+The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical-biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.
 
 When using the ToxCast endPoints for analysis, it is important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to any given study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">ToxCast Dashboard</a> that has a wealth of information on ToxCast data.
 
-So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.
+So what are we doing with the user input data and ToxCast? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to view the data in many dimensions.
 
 ## Exposure-Activity Ratio
 
@@ -69,7 +70,7 @@ The following link provides instructions for installation of R and RStudio:
 
 [Installation Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
 
-Following these instructions will add the USGS R repository (GRAN) the user's R profile. For users who have previously installed R and RStudio, GRAn can be added the R profile by pasting the following into the R console:
+Following these instructions will add the USGS R repository (GRAN) the user's R profile. For users who have previously installed R and RStudio, GRAN can be added the R profile by pasting the following into the R console:
 
 ```{r, eval=FALSE}
 rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")

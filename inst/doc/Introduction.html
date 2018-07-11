@@ -67,12 +67,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Introduction to toxEval</h1>
-<h4 class="date"><em>10 July, 2018</em></h4>
+<h4 class="date"><em>11 July, 2018</em></h4>
 
 
 <div id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
+<li><a href="#what-is-toxcast">What is ToxCast?</a></li>
 <li><a href="#exposure-activity-ratio">Exposure-Activity Ratio</a></li>
 <li><a href="#what-is-an-endpoint">What is an “endPoint”?</a></li>
 <li><a href="#grouping-options">Grouping options</a></li>
@@ -94,9 +95,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The <code>toxEval</code> R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.</p>
 <p>The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the <code>Shiny</code> R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided in the <a href="shinyApp.html">ShinyApp vignette</a>.</p>
 <p>This vignette provides a general overview of the concepts within <code>toxEval</code>, definitions of common terminology used throughout the package, and links to information to help understand fundamentals of the ToxCast database used within <code>toxEval</code>. In addition, instructions are provided for installing and updating the package from the Geological Survey R Archive Network (GRAN).</p>
-<p>The U.S. EPA’s Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical:biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The <code>toxEval</code> package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.</p>
+<div id="what-is-toxcast" class="section level2">
+<h2>What is ToxCast?</h2>
+<p>The U.S. EPA’s Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical-biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The <code>toxEval</code> package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.</p>
 <p>When using the ToxCast endPoints for analysis, it is important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to any given study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://actor.epa.gov/dashboard/" target="_blank">ToxCast Dashboard</a> that has a wealth of information on ToxCast data.</p>
-<p>So what are we doing? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to explore the data.</p>
+<p>So what are we doing with the user input data and ToxCast? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to view the data in many dimensions.</p>
+</div>
 <div id="exposure-activity-ratio" class="section level2">
 <h2>Exposure-Activity Ratio</h2>
 <p>An Exposure-Activity Ratio (EAR) is defined as the ratio of a measured concentration and a concentration that was determined to cause some activity in a specified ToxCast assay (“endPoint” concentration). An EAR &gt; 1.0 would indicate that the measured concentration is greater than the endpoint concentration. The ToxCast database (as provided in the current version of <code>toxEval</code>) provides as many as several hundred endPoints for more than 7000 chemicals. Each endPoint is a single test that was done to detect some form of biological activity.</p>
@@ -129,7 +133,7 @@ endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
 <h2>Installation of R and RStudio</h2>
 <p>The following link provides instructions for installation of R and RStudio:</p>
 <p><a href="https://owi.usgs.gov/R/training-curriculum/installr/">Installation Instructions</a></p>
-<p>Following these instructions will add the USGS R repository (GRAN) the user’s R profile. For users who have previously installed R and RStudio, GRAn can be added the R profile by pasting the following into the R console:</p>
+<p>Following these instructions will add the USGS R repository (GRAN) the user’s R profile. For users who have previously installed R and RStudio, GRAN can be added the R profile by pasting the following into the R console:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rprofile_path =<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;HOME&quot;</span>), <span class="st">&quot;.Rprofile&quot;</span>)
 <span class="kw">write</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">options(repos=c(getOption(</span><span class="ch">\'</span><span class="st">repos</span><span class="ch">\'</span><span class="st">),</span>
 <span class="st">    CRAN=</span><span class="ch">\'</span><span class="st">https://cloud.r-project.org</span><span class="ch">\'</span><span class="st">,</span>
