@@ -149,7 +149,7 @@ vig_path <<- system.file("doc", package="toxEval")
 
 body <- dashboardBody(
   h3(textOutput("siteText")),
-  HTML(paste0("<a href=\"file:///",vig_path,"Introduction.html\" target=\"_blank\">Introduction</a>")),
+  HTML(paste0("<a href=\"file:///",vig_path,"/Introduction.html\" target=\"_blank\">Introduction</a>")),
   h4(""),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
