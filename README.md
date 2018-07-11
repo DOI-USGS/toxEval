@@ -32,20 +32,16 @@ Alternatively, an example workflow is shown here (also using example data provid
 
 ``` r
 library(toxEval)
-```
-
-    ## This information is preliminary or provisional and is subject to
-    ## revision. It is being provided to meet the need for timely best
-    ## science. The information has not received final approval by the
-    ## U.S. Geological Survey (USGS) and is provided on the condition
-    ## that neither the USGS nor the U.S. Government shall be held liable
-    ## for any damages resulting from the authorized or unauthorized use
-    ## of the information.
-    ## 
-    ## USGS Research Package:
-    ## https://owi.usgs.gov/R/packages.html#research
-
-``` r
+#> This information is preliminary or provisional and is subject to
+#> revision. It is being provided to meet the need for timely best
+#> science. The information has not received final approval by the
+#> U.S. Geological Survey (USGS) and is provided on the condition
+#> that neither the USGS nor the U.S. Government shall be held liable
+#> for any damages resulting from the authorized or unauthorized use
+#> of the information.
+#> 
+#> USGS Research Package:
+#> https://owi.usgs.gov/R/packages.html#research
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -63,7 +59,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
 bio_plot
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](man/figures/unnamed-chunk-4-1.png)
 
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
 
