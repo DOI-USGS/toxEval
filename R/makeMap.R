@@ -7,6 +7,9 @@
 #' "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
 #' data frame specified for the chem_site argument.
 #' 
+#' The function \code{map_tox_data} calculates the statistics for the map. It
+#' my be useful on it's own.
+#' 
 #' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param mean_logic Logical.  \code{TRUE} displays the mean EAR from each site,

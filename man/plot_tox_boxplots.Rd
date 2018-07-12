@@ -64,6 +64,11 @@ exceeding the hit_threshold.
 The graph shows a slightly different result for a single site. For a single 
 site graph, the number of chemicals that were detected and have associated endpoint 
 ACCs represented are displayed.
+
+The functions \code{plot_tox_boxplots} and \code{graph_chem_data} are functions that perform
+the statistical calculations to create the plot. \code{graph_chem_data} is specific
+to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and 
+"Chemical Class".
 }
 \examples{
 # This is the example workflow:
