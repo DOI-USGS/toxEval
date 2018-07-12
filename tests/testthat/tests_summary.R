@@ -145,7 +145,7 @@ test_that("Table functions", {
   testthat::skip_on_cran()
   
   statStuff <- rank_sites(chemicalSummary, "Biological", hit_threshold = 0.1, mean_logic = FALSE)
-  expect_equal(nrow(statStuff), nrow(chem_site))
+
   expect_true(all(c("site","DNA Binding maxEAR",     
                     "DNA Binding freq","Nuclear Receptor maxEAR",
                     "Nuclear Receptor freq","Esterase maxEAR",
@@ -188,8 +188,8 @@ test_that("Map stuff functions", {
   expect_equal(length(mapDataList), 2)
   map_df <- mapDataList[["mapData"]]
   expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4),1.271)
-  expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],31)
-  expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],7.2)
+  expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],26)
+  expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],6.6)
   
   # Map data:
   map_data <- make_tox_map(chemicalSummary, chem_site, "Biological")

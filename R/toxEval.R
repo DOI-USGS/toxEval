@@ -15,8 +15,19 @@ https://owi.usgs.gov/R/packages.html#research'),
 }
 
 
-#' Evaluation of measured concentration data using the ToxCast high-throughput 
-#' screening database or a user-defined set of concentration benchmarks 
+#' Analyze ToxCast data in relation to measured concentrations.
+#' 
+#' \code{toxEval} includes a set of functions to analyze, visualize, and 
+#' organize measured concentration data as it relates to ToxCast data 
+#' (default) or other user-selected chemical-biological interaction 
+#' benchmark data such as water quality criteria. The intent of 
+#' these analyses is to develop a better understanding of the potential 
+#' biological relevance of environmental chemistry data. Results can 
+#' be used to prioritize which chemicals at which sites may be of 
+#' greatest concern. These methods are meant to be used as a screening 
+#' technique to predict potential for biological influence from chemicals 
+#' that ultimately need to be validated with direct biological assays. 
+
 #'
 #' \tabular{ll}{
 #' Package: \tab toxEval\cr
@@ -30,7 +41,6 @@ https://owi.usgs.gov/R/packages.html#research'),
 #' LazyLoad: \tab yes\cr
 #' }
 #'
-#' Code for studying ToxCast data in relation to measured concentrations.
 #'
 #' @name toxEval-package
 #' @docType package
@@ -62,10 +72,7 @@ NULL
 #' At the time of toxEval package release, this information was found:
 #' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-#' 
-#' The data has been provided in a "wide" format, however
-#' the \code{get_ACC} function converts the data to a
-#' "long" format. ACC values are the reported ACC_value (winning model) and units are 
+#' ACC values are the reported ACC_value (winning model) and units are 
 #' log micro-Molarity (log \eqn{\mu}M).
 #' 
 #'
@@ -115,6 +122,11 @@ NULL
 #     filter(gsid_rep == 1) %>%
 #     select(casn, chnm, aenm, modl_acc, flags) %>%
 #     spread(key = aenm, value = modl_acc)
+#
+#   ACC <- ACCgain %>%
+#     gather(endPoint, ACC, -casn, -chnm, -flags) %>%
+#     filter(!is.na(ACC)) %>%
+#     rename(CAS = casn)
 #   
 #   # Something we considered but decided not to do was:
 #   
@@ -131,7 +143,7 @@ NULL
 #' Downloaded on October 2015 from ToxCast. The file name of the
 #' raw data was "Assay_Summary_151020.csv" from the zip file 
 #' "Assay_Information_Oct_2015.zip". At the time
-#' of the toxEval package release, this information was found:
+#' of the toxEval package release, these data were found at:
 #' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #' in the section marked "Download Assay Information", in the 
 #' ToxCast & Tox21 high-throughput assay information data set.

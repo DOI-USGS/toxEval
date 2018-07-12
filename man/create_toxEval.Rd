@@ -65,7 +65,7 @@ analysis with an older version of ToxCast may be reproduced by including the
 selected ToxCast endpoint database in this sheet. Additional columns may be included for user 
 purposes, but will not be used in toxEval.
 
-For more information, see the "Prepare Data" vignette: \url{../doc/PrepareData.html}.
+For more information, see the "Prepare Data" vignette: \href{../doc/PrepareData.html}{\code{vignette("PrepareData", package = "toxEval")}}.
 
 All remaining toxEval functions use data from via the list that is returned 
 from this function.

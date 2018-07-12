@@ -34,6 +34,10 @@ samples in the data set (size). This is the only function that requires
 "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
 data frame specified for the chem_site argument.
 }
+\details{
+The function \code{map_tox_data} calculates the statistics for the map. It
+my be useful on it's own.
+}
 \examples{
 # This is the example workflow:
 path_to_tox <-  system.file("extdata", package="toxEval")

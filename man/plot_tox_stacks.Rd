@@ -34,7 +34,7 @@ opposed to ToxCast benchmarks.}
 The \code{plot_tox_stacks} function creates a set of boxplots representing EAR 
 values computed with the \code{\link{get_chemical_summary}} function, and 
 dependent on the choice of several input options. See "Summarizing the data" 
-in the Introduction vignette: \url{../doc/Introduction.html#summarize_data}
+in the Introduction vignette: \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}
 for a description on how the EAR values are computed, aggregated, and summarized. 
 Choosing "Chemical Class" in the category argument will generate separate stacked 
 bars for each unique class. "Chemical" will generate stacked bars for each individual 
@@ -47,6 +47,11 @@ legend for "Chemical" if there are hundreds of chemicals.
 The graph displays a slightly different result for a single site. Providing 
 data with only one site displays each individual sample as a stacked bar 
 rather than the mean or maximum for a site.
+
+This is a function where it may be ideal to create a custom order to the sites 
+(for example, west-to-east). See the above section "Custom configuration"
+\href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
+the character vector sites to a factor with ordered levels.
 }
 \examples{
 # This is the example workflow:

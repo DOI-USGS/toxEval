@@ -36,7 +36,9 @@
 combined from files in the &quot;INVITRODB_V2_LEVEL5&quot; folder. 
 At the time of toxEval package release, this information was found:
 https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data
-in the &quot;ToxCast &amp;amp; Tox21 Data Spreadsheet&quot; data set." />
+in the &quot;ToxCast &amp;amp; Tox21 Data Spreadsheet&quot; data set. 
+ACC values are the reported ACC_value (winning model) and units are 
+log micro-Molarity (log \(\mu\)M)." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -130,18 +132,13 @@ in the &quot;ToxCast &amp;amp; Tox21 Data Spreadsheet&quot; data set." />
 combined from files in the "INVITRODB_V2_LEVEL5" folder. 
 At the time of toxEval package release, this information was found:
 <a href='https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data'>https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data</a>
-in the "ToxCast &amp; Tox21 Data Spreadsheet" data set.</p>
+in the "ToxCast &amp; Tox21 Data Spreadsheet" data set. 
+ACC values are the reported ACC_value (winning model) and units are 
+log micro-Molarity (log \(\mu\)M).</p>
     
     </div>
 
         
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The data has been provided in a "wide" format, however
-the <code>get_ACC</code> function converts the data to a
-"long" format. ACC values are the reported ACC_value (winning model) and units are 
-log micro-Molarity (log \(\mu\)M).</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>ACCColumnNames</span> <span class='kw'>&lt;-</span> <span class='fu'>names</span>(<span class='no'>ACC</span>)</div></pre>
@@ -149,9 +146,7 @@ log micro-Molarity (log \(\mu\)M).</p>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      
-      <li><a href="#details">Details</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 

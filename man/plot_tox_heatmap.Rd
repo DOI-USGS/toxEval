@@ -38,7 +38,7 @@ opposed to ToxCast benchmarks.}
 The \code{plot_tox_heatmap} function creates a heat (tile) map with sites on the x-axis, 
 a specified grouping on the y-axis (defined by the category argument), and color shading 
 defining the mean or maximum EAR. See "Summarizing the data" in the Introduction vignette:  
-\url{../doc/Introduction.html#summarize_data} for a description on how the 
+\href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}} for a description on how the 
 EAR values are computed, aggregated, and summarized. The y-axis grouping can be "Biological",
 "Chemical Class", or "Chemical". When specifying the "Chemical" option, a secondary y-axis 
 is automatically included to group chemicals into chemical class. The function computes 
@@ -46,7 +46,7 @@ default breaks for the color scale to match the spread of the data, but breaks c
 be customized with the breaks argument.
 This is a function where it may be ideal to create a custom order to the sites 
 (for example, west-to-east). See the above section "Custom configuration"
-\url{../doc/Introduction.html#custom_config} for instructions on how to convert 
+\href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
 the character vector sites to a factor with ordered levels.
 }
 \examples{

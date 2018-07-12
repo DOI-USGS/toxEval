@@ -28,15 +28,13 @@ get_ACC <- function(CAS){
     filter(casrn %in% CAS) 
   
   ACClong <- ACC %>%
-    filter(casn %in% CAS) %>%
-    gather(endPoint, ACC, -casn, -chnm, -flags) %>%
+    filter(CAS %in% CAS) %>%
     right_join(chem_list,
-               by= c("casn"="casrn")) %>%
+               by= c("CAS"="casrn")) %>%
     data.frame() %>%
     mutate(ACC_value = 10^ACC) %>%
     mutate(ACC_value = ACC_value * MlWt) %>%
-    filter(!is.na(ACC_value)) %>%
-    rename(CAS = casn)
+    filter(!is.na(ACC_value)) 
 
   if(any(is.na(ACClong$MlWt))){
     warning("Some chemicals are missing molecular weights")

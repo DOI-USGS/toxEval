@@ -43,7 +43,7 @@
 #' purposes, but will not be used in toxEval. 
 #' 
 #' 
-#' For more information, see the "Prepare Data" vignette: \url{../doc/PrepareData.html}.
+#' For more information, see the "Prepare Data" vignette: \href{../doc/PrepareData.html}{\code{vignette("PrepareData", package = "toxEval")}}.
 #' 
 #' All remaining toxEval functions use data from via the list that is returned 
 #' from this function.
@@ -216,26 +216,21 @@ rm_em_dash <- function(df){
 #' summary(tox_list) 
 summary.toxEval <- function(object, ...){
   
-  casn <- endPoint <- chnm <- flags <- ".dplyr"
+  CAS <- endPoint <- chnm <- flags <- ".dplyr"
   
   if(is.null(object[["benchmarks"]])){
     ACClong <- ACC %>%
-      dplyr::filter(casn %in% unique(object$chem_info$CAS)) %>%
-      tidyr::gather(endPoint, ACC, -casn, -chnm, -flags) 
+      dplyr::filter(CAS %in% unique(object$chem_info$CAS)) 
     bench_word <- "ToxCast"
   } else {
     ACClong <- object[["benchmarks"]] 
     bench_word <- "benchmark"
   }
  
-  CAS_tots <- dplyr::select(ACClong, casn) %>% dplyr::distinct() %>% dplyr::pull(casn)
+  CAS_w_data <- ACClong %>% dplyr::select(CAS) %>%
+    dplyr::distinct() %>% dplyr::pull(CAS)
   
-  CAS_w_data <- ACClong %>% dplyr::select(ACC, casn) %>%
-    dplyr::filter(!is.na(ACC)) %>%
-    dplyr::select(casn) %>%
-    dplyr::distinct() %>% dplyr::pull(casn)
-  
-  message(length(CAS_tots)," chemicals have ", bench_word, " information")
+  message(length(CAS_w_data)," chemicals have ", bench_word, " information")
   message("Chemicals returned from this function do NOT have ", bench_word, " information:")
-  return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_tots)])
+  return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_w_data)])
 }

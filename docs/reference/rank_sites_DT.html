@@ -190,11 +190,11 @@ columns for categories, there is now 1 row per category (since the site is known
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 <span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACClong</span>, <span class='no'>filtered_ep</span>)
 
-<span class='no'>stats_df</span> <span class='kw'>&lt;-</span> <span class='fu'>rank_sites</span>(<span class='no'>chemicalSummary</span>, <span class='st'>"Biological"</span>)
-
+<span class='no'>stats_df</span> <span class='kw'>&lt;-</span> <span class='fu'>rank_sites</span>(<span class='no'>chemicalSummary</span>, <span class='st'>"Biological"</span>)</div><span class='co'># NOT RUN {</span>
 <span class='fu'>rank_sites_DT</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>)
 <span class='fu'>rank_sites_DT</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)
-<span class='fu'>rank_sites_DT</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)</div></pre>
+<span class='fu'>rank_sites_DT</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
