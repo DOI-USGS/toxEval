@@ -48,7 +48,7 @@ to specify specific colors for specific categories.}
 The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
 values computed with the \code{\link{get_chemical_summary}} function, and 
 dependent on the choice of several input options. See "Summarizing the data" 
-in the Introduction vignette: \url{../doc/Introduction.html#summarize_data} 
+in the Introduction vignette: \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}. 
 for a description of how the EAR values are computed, aggregated,
 and summarized. Choosing "Chemical Class" in the category argument 
 will generate separate boxplots for each unique class. "Chemical" will generate 
