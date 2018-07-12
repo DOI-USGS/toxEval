@@ -3,10 +3,18 @@ Type: Package
 Title: ToxCast Evaluations
 Version: 1.0.0
 Date: 2018-07-11
-Authors@R: c(person("Laura", "DeCicco", role = c("aut","cre"),
-    email = "ldecicco@usgs.gov"),
-     person("Steven", "Corsi", role = c("aut"),
-    email = "srcorsi@usgs.gov"))
+Authors@R: c(person("Laura", "DeCicco", 
+                     role = c("aut","cre"),
+                     email = "ldecicco@usgs.gov"),
+              person("Steven", "Corsi", 
+                     role = c("aut"),
+                     email = "srcorsi@usgs.gov"),
+              person("Alison", "Appling", 
+                     role = "rev", 
+                     comment = "Reviewed for USGS"),
+              person("Dalma", "Martinovic", 
+                     role = "rev", 
+                     comment = "Reviewed for USGS"))
 Description: Data analysis package for estimating potential biological effects from concentrations determined from environmental samples.
 License: CC0
 Copyright: This software is in the public domain because it contains materials
