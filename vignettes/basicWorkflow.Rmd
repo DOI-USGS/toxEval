@@ -88,7 +88,8 @@ The default category ("groupCol") is "intended_target_family". Depending on the 
 names(endPointInfo)
 ```
 
-By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.
+By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right. 
+
 
 </td><td>
 
@@ -108,6 +109,23 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 |ACEA Biosciences|ACEA|
 
 </td></tr> </table>
+
+The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
+
+```{r eval=FALSE}
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+
+filtered_ep <- filter_groups(cleaned_ep,
+              groupCol = "intended_target_family",
+              assays = c("ATG","NVS", "OT", "TOX21", 
+                         "CEETOX", "APR", "CLD", "TANGUAY",
+                         "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+              remove_groups = c("Background Measurement",
+                                "Undefined"))
+```
+
+What is happening here is that the supplied data frame `endPointInfo` is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the `clean_endPoint_info` output is filtered to just the "intended_target_family" category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed.
+
 
 ## get_chemical_summary
 
