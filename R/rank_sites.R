@@ -18,6 +18,10 @@
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param hit_threshold Numeric threshold defining a "hit".
 #' @export
+#' 
+#' @return data frame with one row per site, and the mas or mean EAR and frequency of 
+#' hits based on the category.
+#' 
 #' @import DT
 #' @rdname rank_sites_DT
 #' @importFrom stats median

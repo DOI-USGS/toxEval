@@ -10,7 +10,11 @@
 #' reconsidered based on individual study objectives.
 #' 
 #' The default category ('groupCol') is 'intended_target_family'. Depending 
-#' on the study, other categories may be more relevant. 
+#' on the study, other categories may be more relevant. The best resource on these 
+#' groupings is the "ToxCast Assay Annotation Data User Guide" directly from 
+#' EPA \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}. 
+#' Following that link, it defines "intended_target_family" as "the target family of the 
+#' objective target for the assay". Much more detail can be discovered in that documentation. 
 #' 
 #' @param ep Data frame containing Endpoint information from ToxCast
 #' @param groupCol Character name of ToxCast annotation column to use as a group catetory

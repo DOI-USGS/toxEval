@@ -32,6 +32,11 @@ The argument will over-ride what is in tox_list.}
 \item{exclusion}{\emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 }
+\value{
+a data frame with the columns: CAS, chnm (chemical name
+as a factor), site, date, EAR, Bio_category, shortName (of site), Class. The output of this 
+function is where you find EAR values for every chemical/endpoint combination.
+}
 \description{
 This function computes Exposure:Activity ratios using user-provided measured 
 concentration data from the output of \code{\link{create_toxEval}},
@@ -52,7 +57,7 @@ file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
-\dontrun{
+
 ACClong <- get_ACC(tox_list$chem_info$CAS)
 ACClong <- remove_flags(ACClong)
 
@@ -60,5 +65,5 @@ cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-}                                    
+                                 
 }

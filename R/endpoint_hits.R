@@ -26,6 +26,8 @@
 #' @param include_links Logical. whether or not to include a link to the ToxCast 
 #' dashboard. Only needed for the "Chemical" category.
 #' @export
+#' @return data frame with one row per endpoint that had a hit (based on the
+#' hit_threshold). The columns are based on the category.
 #' @import DT
 #' @rdname endpoint_hits_DT
 #' @importFrom stats median

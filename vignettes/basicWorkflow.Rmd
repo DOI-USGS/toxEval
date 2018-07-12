@@ -56,6 +56,8 @@ The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`
 [here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
 The function `get_ACC` will convert the ACC values in the ToxCast database from units of log($\mu$M) to units of $\mu$g/L, and reformat the data to a format that can be used in `toxEval`.
 
+The decision to use ACC values compared to AC50 (concentration at half-maximal activity) was described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. Briefly, "ACC is less prone to violating assumptions underlying relative potency estimation".
+
 ## remove_flags
 
 Through the ToxCast program quality assurance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
@@ -112,7 +114,10 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 </td></tr> </table>
 
-The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
+The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. The best resource on these groupings is the "ToxCast Assay Annotation Data User Guide" directly from EPA [link](https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide). This guide defines "intended_target_family" as "the target family of the objective target for the assay". Much more detail can be discovered in that documentation.
+
+
+To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
 
 ```{r eval=FALSE}
 cleaned_ep <- clean_endPoint_info(endPointInfo)
@@ -132,6 +137,8 @@ What is happening here is that the supplied data frame `endPointInfo` is first c
 ## get_chemical_summary
 
 The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above.
+
+The output of this function is where you find EAR values for every chemical/endpoint combination.
 
 # Visualize Data
 
