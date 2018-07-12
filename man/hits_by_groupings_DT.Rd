@@ -25,6 +25,9 @@ opposed to ToxCast benchmarks.}
 
 \item{hit_threshold}{Numeric threshold defining a "hit".}
 }
+\value{
+data frame with one row per category, and one column per Biological grouping.
+}
 \description{
 The \code{hits_by_groupings_DT} (DT option) and 
 \code{hits_by_groupings} (data frame option) functions create tables 

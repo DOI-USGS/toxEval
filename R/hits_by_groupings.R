@@ -21,11 +21,12 @@
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param hit_threshold Numeric threshold defining a "hit".
 #' @export
+#' @return data frame with one row per category, and one column per Biological grouping.
 #' @rdname hits_by_groupings_DT
 #' @import DT
+#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @importFrom stats median
 #' @importFrom tidyr spread unite
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")

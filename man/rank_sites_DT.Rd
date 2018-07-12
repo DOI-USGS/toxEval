@@ -25,6 +25,10 @@ opposed to ToxCast benchmarks.}
 
 \item{hit_threshold}{Numeric threshold defining a "hit".}
 }
+\value{
+data frame with one row per site, and the mas or mean EAR and frequency of 
+hits based on the category.
+}
 \description{
 The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions 
 create tables with one row per site. Columns represent the maximum or mean EAR 

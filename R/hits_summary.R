@@ -27,6 +27,8 @@
 #' @param hit_threshold Numeric threshold defining a "hit".
 #' @export
 #' @rdname hits_summary_DT
+#' @return data frame with with one row per unique site/category combination. The columns
+#' are site, category, Samples with Hits, and Number of Samples.
 #' @import DT
 #' @importFrom stats median
 #' @importFrom dplyr full_join filter mutate select left_join right_join

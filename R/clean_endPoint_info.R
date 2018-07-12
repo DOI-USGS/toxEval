@@ -4,7 +4,8 @@
 #' Subsetting is done based upon methods defined by 
 #' \href{https://pubs.acs.org/doi/10.1021/acs.est.7b01613}{Blackwell et al., 2017}. 
 #' Specifically, this function removes endPoints that are ATG sources with 
-#' signal loss, and NVS with signal gain. Also, this function adds additional 
+#' signal loss, and NVS with signal gain (basically: some assay/signal combinations 
+#' are removed because they target non-specific endpoints). Also, this function adds additional 
 #' categories to intended_target_family and intended_target_family_sub as 
 #' described in the paper linked above.
 #' 

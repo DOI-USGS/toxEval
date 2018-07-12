@@ -23,6 +23,9 @@ opposed to ToxCast benchmarks.}
 \item{hit_threshold}{Numeric threshold defining a "hit".}
 }
 \value{
+data frame with with one row per unique site/category combination. The columns
+are site, category, Samples with Hits, and Number of Samples.
+
 data frame with columns "Hits per Sample", "Individual Hits",
 "nSample", "site", and "category"
 }

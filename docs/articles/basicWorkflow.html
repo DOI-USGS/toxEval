@@ -132,6 +132,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 <h2 class="hasAnchor">
 <a href="#get_acc" class="anchor"></a>get_ACC</h2>
 <p>The <code>get_ACC</code> function will retrieve the activity concentration at cutoff (<code>ACC</code>) values for the specified chemicals. The data was originally downloaded for <code>toxEval</code> on October 2015 from ToxCast. The data were combined from files in the “INVITRODB_V2_LEVEL5” directory. At the time of the toxEval package release, this information was found <a href="https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data">here</a> in the “ToxCast &amp; Tox21 Data Spreadsheet” data set. The function <code>get_ACC</code> will convert the ACC values in the ToxCast database from units of log(<span class="math inline">\(\mu\)</span>M) to units of <span class="math inline">\(\mu\)</span>g/L, and reformat the data to a format that can be used in <code>toxEval</code>.</p>
+<p>The decision to use ACC values compared to AC50 (concentration at half-maximal activity) was described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. Briefly, “ACC is less prone to violating assumptions underlying relative potency estimation”.</p>
 </div>
 <div id="remove_flags" class="section level2">
 <h2 class="hasAnchor">
@@ -179,7 +180,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 <div id="clean_endpoint_info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#clean_endpoint_info" class="anchor"></a>clean_endPoint_info</h2>
-<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.</p>
+<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.</p>
 </div>
 <div id="filter_groups" class="section level2">
 <h2 class="hasAnchor">
@@ -250,7 +251,8 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 </table>
 </td>
 </tr></table>
-<p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
+<p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. The best resource on these groupings is the “ToxCast Assay Annotation Data User Guide” directly from EPA <a href="https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide">link</a>. This guide defines “intended_target_family” as “the target family of the objective target for the assay”. Much more detail can be discovered in that documentation.</p>
+<p>To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(endPointInfo)
 
 filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep,
@@ -265,13 +267,14 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 <div id="get_chemical_summary" class="section level2">
 <h2 class="hasAnchor">
 <a href="#get_chemical_summary" class="anchor"></a>get_chemical_summary</h2>
-<p>The function <code>get_chemical_summary</code> takes the measured user concentration data from the output of <code>create_toxEval</code>, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above.</p>
+<p>The function <code>get_chemical_summary</code> takes the measured user concentration data from the output of <code>create_toxEval</code>, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above. The output of this function is where you find EAR values for every chemical/endpoint combination.</p>
 </div>
 </div>
 <div id="visualize-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#visualize-data" class="anchor"></a>Visualize Data</h1>
 <p>There are numerous ways to visualize data within <code>toxEval</code> that can serve different objectives. Each function described below provides a unique method for exploring EAR data that can be customized to fit a user’s specific study objectives. All of these functions rely on EAR values computed by the <code>get_chemical_summary</code> function.</p>
+<p>Most of the graphing and table functions have an argument “mean_logic”. This allows the user to decided if the mean (<code>TRUE</code>) of the site or the maximum (<code>FALSE</code>) should be displayed. It depends on the type of analysis that is being done on which value will be more appropriate. “mean_logic” defaults to <code>FALSE</code>. If the sites have the same number of samples, and the goal is to explore a representative view of the data, than using <code>TRUE</code> would be more appropriate.</p>
 <div id="plot_tox_boxplots" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot_tox_boxplots" class="anchor"></a>plot_tox_boxplots</h2>

@@ -94,6 +94,7 @@
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>What kind of data could be used in a <code>toxEval</code> analysis? It was designed with concentration measurements from water samples as the primary use case. There may be other concentration measurements that could be used as well, but it is up to the researcher to determine if special considerations must be taken in those circumstances. For instance, there was a <code>toxEval</code> analysis done on the concentration of chemicals measured in eagle plasma.</p>
+<p>For all cases within <code>toxEval</code>, a “sample” is considered a unique site/date. There are times when this might not be especially relavent to the data collection (passive samplers, groundwater samples at separate depths, etc.). The user will need to come up with strategies to deal with the limiting workflow. For example, single sites at different depths could add site suffixes (site_a_3m, site_a_6m, etc.). Passive samplers could use the start or end time as the sampling times.</p>
 </div>
 <div id="preparing-the-data" class="section level1">
 <h1 class="hasAnchor">
@@ -113,7 +114,7 @@
 <li><p>Value: This column is numeric. It <em>must</em> be the concentration of the chemical in <span class="math inline">\(\mu\)</span>g/L.</p></li>
 <li><p>Sample Date: Currently this column only serves to identify unique samples. Dates and times as formatted in Excel, as well as integer values are acceptable. The actual date and times are not currently used to perform any time series analysis.</p></li>
 </ul>
-<p>Note: Additional columns may be useful to organize the data. These additional columns will be ignored by <code>toxEval</code> and will not influence a <code>toxEval</code> analysis.</p>
+<p>Note: Additional columns may be useful to organize the data. These additional columns will be ignored by <code>toxEval</code> and will not influence a <code>toxEval</code> analysis. For example, many data sets have detection level or censoring information. In this version of <code>toxEval</code>, that type of analysis is ignored. The censored data can be entered in the Value column as the detection level, or half the detection level, 0, or some other strategy…that is currently up to the researcher. This is a topic that could be re-evaluated in future versions of <code>toxEval</code>.</p>
 <p>As an example, the first several rows of a minimal example would look like this:</p>
 <div class="figure">
 <img src="data.png" alt="Example Data"><p class="caption">Example Data</p>
@@ -125,7 +126,7 @@
 <p>The “Chemicals” sheet is used to define chemicals included in the “Data” sheet. Two columns are required in this sheet: “CAS” and “Class”. The columns can be in any order, but the first row of the sheet must be the header (column names).</p>
 <ul>
 <li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose “Format Cells”, and choose “Text” as the category to assure they retain their format. The unique CAS values in this column <em>must</em> match with the CAS values in the “Data” sheet.</p></li>
-<li><p>Class: A character column defining the class of chemicals. Most <code>toxEval</code> functions will allow groupings by either chemical, class (as defined here), or biological grouping.</p></li>
+<li><p>Class: A character column defining the class of chemicals. Most <code>toxEval</code> functions will allow groupings by either chemical, class (as defined here), or biological grouping. In the example data set provided with the package, the chemicals were organized in classes such as “Fuels”, “Herbicides”, “Insecticides”, etc. The choice of classes is up to the researcher. Chemical class analysis can be ignored, and in that case, it is just important to put a single repeating entry in the “Class” column.</p></li>
 </ul>
 <p>Note: Additional columns may be useful to organize the data. These additional columns will be ignored by <code>toxEval</code> and will not influence a <code>toxEval</code> analysis.</p>
 </div>

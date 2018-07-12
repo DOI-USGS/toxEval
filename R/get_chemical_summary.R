@@ -30,7 +30,10 @@
 #' @param exclusion \emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
 #' @export
-#' @importFrom tidyr gather
+#' @return a data frame with the columns: CAS, chnm (chemical name
+#' as a factor), site, date, EAR, Bio_category, shortName (of site), Class. The output of this 
+#' function is where you find EAR values for every chemical/endpoint combination.
+#' 
 #' @importFrom dplyr full_join filter mutate select left_join right_join anti_join
 #' @examples
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -38,7 +41,7 @@
 #' full_path <- file.path(path_to_tox, file_name)
 #' 
 #' tox_list <- create_toxEval(full_path)
-#' \dontrun{
+#' 
 #' ACClong <- get_ACC(tox_list$chem_info$CAS)
 #' ACClong <- remove_flags(ACClong)
 #' 
@@ -46,7 +49,7 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
-#' }                                    
+#'                                  
 get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All", 
                                  chem.data=NULL, chem.site=NULL, 
                                  chem.info=NULL, exclusion=NULL){

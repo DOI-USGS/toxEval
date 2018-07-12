@@ -30,6 +30,10 @@ benchmarks as opposed to ToxCast benchmarks.}
 \item{include_links}{Logical. whether or not to include a link to the ToxCast 
 dashboard. Only needed for the "Chemical" category.}
 }
+\value{
+data frame with one row per endpoint that had a hit (based on the
+hit_threshold). The columns are based on the category.
+}
 \description{
 The \code{endpoint_hits_DT} (data.table (DT) option) and \code{endpoint_hits} 
 (data frame option) functions create tables with one row per endPoint, and 
