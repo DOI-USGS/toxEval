@@ -70,7 +70,7 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Exclude
 
-At times, it may be appropriate to exclude endpionts, chemicals, or specific endpoint:chemical combinations from a data analysis due to lack of relevance to the study objecive or low confidence in specific portions of the data. The "Exclude" sheet is used for this purpose. 
+At times, it may be appropriate to exclude endpoints, chemicals, or specific endpoint:chemical combinations from a data analysis due to lack of relevance to the study objective or low confidence in specific portions of the data. The "Exclude" sheet is used for this purpose. 
 
 The "Exclude" sheet is optional, but if used, two columns are required: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
 
