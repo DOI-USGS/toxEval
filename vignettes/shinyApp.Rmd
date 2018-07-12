@@ -59,9 +59,11 @@ The bottom section, "R Code:", displays the R code to reproduce the analysis dir
 The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will not go into the scientific details of what options to choose. These details are dependent on individual study objectives as defined by the user. An example case study that has defined options for a specific study of water quality has been published in [Blackwell te al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613).
 
 
-### A. Load Excel File 
+### A. Load Data File
 
 Once the Shiny App has been launched, the first step is to load the data. The data should be prepared as described in the [Prepare Data vignette](PrepareData.html). Click on the "Browse" button and navigate to the properly prepared Excel file. Once a file is selected, the data will be loaded into the application. There is a progress bar while the data loads, but sometimes it may take a little more time to view the data as each individual graph/map/table also takes some time to develop.
+
+Alternatively, there is a button "Load Example Data". This loads the example data provided within the `toxEval` package. This is a nice way to easily explore the application before preparing your own data.
 
 ### B. 'Group By' option
 

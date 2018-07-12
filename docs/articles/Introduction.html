@@ -107,13 +107,13 @@
 <h2 class="hasAnchor">
 <a href="#exposure-activity-ratio" class="anchor"></a>Exposure-Activity Ratio</h2>
 <p>An Exposure-Activity Ratio (EAR) is defined as the ratio of a measured concentration and a concentration that was determined to cause some activity in a specified ToxCast assay (“endPoint” concentration). An EAR &gt; 1.0 would indicate that the measured concentration is greater than the endpoint concentration. The ToxCast database (as provided in the current version of <code>toxEval</code>) provides as many as several hundred endPoints for more than 7000 chemicals. Each endPoint is a single test that was done to detect some form of biological activity.</p>
-<p>In order to get appropriate EAR results, it is important to use the correct units. The <code>toxEval</code> package assumes all measured concentrations are repored in micrograms per liter (<span class="math inline">\(\mu\)</span>g/L). ToxCast data is reported in log(<span class="math inline">\(\mu\)</span>M), so the <code>toxEval</code> package automatically performs the unit conversion.</p>
+<p>In order to get appropriate EAR results, it is important to use the correct units. The <code>toxEval</code> package assumes all measured concentrations are reported in micrograms per liter (<span class="math inline">\(\mu\)</span>g/L). ToxCast data is reported in log(<span class="math inline">\(\mu\)</span>M), so the <code>toxEval</code> package automatically performs the unit conversion.</p>
 <p>A secondary option within <code>toxEval</code> is for the user to provide a set of “benchmark concentrations” to define custom biological responses to meet specific study objectives (e.g. water quality criteria). In this case, EAR values are replaced with toxicity quotients. Similar to EAR values, toxicity quotients are defined as the ratio of a measured concentration to the benchmark concentration.</p>
 </div>
 <div id="what-is-an-endpoint" class="section level2">
 <h2 class="hasAnchor">
 <a href="#what-is-an-endpoint" class="anchor"></a>What is an “endPoint”?</h2>
-<p>ToxCast uses high-throughput assays to create concentration-response curves for each of these chemical:endPoint combinations. An endPoint is “associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards” <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast database, the activity concentration at cutoff (ACC) was choosen to compute EAR values within the <code>toxEval</code> package, consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, 2017</a>. ACC values from the ToxCast database are provided within the <code>toxEval</code> package.</p>
+<p>ToxCast uses high-throughput assays to create concentration-response curves for each of these chemical:endPoint combinations. An endPoint is “associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards” <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast database, the activity concentration at cutoff (ACC) was chosen to compute EAR values within the <code>toxEval</code> package, consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, 2017</a>. ACC values from the ToxCast database are provided within the <code>toxEval</code> package.</p>
 </div>
 <div id="grouping-options" class="section level2">
 <h2 class="hasAnchor">
@@ -123,7 +123,15 @@
 endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
 <p>See the help file <code><a href="../reference/endPointInfo.html">?endPointInfo</a></code> for specifics on how the table was downloaded.</p>
 <p>Throughout the <code>toxEval</code> analysis, there are graphing and table functions that will summarize EARs based on either “Biological” groupings (as defined by a group of endPoints) or “Chemical Class” groupings (as defined by a group of chemicals).</p>
-<p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function.</p>
+<p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(endPointInfo,
+              <span class="dt">groupCol =</span> <span class="st">"intended_target_family"</span>,
+              <span class="dt">assays =</span> <span class="kw">c</span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, 
+                         <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,
+                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),
+              <span class="dt">remove_groups =</span> <span class="kw">c</span>(<span class="st">"Background Measurement"</span>,
+                                <span class="st">"Undefined"</span>))</code></pre></div>
+<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is filtered to just the “intended_target_family” group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
 </div>
 <div id="summarize_data" class="section level2">
 <h2 class="hasAnchor">

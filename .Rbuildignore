@@ -16,6 +16,7 @@ README_files
 ^\.Rproj\.travis.yml
 ^\.Rproj\appveyor.yml
 CONDUCT.md
+DISCLAIMER.md
 ^docs$
 hexSticker.R
 
