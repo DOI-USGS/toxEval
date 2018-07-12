@@ -220,22 +220,17 @@ summary.toxEval <- function(object, ...){
   
   if(is.null(object[["benchmarks"]])){
     ACClong <- ACC %>%
-      dplyr::filter(casn %in% unique(object$chem_info$CAS)) %>%
-      tidyr::gather(endPoint, ACC, -casn, -chnm, -flags) 
+      dplyr::filter(CAS %in% unique(object$chem_info$CAS)) 
     bench_word <- "ToxCast"
   } else {
     ACClong <- object[["benchmarks"]] 
     bench_word <- "benchmark"
   }
  
-  CAS_tots <- dplyr::select(ACClong, casn) %>% dplyr::distinct() %>% dplyr::pull(casn)
+  CAS_w_data <- ACClong %>% dplyr::select(CAS) %>%
+    dplyr::distinct() %>% dplyr::pull(CAS)
   
-  CAS_w_data <- ACClong %>% dplyr::select(ACC, casn) %>%
-    dplyr::filter(!is.na(ACC)) %>%
-    dplyr::select(casn) %>%
-    dplyr::distinct() %>% dplyr::pull(casn)
-  
-  message(length(CAS_tots)," chemicals have ", bench_word, " information")
+  message(length(CAS_w_data)," chemicals have ", bench_word, " information")
   message("Chemicals returned from this function do NOT have ", bench_word, " information:")
-  return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_tots)])
+  return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_w_data)])
 }
