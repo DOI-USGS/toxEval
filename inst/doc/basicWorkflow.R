@@ -19,39 +19,16 @@ chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 ## ----eval=FALSE----------------------------------------------------------
 #  names(endPointInfo)
 
-## ----clean---------------------------------------------------------------
-#Trim some names:
-levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
-levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
-levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
-
-## ----sites---------------------------------------------------------------
-#Ordering the sites to flow "downstream" of the Great Lakes:
-sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
-  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
-  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
-  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
-  "Manistee","Fox","Oconto","Peshtigo","Menominee",
-  "Indian","Cheboygan","Ford","Escanaba","Manistique",
-  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
-  "Clinton","Rouge","HuronMI","Raisin","Maumee",
-  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
-  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
-  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
-  "Raquette","StRegis")
-
- tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
-               levels = sitesOrdered)
-
-lakes_ordered <- c("Lake Superior",
-                  "Lake Michigan",
-                  "Lake Huron",
-                  "Lake Erie",
-                  "Lake Ontario")
-
-tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
-               levels=lakes_ordered)
-
+## ----eval=FALSE----------------------------------------------------------
+#  cleaned_ep <- clean_endPoint_info(endPointInfo)
+#  
+#  filtered_ep <- filter_groups(cleaned_ep,
+#                groupCol = "intended_target_family",
+#                assays = c("ATG","NVS", "OT", "TOX21",
+#                           "CEETOX", "APR", "CLD", "TANGUAY",
+#                           "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+#                remove_groups = c("Background Measurement",
+#                                  "Undefined"))
 
 ## ----boxplots1, warning=FALSE, message=FALSE-----------------------------
 plot_tox_boxplots(chemicalSummary, "Biological")
@@ -198,4 +175,46 @@ make_tox_map(chemicalSummary,
 #              chem_site = tox_list$chem_site, 
 #              category = "Chemical")
 
+
+## ----clean---------------------------------------------------------------
+#Trim some names:
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
+
+## ----sites---------------------------------------------------------------
+#Ordering the sites to flow "downstream" of the Great Lakes:
+sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+  "Raquette","StRegis")
+
+ tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
+               levels = sitesOrdered)
+
+lakes_ordered <- c("Lake Superior",
+                  "Lake Michigan",
+                  "Lake Huron",
+                  "Lake Erie",
+                  "Lake Ontario")
+
+tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
+               levels=lakes_ordered)
+
+
+## ----fig.width=10--------------------------------------------------------
+summary_with_levels <- get_chemical_summary(tox_list,
+                                            ACClong,
+                                            filtered_ep)
+
+plot_tox_stacks(summary_with_levels, tox_list$chem_site, "Biological")
+plot_tox_heatmap(summary_with_levels, tox_list$chem_site, "Biological")
 

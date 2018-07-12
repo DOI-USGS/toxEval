@@ -90,14 +90,19 @@
 
     
     
+<div id="introduction" class="section level1">
+<h1 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h1>
+<p>What kind of data could be used in a <code>toxEval</code> analysis? It was designed with concentration measurements from water samples as the primary use case. There may be other concentration measurements that could be used as well, but it is up to the researcher to determine if special considerations must be taken in those circumstances. For instance, there was a <code>toxEval</code> analysis done on the concentration of chemicals measured in eagle plasma.</p>
+</div>
 <div id="preparing-the-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#preparing-the-data" class="anchor"></a>Preparing the data</h1>
-<p>Input data for toxEval should be prepared in a Microsoft ™ Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear as follows (although the order is not important):</p>
+<p>Input data for toxEval should be prepared in a Microsoft ™ Excel file using specifically named sheets (also known as tabs). There are 3 mandatory sheets (Data, Chemical, Sites), and 2 optional sheets (Exclude, Benchmarks). The sheets should appear as follows (although the order is not important):</p>
 <div class="figure">
 <img src="tabs.png" alt="Organize Sheets"><p class="caption">Organize Sheets</p>
 </div>
-<p>Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet must contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data.</p>
+<p>Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet must contain the column names (headers), and the second row should begin with the data. That means no titles or comment rows should precede the data.</p>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
@@ -139,7 +144,7 @@
 <div id="exclude" class="section level2">
 <h2 class="hasAnchor">
 <a href="#exclude" class="anchor"></a>Exclude</h2>
-<p>At times, it may be appropriate to exclude endpionts, chemicals, or specific endpoint:chemical combinations from a data analysis due to lack of relevance to the study objecive or low confidence in specific portions of the data. The “Exclude” sheet is used for this purpose.</p>
+<p>At times, it may be appropriate to exclude endpoints, chemicals, or specific endpoint:chemical combinations from a data analysis due to lack of relevance to the study objective or low confidence in specific portions of the data. The “Exclude” sheet is used for this purpose.</p>
 <p>The “Exclude” sheet is optional, but if used, two columns are required: “CAS” and “endPoint”. They can be in any order, but the first row of the sheet should be the header (column names).</p>
 <ul>
 <li><p>endPoint: A character column to define a specific endpoint to ignore in the analysis. If the “CAS” in the corresponding row is empty, the endPoint will be completely excluded from the <code>toxEval</code> analysis. For example, if it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider for a given analysis, it can be excluded by adding it to the Exclude sheet in the endPoint column. If the “CAS” in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis.</p></li>
@@ -178,7 +183,8 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
+<li><a href="#introduction">Introduction</a></li>
+      <li>
 <a href="#preparing-the-data">Preparing the data</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#data">Data</a></li>
       <li><a href="#chemicals">Chemicals</a></li>

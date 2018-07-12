@@ -70,6 +70,8 @@ Through the ToxCast program quality assurance procedures, information is examine
 
 The function is written to exclude results with the flags "Borderline", "OnlyHighest", "GainAC50", "Biochemical" as a default. If the user prefers a different list, the full list must be specified (default values will be ignored).
 
+This function is specific to the provided data from the ToxCast database (and therefore not customizable to other toxicity data sets). The flags listed above are the only options within that set of data. Some endpoint/chemical combinations have multiple flags listed.
+
 ## clean_endPoint_info
 
 The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of [Blackwell et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
@@ -86,7 +88,8 @@ The default category ("groupCol") is "intended_target_family". Depending on the 
 names(endPointInfo)
 ```
 
-By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.
+By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right. 
+
 
 </td><td>
 
@@ -107,55 +110,26 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 </td></tr> </table>
 
+The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
+
+```{r eval=FALSE}
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+
+filtered_ep <- filter_groups(cleaned_ep,
+              groupCol = "intended_target_family",
+              assays = c("ATG","NVS", "OT", "TOX21", 
+                         "CEETOX", "APR", "CLD", "TANGUAY",
+                         "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+              remove_groups = c("Background Measurement",
+                                "Undefined"))
+```
+
+What is happening here is that the supplied data frame `endPointInfo` is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the `clean_endPoint_info` output is filtered to just the "intended_target_family" category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed.
+
+
 ## get_chemical_summary
 
 The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above.
-
-## Custom configuration{#custom_config}
-
-There are numerous ways to customize the display of the graphics. Included below are two examples of customization options. 
-
-1. Trim chemical class names to make the labels more readable in graphs
-```{r clean}
-#Trim some names:
-levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
-levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
-levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
-```
-
-
-2. Rearrange the order of sites and lakes within the graphics: This example converts the site and lake lists to factors and orders these Great Lakes tributary sites in a logical manner by lake and location within each lake:
-
-```{r sites}
-#Ordering the sites to flow "downstream" of the Great Lakes:
-sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
-  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
-  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
-  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
-  "Manistee","Fox","Oconto","Peshtigo","Menominee",
-  "Indian","Cheboygan","Ford","Escanaba","Manistique",
-  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
-  "Clinton","Rouge","HuronMI","Raisin","Maumee",
-  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
-  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
-  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
-  "Raquette","StRegis")
-
- tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
-               levels = sitesOrdered)
-
-lakes_ordered <- c("Lake Superior",
-                  "Lake Michigan",
-                  "Lake Huron",
-                  "Lake Erie",
-                  "Lake Ontario")
-
-tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
-               levels=lakes_ordered)
-
-```
-
-See the `plot_tox_stacks` and `plot_tox_heatmap` function desriptions below for an example of how the ordering is rendered from these examples within graphics functions.
 
 # Visualize Data
 
@@ -191,7 +165,7 @@ maumee <- filter(chemicalSummary, shortName == "Maumee")
 maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
 ```
 
-In this example, the funtion `plot_tox_boxplots` is used with the subset of data from the Maumee River. For this single site graph, the number of chemicals that were detected and have associated endpoint ACCs represented are displayed. 
+In this example, the function `plot_tox_boxplots` is used with the subset of data from the Maumee River. For this single site graph, the number of chemicals that were detected and have associated endpoint ACCs represented are displayed. 
 
 ```{r maumeePlot, message=FALSE, warning=FALSE}
 library(ggplot2)
@@ -305,7 +279,7 @@ rank_sites_DT(chemicalSummary,
               hit_threshold = 0.1)
 ```
 
-The tables show slightly different results for a single site. Instead of multiple columns for category, there is now 1 row per category (since the site is known).
+When `rank_sites_DT` is applied not to multiple sites (as above) but to a single site (as below), the tables show slightly different results. Instead of multiple columns for category, there is now 1 row per category (since the site is known).
 
 ```{r rank_sites_DT_site, warning=FALSE}
 rank_sites_DT(maumee, category = "Biological")
@@ -329,7 +303,7 @@ hits_summary_DT(chemicalSummary,
                 hit_threshold = 0.1)
 ```
 
-The tables show slightly different results for a single site. Rather than one row per site/category, there is one row per category.
+When `hits_summary_DT` is applied not to multiple sites (as above) but to a single site (as below), the tables show slightly different results. Rather than one row per site/category, there is one row per category.
 
 ```{r hits_summary_DT_site, warning=FALSE}
 hits_summary_DT(maumee, category = "Biological")
@@ -352,7 +326,7 @@ endpoint_hits_DT(chemicalSummary,
 
 ```
 
-The tables show slightly different results for a single site. Rather than the number of sites with hits above a threshold, the number of samples with hits is presented.
+When `endpoint_hits_DT` is applied not to multiple sites (as above) but to a single site (as below), the tables show slightly different results. Rather than the number of sites with hits above a threshold, the number of samples with hits is presented.
 
 ```{r endpoint_hits_DT_site, warning=FALSE}
 endpoint_hits_DT(maumee, category = "Biological")
@@ -381,7 +355,7 @@ hits_by_groupings_DT(maumee, category = "Chemical Class")
 
 # Maps {#make_tox_map}
 
-The function `make_tox_map` creates a `leaflet` map of the data. This function places symbols at the location of each site in the data file that represent the magnitude of EAR (color) and the number of samples in the data set (size).  This is the only function that requires "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the `chem_site` argument.
+The function `make_tox_map` creates a `leaflet` map of the data. This function places symbols at the location of each site in the data file that represent the magnitude of EAR (color) and the number of samples in the data set (size).  This is the only function that requires "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the `chem_site` argument. There is an option ("mean_logic") to set whether to show the mean or maximum EAR at each site.
 
 ```{r makeMap, warning=FALSE, message=FALSE}
 make_tox_map(chemicalSummary, 
@@ -397,3 +371,73 @@ make_tox_map(chemicalSummary,
 
 ```
 
+## Custom configuration{#custom_config}
+
+There are numerous ways to customize the display of the graphics. Included below are two examples of customization options. 
+
+1. Trim chemical class names to make the labels more readable in graphs
+```{r clean}
+#Trim some names:
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Detergent Metabolites"] <- "Detergent"
+levels(chemicalSummary$Class)[levels(chemicalSummary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
+```
+
+
+2. Rearrange the order of sites and lakes within the graphics: This example converts the site and lake lists to factors and orders these Great Lakes tributary sites in a logical manner by lake and location within each lake:
+
+```{r sites}
+#Ordering the sites to flow "downstream" of the Great Lakes:
+sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
+  "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
+  "IndianaHC","StJoseph","PawPaw","Kalamazoo","GrandMI",
+  "Milwaukee","Muskegon","WhiteMI","PereMarquette","Manitowoc",
+  "Manistee","Fox","Oconto","Peshtigo","Menominee",
+  "Indian","Cheboygan","Ford","Escanaba","Manistique",
+  "ThunderBay","AuSable","Rifle","Saginaw","BlackMI",
+  "Clinton","Rouge","HuronMI","Raisin","Maumee",
+  "Portage","Sandusky","HuronOH","Vermilion","BlackOH",
+  "Rocky","Cuyahoga","GrandOH","Cattaraugus","Tonawanda",
+  "Genesee","Oswego","BlackNY","Oswegatchie","Grass",
+  "Raquette","StRegis")
+
+ tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
+               levels = sitesOrdered)
+
+lakes_ordered <- c("Lake Superior",
+                  "Lake Michigan",
+                  "Lake Huron",
+                  "Lake Erie",
+                  "Lake Ontario")
+
+tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
+               levels=lakes_ordered)
+
+```
+
+The `plot_tox_stacks` and `plot_tox_heatmap` functions will be affected by these site level adjustments. Compare the output here to what was shown in the sections [plot_tox_heatmap](#plot_tox_heatmap)
+and [plot_tox_stacks](#plot_tox_stacks) above.
+
+```{r fig.width=10}
+summary_with_levels <- get_chemical_summary(tox_list,
+                                            ACClong,
+                                            filtered_ep)
+
+plot_tox_stacks(summary_with_levels, tox_list$chem_site, "Biological")
+plot_tox_heatmap(summary_with_levels, tox_list$chem_site, "Biological")
+```
+
+
+# Disclaimer
+
+This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [https://www.usgs.gov/visual-id/credit_usgs.html#copyright](https://www.usgs.gov/visual-id/credit_usgs.html#copyright)
+
+Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
+
+This software is provided "AS IS."
+
+Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
+
+ [
+   ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
+ ]
