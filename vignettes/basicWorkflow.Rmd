@@ -400,7 +400,7 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 The `plot_tox_stacks` and `plot_tox_heatmap` functions will be affected by these site level adjustments. Compare the output here to what was shown in the sections [plot_tox_heatmap](#plot_tox_heatmap)
 and [plot_tox_stacks](#plot_tox_stacks) above.
 
-```{r }
+```{r fig.width=10}
 summary_with_levels <- get_chemical_summary(tox_list,
                                             ACClong,
                                             filtered_ep)
