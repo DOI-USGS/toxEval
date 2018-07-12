@@ -2,6 +2,15 @@
 #  library(toxEval)
 #  endPointInfo <- endPointInfo
 
+## ----eval=FALSE----------------------------------------------------------
+#  filtered_ep <- filter_groups(endPointInfo,
+#                groupCol = "intended_target_family",
+#                assays = c("ATG","NVS", "OT", "TOX21",
+#                           "CEETOX", "APR", "CLD", "TANGUAY",
+#                           "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+#                remove_groups = c("Background Measurement",
+#                                  "Undefined"))
+
 ## ---- eval=FALSE---------------------------------------------------------
 #  rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
 #  write('\noptions(repos=c(getOption(\'repos\'),
