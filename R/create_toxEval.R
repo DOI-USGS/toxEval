@@ -216,7 +216,7 @@ rm_em_dash <- function(df){
 #' summary(tox_list) 
 summary.toxEval <- function(object, ...){
   
-  casn <- endPoint <- chnm <- flags <- ".dplyr"
+  CAS <- endPoint <- chnm <- flags <- ".dplyr"
   
   if(is.null(object[["benchmarks"]])){
     ACClong <- ACC %>%
