@@ -9,12 +9,8 @@ Downloaded on October 2015 from ToxCast. The data were
 combined from files in the "INVITRODB_V2_LEVEL5" folder. 
 At the time of toxEval package release, this information was found:
 \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
-in the "ToxCast & Tox21 Data Spreadsheet" data set.
-}
-\details{
-The data has been provided in a "wide" format, however
-the \code{get_ACC} function converts the data to a
-"long" format. ACC values are the reported ACC_value (winning model) and units are 
+in the "ToxCast & Tox21 Data Spreadsheet" data set. 
+ACC values are the reported ACC_value (winning model) and units are 
 log micro-Molarity (log \eqn{\mu}M).
 }
 \examples{

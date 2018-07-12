@@ -72,10 +72,7 @@ NULL
 #' At the time of toxEval package release, this information was found:
 #' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-#' 
-#' The data has been provided in a "wide" format, however
-#' the \code{get_ACC} function converts the data to a
-#' "long" format. ACC values are the reported ACC_value (winning model) and units are 
+#' ACC values are the reported ACC_value (winning model) and units are 
 #' log micro-Molarity (log \eqn{\mu}M).
 #' 
 #'
@@ -125,6 +122,11 @@ NULL
 #     filter(gsid_rep == 1) %>%
 #     select(casn, chnm, aenm, modl_acc, flags) %>%
 #     spread(key = aenm, value = modl_acc)
+#
+#   ACC <- ACCgain %>%
+#     gather(endPoint, ACC, -casn, -chnm, -flags) %>%
+#     filter(!is.na(ACC)) %>%
+#     rename(CAS = casn)
 #   
 #   # Something we considered but decided not to do was:
 #   
