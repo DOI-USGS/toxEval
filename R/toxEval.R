@@ -75,6 +75,11 @@ NULL
 #' ACC values are the reported ACC_value (winning model) and units are 
 #' log micro-Molarity (log \eqn{\mu}M).
 #' 
+#' @references U.S. EPA. 2015. ToxCast & Tox21 Summary Files from invitrodb_v2. 
+#' Retrieved from \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' on October 28, 2015. Data released October 2015.
+#'  
+#' @source \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #'
 #'@aliases ACC
 #'@name ACC

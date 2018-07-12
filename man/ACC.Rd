@@ -4,6 +4,9 @@
 \name{ACC}
 \alias{ACC}
 \title{ACC values included with toxEval.}
+\source{
+\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+}
 \description{
 Downloaded on October 2015 from ToxCast. The data were
 combined from files in the "INVITRODB_V2_LEVEL5" folder. 
@@ -15,5 +18,10 @@ log micro-Molarity (log \eqn{\mu}M).
 }
 \examples{
 ACCColumnNames <- names(ACC)
+}
+\references{
+U.S. EPA. 2015. ToxCast & Tox21 Summary Files from invitrodb_v2. 
+Retrieved from \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+on October 28, 2015. Data released October 2015.
 }
 \keyword{datasets}
