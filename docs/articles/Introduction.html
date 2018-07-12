@@ -115,9 +115,9 @@
 <a href="#what-is-an-endpoint" class="anchor"></a>What is an “endPoint”?</h2>
 <p>ToxCast uses high-throughput assays to create concentration-response curves for each of these chemical:endPoint combinations. An endPoint is “associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards” <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast database, the activity concentration at cutoff (ACC) was chosen to compute EAR values within the <code>toxEval</code> package, consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, 2017</a>. ACC values from the ToxCast database are provided within the <code>toxEval</code> package.</p>
 </div>
-<div id="grouping-options" class="section level2">
+<div id="what-is-a-group" class="section level2">
 <h2 class="hasAnchor">
-<a href="#grouping-options" class="anchor"></a>Grouping options</h2>
+<a href="#what-is-a-group" class="anchor"></a>What is a “group”?</h2>
 <p>Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>endPointInfo</code> data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
 endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
@@ -214,7 +214,7 @@ endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
 <li><a href="#what-is-toxcast">What is ToxCast?</a></li>
       <li><a href="#exposure-activity-ratio">Exposure-Activity Ratio</a></li>
       <li><a href="#what-is-an-endpoint">What is an “endPoint”?</a></li>
-      <li><a href="#grouping-options">Grouping options</a></li>
+      <li><a href="#what-is-a-group">What is a “group”?</a></li>
       <li><a href="#summarize_data">Summarizing the data</a></li>
       </ul>
 </li>
