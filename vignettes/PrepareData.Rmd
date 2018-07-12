@@ -18,6 +18,8 @@ vignette: >
 
 What kind of data could be used in a `toxEval` analysis? It was designed with concentration measurements from water samples as the primary use case. There may be other concentration measurements that could be used as well, but it is up to the researcher to determine if special considerations must be taken in those circumstances. For instance, there was a `toxEval` analysis done on the concentration of chemicals measured in eagle plasma.  
 
+For all cases within `toxEval`, a "sample" is considered a unique site/date. There are times when this might not be especially relavent to the data collection (passive samplers, groundwater samples at separate depths, etc.). The user will need to come up with strategies to deal with the limiting workflow. For example, single sites at different depths could add site suffixes (site_a_3m, site_a_6m, etc.). Passive samplers could use the start or end time as the sampling times.
+
 # Preparing the data
 
 Input data for toxEval should be prepared in a Microsoft &trade; Excel file using specifically named sheets (also known as tabs). There are 3 mandatory sheets (Data, Chemical, Sites), and 2 optional sheets (Exclude, Benchmarks). The sheets should appear as follows (although the order is not important):

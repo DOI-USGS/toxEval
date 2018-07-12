@@ -180,6 +180,12 @@ The argument will over-ride what is in tox_list.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a data frame with the columns: CAS, chnm (chemical name
+as a factor), site, date, EAR, Bio_category, shortName (of site), Class. The output of this 
+function is where you find EAR values for every chemical/endpoint combination.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>To use the data provided by the package, a sample workflow is shown below
@@ -194,21 +200,23 @@ endPoints that may not be important to the analysis at hand.</p>
 <span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
 <span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
 
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+
 <span class='no'>ACClong</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
 <span class='no'>ACClong</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACClong</span>)
 
 <span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>endPointInfo</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 
-<span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='no'>ACClong</span>, <span class='no'>filtered_ep</span>)
-<span class='co'># }</span></pre>
+<span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='no'>ACClong</span>, <span class='no'>filtered_ep</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>

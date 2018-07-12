@@ -14,7 +14,9 @@ vignette: >
 ---
 # toxEval Analysis Example
 
-An example data set has been provided from a publication that investigated trace organic compounds in water samples from Great Lakes tributaries ([Baldwin et al., 2016](https://doi.org/10.1016/j.scitotenv.2016.02.137)). The following workflow provides examples of toxEval analyses using these data. The user may substitute another data set of interest in place of the Great Lakes tributary data. Extensive user-customization is possible beyond the examples provided here.
+An example data set has been provided from a publication that investigated trace organic compounds in water samples from Great Lakes tributaries ([Baldwin et al., 2016](https://doi.org/10.1016/j.scitotenv.2016.02.137)). The provided data removes some samples and many non-detects to optimize the size of the sample data.
+
+The following workflow provides examples of toxEval analyses using these data. The user may substitute another data set of interest in place of the Great Lakes tributary data. Extensive user-customization is possible beyond the examples provided here. 
 
 # Load Data
  
@@ -54,6 +56,8 @@ The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`
 [here](https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
 The function `get_ACC` will convert the ACC values in the ToxCast database from units of log($\mu$M) to units of $\mu$g/L, and reformat the data to a format that can be used in `toxEval`.
 
+The decision to use ACC values compared to AC50 (concentration at half-maximal activity) was described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. Briefly, "ACC is less prone to violating assumptions underlying relative potency estimation".
+
 ## remove_flags
 
 Through the ToxCast program quality assurance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
@@ -74,7 +78,7 @@ This function is specific to the provided data from the ToxCast database (and th
 
 ## clean_endPoint_info
 
-The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of [Blackwell et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain. Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
+The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of [Blackwell et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain  (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.
 
 ## filter_groups
 
@@ -110,7 +114,10 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 </td></tr> </table>
 
-The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
+The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. The best resource on these groupings is the "ToxCast Assay Annotation Data User Guide" directly from EPA [link](https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide). This guide defines "intended_target_family" as "the target family of the objective target for the assay". Much more detail can be discovered in that documentation.
+
+
+To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
 
 ```{r eval=FALSE}
 cleaned_ep <- clean_endPoint_info(endPointInfo)
@@ -129,11 +136,13 @@ What is happening here is that the supplied data frame `endPointInfo` is first c
 
 ## get_chemical_summary
 
-The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above.
+The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above. The output of this function is where you find EAR values for every chemical/endpoint combination.
 
 # Visualize Data
 
 There are numerous ways to visualize data within `toxEval` that can serve different objectives. Each function described below provides a unique method for exploring EAR data that can be customized to fit a user's specific study objectives. All of these functions rely on EAR values computed by the `get_chemical_summary` function.
+
+Most of the graphing and table functions have an argument "mean_logic". This allows the user to decided if the mean (`TRUE`) of the site or the maximum (`FALSE`) should be displayed. It depends on the type of analysis that is being done on which value will be more appropriate. "mean_logic" defaults to `FALSE`. If the sites have the same number of samples, and the goal is to explore a representative view of the data, than using `TRUE` would be more appropriate.
 
 ## plot_tox_boxplots {#plot_tox_boxplots}
 

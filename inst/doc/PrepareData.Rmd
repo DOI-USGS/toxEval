@@ -18,6 +18,8 @@ vignette: >
 
 What kind of data could be used in a `toxEval` analysis? It was designed with concentration measurements from water samples as the primary use case. There may be other concentration measurements that could be used as well, but it is up to the researcher to determine if special considerations must be taken in those circumstances. For instance, there was a `toxEval` analysis done on the concentration of chemicals measured in eagle plasma.  
 
+For all cases within `toxEval`, a "sample" is considered a unique site/date. There are times when this might not be especially relavent to the data collection (passive samplers, groundwater samples at separate depths, etc.). The user will need to come up with strategies to deal with the limiting workflow. For example, single sites at different depths could add site suffixes (site_a_3m, site_a_6m, etc.). Passive samplers could use the start or end time as the sampling times.
+
 # Preparing the data
 
 Input data for toxEval should be prepared in a Microsoft &trade; Excel file using specifically named sheets (also known as tabs). There are 3 mandatory sheets (Data, Chemical, Sites), and 2 optional sheets (Exclude, Benchmarks). The sheets should appear as follows (although the order is not important):
@@ -38,7 +40,7 @@ The "Data" sheet is used to define the measured concentrations to be evaluated i
 
 * Sample Date: Currently this column only serves to identify unique samples.  Dates and times as formatted in Excel, as well as integer values are acceptable. The actual date and times are not currently used to perform any time series analysis. 
 
-Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
+Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis. For example, many data sets have detection level or censoring information. In this version of `toxEval`, that type of analysis is ignored. The censored data can be entered in the Value column as the detection level, or half the detection level, 0, or some other strategy...that is currently up to the researcher. This is a topic that could be re-evaluated in future versions of `toxEval`.
 
 As an example, the first several rows of a minimal example would look like this:
 
@@ -50,7 +52,7 @@ The "Chemicals" sheet is used to define chemicals included in the "Data" sheet. 
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
-* Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping.
+* Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping. In the example data set provided with the package, the chemicals were organized in classes such as "Fuels", "Herbicides", "Insecticides", etc. The choice of classes is up to the researcher. Chemical class analysis can be ignored, and in that case, it is just important to put a single repeating entry in the "Class" column. 
 
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 

@@ -38,7 +38,7 @@ A secondary option within `toxEval` is for the user to provide a set of "benchma
 
 ToxCast uses high-throughput assays to create concentration-response curves for each of these chemical:endPoint combinations. An endPoint is "associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards" <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast database, the activity concentration at cutoff (ACC) was chosen to compute EAR values within the `toxEval` package, consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, 2017</a>. ACC values from the ToxCast database are provided within the `toxEval` package. 
 
-## Grouping options
+## What is a "group"?
 
 Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in `toxEval` and can be explored via the `endPointInfo` data:
 

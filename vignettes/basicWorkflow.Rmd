@@ -136,13 +136,13 @@ What is happening here is that the supplied data frame `endPointInfo` is first c
 
 ## get_chemical_summary
 
-The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above.
-
-The output of this function is where you find EAR values for every chemical/endpoint combination.
+The function `get_chemical_summary` takes the measured user concentration data from the output of `create_toxEval`, and joins the data with the endPoint information provided by ToxCast to compute EAR values, as filtered by the functions described above. The output of this function is where you find EAR values for every chemical/endpoint combination.
 
 # Visualize Data
 
 There are numerous ways to visualize data within `toxEval` that can serve different objectives. Each function described below provides a unique method for exploring EAR data that can be customized to fit a user's specific study objectives. All of these functions rely on EAR values computed by the `get_chemical_summary` function.
+
+Most of the graphing and table functions have an argument "mean_logic". This allows the user to decided if the mean (`TRUE`) of the site or the maximum (`FALSE`) should be displayed. It depends on the type of analysis that is being done on which value will be more appropriate. "mean_logic" defaults to `FALSE`. If the sites have the same number of samples, and the goal is to explore a representative view of the data, than using `TRUE` would be more appropriate.
 
 ## plot_tox_boxplots {#plot_tox_boxplots}
 
