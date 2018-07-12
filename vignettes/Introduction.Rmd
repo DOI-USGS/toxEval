@@ -51,7 +51,19 @@ See the help file `?endPointInfo` for specifics on how the table was downloaded.
 
 Throughout the `toxEval` analysis, there are graphing and table functions that will summarize EARs based on either "Biological" groupings (as defined by a group of endPoints) or "Chemical Class" groupings (as defined by a group of chemicals).
 
-The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function.
+The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
+
+```{r eval=FALSE}
+filtered_ep <- filter_groups(endPointInfo,
+              groupCol = "intended_target_family",
+              assays = c("ATG","NVS", "OT", "TOX21", 
+                         "CEETOX", "APR", "CLD", "TANGUAY",
+                         "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+              remove_groups = c("Background Measurement",
+                                "Undefined"))
+```
+
+What is happening here is that the supplied data frame `endPointInfo` is filtered to just the "intended_target_family" group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed.
 
 ## Summarizing the data{#summarize_data}
 

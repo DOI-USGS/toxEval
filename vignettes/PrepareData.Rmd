@@ -14,13 +14,17 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+# Introduction
+
+What kind of data could be used in a `toxEval` analysis? It was designed with concentration measurements from water samples as the primary use case. There may be other concentration measurements that could be used as well, but it is up to the researcher to determine if special considerations must be taken in those circumstances. For instance, there was a `toxEval` analysis done on the concentration of chemicals measured in eagle plasma.  
+
 # Preparing the data
 
-Input data for toxEval should be prepared in a Microsoft &trade; Excel file. There are 3 mandatory sheets (also known as tabs), and 2 optional sheets. The sheets should appear as follows (although the order is not important):
+Input data for toxEval should be prepared in a Microsoft &trade; Excel file using specifically named sheets (also known as tabs). There are 3 mandatory sheets (Data, Chemical, Sites), and 2 optional sheets (Exclude, Benchmarks). The sheets should appear as follows (although the order is not important):
 
 ![Organize Sheets](tabs.png)
 
-Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet must contain the column names (headers), no rows should be initially skipped, and no titles or comment rows should precede the data. 
+Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet must contain the column names (headers), and the second row should begin with the data. That means no titles or comment rows should precede the data. 
 
 ## Data
 
