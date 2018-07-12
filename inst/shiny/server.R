@@ -369,5 +369,30 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
   source("benchmarks.R",local=TRUE)$value
 ############################################################## 
 
+  #This works, but a bit clunky since you always need
+  #to "Install and Restart" or you get an error and the 
+  #app won't work.
+  
+  # get_vignette_link <- function(...) {
+  #   x <- vignette(...)
+  #   if (nzchar(out <- x$PDF)) {
+  #     ext <- tools::file_ext(out)
+  #     port <- if (tolower(ext) == "html") 
+  #       tools::startDynamicHelp(NA)
+  #     else 0L
+  #     if (port > 0L) {
+  #       out <- sprintf("http://127.0.0.1:%d/library/%s/doc/%s", 
+  #                      port, basename(x$Dir), out)
+  #       return(out)
+  #     }
+  #   }
+  #   stop("no html help found")
+  # }
+  # 
+  # output$Introduction_vignette <- renderUI({
+  #   a("Introduction", 
+  #     href=get_vignette_link("Introduction", package="toxEval"))
+  # 
+  # })
 
 })
