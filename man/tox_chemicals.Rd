@@ -4,6 +4,15 @@
 \name{tox_chemicals}
 \alias{tox_chemicals}
 \title{ToxCast Chemical Information}
+\value{
+data frame with columns: "ToxCast_chid","DSSTox_Substance_Id",
+"DSSTox_Structure_Id","DSSTox_QC.Level",    
+"Substance_Name","Substance_CASRN",    
+"Substance_Type","Substance_Note",     
+"Structure_SMILES","Structure_InChI",    
+"Structure_InChIKey","Structure_Formula",  
+"Structure_MolWt"
+}
 \description{
 Downloaded on October 2015 from ToxCast. The file name of the
 raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx", 
