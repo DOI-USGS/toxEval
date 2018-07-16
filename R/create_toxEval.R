@@ -201,8 +201,13 @@ rm_em_dash <- function(df){
 }
 
 
-#' summary of tox_list
+#' Summary of tox_list
 #' 
+#' A "tox_list" object is created from \code{create_toxEval}. It 
+#' is a list of  5 data frames: chem_data, chem_info, 
+#' chem_site, exclusions, and benchmarks. This function returns
+#' a message with how many chemicals have ToxCast information, 
+#' and returns a vector of which chemicals do not have ToxCast information.
 #' 
 #' @param object toxEval object with "chem_info" data frame included. 
 #' @param \dots additional parameters
