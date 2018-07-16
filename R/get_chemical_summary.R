@@ -21,11 +21,11 @@
 #' may optionally be removed using the \code{\link{remove_flags}} function.
 #' @param filtered_ep Data frame with columns: endPoints, groupCol. Default is \code{"All"}, where no
 #' filtering occurs.
-#' @param chem.data \emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
+#' @param chem_data \emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.site \emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
+#' @param chem_site \emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
-#' @param chem.info \emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
+#' @param chem_info \emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
 #' @param exclusion \emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
 #' The argument will over-ride what is in tox_list.
@@ -51,29 +51,29 @@
 #' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 #'                                  
 get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All", 
-                                 chem.data=NULL, chem.site=NULL, 
-                                 chem.info=NULL, exclusion=NULL){
+                                 chem_data=NULL, chem_site=NULL, 
+                                 chem_info=NULL, exclusion=NULL){
 
   # Getting rid of NSE warnings:
   chnm <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
   EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
   
-  if(is.null(chem.data)){
-    chem.data <- tox_list[["chem_data"]]
+  if(is.null(chem_data)){
+    chem_data <- tox_list[["chem_data"]]
   } else {
-    chem.data <- rm_em_dash(chem.data)
+    chem_data <- rm_em_dash(chem_data)
   }
   
-  if(is.null(chem.site)){
-    chem.site <- tox_list[["chem_site"]]
+  if(is.null(chem_site)){
+    chem_site <- tox_list[["chem_site"]]
   } else {
-    chem.site <- rm_em_dash(chem.site)
+    chem_site <- rm_em_dash(chem_site)
   }
   
-  if(is.null(chem.info)){
-    chem.info <- tox_list[["chem_info"]]
+  if(is.null(chem_info)){
+    chem_info <- tox_list[["chem_info"]]
   } else {
-    chem.info <- rm_em_dash(chem.info)
+    chem_info <- rm_em_dash(chem_info)
   }
   
   if(is.null(exclusion)){
@@ -88,12 +88,12 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
     ACClong <- select(ACClong, CAS, chnm, endPoint, ACC_value)
   }
   
-  if(class(chem.data$Value) == "character"){
-    chem.data$Value <- as.numeric(chem.data$Value)
+  if(class(chem_data$Value) == "character"){
+    chem_data$Value <- as.numeric(chem_data$Value)
   }
   
   chemicalSummary <- full_join(ACClong, 
-                               select(chem.data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
+                               select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
@@ -114,9 +114,9 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
   }
   
   chemicalSummary <- chemicalSummary  %>%
-    left_join(select(chem.site, site=SiteID, `Short Name`),
+    left_join(select(chem_site, site=SiteID, `Short Name`),
               by="site") %>%
-    left_join(select(chem.info, CAS, Class), by="CAS") %>%
+    left_join(select(chem_info, CAS, Class), by="CAS") %>%
     rename(Bio_category = groupCol,
            shortName = `Short Name`)
   

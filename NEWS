@@ -1,3 +1,10 @@
+toxEval 1.0.0
+===========
+* Initial release includes functions on incorporating
+ToxCast data with measured concentration.
+* Vignettes and Shiny app included
+
+
 toxEval 0.0.0
 ===========
 * Initial build

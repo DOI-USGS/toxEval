@@ -5,7 +5,7 @@
 \title{Compute EAR values from measured concentrations and ACC values.}
 \usage{
 get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
-  chem.data = NULL, chem.site = NULL, chem.info = NULL,
+  chem_data = NULL, chem_site = NULL, chem_info = NULL,
   exclusion = NULL)
 }
 \arguments{
@@ -20,13 +20,13 @@ may optionally be removed using the \code{\link{remove_flags}} function.}
 \item{filtered_ep}{Data frame with columns: endPoints, groupCol. Default is \code{"All"}, where no
 filtering occurs.}
 
-\item{chem.data}{\emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
+\item{chem_data}{\emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{chem.site}{\emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
+\item{chem_site}{\emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
-\item{chem.info}{\emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
+\item{chem_info}{\emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
 The argument will over-ride what is in tox_list.}
 
 \item{exclusion}{\emph{Optional} data frame with (at least) columns: CAS and endPoint. Default is \code{NULL}. 
