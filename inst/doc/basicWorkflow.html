@@ -91,7 +91,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Basic Workflow</h1>
-<h4 class="date"><em>12 July, 2018</em></h4>
+<h4 class="date"><em>16 July, 2018</em></h4>
 
 
 <div id="TOC">
@@ -203,7 +203,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
 </div>
 <div id="clean_endpoint_info" class="section level2">
 <h2>clean_endPoint_info</h2>
-<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.</p>
+<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to “intended_target_family” and “intended_target_family_sub” as described in the paper linked above.</p>
 </div>
 <div id="filter_groups" class="section level2">
 <h2>filter_groups</h2>
@@ -213,6 +213,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw">get_chemical_summ
 <p>This function takes the data frame from ‘endPointInfo’ and filters the endpoints in 3 steps. First, the user specifies the “groupCol” argument, which is a column header from <code>endPointInfo</code>. Second, the user specifies the assays to use. Finally, the user can also choose to remove specific group(s) from the category. The default is to remove “Background Measurement” and “Undefined”. Choices for this should be reconsidered based on individual study objectives.</p>
 <p>The default category (“groupCol”) is “intended_target_family”. Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame <code>endPointInfo</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(endPointInfo)</code></pre></div>
+<p>The provided <code>endPointInfo</code> data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for <code>toxEval</code> analysis are in the column “assay_component_endpoint_name”.</p>
 <p>By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.</p>
 </td>
 <td>
@@ -288,7 +289,24 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw">filter_groups</span>(
                          <span class="st">&quot;NHEERL_PADILLA&quot;</span>,<span class="st">&quot;NCCT_SIMMONS&quot;</span>, <span class="st">&quot;ACEA&quot;</span>),
               <span class="dt">remove_groups =</span> <span class="kw">c</span>(<span class="st">&quot;Background Measurement&quot;</span>,
                                 <span class="st">&quot;Undefined&quot;</span>))</code></pre></div>
-<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
+<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed based on the “remove_groups” arguments. The options for “remove_groups” are:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(cleaned_ep<span class="op">$</span>intended_target_family)</code></pre></div>
+<pre><code>##  [1] &quot;Cell Cycle&quot;              &quot;Nuclear Receptor&quot;       
+##  [3] &quot;Cell Morphology&quot;         &quot;DNA Binding&quot;            
+##  [5] &quot;Background Measurement&quot;  &quot;Growth Factor&quot;          
+##  [7] &quot;Cell Adhesion Molecules&quot; &quot;Cytokine&quot;               
+##  [9] &quot;GPCR&quot;                    &quot;Kinase&quot;                 
+## [11] &quot;Protease&quot;                &quot;Misc Protein&quot;           
+## [13] &quot;Protease Inhibitor&quot;      &quot;CYP&quot;                    
+## [15] &quot;Esterase&quot;                &quot;Phosphatase&quot;            
+## [17] &quot;Hydrolase&quot;               &quot;Oxidoreductase&quot;         
+## [19] &quot;Lyase&quot;                   &quot;Methyltransferase&quot;      
+## [21] &quot;Ion Channel&quot;             &quot;Transporter&quot;            
+## [23] &quot;Steroid Hormone&quot;         &quot;Transferase&quot;            
+## [25] &quot;Zebrafish&quot;               &quot;Undefined&quot;</code></pre>
+<p>Note: the function <code>clean_endPoint_info</code> converted <code>NA</code> groups to “Undefined”. Using other categories, the options for “remove_groups” are the <code>unique</code> output of that category. For instance, if it was decided that “intended_target_family_sub” was more appropriate, the group options would be found by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(endPointInfo<span class="op">$</span>intended_target_family_sub)</code></pre></div>
+<p>The <code>clean_endPoint_info</code> function is really only useful when using the “intended_target_family” and “intended_target_family_sub” categories.</p>
 </div>
 <div id="get_chemical_summary" class="section level2">
 <h2>get_chemical_summary</h2>
