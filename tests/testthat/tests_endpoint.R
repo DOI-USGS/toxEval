@@ -51,9 +51,9 @@ test_that("Cleaning up endpoints", {
   testthat::skip_on_cran()
   # This function rejiggers some intended target family and sub-family
   # based on first paper:
-  cleaned_ep <- clean_endPoint_info(endPointInfo)
-  expect_equal(names(cleaned_ep), names(endPointInfo))
-  expect_lt(nrow(cleaned_ep), nrow(endPointInfo))
+  cleaned_ep <- clean_endPoint_info(end_point_info)
+  expect_equal(names(cleaned_ep), names(end_point_info))
+  expect_lt(nrow(cleaned_ep), nrow(end_point_info))
   
   cleanedNames <- c("Cell Cycle","Nuclear Receptor",
                     "Cell Morphology","DNA Binding",
@@ -70,13 +70,13 @@ test_that("Cleaning up endpoints", {
                     "Zebrafish","Undefined")
 
     expect_true(all(cleanedNames %in% cleaned_ep$intended_target_family))
-    expect_false(all(cleanedNames %in% endPointInfo$intended_target_family))
+    expect_false(all(cleanedNames %in% end_point_info$intended_target_family))
 })
 
 test_that("Filtering endpoints", {
   testthat::skip_on_cran()
   
-  cleaned_ep <- clean_endPoint_info(endPointInfo)
+  cleaned_ep <- clean_endPoint_info(end_point_info)
   
   assays <- c("ATG","NVS", "OT")
   groups <- c("Background Measurement","Undefined","Cell Cycle")

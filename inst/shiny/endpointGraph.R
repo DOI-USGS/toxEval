@@ -3,13 +3,13 @@ endpointGraph_create <- reactive({
   filterBy <- epDF[['epGroup']]
   include_thresh <- as.logical(input$plot_thres_ep)
   hitThres <- ifelse(include_thresh, hitThresValue(),NA)
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
-  endpointGraph <- plot_tox_endpoints(chemicalSummary, 
+  endpointGraph <- plot_tox_endpoints(chemical_summary, 
                                       category = category,
                                       mean_logic = mean_logic,
                                       sum_logic = sum_logic,
@@ -45,14 +45,14 @@ PlotHeight_ep = reactive({
   catType = as.numeric(input$radioMaxGroup)
   cat_col <- c("Bio_category","chnm","Class")[catType]
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   
   if(filterBy != "All"){
-    chemicalSummary <- chemicalSummary %>%
+    chemical_summary <- chemical_summary %>%
       filter_(paste0(cat_col," == '", filterBy,"'"))
   }
   
-  n <- 35*length(unique(chemicalSummary$endPoint))
+  n <- 35*length(unique(chemical_summary$endPoint))
   
   if(n < 500){
     return(500)
@@ -95,7 +95,7 @@ epGraphCode <- reactive({
   sum_logic <- as.logical(input$sumEAR)
   if(sum_logic){
     epGraphCode <- paste0(rCodeSetup(),"
-ep_plot <- plot_tox_endpoints(chemicalSummary, 
+ep_plot <- plot_tox_endpoints(chemical_summary, 
                     category = '",category,"',
                     mean_logic = ",mean_logic,",
                     hit_threshold = ",hitThres,",
@@ -104,7 +104,7 @@ ep_plot <- plot_tox_endpoints(chemicalSummary,
 ep_plot")
   } else {
     epGraphCode <- paste0(rCodeSetup(),"
-ep_plot <- plot_tox_endpoints(chemicalSummary, 
+ep_plot <- plot_tox_endpoints(chemical_summary, 
                         category = '",category,"',
                         mean_logic = ",mean_logic,",
                         sum_logic = FALSE,

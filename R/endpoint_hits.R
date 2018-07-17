@@ -14,7 +14,7 @@
 #' instance is the number of samples with hits rather than the number of sites
 #' with hits. 
 #' 
-#' @param chemicalSummary Data frame from \code{get_chemical_summary}
+#' @param chemical_summary Data frame from \code{get_chemical_summary}
 #' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
 #' FALSE displays the maximum sample from each site.
 #' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
@@ -45,16 +45,16 @@
 #' ACC <- get_ACC(tox_list$chem_info$CAS)
 #' ACC <- remove_flags(ACC)
 #' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
+#' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #' 
-#' hits_df <- endpoint_hits(chemicalSummary, category = "Biological")                        
-#' endpoint_hits_DT(chemicalSummary, category = "Biological")
-#' endpoint_hits_DT(chemicalSummary, category = "Chemical Class")
-#' endpoint_hits_DT(chemicalSummary, category = "Chemical")
+#' hits_df <- endpoint_hits(chemical_summary, category = "Biological")                        
+#' endpoint_hits_DT(chemical_summary, category = "Biological")
+#' endpoint_hits_DT(chemical_summary, category = "Chemical Class")
+#' endpoint_hits_DT(chemical_summary, category = "Chemical")
 #' }
-endpoint_hits_DT <- function(chemicalSummary, 
+endpoint_hits_DT <- function(chemical_summary, 
                            category = "Biological",
                            mean_logic = FALSE,
                            sum_logic = TRUE,
@@ -63,7 +63,7 @@ endpoint_hits_DT <- function(chemicalSummary,
   
   chnm <- CAS <- ".dplyr"
 
-  fullData <- endpoint_hits(chemicalSummary = chemicalSummary,
+  fullData <- endpoint_hits(chemical_summary = chemical_summary,
                            category = category,
                            mean_logic = mean_logic,
                            sum_logic = sum_logic,
@@ -72,7 +72,7 @@ endpoint_hits_DT <- function(chemicalSummary,
   if(category == "Chemical"){
     orig_names <- names(fullData)
     
-    casKey <- select(chemicalSummary, chnm, CAS) %>%
+    casKey <- select(chemical_summary, chnm, CAS) %>%
       distinct()
     
     numeric_hits <- fullData
@@ -138,7 +138,7 @@ endpoint_hits_DT <- function(chemicalSummary,
 
 #' @rdname endpoint_hits_DT
 #' @export
-endpoint_hits <- function(chemicalSummary, 
+endpoint_hits <- function(chemical_summary, 
                          category = "Biological",
                          mean_logic = FALSE,
                          sum_logic = TRUE,
@@ -152,17 +152,17 @@ endpoint_hits <- function(chemicalSummary,
   fullData <- fullData_init
   
   if(category == "Chemical"){
-    chemicalSummary <- mutate(chemicalSummary, category = chnm)
+    chemical_summary <- mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemicalSummary <- mutate(chemicalSummary, category = Class)
+    chemical_summary <- mutate(chemical_summary, category = Class)
   } else {
-    chemicalSummary <- mutate(chemicalSummary, category = Bio_category)
+    chemical_summary <- mutate(chemical_summary, category = Bio_category)
   }
   
-  if(length(unique(chemicalSummary$site)) > 1){
+  if(length(unique(chemical_summary$site)) > 1){
     
     if(!sum_logic){
-      fullData <- chemicalSummary %>%
+      fullData <- chemical_summary %>%
         group_by(site, category, endPoint, date) %>%
         summarize(sumEAR = max(EAR)) %>%
         group_by(site, category, endPoint) %>%
@@ -171,7 +171,7 @@ endpoint_hits <- function(chemicalSummary,
         summarize(nSites = sum(meanEAR > hit_threshold)) %>%
         spread(category, nSites)       
     } else {
-      fullData <- chemicalSummary %>%
+      fullData <- chemical_summary %>%
         group_by(site, category, endPoint, date) %>%
         summarize(sumEAR = sum(EAR)) %>%
         group_by(site, category, endPoint) %>%
@@ -183,12 +183,12 @@ endpoint_hits <- function(chemicalSummary,
 
   } else {
     if(!sum_logic){
-      fullData <- chemicalSummary %>%
+      fullData <- chemical_summary %>%
         group_by(category, endPoint) %>%
         summarise(nSites = sum(EAR > hit_threshold)) %>%
         spread(category, nSites)        
     } else {
-      fullData <- chemicalSummary %>%
+      fullData <- chemical_summary %>%
         group_by(category, endPoint, date) %>%
         summarize(sumEAR = sum(EAR)) %>%
         group_by(category, endPoint) %>%

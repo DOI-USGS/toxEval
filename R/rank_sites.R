@@ -9,7 +9,7 @@
 #' The tables show slightly different results for a single site. Rather than multiple 
 #' columns for categories, there is now 1 row per category (since the site is known).
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
 #' \code{FALSE} displays the maximum sample from each site.
 #' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
@@ -39,17 +39,17 @@
 #' ACC <- get_ACC(tox_list$chem_info$CAS)
 #' ACC <- remove_flags(ACC)
 #' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
+#' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'
-#' stats_df <- rank_sites(chemicalSummary, "Biological")
+#' stats_df <- rank_sites(chemical_summary, "Biological")
 #' \dontrun{
-#' rank_sites_DT(chemicalSummary, category = "Biological")
-#' rank_sites_DT(chemicalSummary, category = "Chemical Class")
-#' rank_sites_DT(chemicalSummary, category = "Chemical")
+#' rank_sites_DT(chemical_summary, category = "Biological")
+#' rank_sites_DT(chemical_summary, category = "Chemical Class")
+#' rank_sites_DT(chemical_summary, category = "Chemical")
 #' }
-rank_sites_DT <- function(chemicalSummary, 
+rank_sites_DT <- function(chemical_summary, 
                           category = "Biological",
                           mean_logic = FALSE,
                           sum_logic = TRUE,
@@ -59,7 +59,7 @@ rank_sites_DT <- function(chemicalSummary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
-  statsOfColumn <- rank_sites(chemicalSummary=chemicalSummary,
+  statsOfColumn <- rank_sites(chemical_summary=chemical_summary,
                                category = category,
                                hit_threshold = hit_threshold,
                                mean_logic = mean_logic,
@@ -127,7 +127,7 @@ rank_sites_DT <- function(chemicalSummary,
 
 #' @export
 #' @rdname rank_sites_DT
-rank_sites <- function(chemicalSummary, 
+rank_sites <- function(chemical_summary, 
                        category, 
                        hit_threshold = 0.1, 
                        mean_logic = FALSE,
@@ -136,26 +136,26 @@ rank_sites <- function(chemicalSummary,
   sumEAR <- nHits <- n <- calc <- value <- choice_calc <- ".dplyr"
   chnm <- Class <- Bio_category <- site <- EAR <- maxEAR <- ".dplyr"
 
-  siteToFind <- unique(chemicalSummary$shortName)
+  siteToFind <- unique(chemical_summary$shortName)
   
   if(category == "Chemical"){
-    chemicalSummary <- mutate(chemicalSummary, category = chnm)
+    chemical_summary <- mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemicalSummary <- mutate(chemicalSummary, category = Class)
+    chemical_summary <- mutate(chemical_summary, category = Class)
   } else {
-    chemicalSummary <- mutate(chemicalSummary, category = Bio_category)
+    chemical_summary <- mutate(chemical_summary, category = Bio_category)
   }
   
-  chemicalSummary <- select(chemicalSummary, -Class, -Bio_category, -chnm)
+  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
   
   if(length(siteToFind) == 1){
-    chemicalSummary$site <- chemicalSummary$category
+    chemical_summary$site <- chemical_summary$category
   } else {
-    chemicalSummary$site <- chemicalSummary$shortName
+    chemical_summary$site <- chemical_summary$shortName
   }
 
   if(!sum_logic){
-    statsOfColumn <- chemicalSummary %>%
+    statsOfColumn <- chemical_summary %>%
       group_by(site, date, category) %>%
       summarize(sumEAR = max(EAR),
                 nHits = sum(sumEAR > hit_threshold)) %>%
@@ -164,7 +164,7 @@ rank_sites <- function(chemicalSummary,
                 freq = sum(nHits > 0)/n()) %>%
       data.frame()    
   } else {
-    statsOfColumn <- chemicalSummary %>%
+    statsOfColumn <- chemical_summary %>%
       group_by(site, date, category) %>%
       summarise(sumEAR = sum(EAR),
                 nHits = sum(sumEAR > hit_threshold)) %>%

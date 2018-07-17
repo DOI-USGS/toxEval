@@ -89,7 +89,7 @@
     <div class="page-header toc-ignore">
       <h1>Basic Workflow</h1>
             
-            <h4 class="date">16 July, 2018</h4>
+            <h4 class="date">17 July, 2018</h4>
       
       
       <div class="hidden name"><code>basicWorkflow.Rmd</code></div>
@@ -119,14 +119,14 @@ tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cr
 <div id="setup-analysis" class="section level1">
 <h1 class="hasAnchor">
 <a href="#setup-analysis" class="anchor"></a>Setup Analysis</h1>
-<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemicalSummary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” sheet in the Excel file. The general workflow for creating this data frame is:</p>
+<p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemical_summary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” sheet in the Excel file. The general workflow for creating this data frame is:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
 ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(ACC)
 
-cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(endPointInfo)
+cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)
 filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep)
 
-chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, ACC, filtered_ep)</code></pre></div>
+chemical_summary &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, ACC, filtered_ep)</code></pre></div>
 <p>What’s going on with this workflow?</p>
 <div id="get_acc" class="section level2">
 <h2 class="hasAnchor">
@@ -180,17 +180,17 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 <div id="clean_endpoint_info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#clean_endpoint_info" class="anchor"></a>clean_endPoint_info</h2>
-<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to “intended_target_family” and “intended_target_family_sub” as described in the paper linked above.</p>
+<p>The <code>clean_endPoint_info</code> function cleans up the <code>end_point_info</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to “intended_target_family” and “intended_target_family_sub” as described in the paper linked above.</p>
 </div>
 <div id="filter_groups" class="section level2">
 <h2 class="hasAnchor">
 <a href="#filter_groups" class="anchor"></a>filter_groups</h2>
 <table class="table"><tr>
 <td>
-<p>This function takes the data frame from ‘endPointInfo’ and filters the endpoints in 3 steps. First, the user specifies the “groupCol” argument, which is a column header from <code>endPointInfo</code>. Second, the user specifies the assays to use. Finally, the user can also choose to remove specific group(s) from the category. The default is to remove “Background Measurement” and “Undefined”. Choices for this should be reconsidered based on individual study objectives.</p>
-<p>The default category (“groupCol”) is “intended_target_family”. Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame <code>endPointInfo</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(endPointInfo)</code></pre></div>
-<p>The provided <code>endPointInfo</code> data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for <code>toxEval</code> analysis are in the column “assay_component_endpoint_name”.</p>
+<p>This function takes the data frame from ‘end_point_info’ and filters the endpoints in 3 steps. First, the user specifies the “groupCol” argument, which is a column header from <code>end_point_info</code>. Second, the user specifies the assays to use. Finally, the user can also choose to remove specific group(s) from the category. The default is to remove “Background Measurement” and “Undefined”. Choices for this should be reconsidered based on individual study objectives.</p>
+<p>The default category (“groupCol”) is “intended_target_family”. Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame <code>end_point_info</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(end_point_info)</code></pre></div>
+<p>The provided <code>end_point_info</code> data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for <code>toxEval</code> analysis are in the column “assay_component_endpoint_name”.</p>
 <p>By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.</p>
 </td>
 <td>
@@ -254,7 +254,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 </tr></table>
 <p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. The best resource on these groupings is the “ToxCast Assay Annotation Data User Guide” directly from EPA <a href="https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide">link</a>. This guide defines “intended_target_family” as “the target family of the objective target for the assay”. Much more detail can be discovered in that documentation.</p>
 <p>To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(endPointInfo)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)
 
 filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep,
               <span class="dt">groupCol =</span> <span class="st">"intended_target_family"</span>,
@@ -263,7 +263,7 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference
                          <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),
               <span class="dt">remove_groups =</span> <span class="kw">c</span>(<span class="st">"Background Measurement"</span>,
                                 <span class="st">"Undefined"</span>))</code></pre></div>
-<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed based on the “remove_groups” arguments. The options for “remove_groups” are:</p>
+<p>What is happening here is that the supplied data frame <code>end_point_info</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed based on the “remove_groups” arguments. The options for “remove_groups” are:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(cleaned_ep<span class="op">$</span>intended_target_family)</code></pre></div>
 <pre><code>##  [1] "Cell Cycle"              "Nuclear Receptor"       
 ##  [3] "Cell Morphology"         "DNA Binding"            
@@ -279,7 +279,7 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 ## [23] "Steroid Hormone"         "Transferase"            
 ## [25] "Zebrafish"               "Undefined"</code></pre>
 <p>Note: the function <code>clean_endPoint_info</code> converted <code>NA</code> groups to “Undefined”. Using other categories, the options for “remove_groups” are the <code>unique</code> output of that category. For instance, if it was decided that “intended_target_family_sub” was more appropriate, the group options would be found by running:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(endPointInfo<span class="op">$</span>intended_target_family_sub)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(end_point_info<span class="op">$</span>intended_target_family_sub)</code></pre></div>
 <p>The <code>clean_endPoint_info</code> function is really only useful when using the “intended_target_family” and “intended_target_family_sub” categories.</p>
 </div>
 <div id="get_chemical_summary" class="section level2">
@@ -297,20 +297,20 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference
 <h2 class="hasAnchor">
 <a href="#plot_tox_boxplots" class="anchor"></a>plot_tox_boxplots</h2>
 <p>The <code>plot_tox_boxplots</code> function creates a set of boxplots representing EAR values computed from the original input data that was modified by the processing steps above, and dependent on the choice of several input options. See <a href="Introduction.html#summarize_data">“Summarizing the data”</a> for a description of how the EAR values are computed, aggregated, and summarized. Choosing “Chemical Class” in the <code>category</code> argument will generate separate boxplots for each unique class. “Chemical” will generate boxplots for each individual chemical, and “Biological” will generate boxplots for each group in the selected ToxCast annotation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary, <span class="st">"Biological"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemical_summary, <span class="st">"Biological"</span>)</code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/boxplots1-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Other options:</span>
-<span class="co"># plot_tox_boxplots(chemicalSummary, "Chemical Class")</span>
-<span class="co"># plot_tox_boxplots(chemicalSummary, "Chemical") </span></code></pre></div>
+<span class="co"># plot_tox_boxplots(chemical_summary, "Chemical Class")</span>
+<span class="co"># plot_tox_boxplots(chemical_summary, "Chemical") </span></code></pre></div>
 <p>It is also possible to display a threshold line using the <code>hit_threshold</code> argument. The graph will then include the number of sites with detections, the threshold line, and the number of “hits” indicating how many sites that have EAR values exceeding the <code>hit_threshold</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemical_summary, 
                   <span class="dt">category =</span> <span class="st">"Biological"</span>,
                   <span class="dt">hit_threshold =</span> <span class="fl">0.001</span>)</code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/plot_box_thres-1.png" width="700"></p>
 <p>The graph shows a slightly different result for a single site. In the example below, a subset of data from the Maumee River is defined that will be used throughout this document to facilitate single site examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 
-maumee &lt;-<span class="st"> </span><span class="kw">filter</span>(chemicalSummary, shortName <span class="op">==</span><span class="st"> "Maumee"</span>)
+maumee &lt;-<span class="st"> </span><span class="kw">filter</span>(chemical_summary, shortName <span class="op">==</span><span class="st"> "Maumee"</span>)
 maumee_site &lt;-<span class="st"> </span><span class="kw">filter</span>(tox_list<span class="op">$</span>chem_site, <span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> <span class="op">==</span><span class="st"> "Maumee"</span>)</code></pre></div>
 <p>In this example, the function <code>plot_tox_boxplots</code> is used with the subset of data from the Maumee River. For this single site graph, the number of chemicals that were detected and have associated endpoint ACCs represented are displayed.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
@@ -322,15 +322,15 @@ maumee_site &lt;-<span class="st"> </span><span class="kw">filter</span>(tox_lis
 <h2 class="hasAnchor">
 <a href="#plot_tox_stacks" class="anchor"></a>plot_tox_stacks</h2>
 <p>The <code>plot_tox_stacks</code> function creates a set of stacked bar charts representing EAR values computed from the original input data that was modified by the processing steps above, and dependent on the choice of several input options. See <a href="Introduction.html#summarize_data">“Summarizing the data”</a> for a description on how the EAR values are computed, aggregated, and summarized. Choosing “Chemical Class” in the <code>category</code> argument will generate separate stacked bars for each unique class. “Chemical” will generate stacked bars for each individual chemical, and “Biological” will generate stacked bars for each group in the selected ToxCast annotation. There is an option <code>include_legend</code> to turn on and off the legend. It may be impractical for instance to show the legend for “Chemical” if there are hundreds of chemicals.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(chemical_summary, 
                 <span class="dt">chem_site =</span> tox_list<span class="op">$</span>chem_site, 
                 <span class="dt">category =</span>  <span class="st">"Biological"</span>)</code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/stackplots1-1.png" width="960"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># More options:</span>
-<span class="co"># plot_tox_stacks(chemicalSummary, </span>
+<span class="co"># plot_tox_stacks(chemical_summary, </span>
 <span class="co">#                 chem_site = tox_list$chem_site, </span>
 <span class="co">#                 category = "Chemical Class")</span>
-<span class="co"># plot_tox_stacks(chemicalSummary, </span>
+<span class="co"># plot_tox_stacks(chemical_summary, </span>
 <span class="co">#                 chem_site = tox_list$chem_site, </span>
 <span class="co">#                 category = "Chemical", include_legend = FALSE)</span></code></pre></div>
 <p>The graph shows a slightly different result for a single site. The graph now shows each individual sample. The EAR values are no longer the mean or maximum at the site, but rather the sums of the individual EAR values.</p>
@@ -342,15 +342,15 @@ maumee_site &lt;-<span class="st"> </span><span class="kw">filter</span>(tox_lis
 <a href="#plot_tox_heatmap" class="anchor"></a>plot_tox_heatmap</h2>
 <p>The <code>plot_tox_heatmap</code> function creates a heat (tile) map with sites on the x-axis, a specified grouping on the y-axis (defined by the <code>category</code> argument), and color shading defining the mean or maximum EAR. See <a href="Introduction.html#summarize_data">“Summarizing the data”</a> for a description on how the EAR values are computed, aggregated, and summarized. The y-axis grouping can be “Biological”,“Chemical Class”, or “Chemical”. When specifying the “Chemical” option, a secondary y-axis is automatically included to group chemicals into chemical class. The function computes default breaks for the color scale to match the spread of the data, but breaks can also be customized with the <code>breaks</code> argument.</p>
 <p>This is a function where it may be ideal to create a custom order to the sites (for example, west-to-east). See the above section <a href="#custom_config">“Custom configuration”</a> for instructions on how to convert the character vector <code>sites</code> to a factor with ordered levels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span>(chemical_summary, 
                  <span class="dt">chem_site =</span> tox_list<span class="op">$</span>chem_site, 
                  <span class="dt">category =</span> <span class="st">"Biological"</span>)</code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/heat-1.png" width="960"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># More options:</span>
-<span class="co"># plot_tox_heatmap(chemicalSummary, </span>
+<span class="co"># plot_tox_heatmap(chemical_summary, </span>
 <span class="co">#                  chem_site = tox_list$chem_site, </span>
 <span class="co">#                  category = "Chemical Class")</span>
-<span class="co"># plot_tox_heatmap(chemicalSummary, </span>
+<span class="co"># plot_tox_heatmap(chemical_summary, </span>
 <span class="co">#                  chem_site = tox_list$chem_site, </span>
 <span class="co">#                  category = "Chemical")</span></code></pre></div>
 </div>
@@ -359,15 +359,15 @@ maumee_site &lt;-<span class="st"> </span><span class="kw">filter</span>(tox_lis
 <a href="#plot_tox_endpoints" class="anchor"></a>plot_tox_endpoints</h2>
 <p>The <code>plot_tox_endpoints</code> function creates a set of boxplots representing EAR values for each endPoint based on a selected filter. The data is first filtered down to what group is specified in the <code>filterBy</code> argument. The <code>filterBy</code> argument must match one of the unique options in the <code>category</code>. For example, if the <code>category</code> is “Chemical Class”, then the <code>filterBy</code> argument must be one of the defined “Chemical Class” options such as “Herbicide”.</p>
 <p>After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or maximum (as defined by <code>mean_logic</code>) for each site as described in <a href="Introduction.html#summarize_data">“Summarizing the data”</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(chemical_summary, 
                     <span class="dt">category =</span> <span class="st">"Biological"</span>, 
                     <span class="dt">filterBy =</span> <span class="st">"Cell Cycle"</span>)</code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/endpoints-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># More options:</span>
-<span class="co"># plot_tox_endpoints(chemicalSummary,   </span>
+<span class="co"># plot_tox_endpoints(chemical_summary,   </span>
 <span class="co">#                    category = "Chemical Class", </span>
 <span class="co">#                    filterBy = "PAHs")</span>
-<span class="co"># plot_tox_endpoints(chemicalSummary, </span>
+<span class="co"># plot_tox_endpoints(chemical_summary, </span>
 <span class="co">#                    category = "Chemical", </span>
 <span class="co">#                    filterBy = "Atrazine")</span></code></pre></div>
 </div>
@@ -375,7 +375,7 @@ maumee_site &lt;-<span class="st"> </span><span class="kw">filter</span>(tox_lis
 <h2 class="hasAnchor">
 <a href="#how-to-save-a-plot" class="anchor"></a>How to save a plot?</h2>
 <p>The <code>ggsave</code> function can be used to save plots. This technique does have an advantage by taking away much of the guessing game for how big or resolved the plot should be. For RStudio users, the size by default is determined by how large the “Plots” tab is sized. This could be handy when sharing plots with colleagues during project analysis. An example of using the <code>ggsave</code> function is:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ep_plot &lt;-<span class="st"> </span><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ep_plot &lt;-<span class="st"> </span><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(chemical_summary, 
                               <span class="dt">category =</span> <span class="st">"Biological"</span>, 
                               <span class="dt">filterBy =</span> <span class="st">"Cell Cycle"</span>)
 
@@ -397,11 +397,11 @@ maumee_site &lt;-<span class="st"> </span><span class="kw">filter</span>(tox_lis
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(DT)
 <span class="kw">options</span>(<span class="dt">DT.options =</span> <span class="kw">list</span>(<span class="dt">pageLength =</span> <span class="dv">5</span>))
 
-rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rank_sites_DT.html">rank_sites</a></span>(chemicalSummary, 
+rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rank_sites_DT.html">rank_sites</a></span>(chemical_summary, 
                       <span class="dt">category =</span> <span class="st">"Biological"</span>,
                       <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)
 
-<span class="kw"><a href="../reference/rank_sites_DT.html">rank_sites_DT</a></span>(chemicalSummary, 
+<span class="kw"><a href="../reference/rank_sites_DT.html">rank_sites_DT</a></span>(chemical_summary, 
               <span class="dt">category =</span> <span class="st">"Biological"</span>,
               <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)</code></pre></div>
 <div id="htmlwidget-6a74f895f6c2b6ff817d" style="width:100%;height:auto;" class="datatables html-widget"></div>
@@ -415,11 +415,11 @@ rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ran
 <a href="#hits_summary_DT" class="anchor"></a>hits_summary_DT</h2>
 <p>The <code>hits_summary_DT</code> (<code>DT</code> option) and <code>hits_summary</code> (data frame option) functions create tables with several rows per site depending on which categories have resulting EARs above the threshold as defined by a user specified <code>hit_threshold</code>. For example, if “Biological” is the category, and a site has hits above a threshold for “DNA Binding” and “Nuclear Receptors”, that site will have 2 rows of data in this table.</p>
 <p>For each row, there are 4 columns. Site and category (as defined by the <code>category</code> argument) define the row. “Hits per Sample” are how many samples exceeded the <code>hit_threshold</code> for the specified category. “Number of Samples” is how many individual samples were collected at an individual site based on unique date.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hit_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hits_summary_DT.html">hits_summary</a></span>(chemicalSummary,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hit_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hits_summary_DT.html">hits_summary</a></span>(chemical_summary,
                        <span class="dt">category =</span> <span class="st">"Biological"</span>,
                        <span class="dt">hit_threshold =</span> <span class="fl">0.1</span> )
 
-<span class="kw"><a href="../reference/hits_summary_DT.html">hits_summary_DT</a></span>(chemicalSummary, 
+<span class="kw"><a href="../reference/hits_summary_DT.html">hits_summary_DT</a></span>(chemical_summary, 
                 <span class="dt">category =</span> <span class="st">"Biological"</span>,
                 <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)</code></pre></div>
 <div id="htmlwidget-7bf8759f6301f03d902e" style="width:100%;height:auto;" class="datatables html-widget"></div>
@@ -432,11 +432,11 @@ rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ran
 <h2 class="hasAnchor">
 <a href="#endpoint_hits_DT" class="anchor"></a>endpoint_hits_DT</h2>
 <p>The <code>endpoint_hits_DT</code> (<code>DT</code> option) and <code>endpoint_hits</code> (data frame option) functions create tables with one row per endPoint, and one column per category(“Biological”, “Chemical”, or “Chemical Class”). The values in the table are the number of sites where the EAR exceeded the <code>hit_threshold</code> in that endpoint/category combination. If the category “Chemical” is chosen, an “info” link is provided to the chemical/endpoint information available in the <a href="https://actor.epa.gov/dashboard">“ToxCast Dashboard”</a>. .</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ep_hits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/endpoint_hits_DT.html">endpoint_hits</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ep_hits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/endpoint_hits_DT.html">endpoint_hits</a></span>(chemical_summary, 
                          <span class="dt">category =</span> <span class="st">"Biological"</span>, 
                          <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)
 
-<span class="kw"><a href="../reference/endpoint_hits_DT.html">endpoint_hits_DT</a></span>(chemicalSummary, 
+<span class="kw"><a href="../reference/endpoint_hits_DT.html">endpoint_hits_DT</a></span>(chemical_summary, 
                  <span class="dt">category =</span> <span class="st">"Biological"</span>,
                  <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)</code></pre></div>
 <div id="htmlwidget-d16b2d2ce4be8f12dae9" style="width:100%;height:auto;" class="datatables html-widget"></div>
@@ -449,11 +449,11 @@ rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ran
 <h2 class="hasAnchor">
 <a href="#hits_by_groupings_DT" class="anchor"></a>hits_by_groupings_DT</h2>
 <p>The <code>hits_by_groupings_DT</code> (<code>DT</code> option) and <code>hits_by_groupings</code> (data frame option) functions create tables with one row per category(“Biological”, “Chemical”, or “Chemical Class”). The columns indicate the “Biological” groupings. The values in the table signify how many sites have exceeded the <code>hit_threshold</code> for that particular “Biological”/category combination. If the user chooses “Biological” as the category, it is a simple 2-column table of “Biological” groupings and number of sites (nSites).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hits_by_groupings_DT.html">hits_by_groupings</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/hits_by_groupings_DT.html">hits_by_groupings</a></span>(chemical_summary, 
                              <span class="dt">category =</span> <span class="st">"Chemical Class"</span>,
                              <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)
 
-<span class="kw"><a href="../reference/hits_by_groupings_DT.html">hits_by_groupings_DT</a></span>(chemicalSummary, 
+<span class="kw"><a href="../reference/hits_by_groupings_DT.html">hits_by_groupings_DT</a></span>(chemical_summary, 
                      <span class="dt">category =</span> <span class="st">"Chemical Class"</span>,
                      <span class="dt">hit_threshold =</span> <span class="fl">0.1</span>)</code></pre></div>
 <div id="htmlwidget-d3b052704322e9b592ea" style="width:100%;height:auto;" class="datatables html-widget"></div>
@@ -467,15 +467,15 @@ rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ran
 <h1 class="hasAnchor">
 <a href="#make_tox_map" class="anchor"></a>Maps</h1>
 <p>The function <code>make_tox_map</code> creates a <code>leaflet</code> map of the data. This function places symbols at the location of each site in the data file that represent the magnitude of EAR (color) and the number of samples in the data set (size). This is the only function that requires “dec_lon” and “dec_lat” (decimal longitude and decimal latitude) in the <code>chem_site</code> argument. There is an option (“mean_logic”) to set whether to show the mean or maximum EAR at each site.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/make_tox_map.html">make_tox_map</a></span>(chemicalSummary, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/make_tox_map.html">make_tox_map</a></span>(chemical_summary, 
              <span class="dt">chem_site =</span> tox_list<span class="op">$</span>chem_site, 
              <span class="dt">category =</span> <span class="st">"Biological"</span>)</code></pre></div>
 <div id="htmlwidget-5a15c37109b340a14488" style="width:700px;height:500px;" class="leaflet html-widget"></div>
 <script type="application/json" data-for="htmlwidget-5a15c37109b340a14488">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"clearMarkers","args":[]},{"method":"clearControls","args":[]},{"method":"addCircleMarkers","args":[[46.7032765,46.7207742,46.92826336,45.3258333,45.0474859,44.5286111,44.1072222,43.02444444,41.6492023,41.62225939,41.8292138,42.18642675,42.65085976,43.0241884,43.43474558,43.46417856,45.41056728,45.6339007,44.43640447,44.0725203,43.4219699,43.15252665,42.5958674,42.3730923,42.28698238,41.9606008,41.5000526,41.449496,41.3078307,41.3008852,41.38199,41.38032368,41.4067149,41.39533087,41.71893,42.4633333,43.09305556,43.1417222,43.45166667,44.8636111],[-92.4188018,-89.207086,-88.5565166,-87.6633333,-87.7445497,-88.01,-87.7152778,-87.8983333,-87.4686529,-87.1758685,-86.2597325,-86.3689124,-86.106703,-86.0264354,-85.6653239,-86.2325668,-84.6200366,-84.4811465,-83.4338609,-84.0199939,-83.951918,-82.6240918,-82.90881,-83.2546513,-83.7338296,-83.53104619,-83.7127145,-83.3613156,-83.1588088,-82.6082326,-82.3168273,-82.10459279,-81.8870822,-81.6298478,-81.22788,-78.9341667,-78.6361111,-77.6163056,-76.50527778,-74.77888889],[6.6,5.4,3,8.4,3,3.6,8.4,9.6,3,7.2,6.6,3,3,3,3,3,3,3,4.2,3,7.2,3,9,9,3,9,12,12,3,3,3,3,3,6.6,3,3,3,4.8,6.6,3.6],null,null,{"interactive":true,"className":"","stroke":false,"color":"#03F","weight":5,"opacity":0.8,"fill":true,"fillColor":["#E5831C","#FFC200","#A6B800","#E5831C","#237CEE","#FFC200","#FFC200","#E5831C","#A6B800","#FFC200","#E5831C","#3D8D5B","#3D8D5B","#A6B800","#FFC200","#237CEE","#00008B","#3D8D5B","#B22826","#3D8D5B","#FFC200","#3D8D5B","#E5831C","#B22826","#3D8D5B","#FF0000","#E5831C","#B22826","#A6B800","#FFC200","#A6B800","#A6B800","#A6B800","#FFC200","#A6B800","#A6B800","#237CEE","#A6B800","#FFC200","#FFC200"],"fillOpacity":0.8},null,null,["<b>StLouis<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.3<\/td><\/tr><tr><td>Number of Samples: <\/td><td>26<\/td><\/tr><\/table>","<b>Ontonagon<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.6<\/td><\/tr><tr><td>Number of Samples: <\/td><td>17<\/td><\/tr><\/table>","<b>Sturgeon<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.1<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Menominee<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.4<\/td><\/tr><tr><td>Number of Samples: <\/td><td>38<\/td><\/tr><\/table>","<b>Peshtigo<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Fox<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.4<\/td><\/tr><tr><td>Number of Samples: <\/td><td>7<\/td><\/tr><\/table>","<b>Manitowoc<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.1<\/td><\/tr><tr><td>Number of Samples: <\/td><td>37<\/td><\/tr><\/table>","<b>Milwaukee<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.5<\/td><\/tr><tr><td>Number of Samples: <\/td><td>45<\/td><\/tr><\/table>","<b>IndianaHC<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>Burns<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.4<\/td><\/tr><tr><td>Number of Samples: <\/td><td>31<\/td><\/tr><\/table>","<b>StJoseph<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.2<\/td><\/tr><tr><td>Number of Samples: <\/td><td>25<\/td><\/tr><\/table>","<b>PawPaw<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Kalamazoo<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>GrandMI<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Muskegon<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.4<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>WhiteMI<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Indian<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Cheboygan<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>AuSable<\/b><br/><table><tr><td>maxEAR: <\/td><td>2.3<\/td><\/tr><tr><td>Number of Samples: <\/td><td>12<\/td><\/tr><\/table>","<b>Rifle<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Saginaw<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.8<\/td><\/tr><tr><td>Number of Samples: <\/td><td>30<\/td><\/tr><\/table>","<b>BlackMI<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Clinton<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.1<\/td><\/tr><tr><td>Number of Samples: <\/td><td>43<\/td><\/tr><\/table>","<b>Rouge<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.6<\/td><\/tr><tr><td>Number of Samples: <\/td><td>43<\/td><\/tr><\/table>","<b>HuronMI<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>Raisin<\/b><br/><table><tr><td>maxEAR: <\/td><td>4.3<\/td><\/tr><tr><td>Number of Samples: <\/td><td>44<\/td><\/tr><\/table>","<b>Maumee<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.1<\/td><\/tr><tr><td>Number of Samples: <\/td><td>64<\/td><\/tr><\/table>","<b>Portage<\/b><br/><table><tr><td>maxEAR: <\/td><td>1.7<\/td><\/tr><tr><td>Number of Samples: <\/td><td>63<\/td><\/tr><\/table>","<b>Sandusky<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>HuronOH<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.1<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>Vermilion<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>BlackOH<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>Rocky<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>Cuyahoga<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.4<\/td><\/tr><tr><td>Number of Samples: <\/td><td>28<\/td><\/tr><\/table>","<b>GrandOH<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>2<\/td><\/tr><\/table>","<b>Cattaraugus<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Tonawanda<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.0<\/td><\/tr><tr><td>Number of Samples: <\/td><td>1<\/td><\/tr><\/table>","<b>Genesee<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.1<\/td><\/tr><tr><td>Number of Samples: <\/td><td>14<\/td><\/tr><\/table>","<b>Oswego<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.6<\/td><\/tr><tr><td>Number of Samples: <\/td><td>25<\/td><\/tr><\/table>","<b>StRegis<\/b><br/><table><tr><td>maxEAR: <\/td><td>0.7<\/td><\/tr><tr><td>Number of Samples: <\/td><td>7<\/td><\/tr><\/table>"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#00008B","#237CEE","#3D8D5B","#A6B800","#FFC200","#E5831C","#B22826","#FF0000"],"labels":["0.00 &ndash; 0.00","0.00 &ndash; 0.00","0.00 &ndash; 0.01","0.01 &ndash; 0.12","0.12 &ndash; 0.86","0.86 &ndash; 1.48","1.48 &ndash; 3.52","3.52 &ndash; 4.30"],"na_color":null,"na_label":"NA","opacity":0.8,"position":"bottomleft","type":"bin","title":"Sum of Biological EAR<br> Max at site","extra":null,"layerId":null,"className":"info legend","group":null}]}],"fitBounds":[41.3008852,-92.4188018,46.92826336,-74.77888889,[]],"limits":{"lat":[41.3008852,46.92826336],"lng":[-92.4188018,-74.77888889]}},"evals":[],"jsHooks":[]}</script><div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># More options:</span>
-<span class="co"># make_tox_map(chemicalSummary, </span>
+<span class="co"># make_tox_map(chemical_summary, </span>
 <span class="co">#              chem_site = tox_list$chem_site, </span>
 <span class="co">#              category = "Chemical Class")</span>
-<span class="co"># make_tox_map(chemicalSummary, </span>
+<span class="co"># make_tox_map(chemical_summary, </span>
 <span class="co">#              chem_site = tox_list$chem_site, </span>
 <span class="co">#              category = "Chemical")</span></code></pre></div>
 <div id="custom_config" class="section level2">
@@ -486,9 +486,9 @@ rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ran
 <li>Trim chemical class names to make the labels more readable in graphs</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Trim some names:</span>
-<span class="kw">levels</span>(chemicalSummary<span class="op">$</span>Class)[<span class="kw">levels</span>(chemicalSummary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Antimicrobial Disinfectants"</span>] &lt;-<span class="st"> "Antimicrobial"</span>
-<span class="kw">levels</span>(chemicalSummary<span class="op">$</span>Class)[<span class="kw">levels</span>(chemicalSummary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Detergent Metabolites"</span>] &lt;-<span class="st"> "Detergent"</span>
-<span class="kw">levels</span>(chemicalSummary<span class="op">$</span>Class)[<span class="kw">levels</span>(chemicalSummary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Flavors and Fragrances"</span>] &lt;-<span class="st"> "Flavor/Fragrance"</span></code></pre></div>
+<span class="kw">levels</span>(chemical_summary<span class="op">$</span>Class)[<span class="kw">levels</span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Antimicrobial Disinfectants"</span>] &lt;-<span class="st"> "Antimicrobial"</span>
+<span class="kw">levels</span>(chemical_summary<span class="op">$</span>Class)[<span class="kw">levels</span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Detergent Metabolites"</span>] &lt;-<span class="st"> "Detergent"</span>
+<span class="kw">levels</span>(chemical_summary<span class="op">$</span>Class)[<span class="kw">levels</span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Flavors and Fragrances"</span>] &lt;-<span class="st"> "Flavor/Fragrance"</span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Rearrange the order of sites and lakes within the graphics: This example converts the site and lake lists to factors and orders these Great Lakes tributary sites in a logical manner by lake and location within each lake:</li>
 </ol>

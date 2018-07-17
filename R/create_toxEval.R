@@ -224,7 +224,7 @@ summary.toxEval <- function(object, ...){
   CAS <- endPoint <- chnm <- flags <- ".dplyr"
   
   if(is.null(object[["benchmarks"]])){
-    ACC <- ACC %>%
+    ACC <- ToxCast_ACC %>%
       dplyr::filter(CAS %in% unique(object$chem_info$CAS)) 
     bench_word <- "ToxCast"
   } else {

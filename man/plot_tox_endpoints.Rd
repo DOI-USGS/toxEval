@@ -4,13 +4,13 @@
 \alias{plot_tox_endpoints}
 \title{EndPoint boxplots}
 \usage{
-plot_tox_endpoints(chemicalSummary, category = "Biological",
+plot_tox_endpoints(chemical_summary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = NA,
   mean_logic = FALSE, sum_logic = TRUE, font_size = NA, title = NA,
   palette = NA)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{category}{Either "Biological", "Chemical Class", or "Chemical".}
 
@@ -58,12 +58,12 @@ tox_list <- create_toxEval(full_path)
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
-plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
+plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
+plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
 
 }

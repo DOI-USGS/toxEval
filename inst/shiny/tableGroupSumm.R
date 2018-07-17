@@ -6,11 +6,11 @@ output$tableGroupSumm <- DT::renderDataTable({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   hitThres <- hitThresValue()
   sum_logic <- as.logical(input$sumEAR)
   
-  tableGroup <- hits_summary_DT(chemicalSummary, 
+  tableGroup <- hits_summary_DT(chemical_summary, 
                               category = c("Biological","Chemical","Chemical Class")[catType],
                               sum_logic = sum_logic,
                               hit_threshold = hitThres)
@@ -48,13 +48,13 @@ tableGroupCode <- reactive({
   if(sum_logic){
     tableGroupCode <- paste0(rCodeSetup(),"
 # Use the hits_summary_DT function for a formatted DT table
-tableGroupSum <- hits_summary(chemicalSummary, 
+tableGroupSum <- hits_summary(chemical_summary, 
                   category = '",category,"',
                   hit_threshold = ",hitThres,")")    
   } else {
     tableGroupCode <- paste0(rCodeSetup(),"
 # Use the hits_summary_DT function for a formatted DT table
-                             tableGroupSum <- hits_summary(chemicalSummary, 
+                             tableGroupSum <- hits_summary(chemical_summary, 
                              category = '",category,"',
                              sum_logic = FALSE,
                              hit_threshold = ",hitThres,")")
@@ -73,11 +73,11 @@ tableSummGroupData <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   hitThres <- hitThresValue()
   sum_logic <- as.logical(input$sumEAR)
   
-  tableGroup <- hits_summary(chemicalSummary, 
+  tableGroup <- hits_summary(chemical_summary, 
                               category = c("Biological","Chemical","Chemical Class")[catType],
                               hit_threshold = hitThres,
                              sum_logic = sum_logic)

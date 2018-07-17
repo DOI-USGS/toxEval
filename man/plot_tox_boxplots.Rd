@@ -7,19 +7,19 @@
 \alias{tox_boxplot_data}
 \title{Grouped Boxplots}
 \usage{
-graph_chem_data(chemicalSummary, manual_remove = NULL, mean_logic = FALSE,
+graph_chem_data(chemical_summary, manual_remove = NULL, mean_logic = FALSE,
   sum_logic = TRUE)
 
-plot_tox_boxplots(chemicalSummary, category = "Biological",
+plot_tox_boxplots(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
   plot_ND = TRUE, font_size = NA, title = NA, palette = NA,
   hit_threshold = NA)
 
-tox_boxplot_data(chemicalSummary, category = "Biological",
+tox_boxplot_data(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{manual_remove}{Vector of categories to remove.}
 
@@ -81,22 +81,22 @@ tox_list <- create_toxEval(full_path)
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
-plot_tox_boxplots(chemicalSummary, "Biological")   
-plot_tox_boxplots(chemicalSummary, "Chemical Class")
-plot_tox_boxplots(chemicalSummary, "Chemical")
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+plot_tox_boxplots(chemical_summary, "Biological")   
+plot_tox_boxplots(chemical_summary, "Chemical Class")
+plot_tox_boxplots(chemical_summary, "Chemical")
 
 
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                "#0072B2", "#D55E00", "#CC79A7")
-graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
                               category = "Biological") 
 cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
 names(cbValues) <- levels(graphData$category)
 
-plot_tox_boxplots(chemicalSummary, 
+plot_tox_boxplots(chemical_summary, 
                   hit_threshold = 0.1,
                   category = "Biological",
                   palette = cbValues,

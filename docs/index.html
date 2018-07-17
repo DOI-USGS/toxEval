@@ -117,7 +117,7 @@ tox_list &lt;-<span class="st"> </span><span class="kw"><a href="reference/creat
 ACClong &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
 ACClong &lt;-<span class="st"> </span><span class="kw"><a href="reference/remove_flags.html">remove_flags</a></span>(ACClong)
 
-cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(endPointInfo)
+cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)
 filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/filter_groups.html">filter_groups</a></span>(cleaned_ep, 
                   <span class="dt">groupCol =</span> <span class="st">'intended_target_family'</span>,
                   <span class="dt">remove_groups =</span> <span class="kw">c</span>(<span class="st">'Background Measurement'</span>,<span class="st">'Undefined'</span>))

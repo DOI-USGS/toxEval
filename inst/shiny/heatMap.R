@@ -2,7 +2,7 @@ heatMap_create <- reactive({
   plot_ND = input$plot_ND_heat
   catType = as.numeric(input$radioMaxGroup)
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   rawData <- rawData()
   chem_site <- rawData$chem_site
   mean_logic <- as.logical(input$meanEAR)
@@ -19,7 +19,7 @@ heatMap_create <- reactive({
   }
   category <-  c("Biological","Chemical","Chemical Class")[catType]
   
-  heatMap <- plot_tox_heatmap(chemicalSummary,
+  heatMap <- plot_tox_heatmap(chemical_summary,
                               chem_site,
                               category = category,
                               plot_ND = plot_ND,
@@ -83,7 +83,7 @@ heatCode <- reactive({
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
 # and re-order the 'levels' of that factor
-plot_tox_heatmap(chemicalSummary,
+plot_tox_heatmap(chemical_summary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
                  mean_logic = ",mean_logic,",
@@ -94,7 +94,7 @@ plot_tox_heatmap(chemicalSummary,
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
 # and re-order the 'levels' of that factor
-plot_tox_heatmap(chemicalSummary,
+plot_tox_heatmap(chemical_summary,
                  chem_site = tox_list$chem_site,
                  category = '",category,"',
                  mean_logic = ",mean_logic,",

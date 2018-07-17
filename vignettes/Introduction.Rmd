@@ -40,21 +40,21 @@ ToxCast uses high-throughput assays to create concentration-response curves for 
 
 ## What is a "group"?
 
-Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in `toxEval` and can be explored via the `endPointInfo` data:
+Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in `toxEval` and can be explored via the `end_point_info` data:
 
-```{r endPointInfo, eval=FALSE}
+```{r end_point_info, eval=FALSE}
 library(toxEval)
-endPointInfo <- endPointInfo
+end_point_info <- end_point_info
 ```
 
-See the help file `?endPointInfo` for specifics on how the table was downloaded.
+See the help file `?end_point_info` for specifics on how the table was downloaded.
 
 Throughout the `toxEval` analysis, there are graphing and table functions that will summarize EARs based on either "Biological" groupings (as defined by a group of endPoints) or "Chemical Class" groupings (as defined by a group of chemicals).
 
 The default grouping of ToxCast endPoints is "intended_target_family", but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
 
 ```{r eval=FALSE}
-filtered_ep <- filter_groups(endPointInfo,
+filtered_ep <- filter_groups(end_point_info,
               groupCol = "intended_target_family",
               assays = c("ATG","NVS", "OT", "TOX21", 
                          "CEETOX", "APR", "CLD", "TANGUAY",
@@ -63,7 +63,7 @@ filtered_ep <- filter_groups(endPointInfo,
                                 "Undefined"))
 ```
 
-What is happening here is that the supplied data frame `endPointInfo` is filtered to just the "intended_target_family" group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed.
+What is happening here is that the supplied data frame `end_point_info` is filtered to just the "intended_target_family" group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed.
 
 ## Summarizing the data{#summarize_data}
 

@@ -4,13 +4,13 @@
 \alias{plot_tox_heatmap}
 \title{plot_tox_heatmap}
 \usage{
-plot_tox_heatmap(chemicalSummary, chem_site, category = "Biological",
+plot_tox_heatmap(chemical_summary, chem_site, category = "Biological",
   breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 5), manual_remove = NULL,
   mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE, font_size = NA,
   title = NA)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{chem_site}{Data frame with columns SiteID, site_grouping, and Short Name.}
 
@@ -59,10 +59,10 @@ tox_list <- create_toxEval(full_path)
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
                                         
 #Order the site_groupings:
 tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
@@ -89,11 +89,11 @@ sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
 tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
               levels = sitesOrdered)
               
-plot_tox_heatmap(chemicalSummary, 
+plot_tox_heatmap(chemical_summary, 
                  tox_list$chem_site, 
                  category = "Biological",
                  manual_remove = "Undefined")
-plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
-plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical Class")
+plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical")
 
 }

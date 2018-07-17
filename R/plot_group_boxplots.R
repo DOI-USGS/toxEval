@@ -24,7 +24,7 @@
 #' to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and 
 #' "Chemical Class".
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param manual_remove Vector of categories to remove.
 #' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
@@ -55,28 +55,28 @@
 #' ACC <- get_ACC(tox_list$chem_info$CAS)
 #' ACC <- remove_flags(ACC)
 #' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
+#' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
-#' plot_tox_boxplots(chemicalSummary, "Biological")   
-#' plot_tox_boxplots(chemicalSummary, "Chemical Class")
-#' plot_tox_boxplots(chemicalSummary, "Chemical")
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' plot_tox_boxplots(chemical_summary, "Biological")   
+#' plot_tox_boxplots(chemical_summary, "Chemical Class")
+#' plot_tox_boxplots(chemical_summary, "Chemical")
 #' 
 #' 
 #' cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
 #'                "#0072B2", "#D55E00", "#CC79A7")
-#' graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+#' graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
 #'                               category = "Biological") 
 #' cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
 #' names(cbValues) <- levels(graphData$category)
 #' 
-#' plot_tox_boxplots(chemicalSummary, 
+#' plot_tox_boxplots(chemical_summary, 
 #'                   hit_threshold = 0.1,
 #'                   category = "Biological",
 #'                   palette = cbValues,
 #'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
 #' 
-plot_tox_boxplots <- function(chemicalSummary, 
+plot_tox_boxplots <- function(chemical_summary, 
                               category = "Biological",
                               manual_remove = NULL,
                               mean_logic = FALSE,
@@ -94,7 +94,7 @@ plot_tox_boxplots <- function(chemicalSummary,
 
   if(category == "Chemical"){
 
-    chemPlot <- plot_chemical_boxplots(chemicalSummary, 
+    chemPlot <- plot_chemical_boxplots(chemical_summary, 
                                        mean_logic = mean_logic,
                                        sum_logic = sum_logic,
                                        plot_ND = plot_ND,
@@ -107,23 +107,23 @@ plot_tox_boxplots <- function(chemicalSummary,
   } else {
     
     if(!plot_ND){
-      chemicalSummary <- chemicalSummary[chemicalSummary$EAR > 0,]
+      chemical_summary <- chemical_summary[chemical_summary$EAR > 0,]
     }
-    single_site <- length(unique(chemicalSummary$site)) == 1
+    single_site <- length(unique(chemical_summary$site)) == 1
     
     y_label <- fancyLabels(category, mean_logic, sum_logic, single_site)
     
     if(single_site){
       
       if(category == "Biological"){
-        chemicalSummary$category <- chemicalSummary$Bio_category
+        chemical_summary$category <- chemical_summary$Bio_category
       } else {
-        chemicalSummary$category <- chemicalSummary$Class
+        chemical_summary$category <- chemical_summary$Class
       }
       
-      pretty_logs_new <- prettyLogs(chemicalSummary$EAR)
+      pretty_logs_new <- prettyLogs(chemical_summary$EAR)
 
-      countNonZero <- chemicalSummary %>%
+      countNonZero <- chemical_summary %>%
         group_by(category) %>%
         summarise(nonZero = as.character(length(unique(CAS))),
                   hits = as.character(sum(EAR > hit_threshold))) %>%
@@ -134,10 +134,10 @@ plot_tox_boxplots <- function(chemicalSummary,
       label <- "# Chemicals"
       
       if(!is.null(manual_remove)){
-        chemicalSummary <- filter(chemicalSummary, !(category %in% manual_remove))
+        chemical_summary <- filter(chemical_summary, !(category %in% manual_remove))
       }
       
-      orderColsBy <- chemicalSummary %>%
+      orderColsBy <- chemical_summary %>%
         group_by(category) %>%
         summarise(median = median(EAR[EAR != 0])) %>%
         arrange(median)
@@ -149,10 +149,10 @@ plot_tox_boxplots <- function(chemicalSummary,
                            orderColsBy$category[!is.na(orderColsBy$median)])
       }
       
-      chemicalSummary$category <- factor(chemicalSummary$category,
-                                         levels = orderedLevels[orderedLevels %in% chemicalSummary$category])
+      chemical_summary$category <- factor(chemical_summary$category,
+                                         levels = orderedLevels[orderedLevels %in% chemical_summary$category])
       
-      bioPlot <- ggplot(data = chemicalSummary)+
+      bioPlot <- ggplot(data = chemical_summary)+
         theme_bw() +
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
@@ -176,7 +176,7 @@ plot_tox_boxplots <- function(chemicalSummary,
       
     } else {
       
-      graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+      graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
                              category = category,
                              manual_remove = manual_remove,
                              mean_logic = mean_logic,
@@ -287,7 +287,7 @@ plot_tox_boxplots <- function(chemicalSummary,
 
 #' @rdname plot_tox_boxplots
 #' @export
-tox_boxplot_data <- function(chemicalSummary, 
+tox_boxplot_data <- function(chemical_summary, 
                       category = "Biological",
                       manual_remove = NULL, 
                       mean_logic = FALSE,
@@ -296,7 +296,7 @@ tox_boxplot_data <- function(chemicalSummary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   if(category == "Chemical"){
-    chm_sum <- graph_chem_data(chemicalSummary = chemicalSummary,
+    chm_sum <- graph_chem_data(chemical_summary = chemical_summary,
                                mean_logic = mean_logic,
                                sum_logic = sum_logic,
                                manual_remove = manual_remove)
@@ -306,19 +306,19 @@ tox_boxplot_data <- function(chemicalSummary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   
   if(category == "Biological"){
-    chemicalSummary$category <- chemicalSummary$Bio_category
+    chemical_summary$category <- chemical_summary$Bio_category
   } else {
-    chemicalSummary$category <- chemicalSummary$Class
+    chemical_summary$category <- chemical_summary$Class
   }
 
   if(!sum_logic){
-    tox_boxplot_data <- chemicalSummary %>%
+    tox_boxplot_data <- chemical_summary %>%
       group_by(site,category) %>%
       summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
       data.frame() 
       
   } else {
-    tox_boxplot_data <- chemicalSummary %>%
+    tox_boxplot_data <- chemical_summary %>%
       group_by(site,date,category) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%

@@ -1,7 +1,7 @@
 stackBarGroup_create <- reactive({
   catType = as.numeric(input$radioMaxGroup)
 
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   
@@ -24,7 +24,7 @@ stackBarGroup_create <- reactive({
 
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
-  upperPlot <- plot_tox_stacks(chemicalSummary, 
+  upperPlot <- plot_tox_stacks(chemical_summary, 
                                chem_site, 
                                category = category,
                                mean_logic = mean_logic,
@@ -83,7 +83,7 @@ barCode <- reactive({
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
 # and re-order the 'levels' of that factor
-stack_plot <- plot_tox_stacks(chemicalSummary, 
+stack_plot <- plot_tox_stacks(chemical_summary, 
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
                   mean_logic = ",mean_logic,",
@@ -96,7 +96,7 @@ stack_plot")
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
 # and re-order the 'levels' of that factor
-stack_plot <- plot_tox_stacks(chemicalSummary, 
+stack_plot <- plot_tox_stacks(chemical_summary, 
                   chem_site = tox_list$chem_site,
                   category = '",category,"',
                   mean_logic = ",mean_logic,",

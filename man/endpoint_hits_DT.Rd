@@ -5,15 +5,15 @@
 \alias{endpoint_hits}
 \title{Rank endpoints by category}
 \usage{
-endpoint_hits_DT(chemicalSummary, category = "Biological",
+endpoint_hits_DT(chemical_summary, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE, hit_threshold = 0.1,
   include_links = TRUE)
 
-endpoint_hits(chemicalSummary, category = "Biological", mean_logic = FALSE,
+endpoint_hits(chemical_summary, category = "Biological", mean_logic = FALSE,
   sum_logic = TRUE, hit_threshold = 0.1)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{get_chemical_summary}}
+\item{chemical_summary}{Data frame from \code{get_chemical_summary}}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
@@ -62,13 +62,13 @@ tox_list <- create_toxEval(full_path)
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-hits_df <- endpoint_hits(chemicalSummary, category = "Biological")                        
-endpoint_hits_DT(chemicalSummary, category = "Biological")
-endpoint_hits_DT(chemicalSummary, category = "Chemical Class")
-endpoint_hits_DT(chemicalSummary, category = "Chemical")
+hits_df <- endpoint_hits(chemical_summary, category = "Biological")                        
+endpoint_hits_DT(chemical_summary, category = "Biological")
+endpoint_hits_DT(chemical_summary, category = "Chemical Class")
+endpoint_hits_DT(chemical_summary, category = "Chemical")
 }
 }

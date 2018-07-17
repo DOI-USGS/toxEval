@@ -22,9 +22,9 @@ filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
 }
 \description{
 This function provides a mechanism to specify 3 levels of information in the 
-supplied data frame \code{\link{endPointInfo}} to be used in subsequent analysis steps. 
+supplied data frame \code{\link{end_point_info}} to be used in subsequent analysis steps. 
 First, the user specifies the ToxCast assay annotation using the 'groupCol' 
-argument, which is a column header in 'endPointInfo'. Second, the user 
+argument, which is a column header in 'end_point_info'. Second, the user 
 specifies the families of assays to use. Finally, the user can choose to 
 remove specific group(s) from the category. The default is to remove 
 'Background Measurement' and 'Undefined'. Choices for this should be 
@@ -39,7 +39,7 @@ Following that link, it defines "intended_target_family" as "the target family o
 objective target for the assay". Much more detail can be discovered in that documentation.
 }
 \examples{
-endPointInfo <- endPointInfo
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+end_point_info <- end_point_info
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 }

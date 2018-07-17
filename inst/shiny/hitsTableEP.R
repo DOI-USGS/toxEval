@@ -4,13 +4,13 @@ output$hitsTableEPs <- DT::renderDataTable({
     need(!is.null(rawData_data$data), "Please select a data set")
   )
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   catType <- as.numeric(input$radioMaxGroup)
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   hitThres <- hitThresValue()
 
-  tableEPs <- endpoint_hits_DT(chemicalSummary, 
+  tableEPs <- endpoint_hits_DT(chemical_summary, 
                                category = c("Biological","Chemical","Chemical Class")[catType],
                                mean_logic = mean_logic,
                                sum_logic = sum_logic,
@@ -29,14 +29,14 @@ hitsTableEPCode <- reactive({
   if(sum_logic){
     hitsTableEPCode <- paste0(rCodeSetup(),"
 # Use the endpoint_hits_DT for a formatted DT table
-hitTable <- endpoint_hits(chemicalSummary, 
+hitTable <- endpoint_hits(chemical_summary, 
               category = '",category,"',
               mean_logic = ",as.logical(input$meanEAR),",
               hit_threshold = ",hitThres,")")
   } else {
     hitsTableEPCode <- paste0(rCodeSetup(),"
 # Use the endpoint_hits_DT for a formatted DT table
-hitTable <- endpoint_hits(chemicalSummary, 
+hitTable <- endpoint_hits(chemical_summary, 
               category = '",category,"',
               mean_logic = ",as.logical(input$meanEAR),",
               sum_logic = FALSE,
@@ -53,11 +53,11 @@ hitTableData <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
-  tableGroup <- endpoint_hits(chemicalSummary, 
+  tableGroup <- endpoint_hits(chemical_summary, 
                              category = c("Biological","Chemical","Chemical Class")[catType],
                              mean_logic = mean_logic,
                              sum_logic = sum_logic,

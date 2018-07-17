@@ -1,6 +1,6 @@
 
 
-plot_chemical_boxplots <- function(chemicalSummary, 
+plot_chemical_boxplots <- function(chemical_summary, 
                                    manual_remove=NULL,
                                    mean_logic = FALSE,
                                    sum_logic = TRUE,
@@ -19,11 +19,11 @@ plot_chemical_boxplots <- function(chemicalSummary,
                 "#FFA500","#F4426e", "#800000", "#808000")
   
   if(!plot_ND){
-    chemicalSummary <- chemicalSummary[chemicalSummary$EAR > 0,]
+    chemical_summary <- chemical_summary[chemical_summary$EAR > 0,]
   }
   
-  if(length(unique(chemicalSummary$Class)) > length(cbValues)){
-    n <- length(unique(chemicalSummary$Class))
+  if(length(unique(chemical_summary$Class)) > length(cbValues)){
+    n <- length(unique(chemical_summary$Class))
     
     if(n > 20 & n<30){
       cbValues <- c(brewer.pal(n = 12, name = "Set3"),
@@ -38,13 +38,13 @@ plot_chemical_boxplots <- function(chemicalSummary,
 
   }
   
-  single_site <- length(unique(chemicalSummary$site)) == 1
+  single_site <- length(unique(chemical_summary$site)) == 1
   
   y_label <- fancyLabels(category = "Chemical", mean_logic, sum_logic, single_site)
   
   if(single_site){
     
-    countNonZero <- chemicalSummary %>%
+    countNonZero <- chemical_summary %>%
       select(chnm, Class, EAR) %>%
       group_by(chnm, Class) %>%
       summarize(nonZero = as.character(sum(EAR>0)),
@@ -54,9 +54,9 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
     label <- "# Endpoints"
 
-    pretty_logs_new <-  prettyLogs(chemicalSummary$EAR)
+    pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
     
-    toxPlot_All <- ggplot(data=chemicalSummary)
+    toxPlot_All <- ggplot(data=chemical_summary)
     
     if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
@@ -71,7 +71,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
     
   } else {
     
-    graphData <- graph_chem_data(chemicalSummary=chemicalSummary, 
+    graphData <- graph_chem_data(chemical_summary=chemical_summary, 
                                  manual_remove=manual_remove,
                                  mean_logic=mean_logic,
                                  sum_logic=sum_logic)
@@ -192,7 +192,7 @@ plot_chemical_boxplots <- function(chemicalSummary,
 
 #' @export
 #' @rdname plot_tox_boxplots
-graph_chem_data <- function(chemicalSummary, 
+graph_chem_data <- function(chemical_summary, 
                             manual_remove=NULL,
                             mean_logic = FALSE,
                             sum_logic = TRUE){
@@ -201,12 +201,12 @@ graph_chem_data <- function(chemicalSummary,
 
 
   if(!sum_logic){
-    graphData <- chemicalSummary %>%
+    graphData <- chemical_summary %>%
       group_by(site, chnm, Class) %>%
       summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
       data.frame()     
   } else {
-    graphData <- chemicalSummary %>%
+    graphData <- chemical_summary %>%
       group_by(site,date,chnm, Class) %>%
       summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
