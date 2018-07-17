@@ -4,7 +4,7 @@
 \alias{get_chemical_summary}
 \title{Compute EAR values from measured concentrations and ACC values.}
 \usage{
-get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
+get_chemical_summary(tox_list, ACC = NULL, filtered_ep = "All",
   chem_data = NULL, chem_site = NULL, chem_info = NULL,
   exclusion = NULL)
 }
@@ -12,7 +12,7 @@ get_chemical_summary(tox_list, ACClong = NULL, filtered_ep = "All",
 \item{tox_list}{List with data frames for chem_data, chem_info, chem_site, 
 and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}.}
 
-\item{ACClong}{Data frame with columns: CAS, chnm, endPoint, and ACC_value 
+\item{ACC}{Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 for specific chemical/endpoint combinations generated using the 
 \code{\link{get_ACC}} function. EndPoints with specific data quality flags 
 may optionally be removed using the \code{\link{remove_flags}} function.}
@@ -58,12 +58,12 @@ full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
 
-ACClong <- get_ACC(tox_list$chem_info$CAS)
-ACClong <- remove_flags(ACClong)
+ACC <- get_ACC(tox_list$chem_info$CAS)
+ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
                                  
 }

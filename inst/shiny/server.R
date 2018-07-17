@@ -97,8 +97,8 @@ tox_list <- create_toxEval(path_to_file)")
     
   if(toxCast()){ 
         setupCode <- paste0(setupCode,"
-ACClong <- get_ACC(tox_list$chem_info$CAS)
-ACClong <- remove_flags(ACClong = ACClong,
+ACC <- get_ACC(tox_list$chem_info$CAS)
+ACC <- remove_flags(ACC = ACC,
                         flagsShort = ",removeFlags,")
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
@@ -107,7 +107,7 @@ filtered_ep <- filter_groups(cleaned_ep,
                   assays = ",assays,",
                   remove_groups = ",remove_groups,")
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)")
+chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)")
   
   } else {
     setupCode <- paste0(setupCode,"
@@ -147,8 +147,8 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
       
       if(all(is.null(rawData$benchmarks))){
 
-        ACClong <- get_ACC(rawData$chem_info$CAS)
-        ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
+        ACC <- get_ACC(rawData$chem_info$CAS)
+        ACC <- remove_flags(ACC, flagsShort = removeFlags)
         
         remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
         remove_groups <- remove_groups[!is.na(remove_groups)]
@@ -157,7 +157,7 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
                                      groupCol = groupCol, assays = assays,
                                      remove_groups = remove_groups)
         chemicalSummary <- get_chemical_summary(rawData,
-                                                ACClong,
+                                                ACC,
                                                 filtered_ep) 
         toxCast_val <<- TRUE
         

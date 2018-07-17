@@ -15,7 +15,7 @@
 #' 
 #' @param tox_list List with data frames for chem_data, chem_info, chem_site, 
 #' and optionally exclusions and benchmarks. Created with \code{\link{create_toxEval}}.
-#' @param ACClong Data frame with columns: CAS, chnm, endPoint, and ACC_value 
+#' @param ACC Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 #' for specific chemical/endpoint combinations generated using the 
 #' \code{\link{get_ACC}} function. EndPoints with specific data quality flags 
 #' may optionally be removed using the \code{\link{remove_flags}} function.
@@ -42,15 +42,15 @@
 #' 
 #' tox_list <- create_toxEval(full_path)
 #' 
-#' ACClong <- get_ACC(tox_list$chem_info$CAS)
-#' ACClong <- remove_flags(ACClong)
+#' ACC <- get_ACC(tox_list$chem_info$CAS)
+#' ACC <- remove_flags(ACC)
 #' 
 #' cleaned_ep <- clean_endPoint_info(endPointInfo)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
-#' chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'                                  
-get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All", 
+get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All", 
                                  chem_data=NULL, chem_site=NULL, 
                                  chem_info=NULL, exclusion=NULL){
 
@@ -82,17 +82,17 @@ get_chemical_summary <- function(tox_list, ACClong = NULL, filtered_ep = "All",
     exclusion <- rm_em_dash(exclusion)
   }
   
-  if(is.null(ACClong)){
-    ACClong <- tox_list[["benchmarks"]]
+  if(is.null(ACC)){
+    ACC <- tox_list[["benchmarks"]]
   } else {
-    ACClong <- select(ACClong, CAS, chnm, endPoint, ACC_value)
+    ACC <- select(ACC, CAS, chnm, endPoint, ACC_value)
   }
   
   if(class(chem_data$Value) == "character"){
     chem_data$Value <- as.numeric(chem_data$Value)
   }
   
-  chemicalSummary <- full_join(ACClong, 
+  chemicalSummary <- full_join(ACC, 
                                select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
@@ -195,16 +195,16 @@ orderChem <- function(graphData, orderClass_df){
 #' Asterisks indicate flags removed in the function as default.
 #' 
 #' 
-#' @param ACClong data frame with columns: casn, chnm, endPoint, and ACC_value
+#' @param ACC data frame with columns: casn, chnm, endPoint, and ACC_value
 #' @param flagsShort vector of flags to to trigger REMOVAL of chemical:endPoint 
 #' combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
 #' "Noisy", "HitCall", "GainAC50", "Biochemical".
 #' @export
 #' @examples 
 #' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
-#' ACClong <- get_ACC(CAS)
-#' ACClong <- remove_flags(ACClong)
-remove_flags <- function(ACClong, flagsShort = c("Borderline",
+#' ACC <- get_ACC(CAS)
+#' ACC <- remove_flags(ACC)
+remove_flags <- function(ACC, flagsShort = c("Borderline",
                                                  "OnlyHighest",
                                                  "GainAC50",
                                                  "Biochemical")){
@@ -221,7 +221,7 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
   
   flags <- ".dplyr"
   
-  flag_hits <- select(ACClong, flags) %>%
+  flag_hits <- select(ACC, flags) %>%
     mutate(Borderline = grepl("Borderline active", flags),
            Noisy = grepl("Noisy data", flags),
            OneAbove = grepl("Only one conc above baseline", flags),
@@ -231,9 +231,9 @@ remove_flags <- function(ACClong, flagsShort = c("Borderline",
            HitCall = grepl("potentially confounded by overfitting", flags)) %>%
     select(-flags)
   
-  ACClong <- ACClong[rowSums(flag_hits[flagsShort]) == 0,]
+  ACC <- ACC[rowSums(flag_hits[flagsShort]) == 0,]
 
-  return(ACClong)
+  return(ACC)
   
   # So, with the defaults, we are taking out:
   # c("Borderline active",

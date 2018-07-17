@@ -18,23 +18,23 @@ CAS <- c("3380-34-5","106-44-5","80-05-7","121-00-6","136-85-6",
 test_that("Getting ACC values", {
  testthat::skip_on_cran()
  
- ACClong <- get_ACC(CAS)
- expect_true(all(names(ACClong) %in% c("CAS","chnm","flags","endPoint","ACC", "ACC_value","MlWt")))
+ ACC <- get_ACC(CAS)
+ expect_true(all(names(ACC) %in% c("CAS","chnm","flags","endPoint","ACC", "ACC_value","MlWt")))
    
- expect_type(ACClong$ACC_value, "double")
- expect_type(ACClong$endPoint, "character")
- expect_type(ACClong$CAS, "character")
+ expect_type(ACC$ACC_value, "double")
+ expect_type(ACC$endPoint, "character")
+ expect_type(ACC$CAS, "character")
  
- expect_lt(length(unique(ACClong$CAS)), length(CAS))
- expect_gt(length(unique(ACClong$endPoint)), length(CAS))
+ expect_lt(length(unique(ACC$CAS)), length(CAS))
+ expect_gt(length(unique(ACC$endPoint)), length(CAS))
  
 })
 
 test_that("Removing flags", {
   testthat::skip_on_cran()
   
-  ACClong <- get_ACC(CAS)
-  ACClong_noFlags <- remove_flags(ACClong, 
+  ACC <- get_ACC(CAS)
+  ACC_noFlags <- remove_flags(ACC, 
                                   flagsShort = c("Borderline",
                                                  "OnlyHighest",
                                                  "OneAbove",
@@ -42,8 +42,8 @@ test_that("Removing flags", {
                                                  "HitCall",
                                                  "GainAC50",
                                                  "Biochemical"))
-  expect_lt(nrow(ACClong_noFlags), nrow(ACClong))
-  expect_true(all(is.na(ACClong_noFlags$flags)))
+  expect_lt(nrow(ACC_noFlags), nrow(ACC))
+  expect_true(all(is.na(ACC_noFlags$flags)))
   
 })
 
