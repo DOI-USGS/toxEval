@@ -4,13 +4,13 @@
 \alias{clean_endPoint_info}
 \title{clean_endPoint_info}
 \usage{
-clean_endPoint_info(endPointInfo)
+clean_endPoint_info(end_point_info)
 }
 \arguments{
-\item{endPointInfo}{Data frame Endpoint information from ToxCast.}
+\item{end_point_info}{Data frame Endpoint information from ToxCast.}
 }
 \value{
-The returned data frame is based on endPointInfo, but with some endPoints
+The returned data frame is based on end_point_info, but with some endPoints
 filtered out and some additional categories in intended_target_family and
 intended_target_family_sub. The names in intended_target_family
 are revised to look more appealing in graphs and tables.
@@ -26,6 +26,6 @@ categories to intended_target_family and intended_target_family_sub as
 described in the paper linked above.
 }
 \examples{
-endPointInfo <- endPointInfo
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+end_point_info <- end_point_info
+cleaned_ep <- clean_endPoint_info(end_point_info)
 }

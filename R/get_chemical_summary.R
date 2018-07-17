@@ -45,7 +45,7 @@
 #' ACC <- get_ACC(tox_list$chem_info$CAS)
 #' ACC <- remove_flags(ACC)
 #' 
-#' cleaned_ep <- clean_endPoint_info(endPointInfo)
+#' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
 #' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
@@ -85,7 +85,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
   if(is.null(ACC)){
     ACC <- tox_list[["benchmarks"]]
   } else {
-    ACC <- select(ACC, CAS, chnm, endPoint, ACC_value)
+    ACC <- dplyr::select(ACC, CAS, chnm, endPoint, ACC_value)
   }
   
   if(class(chem_data$Value) == "character"){

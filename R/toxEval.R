@@ -72,7 +72,7 @@ NULL
 #' At the time of toxEval package release, this information was found:
 #' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-#' ACC values are the reported ACC_value (winning model) and units are 
+#' ACC values are the in the "ACC" column (winning model) and units are 
 #' log micro-Molarity (log \eqn{\mu}M).
 #' 
 #' @references U.S. EPA. 2015. ToxCast & Tox21 Summary Files from invitrodb_v2. 
@@ -81,14 +81,14 @@ NULL
 #'  
 #' @source \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #'
-#'@aliases ACC
+#'@aliases ToxCast_ACC
 #'@return data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
-#'@name ACC
+#'@name ToxCast_ACC
 #'@docType data
-#'@export ACC
+#'@export ToxCast_ACC
 #'@keywords datasets
 #'@examples
-#'ACCColumnNames <- names(ACC)
+#'ACCColumnNames <- names(ToxCast_ACC)
 NULL
 
 # If we need to update the ACC data frame, here is
@@ -155,20 +155,20 @@ NULL
 #' ToxCast & Tox21 high-throughput assay information data set.
 #'
 #'
-#'@name endPointInfo
-#'@aliases endPointInfo
+#'@name end_point_info
+#'@aliases end_point_info
 #'@docType data
 #'@keywords datasets
 #' @references U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide. 
 #' Retrieved from \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
 #'  
 #' @source \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}
-#'@export endPointInfo
+#'@export end_point_info
 #'@return data frame with 86 columns. The columns and definitions
 #'are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
 #'@examples
-#'endPointInfo <- endPointInfo
-#'head(endPointInfo[,1:5])
+#'end_point_info <- end_point_info
+#'head(end_point_info[,1:5])
 NULL
 
 #' ToxCast Chemical Information 

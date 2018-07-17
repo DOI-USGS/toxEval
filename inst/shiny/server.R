@@ -10,7 +10,7 @@ library(readxl)
 
 options(shiny.maxRequestSize=10*1024^2)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
+cleaned_ep <- clean_endPoint_info(end_point_info) %>%
   mutate(endPoint = assay_component_endpoint_name)
 
 choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
@@ -101,7 +101,7 @@ ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC = ACC,
                         flagsShort = ",removeFlags,")
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep, 
                   groupCol = '",groupCol,"',
                   assays = ",assays,",

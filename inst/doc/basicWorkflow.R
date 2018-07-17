@@ -11,16 +11,16 @@ tox_list <- create_toxEval(full_path)
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
 ## ----eval=FALSE----------------------------------------------------------
-#  names(endPointInfo)
+#  names(end_point_info)
 
 ## ------------------------------------------------------------------------
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 
 filtered_ep <- filter_groups(cleaned_ep,
               groupCol = "intended_target_family",
@@ -34,7 +34,7 @@ filtered_ep <- filter_groups(cleaned_ep,
 unique(cleaned_ep$intended_target_family)
 
 ## ----eval=FALSE----------------------------------------------------------
-#  unique(endPointInfo$intended_target_family_sub)
+#  unique(end_point_info$intended_target_family_sub)
 
 ## ----boxplots1, warning=FALSE, message=FALSE-----------------------------
 plot_tox_boxplots(chemicalSummary, "Biological")

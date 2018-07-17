@@ -10,7 +10,7 @@ library(RColorBrewer)
 library(shinyAce)
 library(shinycssloaders)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo) %>%
+cleaned_ep <- clean_endPoint_info(end_point_info) %>%
   rename(endPoint = assay_component_endpoint_name)
 
 trimmed_ep <- cleaned_ep

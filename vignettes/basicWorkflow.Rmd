@@ -42,7 +42,7 @@ The next step for exploring the data in `toxEval` is to create a data frame that
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 
 chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
@@ -78,22 +78,22 @@ This function is specific to the provided data from the ToxCast database (and th
 
 ## clean_endPoint_info
 
-The `clean_endPoint_info` function cleans up the `endPointInfo` table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of [Blackwell et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain  (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to "intended_target_family" and "intended_target_family_sub" as described in the paper linked above.
+The `clean_endPoint_info` function cleans up the `end_point_info` table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of [Blackwell et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613). Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain  (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to "intended_target_family" and "intended_target_family_sub" as described in the paper linked above.
 
 ## filter_groups
 
 <table>
 <tr><td>
 
-This function takes the data frame from 'endPointInfo' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `endPointInfo`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group(s) from the category. The default is to remove "Background Measurement" and "Undefined". Choices for this should be reconsidered based on individual study objectives.
+This function takes the data frame from 'end_point_info' and filters the endpoints in 3 steps. First, the user specifies the "groupCol" argument, which is a column header from `end_point_info`. Second, the user specifies the assays to use.  Finally, the user can also choose to remove specific group(s) from the category. The default is to remove "Background Measurement" and "Undefined". Choices for this should be reconsidered based on individual study objectives.
 
-The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame `endPointInfo`:
+The default category ("groupCol") is "intended_target_family". Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame `end_point_info`:
 
 ```{r eval=FALSE}
-names(endPointInfo)
+names(end_point_info)
 ```
 
-The provided `endPointInfo` data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for `toxEval` analysis are in the column "assay_component_endpoint_name". 
+The provided `end_point_info` data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for `toxEval` analysis are in the column "assay_component_endpoint_name". 
 
 By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right. 
 
@@ -123,7 +123,7 @@ The default grouping of ToxCast endPoints is "intended_target_family", but depen
 To change the default, specify a grouping in the `groupCol` argument of the `filter_groups` function. For example:
 
 ```{r }
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 
 filtered_ep <- filter_groups(cleaned_ep,
               groupCol = "intended_target_family",
@@ -134,7 +134,7 @@ filtered_ep <- filter_groups(cleaned_ep,
                                 "Undefined"))
 ```
 
-What is happening here is that the supplied data frame `endPointInfo` is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the `clean_endPoint_info` output is filtered to just the "intended_target_family" category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed based on the "remove_groups" arguments. The options for "remove_groups" are:
+What is happening here is that the supplied data frame `end_point_info` is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the `clean_endPoint_info` output is filtered to just the "intended_target_family" category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated "Undefined" and "Background Measurement" are removed based on the "remove_groups" arguments. The options for "remove_groups" are:
 
 ```{r }
 unique(cleaned_ep$intended_target_family)
@@ -143,7 +143,7 @@ unique(cleaned_ep$intended_target_family)
 Note: the function `clean_endPoint_info` converted `NA` groups to "Undefined". Using other categories, the options for "remove_groups" are the `unique` output of that category. For instance, if it was decided that "intended_target_family_sub" was more appropriate, the group options would be found by running:
 
 ```{r eval=FALSE}
-unique(endPointInfo$intended_target_family_sub)
+unique(end_point_info$intended_target_family_sub)
 ```
 
 The `clean_endPoint_info` function is really only useful when using the "intended_target_family" and "intended_target_family_sub" categories.

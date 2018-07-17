@@ -12,7 +12,7 @@ exclusion <- readxl::read_excel(full_path, sheet = "Exclude")
 ACC <- get_ACC(chem_info$CAS)
 ACC <- remove_flags(ACC)
 
-cleaned_ep <- clean_endPoint_info(endPointInfo)
+cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 
 tox_list <- create_toxEval(full_path)

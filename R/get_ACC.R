@@ -27,7 +27,7 @@ get_ACC <- function(CAS){
                     MlWt = Structure_MolWt) %>%
     filter(casrn %in% CAS) 
   
-  ACC <- ACC %>%
+  ACC <- ToxCast_ACC %>%
     filter(CAS %in% CAS) %>%
     right_join(chem_list,
                by= c("CAS"="casrn")) %>%
