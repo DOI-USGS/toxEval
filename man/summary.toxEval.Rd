@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_toxEval.R
 \name{summary.toxEval}
 \alias{summary.toxEval}
-\title{summary of tox_list}
+\title{Summary of tox_list}
 \usage{
 \method{summary}{toxEval}(object, ...)
 }
@@ -12,7 +12,11 @@
 \item{\dots}{additional parameters}
 }
 \description{
-summary of tox_list
+A "tox_list" object is created from \code{create_toxEval}. It 
+is a list of  5 data frames: chem_data, chem_info, 
+chem_site, exclusions, and benchmarks. This function returns
+a message with how many chemicals have ToxCast information, 
+and returns a vector of which chemicals do not have ToxCast information.
 }
 \examples{
 path_to_tox <-  system.file("extdata", package="toxEval")

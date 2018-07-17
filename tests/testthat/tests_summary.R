@@ -9,8 +9,8 @@ chem_info <- readxl::read_excel(full_path, sheet = "Chemicals")
 chem_site <- readxl::read_excel(full_path, sheet = "Sites")
 exclusion <- readxl::read_excel(full_path, sheet = "Exclude")
 
-ACClong <- get_ACC(chem_info$CAS)
-ACClong <- remove_flags(ACClong)
+ACC <- get_ACC(chem_info$CAS)
+ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
@@ -18,14 +18,14 @@ filtered_ep <- filter_groups(cleaned_ep)
 tox_list <- create_toxEval(full_path)
 
 chemicalSummary1 <- get_chemical_summary(tox_list = NULL,
-                                         ACClong,
+                                         ACC,
                                          filtered_ep,
                                          chem_data,
                                          chem_site,
                                          chem_info,
                                          exclusion)
 
-chemicalSummary <- get_chemical_summary(tox_list,ACClong,filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list,ACC,filtered_ep)
 
 test_that("Calculating tox_list", {
   
@@ -50,7 +50,7 @@ test_that("Calculating summaries", {
   expect_gte(min(chemicalSummary$EAR), 0)
   expect_true(all(!is.na(chemicalSummary$EAR)))
   
-  expect_true(all(chemicalSummary$endPoint %in% ACClong$endPoint))
+  expect_true(all(chemicalSummary$endPoint %in% ACC$endPoint))
   
 })
 

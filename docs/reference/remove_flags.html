@@ -162,14 +162,14 @@ flagsShort value (used in the remove_flags function) are as follows:</p><table c
     
     </div>
 
-    <pre class="usage"><span class='fu'>remove_flags</span>(<span class='no'>ACClong</span>, <span class='kw'>flagsShort</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Borderline"</span>, <span class='st'>"OnlyHighest"</span>, <span class='st'>"GainAC50"</span>,
+    <pre class="usage"><span class='fu'>remove_flags</span>(<span class='no'>ACC</span>, <span class='kw'>flagsShort</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Borderline"</span>, <span class='st'>"OnlyHighest"</span>, <span class='st'>"GainAC50"</span>,
   <span class='st'>"Biochemical"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ACClong</th>
+      <th>ACC</th>
       <td><p>data frame with columns: casn, chnm, endPoint, and ACC_value</p></td>
     </tr>
     <tr>
@@ -183,8 +183,8 @@ combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>CAS</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"121-00-6"</span>,<span class='st'>"136-85-6"</span>,<span class='st'>"80-05-7"</span>,<span class='st'>"84-65-1"</span>,<span class='st'>"5436-43-1"</span>,<span class='st'>"126-73-8"</span>)
-<span class='no'>ACClong</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>CAS</span>)
-<span class='no'>ACClong</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_flags</span>(<span class='no'>ACClong</span>)</div></pre>
+<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>CAS</span>)
+<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_flags</span>(<span class='no'>ACC</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

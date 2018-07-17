@@ -25,5 +25,5 @@ to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.
 }
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
-ACClong <- get_ACC(CAS)
+ACC <- get_ACC(CAS)
 }

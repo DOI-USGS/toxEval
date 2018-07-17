@@ -30,6 +30,6 @@ LazyLoad: \tab yes\cr
 }
 }
 \author{
-Steven Corsi \email{srcorsi@usgs.gov}, Laura De Cicco \email{ldecicco@usgs.gov}
+Laura De Cicco \email{ldecicco@usgs.gov}. Steven Corsi
 }
 \keyword{ToxCast}

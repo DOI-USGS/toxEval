@@ -16,7 +16,7 @@
 #' @importFrom dplyr select filter right_join mutate
 #' @examples
 #' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
-#' ACClong <- get_ACC(CAS)
+#' ACC <- get_ACC(CAS)
 get_ACC <- function(CAS){
   
   # Getting rid of NSE warnings:
@@ -27,7 +27,7 @@ get_ACC <- function(CAS){
                     MlWt = Structure_MolWt) %>%
     filter(casrn %in% CAS) 
   
-  ACClong <- ACC %>%
+  ACC <- ACC %>%
     filter(CAS %in% CAS) %>%
     right_join(chem_list,
                by= c("CAS"="casrn")) %>%
@@ -36,10 +36,10 @@ get_ACC <- function(CAS){
     mutate(ACC_value = ACC_value * MlWt) %>%
     filter(!is.na(ACC_value)) 
 
-  if(any(is.na(ACClong$MlWt))){
+  if(any(is.na(ACC$MlWt))){
     warning("Some chemicals are missing molecular weights")
   }
   
-  return(ACClong)
+  return(ACC)
 
 }

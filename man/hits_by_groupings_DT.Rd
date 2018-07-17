@@ -51,12 +51,12 @@ full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
 
-ACClong <- get_ACC(tox_list$chem_info$CAS)
-ACClong <- remove_flags(ACClong)
+ACC <- get_ACC(tox_list$chem_info$CAS)
+ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
 site_df <- hits_by_groupings(chemicalSummary, category = "Biological")
 \dontrun{

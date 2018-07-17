@@ -20,8 +20,8 @@ get_benchmarks <- reactive({
   if(!is.null(rawData)){
     if(all(is.null(rawData$benchmarks))){
       
-      ACClong <- get_ACC(rawData$chem_info$CAS)
-      ACClong <- remove_flags(ACClong, flagsShort = removeFlags)
+      ACC <- get_ACC(rawData$chem_info$CAS)
+      ACC <- remove_flags(ACC, flagsShort = removeFlags)
       
       remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
       remove_groups <- remove_groups[!is.na(remove_groups)]
@@ -30,7 +30,7 @@ get_benchmarks <- reactive({
                                    groupCol = groupCol, assays = assays,
                                    remove_groups = remove_groups)
       
-      bench <- ACClong %>%
+      bench <- ACC %>%
         filter(endPoint %in% filtered_ep$endPoint) %>%
         rename(Value = ACC_value,
                Chemical = chnm) %>%

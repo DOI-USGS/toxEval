@@ -8,27 +8,33 @@ tox_list <- create_toxEval(full_path)
 
 
 ## ----chemicalSummary-----------------------------------------------------
-ACClong <- get_ACC(tox_list$chem_info$CAS)
-ACClong <- remove_flags(ACClong)
+ACC <- get_ACC(tox_list$chem_info$CAS)
+ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(endPointInfo)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  names(endPointInfo)
 
+## ------------------------------------------------------------------------
+cleaned_ep <- clean_endPoint_info(endPointInfo)
+
+filtered_ep <- filter_groups(cleaned_ep,
+              groupCol = "intended_target_family",
+              assays = c("ATG","NVS", "OT", "TOX21", 
+                         "CEETOX", "APR", "CLD", "TANGUAY",
+                         "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+              remove_groups = c("Background Measurement",
+                                "Undefined"))
+
+## ------------------------------------------------------------------------
+unique(cleaned_ep$intended_target_family)
+
 ## ----eval=FALSE----------------------------------------------------------
-#  cleaned_ep <- clean_endPoint_info(endPointInfo)
-#  
-#  filtered_ep <- filter_groups(cleaned_ep,
-#                groupCol = "intended_target_family",
-#                assays = c("ATG","NVS", "OT", "TOX21",
-#                           "CEETOX", "APR", "CLD", "TANGUAY",
-#                           "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
-#                remove_groups = c("Background Measurement",
-#                                  "Undefined"))
+#  unique(endPointInfo$intended_target_family_sub)
 
 ## ----boxplots1, warning=FALSE, message=FALSE-----------------------------
 plot_tox_boxplots(chemicalSummary, "Biological")
@@ -212,7 +218,7 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
 
 ## ----fig.width=10--------------------------------------------------------
 summary_with_levels <- get_chemical_summary(tox_list,
-                                            ACClong,
+                                            ACC,
                                             filtered_ep)
 
 plot_tox_stacks(summary_with_levels, tox_list$chem_site, "Biological")

@@ -4,6 +4,13 @@
 \name{endPointInfo}
 \alias{endPointInfo}
 \title{Endpoint information from ToxCast}
+\source{
+\url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}
+}
+\value{
+data frame with 86 columns. The columns and definitions
+are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
+}
 \description{
 Downloaded on October 2015 from ToxCast. The file name of the
 raw data was "Assay_Summary_151020.csv" from the zip file 
@@ -16,5 +23,9 @@ ToxCast & Tox21 high-throughput assay information data set.
 \examples{
 endPointInfo <- endPointInfo
 head(endPointInfo[,1:5])
+}
+\references{
+U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide. 
+Retrieved from \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
 }
 \keyword{datasets}

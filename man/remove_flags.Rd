@@ -4,11 +4,11 @@
 \alias{remove_flags}
 \title{Remove endpoints with specific data quality flags from data}
 \usage{
-remove_flags(ACClong, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
+remove_flags(ACC, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
   "Biochemical"))
 }
 \arguments{
-\item{ACClong}{data frame with columns: casn, chnm, endPoint, and ACC_value}
+\item{ACC}{data frame with columns: casn, chnm, endPoint, and ACC_value}
 
 \item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint 
 combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
@@ -37,6 +37,6 @@ Asterisks indicate flags removed in the function as default.
 }
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
-ACClong <- get_ACC(CAS)
-ACClong <- remove_flags(ACClong)
+ACC <- get_ACC(CAS)
+ACC <- remove_flags(ACC)
 }

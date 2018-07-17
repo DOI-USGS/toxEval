@@ -7,6 +7,9 @@
 \source{
 \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 }
+\value{
+data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
+}
 \description{
 Downloaded on October 2015 from ToxCast. The data were
 combined from files in the "INVITRODB_V2_LEVEL5" folder. 

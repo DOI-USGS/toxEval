@@ -201,8 +201,13 @@ rm_em_dash <- function(df){
 }
 
 
-#' summary of tox_list
+#' Summary of tox_list
 #' 
+#' A "tox_list" object is created from \code{create_toxEval}. It 
+#' is a list of  5 data frames: chem_data, chem_info, 
+#' chem_site, exclusions, and benchmarks. This function returns
+#' a message with how many chemicals have ToxCast information, 
+#' and returns a vector of which chemicals do not have ToxCast information.
 #' 
 #' @param object toxEval object with "chem_info" data frame included. 
 #' @param \dots additional parameters
@@ -219,15 +224,15 @@ summary.toxEval <- function(object, ...){
   CAS <- endPoint <- chnm <- flags <- ".dplyr"
   
   if(is.null(object[["benchmarks"]])){
-    ACClong <- ACC %>%
+    ACC <- ACC %>%
       dplyr::filter(CAS %in% unique(object$chem_info$CAS)) 
     bench_word <- "ToxCast"
   } else {
-    ACClong <- object[["benchmarks"]] 
+    ACC <- object[["benchmarks"]] 
     bench_word <- "benchmark"
   }
  
-  CAS_w_data <- ACClong %>% dplyr::select(CAS) %>%
+  CAS_w_data <- ACC %>% dplyr::select(CAS) %>%
     dplyr::distinct() %>% dplyr::pull(CAS)
   
   message(length(CAS_w_data)," chemicals have ", bench_word, " information")

@@ -134,8 +134,8 @@ benchmark data can be provided to perform the same "toxEval" analysis.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='kw'>ACClong</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filtered_ep</span> <span class='kw'>=</span> <span class='st'>"All"</span>,
-  <span class='kw'>chem.data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chem.site</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chem.info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='kw'>ACC</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filtered_ep</span> <span class='kw'>=</span> <span class='st'>"All"</span>,
+  <span class='kw'>chem_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chem_site</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chem_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>exclusion</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -147,7 +147,7 @@ benchmark data can be provided to perform the same "toxEval" analysis.</p>
 and optionally exclusions and benchmarks. Created with <code><a href='create_toxEval.html'>create_toxEval</a></code>.</p></td>
     </tr>
     <tr>
-      <th>ACClong</th>
+      <th>ACC</th>
       <td><p>Data frame with columns: CAS, chnm, endPoint, and ACC_value 
 for specific chemical/endpoint combinations generated using the 
 <code><a href='get_ACC.html'>get_ACC</a></code> function. EndPoints with specific data quality flags 
@@ -159,17 +159,17 @@ may optionally be removed using the <code><a href='remove_flags.html'>remove_fla
 filtering occurs.</p></td>
     </tr>
     <tr>
-      <th>chem.data</th>
+      <th>chem_data</th>
       <td><p><em>Optional</em> data frame with (at least) columns: CAS, SiteID, and Value. Default is <code>NULL</code>. 
 The argument will over-ride what is in tox_list.</p></td>
     </tr>
     <tr>
-      <th>chem.site</th>
+      <th>chem_site</th>
       <td><p><em>Optional</em> data frame with (at least) columns: SiteID, and Short Name. Default is <code>NULL</code>. 
 The argument will over-ride what is in tox_list.</p></td>
     </tr>
     <tr>
-      <th>chem.info</th>
+      <th>chem_info</th>
       <td><p><em>Optional</em> data frame with (at least) columns: CAS, and class. Default is <code>NULL</code>. 
 The argument will over-ride what is in tox_list.</p></td>
     </tr>
@@ -202,13 +202,13 @@ endPoints that may not be important to the analysis at hand.</p>
 
 <span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
 
-<span class='no'>ACClong</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
-<span class='no'>ACClong</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACClong</span>)
+<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
+<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACC</span>)
 
 <span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>endPointInfo</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 
-<span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='no'>ACClong</span>, <span class='no'>filtered_ep</span>)</div></pre>
+<span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -61,7 +61,7 @@ https://owi.usgs.gov/R/packages.html#research'),
 #' @importFrom dplyr group_by_
 #' @importFrom dplyr select_
 #' @importFrom dplyr mutate_
-#' @author Steven Corsi \email{srcorsi@@usgs.gov}, Laura De Cicco \email{ldecicco@@usgs.gov}
+#' @author Laura De Cicco \email{ldecicco@@usgs.gov}. Steven Corsi  
 #' @keywords ToxCast
 NULL
 
@@ -82,6 +82,7 @@ NULL
 #' @source \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
 #'
 #'@aliases ACC
+#'@return data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
 #'@name ACC
 #'@docType data
 #'@export ACC
@@ -158,7 +159,13 @@ NULL
 #'@aliases endPointInfo
 #'@docType data
 #'@keywords datasets
+#' @references U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide. 
+#' Retrieved from \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
+#'  
+#' @source \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}
 #'@export endPointInfo
+#'@return data frame with 86 columns. The columns and definitions
+#'are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
 #'@examples
 #'endPointInfo <- endPointInfo
 #'head(endPointInfo[,1:5])
@@ -177,6 +184,13 @@ NULL
 #'
 #'@aliases tox_chemicals
 #'@name tox_chemicals
+#'@return data frame with columns: "ToxCast_chid","DSSTox_Substance_Id",
+#'"DSSTox_Structure_Id","DSSTox_QC.Level",    
+#'"Substance_Name","Substance_CASRN",    
+#'"Substance_Type","Substance_Note",     
+#'"Structure_SMILES","Structure_InChI",    
+#'"Structure_InChIKey","Structure_Formula",  
+#'"Structure_MolWt" 
 #'@docType data
 #'@keywords datasets
 #'@export tox_chemicals

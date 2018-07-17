@@ -89,7 +89,7 @@
     <div class="page-header toc-ignore">
       <h1>Basic Workflow</h1>
             
-            <h4 class="date">12 July, 2018</h4>
+            <h4 class="date">16 July, 2018</h4>
       
       
       <div class="hidden name"><code>basicWorkflow.Rmd</code></div>
@@ -120,13 +120,13 @@ tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cr
 <h1 class="hasAnchor">
 <a href="#setup-analysis" class="anchor"></a>Setup Analysis</h1>
 <p>The next step for exploring the data in <code>toxEval</code> is to create a data frame that includes the EAR calculations for each measurement. This data frame (<code>chemicalSummary</code>) is required for most functions within <code>toxEval</code>. Since one chemical may have many more than one “endPoint”, this data frame may be much larger then the “Data” sheet in the Excel file. The general workflow for creating this data frame is:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ACClong &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
-ACClong &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(ACClong)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)
+ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(ACC)
 
 cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(endPointInfo)
 filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep)
 
-chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, ACClong, filtered_ep)</code></pre></div>
+chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, ACC, filtered_ep)</code></pre></div>
 <p>What’s going on with this workflow?</p>
 <div id="get_acc" class="section level2">
 <h2 class="hasAnchor">
@@ -180,7 +180,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 <div id="clean_endpoint_info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#clean_endpoint_info" class="anchor"></a>clean_endPoint_info</h2>
-<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to intended_target_family and intended_target_family_sub as described in the paper linked above.</p>
+<p>The <code>clean_endPoint_info</code> function cleans up the <code>endPointInfo</code> table from ToxCast by filtering assays considered in the analysis based on information provided in the methods section of <a href="https://pubs.acs.org/doi/10.1021/acs.est.7b01613">Blackwell et al., 2017</a>. Specifically, this function hard-codes the removal of endPoints that are ATG sources with signal loss and NVS with signal gain (basically: some assay/signal combinations are removed because they target non-specific endpoints). Also, this function adds some additional categories to “intended_target_family” and “intended_target_family_sub” as described in the paper linked above.</p>
 </div>
 <div id="filter_groups" class="section level2">
 <h2 class="hasAnchor">
@@ -190,6 +190,7 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="../refer
 <p>This function takes the data frame from ‘endPointInfo’ and filters the endpoints in 3 steps. First, the user specifies the “groupCol” argument, which is a column header from <code>endPointInfo</code>. Second, the user specifies the assays to use. Finally, the user can also choose to remove specific group(s) from the category. The default is to remove “Background Measurement” and “Undefined”. Choices for this should be reconsidered based on individual study objectives.</p>
 <p>The default category (“groupCol”) is “intended_target_family”. Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame <code>endPointInfo</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(endPointInfo)</code></pre></div>
+<p>The provided <code>endPointInfo</code> data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for <code>toxEval</code> analysis are in the column “assay_component_endpoint_name”.</p>
 <p>By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.</p>
 </td>
 <td>
@@ -262,7 +263,24 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference
                          <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),
               <span class="dt">remove_groups =</span> <span class="kw">c</span>(<span class="st">"Background Measurement"</span>,
                                 <span class="st">"Undefined"</span>))</code></pre></div>
-<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
+<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed based on the “remove_groups” arguments. The options for “remove_groups” are:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(cleaned_ep<span class="op">$</span>intended_target_family)</code></pre></div>
+<pre><code>##  [1] "Cell Cycle"              "Nuclear Receptor"       
+##  [3] "Cell Morphology"         "DNA Binding"            
+##  [5] "Background Measurement"  "Growth Factor"          
+##  [7] "Cell Adhesion Molecules" "Cytokine"               
+##  [9] "GPCR"                    "Kinase"                 
+## [11] "Protease"                "Misc Protein"           
+## [13] "Protease Inhibitor"      "CYP"                    
+## [15] "Esterase"                "Phosphatase"            
+## [17] "Hydrolase"               "Oxidoreductase"         
+## [19] "Lyase"                   "Methyltransferase"      
+## [21] "Ion Channel"             "Transporter"            
+## [23] "Steroid Hormone"         "Transferase"            
+## [25] "Zebrafish"               "Undefined"</code></pre>
+<p>Note: the function <code>clean_endPoint_info</code> converted <code>NA</code> groups to “Undefined”. Using other categories, the options for “remove_groups” are the <code>unique</code> output of that category. For instance, if it was decided that “intended_target_family_sub” was more appropriate, the group options would be found by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(endPointInfo<span class="op">$</span>intended_target_family_sub)</code></pre></div>
+<p>The <code>clean_endPoint_info</code> function is really only useful when using the “intended_target_family” and “intended_target_family_sub” categories.</p>
 </div>
 <div id="get_chemical_summary" class="section level2">
 <h2 class="hasAnchor">
@@ -501,13 +519,13 @@ tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping
                <span class="dt">levels=</span>lakes_ordered)</code></pre></div>
 <p>The <code>plot_tox_stacks</code> and <code>plot_tox_heatmap</code> functions will be affected by these site level adjustments. Compare the output here to what was shown in the sections <a href="#plot_tox_heatmap">plot_tox_heatmap</a> and <a href="#plot_tox_stacks">plot_tox_stacks</a> above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">summary_with_levels &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list,
-                                            ACClong,
+                                            ACC,
                                             filtered_ep)
 
 <span class="kw"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(summary_with_levels, tox_list<span class="op">$</span>chem_site, <span class="st">"Biological"</span>)</code></pre></div>
-<p><img src="basicWorkflow_files/figure-html/unnamed-chunk-3-1.png" width="960"></p>
+<p><img src="basicWorkflow_files/figure-html/unnamed-chunk-5-1.png" width="960"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span>(summary_with_levels, tox_list<span class="op">$</span>chem_site, <span class="st">"Biological"</span>)</code></pre></div>
-<p><img src="basicWorkflow_files/figure-html/unnamed-chunk-3-2.png" width="960"></p>
+<p><img src="basicWorkflow_files/figure-html/unnamed-chunk-5-2.png" width="960"></p>
 </div>
 </div>
 <div id="disclaimer" class="section level1">
