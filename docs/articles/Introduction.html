@@ -81,7 +81,7 @@
     <div class="page-header toc-ignore">
       <h1>Introduction to toxEval</h1>
             
-            <h4 class="date">16 July, 2018</h4>
+            <h4 class="date">17 July, 2018</h4>
       
       
       <div class="hidden name"><code>Introduction.Rmd</code></div>
@@ -118,20 +118,20 @@
 <div id="what-is-a-group" class="section level2">
 <h2 class="hasAnchor">
 <a href="#what-is-a-group" class="anchor"></a>What is a “group”?</h2>
-<p>Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>endPointInfo</code> data:</p>
+<p>Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>end_point_info</code> data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
-endPointInfo &lt;-<span class="st"> </span>endPointInfo</code></pre></div>
-<p>See the help file <code><a href="../reference/endPointInfo.html">?endPointInfo</a></code> for specifics on how the table was downloaded.</p>
+end_point_info &lt;-<span class="st"> </span>end_point_info</code></pre></div>
+<p>See the help file <code><a href="../reference/end_point_info.html">?end_point_info</a></code> for specifics on how the table was downloaded.</p>
 <p>Throughout the <code>toxEval</code> analysis, there are graphing and table functions that will summarize EARs based on either “Biological” groupings (as defined by a group of endPoints) or “Chemical Class” groupings (as defined by a group of chemicals).</p>
 <p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(endPointInfo,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(end_point_info,
               <span class="dt">groupCol =</span> <span class="st">"intended_target_family"</span>,
               <span class="dt">assays =</span> <span class="kw">c</span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, 
                          <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,
                          <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),
               <span class="dt">remove_groups =</span> <span class="kw">c</span>(<span class="st">"Background Measurement"</span>,
                                 <span class="st">"Undefined"</span>))</code></pre></div>
-<p>What is happening here is that the supplied data frame <code>endPointInfo</code> is filtered to just the “intended_target_family” group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
+<p>What is happening here is that the supplied data frame <code>end_point_info</code> is filtered to just the “intended_target_family” group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
 </div>
 <div id="summarize_data" class="section level2">
 <h2 class="hasAnchor">

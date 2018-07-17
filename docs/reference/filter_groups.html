@@ -33,9 +33,9 @@
 <meta property="og:title" content="Filter endPoints based on groups and assays. — filter_groups" />
 
 <meta property="og:description" content="This function provides a mechanism to specify 3 levels of information in the 
-supplied data frame endPointInfo to be used in subsequent analysis steps. 
+supplied data frame end_point_info to be used in subsequent analysis steps. 
 First, the user specifies the ToxCast assay annotation using the 'groupCol' 
-argument, which is a column header in 'endPointInfo'. Second, the user 
+argument, which is a column header in 'end_point_info'. Second, the user 
 specifies the families of assays to use. Finally, the user can choose to 
 remove specific group(s) from the category. The default is to remove 
 'Background Measurement' and 'Undefined'. Choices for this should be 
@@ -130,9 +130,9 @@ reconsidered based on individual study objectives." />
     <div class="ref-description">
     
     <p>This function provides a mechanism to specify 3 levels of information in the 
-supplied data frame <code><a href='endPointInfo.html'>endPointInfo</a></code> to be used in subsequent analysis steps. 
+supplied data frame <code><a href='end_point_info.html'>end_point_info</a></code> to be used in subsequent analysis steps. 
 First, the user specifies the ToxCast assay annotation using the 'groupCol' 
-argument, which is a column header in 'endPointInfo'. Second, the user 
+argument, which is a column header in 'end_point_info'. Second, the user 
 specifies the families of assays to use. Finally, the user can choose to 
 remove specific group(s) from the category. The default is to remove 
 'Background Measurement' and 'Undefined'. Choices for this should be 
@@ -179,8 +179,8 @@ objective target for the assay". Much more detail can be discovered in that docu
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>endPointInfo</span> <span class='kw'>&lt;-</span> <span class='no'>endPointInfo</span>
-<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>endPointInfo</span>)
+    <pre class="examples"><div class='input'><span class='no'>end_point_info</span> <span class='kw'>&lt;-</span> <span class='no'>end_point_info</span>
+<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'>filter_groups</span>(<span class='no'>cleaned_ep</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

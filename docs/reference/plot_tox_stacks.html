@@ -217,7 +217,7 @@ the character vector sites to a factor with ordered levels.</p>
 <span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
 <span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACC</span>)
 
-<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>endPointInfo</span>)
+<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 <span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
 
