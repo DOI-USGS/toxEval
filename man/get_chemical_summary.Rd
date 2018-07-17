@@ -64,6 +64,6 @@ ACC <- remove_flags(ACC)
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
                                  
 }

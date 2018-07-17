@@ -10,7 +10,7 @@
 #' The function \code{map_tox_data} calculates the statistics for the map. It
 #' my be useful on it's own.
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param mean_logic Logical.  \code{TRUE} displays the mean EAR from each site,
 #' \code{FALSE} displays the maximum EAR from each site.
@@ -38,13 +38,13 @@
 #' 
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #' 
-#' make_tox_map(chemicalSummary, tox_list$chem_site, "Biological")   
-#' make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical Class")
-#' make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical") 
+#' make_tox_map(chemical_summary, tox_list$chem_site, "Biological")   
+#' make_tox_map(chemical_summary, tox_list$chem_site, "Chemical Class")
+#' make_tox_map(chemical_summary, tox_list$chem_site, "Chemical") 
 #' }
-make_tox_map <- function(chemicalSummary,
+make_tox_map <- function(chemical_summary,
                     chem_site,
                     category = "Biological",
                     mean_logic = FALSE,
@@ -54,7 +54,7 @@ make_tox_map <- function(chemicalSummary,
 
   maxEARWords <- ifelse(mean_logic,"meanEAR","maxEAR")
   
-  mapDataList <- map_tox_data(chemicalSummary, 
+  mapDataList <- map_tox_data(chemical_summary, 
                             chem_site = chem_site, 
                             category = category,
                             mean_logic = mean_logic,
@@ -62,7 +62,7 @@ make_tox_map <- function(chemicalSummary,
   
   mapData <- mapDataList$mapData
   pal <- mapDataList$pal
-  siteToFind <- unique(chemicalSummary$site)
+  siteToFind <- unique(chemical_summary$site)
   
   if(length(siteToFind) == 1){
     
@@ -111,7 +111,7 @@ make_tox_map <- function(chemicalSummary,
 
 #' @export
 #' @rdname make_tox_map
-map_tox_data <- function(chemicalSummary,
+map_tox_data <- function(chemical_summary,
                        chem_site,
                        category = "Biological",
                        mean_logic = FALSE,
@@ -121,7 +121,7 @@ map_tox_data <- function(chemicalSummary,
 
   site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- n <- ".dplyr"
   
-  siteToFind <- unique(chemicalSummary$shortName)
+  siteToFind <- unique(chemical_summary$shortName)
   
   if(category == "Biological"){
     typeWords <- "groups"
@@ -138,12 +138,12 @@ map_tox_data <- function(chemicalSummary,
   mapData <- chem_site[chem_site$`Short Name` %in% siteToFind,
                        c("Short Name", "dec_lat", "dec_lon", "SiteID")]
   
-  nSamples <- select(chemicalSummary,site,date) %>%
+  nSamples <- select(chemical_summary,site,date) %>%
     distinct() %>%
     group_by(site) %>%
     summarize(count = n())
   
-  meanStuff <- tox_boxplot_data(chemicalSummary = chemicalSummary, 
+  meanStuff <- tox_boxplot_data(chemical_summary = chemical_summary, 
                          category = category,
                          mean_logic = mean_logic,
                          sum_logic = sum_logic) %>%

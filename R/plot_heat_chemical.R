@@ -15,7 +15,7 @@
 #' \href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
 #' the character vector sites to a factor with ordered levels.
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param chem_site Data frame with columns SiteID, site_grouping, and Short Name.
 #' @param category Either "Biological", "Chemical Class", or "Chemical".
 #' @param manual_remove Vector of categories to remove.
@@ -47,7 +47,7 @@
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'                                         
 #' #Order the site_groupings:
 #' tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
@@ -74,14 +74,14 @@
 #' tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
 #'               levels = sitesOrdered)
 #'               
-#' plot_tox_heatmap(chemicalSummary, 
+#' plot_tox_heatmap(chemical_summary, 
 #'                  tox_list$chem_site, 
 #'                  category = "Biological",
 #'                  manual_remove = "Undefined")
-#' plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical Class")
-#' plot_tox_heatmap(chemicalSummary, tox_list$chem_site, category = "Chemical")
+#' plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical Class")
+#' plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical")
 #' 
-plot_tox_heatmap <- function(chemicalSummary, 
+plot_tox_heatmap <- function(chemical_summary, 
                              chem_site, 
                              category = "Biological",
                              breaks = c(0.00001,0.0001,0.001,0.01,0.1,1,5),
@@ -104,18 +104,18 @@ plot_tox_heatmap <- function(chemicalSummary,
   }
   
   if(!plot_ND){
-    chemicalSummary <- chemicalSummary[chemicalSummary$EAR > 0,]
+    chemical_summary <- chemical_summary[chemical_summary$EAR > 0,]
   }
   
   if(category == "Chemical"){
-    plot_back <- plot_heat_chemicals(chemicalSummary=chemicalSummary, 
+    plot_back <- plot_heat_chemicals(chemical_summary=chemical_summary, 
                                      mean_logic=mean_logic,
                                      sum_logic=sum_logic,
                                      chem_site=chem_site)
     
   } else {
     
-    graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+    graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
                            category = category,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic,
@@ -169,7 +169,7 @@ plot_tox_heatmap <- function(chemicalSummary,
 }
 
 
-plot_heat_chemicals <- function(chemicalSummary,
+plot_heat_chemicals <- function(chemical_summary,
                                 chem_site,
                                 mean_logic,
                                 sum_logic){
@@ -177,7 +177,7 @@ plot_heat_chemicals <- function(chemicalSummary,
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
   
-  graphData <- graph_chem_data(chemicalSummary, 
+  graphData <- graph_chem_data(chemical_summary, 
                                mean_logic=mean_logic,
                                sum_logic = sum_logic)
   

@@ -136,17 +136,17 @@ data frame specified for the chem_site argument.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>make_tox_map</span>(<span class='no'>chemicalSummary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+    <pre class="usage"><span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>map_tox_data</span>(<span class='no'>chemicalSummary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+<span class='fu'>map_tox_data</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>chemicalSummary</th>
+      <th>chemical_summary</th>
       <td><p>Data frame from <code><a href='get_chemical_summary.html'>get_chemical_summary</a></code>.</p></td>
     </tr>
     <tr>
@@ -189,11 +189,11 @@ my be useful on it's own.</p>
 
 <span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
-<span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
+<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
 
-<span class='fu'>make_tox_map</span>(<span class='no'>chemicalSummary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Biological"</span>)
-<span class='fu'>make_tox_map</span>(<span class='no'>chemicalSummary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical Class"</span>)
-<span class='fu'>make_tox_map</span>(<span class='no'>chemicalSummary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>)
+<span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Biological"</span>)
+<span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical Class"</span>)
+<span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

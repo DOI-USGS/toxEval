@@ -92,28 +92,28 @@ observe({
 })
 
 chems <- reactive({
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   chems <- ""
-  if(nrow(chemicalSummary) > 0){
-    chems <- levels(chemicalSummary$chnm)
+  if(nrow(chemical_summary) > 0){
+    chems <- levels(chemical_summary$chnm)
   }
   chems
 })
 
 classes <- reactive({
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   classes <- ""
-  if(nrow(chemicalSummary) > 0){
-    classes <- levels(chemicalSummary$Class)
+  if(nrow(chemical_summary) > 0){
+    classes <- levels(chemical_summary$Class)
   }
   classes
 })
 
 Bio_category <- reactive({
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   Bio_category <- ""
-  if(nrow(chemicalSummary) > 0){
-    Bio_category <- unique(chemicalSummary$Bio_category)
+  if(nrow(chemical_summary) > 0){
+    Bio_category <- unique(chemical_summary$Bio_category)
   }
   
   Bio_category

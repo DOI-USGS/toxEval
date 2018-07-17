@@ -5,12 +5,12 @@ output$hitsTable <- DT::renderDataTable({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   
-  tableGroup <- hits_by_groupings_DT(chemicalSummary, 
+  tableGroup <- hits_by_groupings_DT(chemical_summary, 
                                    category = c("Biological","Chemical","Chemical Class")[catType],
                                    mean_logic = mean_logic,
                                    sum_logic = sum_logic,
@@ -51,14 +51,14 @@ siteHitCode <- reactive({
   if(sum_logic){
     siteHitCode <- paste0(rCodeSetup(),"
 # Use the hits_by_groupings_DT function for the formatted DT table
-hitSiteTable <- hits_by_groupings(chemicalSummary, 
+hitSiteTable <- hits_by_groupings(chemical_summary, 
                     category = '",category,"',
                     mean_logic = ",input$meanEAR,",
                     hit_threshold = ",hitThres,")")
   } else {
     siteHitCode <- paste0(rCodeSetup(),"
 # Use the hits_by_groupings_DT function for the formatted DT table
-hitSiteTable <- hits_by_groupings(chemicalSummary, 
+hitSiteTable <- hits_by_groupings(chemical_summary, 
                     category = '",category,"',
                     mean_logic = ",input$meanEAR,",
                     sum_logic = FALSE,
@@ -75,12 +75,12 @@ siteHitTableData <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   
-  tableGroup <- hits_by_groupings(chemicalSummary, 
+  tableGroup <- hits_by_groupings(chemical_summary, 
                                    category = c("Biological","Chemical","Chemical Class")[catType],
                                    mean_logic = mean_logic,
                                   sum_logic = sum_logic,

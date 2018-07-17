@@ -4,12 +4,12 @@
 \alias{plot_tox_stacks}
 \title{Plot stacked bar charts}
 \usage{
-plot_tox_stacks(chemicalSummary, chem_site, category = "Biological",
+plot_tox_stacks(chemical_summary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE, manual_remove = NULL,
   include_legend = TRUE, font_size = NA, title = NA)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{chem_site}{Data frame with at least columns SiteID, site_grouping, and Short Name.}
 
@@ -67,10 +67,10 @@ ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
                                        
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
-plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 
 }

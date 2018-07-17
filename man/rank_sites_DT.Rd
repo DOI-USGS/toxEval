@@ -5,14 +5,14 @@
 \alias{rank_sites}
 \title{Rank sites by EAR}
 \usage{
-rank_sites_DT(chemicalSummary, category = "Biological", mean_logic = FALSE,
+rank_sites_DT(chemical_summary, category = "Biological", mean_logic = FALSE,
   sum_logic = TRUE, hit_threshold = 0.1)
 
-rank_sites(chemicalSummary, category, hit_threshold = 0.1,
+rank_sites(chemical_summary, category, hit_threshold = 0.1,
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
@@ -54,12 +54,12 @@ ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-stats_df <- rank_sites(chemicalSummary, "Biological")
+stats_df <- rank_sites(chemical_summary, "Biological")
 \dontrun{
-rank_sites_DT(chemicalSummary, category = "Biological")
-rank_sites_DT(chemicalSummary, category = "Chemical Class")
-rank_sites_DT(chemicalSummary, category = "Chemical")
+rank_sites_DT(chemical_summary, category = "Biological")
+rank_sites_DT(chemical_summary, category = "Chemical Class")
+rank_sites_DT(chemical_summary, category = "Chemical")
 }
 }

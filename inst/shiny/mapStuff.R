@@ -17,9 +17,9 @@ output$mapFooter <- renderUI({
     need(!is.null(rawData_data$data), "Please select a data set")
   )
   
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   
-  nSamples <- select(chemicalSummary,site,date) %>%
+  nSamples <- select(chemical_summary,site,date) %>%
     distinct() %>%
     group_by(site) %>%
     summarize(count = n())
@@ -36,9 +36,9 @@ mapDataINFO <- reactive({
   rawData <- rawData()
   
   chem_site <- rawData$chem_site
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   
-  siteToFind <- unique(chemicalSummary$site)
+  siteToFind <- unique(chemical_summary$site)
   
   if(length(siteToFind) == 1){
     mapDataList <- latest_map
@@ -49,7 +49,7 @@ mapDataINFO <- reactive({
     meanEARlogic <- as.logical(input$meanEAR)
     sum_logic <- as.logical(input$sumEAR)
     
-    mapDataList <- map_tox_data(chemicalSummary, 
+    mapDataList <- map_tox_data(chemical_summary, 
                               chem_site = chem_site, 
                               category = category,
                               mean_logic = meanEARlogic,
@@ -70,9 +70,9 @@ observe({
   rawData <- rawData()
   
   chem_site <- rawData$chem_site
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   
-  siteToFind <- unique(chemicalSummary$site)
+  siteToFind <- unique(chemical_summary$site)
   
   if(length(siteToFind) == 1){
     chem_site <- chem_site[chem_site$SiteID == siteToFind,]
@@ -148,7 +148,7 @@ mapCode <- reactive({
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
   mapCode <- paste0(rCodeSetup(),"
-make_tox_map(chemicalSummary, 
+make_tox_map(chemical_summary, 
         chem_site = tox_list$chem_site,
         category = '",category,"',
         mean_logic = ",as.logical(input$meanEAR),")")

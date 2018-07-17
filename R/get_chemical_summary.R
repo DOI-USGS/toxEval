@@ -48,7 +48,7 @@
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'                                  
 get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All", 
                                  chem_data=NULL, chem_site=NULL, 
@@ -92,7 +92,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     chem_data$Value <- as.numeric(chem_data$Value)
   }
   
-  chemicalSummary <- full_join(ACC, 
+  chemical_summary <- full_join(ACC, 
                                select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
@@ -101,19 +101,19 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
            date = `Sample Date`) 
   
   if(all(filtered_ep != "All")){
-    chemicalSummary <- chemicalSummary %>%
+    chemical_summary <- chemical_summary %>%
       select(CAS, chnm, endPoint, site, date, EAR) %>%
       filter(endPoint %in% filtered_ep$endPoint) %>%
       left_join(select(filtered_ep, endPoint, groupCol), by="endPoint")
     
   } else {
     
-    chemicalSummary <- chemicalSummary %>%
+    chemical_summary <- chemical_summary %>%
       select(CAS, chnm, endPoint, site, date, EAR, groupCol)       
   
   }
   
-  chemicalSummary <- chemicalSummary  %>%
+  chemical_summary <- chemical_summary  %>%
     left_join(select(chem_site, site=SiteID, `Short Name`),
               by="site") %>%
     left_join(select(chem_info, CAS, Class), by="CAS") %>%
@@ -121,22 +121,22 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
            shortName = `Short Name`)
   
   if(!is.null(exclusion)){
-    chemicalSummary <- exclude_points(chemicalSummary, exclusion)
+    chemical_summary <- exclude_points(chemical_summary, exclusion)
   }
   
-  graphData <- graph_chem_data(chemicalSummary)
+  graphData <- graph_chem_data(chemical_summary)
   
   orderClass_df <- orderClass(graphData)
  
   orderChem_df <- orderChem(graphData, orderClass_df)
   
-  chemicalSummary$chnm <- factor(chemicalSummary$chnm,
+  chemical_summary$chnm <- factor(chemical_summary$chnm,
                                  levels = unique(orderChem_df$chnm))
   
-  chemicalSummary$Class <- factor(chemicalSummary$Class,
+  chemical_summary$Class <- factor(chemical_summary$Class,
                                   levels = rev(levels(orderChem_df$Class)))
   
-  return(chemicalSummary)
+  return(chemical_summary)
 }
 
 
@@ -248,7 +248,7 @@ remove_flags <- function(ACC, flagsShort = c("Borderline",
 }
 
 
-exclude_points <- function(chemicalSummary, exclusion){
+exclude_points <- function(chemical_summary, exclusion){
   
   CAS <- endPoint <- casrn <- ".dplyr"
   
@@ -259,7 +259,7 @@ exclude_points <- function(chemicalSummary, exclusion){
     filter(!is.na(CAS),
            !is.na(endPoint))
   
-  chem_filtered <- chemicalSummary %>%
+  chem_filtered <- chemical_summary %>%
     filter(!(CAS %in% exclude_chem)) %>%
     filter(!(endPoint %in% exclude_ep)) 
   

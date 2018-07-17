@@ -12,7 +12,7 @@
 #' site as described in "Summarizing the data"in the Introduction vignette: 
 #' \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Either "Biological", "Chemical Class", or "Chemical".
 #' @param filterBy Character. Either "All" or one of the filtered categories.
 #' @param manual_remove Vector of categories to remove.
@@ -45,13 +45,13 @@
 #' 
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'
-#' plot_tox_endpoints(chemicalSummary, filterBy = "Cell Cycle")
-#' plot_tox_endpoints(chemicalSummary, category = "Chemical Class", filterBy = "PAHs")
-#' plot_tox_endpoints(chemicalSummary, category = "Chemical", filterBy = "Atrazine")
+#' plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
+#' plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
+#' plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
 #' 
-plot_tox_endpoints <- function(chemicalSummary, 
+plot_tox_endpoints <- function(chemical_summary, 
                               category = "Biological",
                               filterBy = "All",
                               manual_remove = NULL,
@@ -67,21 +67,21 @@ plot_tox_endpoints <- function(chemicalSummary,
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
   
   if(category == "Biological"){
-    chemicalSummary$category <- chemicalSummary$Bio_category
+    chemical_summary$category <- chemical_summary$Bio_category
   } else if(category == "Chemical Class") {
-    chemicalSummary$category <- chemicalSummary$Class
+    chemical_summary$category <- chemical_summary$Class
   } else {
-    chemicalSummary$category <- chemicalSummary$chnm
+    chemical_summary$category <- chemical_summary$chnm
   }
       
-  single_site <- length(unique(chemicalSummary$site)) == 1
+  single_site <- length(unique(chemical_summary$site)) == 1
   
   if(filterBy != "All"){
-    if(!(filterBy %in% unique(chemicalSummary$category))){
+    if(!(filterBy %in% unique(chemical_summary$category))){
       stop("filterBy argument doesn't match data")
     }
     
-    chemicalSummary <- chemicalSummary %>%
+    chemical_summary <- chemical_summary %>%
       filter_(paste0("category == '", filterBy,"'"))
   }
   
@@ -89,7 +89,7 @@ plot_tox_endpoints <- function(chemicalSummary,
   
   if(single_site){
     
-    countNonZero <- chemicalSummary %>%
+    countNonZero <- chemical_summary %>%
       group_by(endPoint) %>%
       summarise(nonZero = as.character(sum(EAR>0)),
                 hits = as.character(sum(EAR > hit_threshold)))
@@ -100,7 +100,7 @@ plot_tox_endpoints <- function(chemicalSummary,
     nSamplesEP <- countNonZero$nonZero
     nHitsEP <- countNonZero$hits
     
-    orderColsBy <- chemicalSummary %>%
+    orderColsBy <- chemical_summary %>%
       group_by(endPoint) %>%
       summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
       arrange(median)
@@ -112,9 +112,9 @@ plot_tox_endpoints <- function(chemicalSummary,
                            orderColsBy$endPoint[!is.na(orderColsBy$median)])
     }
     
-    pretty_logs_new <-  prettyLogs(chemicalSummary$EAR)
+    pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
     
-    stackedPlot <- ggplot(data = chemicalSummary)+
+    stackedPlot <- ggplot(data = chemical_summary)+
       scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
       theme_minimal() +
       xlab("") +
@@ -134,14 +134,14 @@ plot_tox_endpoints <- function(chemicalSummary,
   } else {
     
     if(!sum_logic){
-      graphData <- chemicalSummary %>%
+      graphData <- chemical_summary %>%
         group_by(site, category,endPoint) %>%
         summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
         data.frame() %>%
         mutate(category=as.character(category))      
     } else {
       
-      graphData <- chemicalSummary %>%
+      graphData <- chemical_summary %>%
         group_by(site,date,category,endPoint) %>%
         summarise(sumEAR=sum(EAR)) %>%
         data.frame() %>%

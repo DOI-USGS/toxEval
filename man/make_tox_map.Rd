@@ -5,14 +5,14 @@
 \alias{map_tox_data}
 \title{Create an interactive map of the data}
 \usage{
-make_tox_map(chemicalSummary, chem_site, category = "Biological",
+make_tox_map(chemical_summary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE)
 
-map_tox_data(chemicalSummary, chem_site, category = "Biological",
+map_tox_data(chemical_summary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{chem_site}{Data frame containing the columns SiteID, site_grouping, 
 Short Name, dec_lon, and dec_lat.}
@@ -53,10 +53,10 @@ ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-make_tox_map(chemicalSummary, tox_list$chem_site, "Biological")   
-make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical Class")
-make_tox_map(chemicalSummary, tox_list$chem_site, "Chemical") 
+make_tox_map(chemical_summary, tox_list$chem_site, "Biological")   
+make_tox_map(chemical_summary, tox_list$chem_site, "Chemical Class")
+make_tox_map(chemical_summary, tox_list$chem_site, "Chemical") 
 }
 }

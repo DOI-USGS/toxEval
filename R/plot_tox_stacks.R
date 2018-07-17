@@ -21,7 +21,7 @@
 #' \href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
 #' the character vector sites to a factor with ordered levels.
 #' 
-#' @param chemicalSummary Data frame from \code{\link{get_chemical_summary}}.
+#' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param chem_site Data frame with at least columns SiteID, site_grouping, and Short Name.
 #' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
@@ -52,13 +52,13 @@
 #' 
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
-#' chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'                                        
-#' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Biological")   
-#' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical Class")
-#' plot_tox_stacks(chemicalSummary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+#' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
+#' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
+#' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 #' 
-plot_tox_stacks <- function(chemicalSummary, 
+plot_tox_stacks <- function(chemical_summary, 
                             chem_site,
                             category = "Biological",
                             mean_logic = FALSE,
@@ -78,14 +78,14 @@ plot_tox_stacks <- function(chemicalSummary,
   }
   
   if(category == "Chemical"){
-    graphData <- graph_chem_data(chemicalSummary = chemicalSummary,
+    graphData <- graph_chem_data(chemical_summary = chemical_summary,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic,
                            sum_logic = sum_logic)   
     names(graphData)[names(graphData) == "maxEAR"] <- "meanEAR"
     names(graphData)[names(graphData) == "chnm"] <- "category"
   } else {
-    graphData <- tox_boxplot_data(chemicalSummary = chemicalSummary,
+    graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
                            category = category,
                            manual_remove = manual_remove,
                            mean_logic = mean_logic,
@@ -95,7 +95,7 @@ plot_tox_stacks <- function(chemicalSummary,
     } 
   }
 
-  counts <- chemicalSummary %>%
+  counts <- chemical_summary %>%
     select(site, date) %>%
     distinct() %>%
     group_by(site) %>%
@@ -103,7 +103,7 @@ plot_tox_stacks <- function(chemicalSummary,
     left_join(select(chem_site, site=SiteID, `Short Name`, site_grouping), by="site") %>%
     select(-site)
 
-  siteToFind <- unique(chemicalSummary$shortName)
+  siteToFind <- unique(chemical_summary$shortName)
 
   cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   
@@ -156,7 +156,7 @@ plot_tox_stacks <- function(chemicalSummary,
 
     y_label <- "EARs per Individual Sample"
     
-    graphData <- chemicalSummary %>%
+    graphData <- chemical_summary %>%
       select(-site) 
     
     placement <- -0.05*diff(range(graphData$meanEAR))

@@ -5,14 +5,14 @@
 \alias{hits_summary}
 \title{Summary of hits per site/category}
 \usage{
-hits_summary_DT(chemicalSummary, category = "Biological", sum_logic = TRUE,
+hits_summary_DT(chemical_summary, category = "Biological", sum_logic = TRUE,
   hit_threshold = 0.1)
 
-hits_summary(chemicalSummary, category, hit_threshold = 0.1,
+hits_summary(chemical_summary, category, hit_threshold = 0.1,
   sum_logic = TRUE)
 }
 \arguments{
-\item{chemicalSummary}{Data frame from \code{\link{get_chemical_summary}}.}
+\item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
@@ -64,12 +64,12 @@ ACC <- remove_flags(ACC)
 
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-stats_group <- hits_summary(chemicalSummary, "Biological")
+stats_group <- hits_summary(chemical_summary, "Biological")
 \dontrun{
-hits_summary_DT(chemicalSummary, category = "Biological")
-hits_summary_DT(chemicalSummary, category = "Chemical Class")
-hits_summary_DT(chemicalSummary, category = "Chemical")
+hits_summary_DT(chemical_summary, category = "Biological")
+hits_summary_DT(chemical_summary, category = "Chemical Class")
+hits_summary_DT(chemical_summary, category = "Chemical")
 }
 }

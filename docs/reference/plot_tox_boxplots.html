@@ -142,22 +142,22 @@ for each group in the selected ToxCast annotation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>graph_chem_data</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <pre class="usage"><span class='fu'>graph_chem_data</span>(<span class='no'>chemical_summary</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
-<span class='fu'>tox_boxplot_data</span>(<span class='no'>chemicalSummary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+<span class='fu'>tox_boxplot_data</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>chemicalSummary</th>
+      <th>chemical_summary</th>
       <td><p>Data frame from <code><a href='get_chemical_summary.html'>get_chemical_summary</a></code>.</p></td>
     </tr>
     <tr>
@@ -231,17 +231,17 @@ to the "Chemical" plot, and <code>plot_tox_boxplots</code> is for "Biological" a
 
 <span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
-<span class='no'>chemicalSummary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
-<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemicalSummary</span>, <span class='st'>"Biological"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_hline).</span></div><div class='img'><img src='plot_tox_boxplots-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemicalSummary</span>, <span class='st'>"Chemical Class"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_hline).</span></div><div class='img'><img src='plot_tox_boxplots-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemicalSummary</span>, <span class='st'>"Chemical"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_hline).</span></div><div class='img'><img src='plot_tox_boxplots-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
+<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemical_summary</span>, <span class='st'>"Biological"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_hline).</span></div><div class='img'><img src='plot_tox_boxplots-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemical_summary</span>, <span class='st'>"Chemical Class"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_hline).</span></div><div class='img'><img src='plot_tox_boxplots-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemical_summary</span>, <span class='st'>"Chemical"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_hline).</span></div><div class='img'><img src='plot_tox_boxplots-3.png' alt='' width='700' height='433' /></div><div class='input'>
 
 <span class='no'>cbPalette</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"#999999"</span>, <span class='st'>"#E69F00"</span>, <span class='st'>"#56B4E9"</span>, <span class='st'>"#009E73"</span>, <span class='st'>"#F0E442"</span>,
                <span class='st'>"#0072B2"</span>, <span class='st'>"#D55E00"</span>, <span class='st'>"#CC79A7"</span>)
-<span class='no'>graphData</span> <span class='kw'>&lt;-</span> <span class='fu'>tox_boxplot_data</span>(<span class='kw'>chemicalSummary</span> <span class='kw'>=</span> <span class='no'>chemicalSummary</span>,
+<span class='no'>graphData</span> <span class='kw'>&lt;-</span> <span class='fu'>tox_boxplot_data</span>(<span class='kw'>chemical_summary</span> <span class='kw'>=</span> <span class='no'>chemical_summary</span>,
                               <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>)
 <span class='no'>cbValues</span> <span class='kw'>&lt;-</span> <span class='fu'>colorRampPalette</span>(<span class='no'>cbPalette</span>)(<span class='fu'>length</span>(<span class='fu'>levels</span>(<span class='no'>graphData</span>$<span class='no'>category</span>)))
 <span class='fu'>names</span>(<span class='no'>cbValues</span>) <span class='kw'>&lt;-</span> <span class='fu'>levels</span>(<span class='no'>graphData</span>$<span class='no'>category</span>)
 
-<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemicalSummary</span>,
+<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemical_summary</span>,
                   <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
                   <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
                   <span class='kw'>palette</span> <span class='kw'>=</span> <span class='no'>cbValues</span>,

@@ -107,24 +107,24 @@ filtered_ep <- filter_groups(cleaned_ep,
                   assays = ",assays,",
                   remove_groups = ",remove_groups,")
 
-chemicalSummary <- get_chemical_summary(tox_list, ACC, filtered_ep)")
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)")
   
   } else {
     setupCode <- paste0(setupCode,"
-chemicalSummary <- get_chemical_summary(tox_list)" )  
+chemical_summary <- get_chemical_summary(tox_list)" )  
   }
     
   if(sites != "All"){
     setupCode <- paste0(setupCode,"
 site <- '",sites,"'
-chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
+chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   }
     setupCode <- paste0(setupCode,"
 ######################################")
     return(setupCode)
   })
   
-  chemicalSummary <- reactive({
+  chemical_summary <- reactive({
 
     groupCol <- epDF[["groupColName"]]
     assays <- epDF[["assays"]]
@@ -156,19 +156,19 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
         filtered_ep <- filter_groups(cleaned_ep, 
                                      groupCol = groupCol, assays = assays,
                                      remove_groups = remove_groups)
-        chemicalSummary <- get_chemical_summary(rawData,
+        chemical_summary <- get_chemical_summary(rawData,
                                                 ACC,
                                                 filtered_ep) 
         toxCast_val <<- TRUE
         
       } else {
-        chemicalSummary <- get_chemical_summary(rawData) 
+        chemical_summary <- get_chemical_summary(rawData) 
 
         toxCast_val <<- FALSE
       }
       
     } else {
-      chemicalSummary <- data.frame(casrn = character(),
+      chemical_summary <- data.frame(casrn = character(),
                        chnm = character(),
                        endPoint = character(),
                        site = character(),
@@ -180,7 +180,7 @@ chemicalSummary <- chemicalSummary[chemicalSummary$shortName == site,]")
                        stringsAsFactors = FALSE)
     }
     
-    return(chemicalSummary)
+    return(chemical_summary)
     
   })
   

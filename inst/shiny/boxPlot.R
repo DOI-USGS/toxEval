@@ -4,13 +4,13 @@ boxPlots_create <- reactive({
   include_thresh <- as.logical(input$plot_thres_box)
   hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   plot_ND = input$plot_ND
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
 
-  bioPlot <- plot_tox_boxplots(chemicalSummary, 
+  bioPlot <- plot_tox_boxplots(chemical_summary, 
                                category = category,
                                mean_logic = mean_logic,
                                sum_logic = sum_logic,
@@ -27,7 +27,7 @@ boxPlot_prints <- reactive({
   catType = as.numeric(input$radioMaxGroup)
   
   plot_ND = input$plot_ND
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   category <- c("Biological","Chemical","Chemical Class")[catType]
   height <- PlotHeight()
   if(height > 750){
@@ -36,7 +36,7 @@ boxPlot_prints <- reactive({
     text_size <- NA
   }
   
-  bioPlot <- plot_tox_boxplots(chemicalSummary, 
+  bioPlot <- plot_tox_boxplots(chemical_summary, 
                                category = category,
                                mean_logic = as.logical(input$meanEAR),
                                sum_logic = as.logical(input$sumEAR),
@@ -60,9 +60,9 @@ PlotHeight = reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   cat_col <- c("Bio_category","chnm","Class")[catType]
-  chemicalSummary <- chemicalSummary()
+  chemical_summary <- chemical_summary()
   
-  n <- 35*length(unique(chemicalSummary[[cat_col]]))
+  n <- 35*length(unique(chemical_summary[[cat_col]]))
 
   if(n < 750){
     return(750)
@@ -113,7 +113,7 @@ boxCode <- reactive({
   
   if(sum_logic){
     bioPlotCode <- paste0(rCodeSetup(),"
-bio_plot <- plot_tox_boxplots(chemicalSummary, 
+bio_plot <- plot_tox_boxplots(chemical_summary, 
                           category = '",category,"',
                           mean_logic = ",mean_logic,",
                           hit_threshold = ",hitThres,",
@@ -122,7 +122,7 @@ bio_plot <- plot_tox_boxplots(chemicalSummary,
 bio_plot")    
   } else {
     bioPlotCode <- paste0(rCodeSetup(),"
-bio_plot <- plot_tox_boxplots(chemicalSummary, 
+bio_plot <- plot_tox_boxplots(chemical_summary, 
                           category = '",category,"',
                           mean_logic = ",mean_logic,",
                           hit_threshold = ",hitThres,",
