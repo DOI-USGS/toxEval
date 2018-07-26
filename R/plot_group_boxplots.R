@@ -362,8 +362,8 @@ prettyLogs <- function(x){
 fancyNumbers2 <- function(n){
   textReturn <-  signif(n,digits = 2)
   textReturn <- as.character(textReturn)
-  textReturn[length(textReturn)] <- paste(">",textReturn[length(textReturn)])
-  textReturn[1] <- paste("<",textReturn[1])
+  # textReturn[length(textReturn)] <- paste(">",textReturn[length(textReturn)])
+  # textReturn[1] <- paste("<",textReturn[1])
   return(textReturn)
 }
 

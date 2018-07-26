@@ -84,7 +84,7 @@
 plot_tox_heatmap <- function(chemical_summary, 
                              chem_site, 
                              category = "Biological",
-                             breaks = c(0.00001,0.0001,0.001,0.01,0.1,1,5),
+                             breaks = c(0.00001,0.0001,0.001,0.01,0.1,1,10),
                              manual_remove = NULL,
                              mean_logic = FALSE,
                              sum_logic = TRUE,
@@ -111,7 +111,8 @@ plot_tox_heatmap <- function(chemical_summary,
     plot_back <- plot_heat_chemicals(chemical_summary=chemical_summary, 
                                      mean_logic=mean_logic,
                                      sum_logic=sum_logic,
-                                     chem_site=chem_site)
+                                     chem_site=chem_site,
+                                     breaks=breaks)
     
   } else {
     
@@ -125,6 +126,10 @@ plot_tox_heatmap <- function(chemical_summary,
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
     
+    single_site <- length(unique(chemical_summary$site)) == 1
+    
+    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE)
+    fill_label <- ifelse(mean_logic, "Mean EAR", "Max EAR")
     
     plot_back <- ggplot(data = graphData) +
       geom_tile(aes(x = `Short Name`, y=category, fill=meanEAR)) +
@@ -132,9 +137,9 @@ plot_tox_heatmap <- function(chemical_summary,
       theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 0.975)) +
       ylab("") +
       xlab("") +
-      labs(fill=fill_label) +
-      scale_fill_gradient( guide = "legend",
-                           trans = 'log',
+      labs(fill = fill_label) +
+      # labs(fill=y_label[["y_label"]], caption = y_label[["caption"]]) +
+      scale_fill_gradient( trans = 'log',
                            low = "white", high = "steelblue",
                            breaks=breaks,
                            na.value = 'transparent',labels=fancyNumbers2) +
@@ -172,7 +177,8 @@ plot_tox_heatmap <- function(chemical_summary,
 plot_heat_chemicals <- function(chemical_summary,
                                 chem_site,
                                 mean_logic,
-                                sum_logic){
+                                sum_logic,
+                                breaks){
   
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
@@ -184,12 +190,14 @@ plot_heat_chemicals <- function(chemical_summary,
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- "Sites"
   }
+  single_site <- length(unique(chemical_summary$site)) == 1
+  
+  y_label <- fancyLabels("Chemical", mean_logic, sum_logic, single_site, sep = TRUE)
+  fill_text <- ifelse(mean_logic, "Mean EAR", "Max EAR")
   
   graphData <- graphData %>%
     left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
               by=c("site"="SiteID"))
-  
-  fill_text <- ifelse(mean_logic, "Mean EAR", "Max EAR")
   
   heat <- ggplot(data = graphData) +
     geom_tile(aes(x = `Short Name`, y=chnm, fill=meanEAR)) +
@@ -197,12 +205,12 @@ plot_heat_chemicals <- function(chemical_summary,
     theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
     ylab("") +
     xlab("") +
-    labs(fill=fill_text) +
-    scale_fill_gradient( guide = "legend",
-                         trans = 'log',
-                         low = "white", high = "steelblue",
-                         breaks=c(0.00001,0.0001,0.001,0.01,0.1,1,5),
-                         na.value = 'transparent',labels=fancyNumbers2) +
+    labs(fill = fill_text) +
+    # labs(fill=y_label[["y_label"]], caption = y_label[["caption"]]) +
+    scale_fill_gradient( na.value = 'transparent',
+                         trans = 'log', low = "white", high = "steelblue",
+                         breaks=breaks,
+                         labels=fancyNumbers2) +
     facet_grid(Class ~ site_grouping, scales="free", space="free") +
     theme(strip.text.y = element_text(angle=0, hjust=0), 
           strip.background = element_rect(fill="transparent", colour = NA),
@@ -210,7 +218,7 @@ plot_heat_chemicals <- function(chemical_summary,
           panel.spacing = unit(0.05, "lines"),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
-          plot.background = element_rect(fill = "transparent",colour = NA))
+          plot.background = element_rect(fill = "transparent",colour = NA)) 
   
   return(heat)
   
