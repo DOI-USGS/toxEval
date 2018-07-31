@@ -4,10 +4,10 @@
 \alias{filter_groups}
 \title{Filter endPoints based on groups and assays.}
 \usage{
-filter_groups(ep, groupCol = "intended_target_family", assays = c("ATG",
-  "NVS", "OT", "TOX21", "CEETOX", "APR", "CLD", "TANGUAY", "NHEERL_PADILLA",
-  "NCCT_SIMMONS", "ACEA"), remove_groups = c("Background Measurement",
-  "Undefined"))
+filter_groups(ep, groupCol = "intended_target_family",
+  assays = c("ATG", "NVS", "OT", "TOX21", "CEETOX", "APR", "CLD",
+  "TANGUAY", "NHEERL_PADILLA", "NCCT_SIMMONS", "ACEA"),
+  remove_groups = c("Background Measurement", "Undefined"))
 }
 \arguments{
 \item{ep}{Data frame containing Endpoint information from ToxCast}

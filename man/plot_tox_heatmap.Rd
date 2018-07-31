@@ -5,9 +5,9 @@
 \title{plot_tox_heatmap}
 \usage{
 plot_tox_heatmap(chemical_summary, chem_site, category = "Biological",
-  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 10), manual_remove = NULL,
-  mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE, font_size = NA,
-  title = NA)
+  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 10),
+  manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
+  plot_ND = TRUE, font_size = NA, title = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -50,7 +50,7 @@ This is a function where it may be ideal to create a custom order to the sites
 the character vector sites to a factor with ordered levels.
 }
 \examples{
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 

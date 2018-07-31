@@ -7,8 +7,8 @@
 \alias{tox_boxplot_data}
 \title{Grouped Boxplots}
 \usage{
-graph_chem_data(chemical_summary, manual_remove = NULL, mean_logic = FALSE,
-  sum_logic = TRUE)
+graph_chem_data(chemical_summary, manual_remove = NULL,
+  mean_logic = FALSE, sum_logic = TRUE)
 
 plot_tox_boxplots(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
