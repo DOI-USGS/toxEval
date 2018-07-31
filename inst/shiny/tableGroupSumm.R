@@ -15,7 +15,7 @@ output$tableGroupSumm <- DT::renderDataTable({
                               sum_logic = sum_logic,
                               hit_threshold = hitThres)
   
-  updateAceEditor(session, editorId = "tableGroup_out", value = tableGroupCode() )
+  shinyAce::updateAceEditor(session, editorId = "tableGroup_out", value = tableGroupCode() )
   tableGroup
   
 })

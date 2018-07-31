@@ -4,9 +4,9 @@ output$mymap <- leaflet::renderLeaflet({
   input$data
   
   isolate({
-    map <- leaflet() %>%
-      addProviderTiles("CartoDB.Positron") %>%
-      setView(lng = -83.5, lat = 44.5, zoom=6)    
+    map <- leaflet::leaflet() %>%
+      leaflet::addProviderTiles("CartoDB.Positron") %>%
+      leaflet::setView(lng = -83.5, lat = 44.5, zoom=6)    
   })
 
 })
@@ -19,10 +19,10 @@ output$mapFooter <- renderUI({
   
   chemical_summary <- chemical_summary()
   
-  nSamples <- select(chemical_summary,site,date) %>%
-    distinct() %>%
-    group_by(site) %>%
-    summarize(count = n())
+  nSamples <- dplyr::select(chemical_summary,site,date) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(site) %>%
+    dplyr::summarize(count = n())
   
   HTML(paste0("<h5>Size range represents number of samples. Ranges from ", min(nSamples$count,na.rm = TRUE),
               " - ", 
@@ -56,7 +56,7 @@ mapDataINFO <- reactive({
                               sum_logic = sum_logic)
     latest_map <<- mapDataList
   }
-  updateAceEditor(session, editorId = "mapCode_out", value = mapCode() )
+  shinyAce::updateAceEditor(session, editorId = "mapCode_out", value = mapCode() )
   return(mapDataList)
   
 })
@@ -94,12 +94,12 @@ observe({
   if(length(siteToFind) == 1){
 
     mapData <- mapData %>%
-      filter(SiteID == siteToFind)
+      dplyr::filter(SiteID == siteToFind)
   }
 
-  map <- leafletProxy("mymap", data=mapData) %>%
-    clearMarkers() %>%
-    addCircleMarkers(lat=~dec_lat, lng=~dec_lon,
+  map <- leaflet::leafletProxy("mymap", data=mapData) %>%
+    leaflet::clearMarkers() %>%
+    leaflet::addCircleMarkers(lat=~dec_lat, lng=~dec_lon,
                      popup=paste0('<b>',mapData$`Short Name`,"</b><br/><table>",
                                   "<tr><td>",maxEARWords,": </td><td>",sprintf("%.1f",mapData$meanMax),'</td></tr>',
                                   "<tr><td>Number of Samples: </td><td>",mapData$count,'</td></tr>',
@@ -124,13 +124,13 @@ observe({
   sum_words <- ifelse(sum_logic, "Sum of","Max")
   
   if(length(siteToFind) > 1){
-    map <- map %>% clearControls() 
+    map <- map %>% leaflet::clearControls() 
     
-    map <- addLegend(map,pal = pal,
+    map <- leaflet::addLegend(map,pal = pal,
                      position = 'bottomleft',
                      values=~meanMax,
                      opacity = 0.8,
-                     labFormat = labelFormat(digits = 2), #transform = function(x) as.integer(x)),
+                     labFormat = leaflet::labelFormat(digits = 2), #transform = function(x) as.integer(x)),
                      title = paste(sum_words,category,"EAR<br>",
                                    maxEARWords,"at site"))
   }

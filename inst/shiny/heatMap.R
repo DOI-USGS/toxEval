@@ -28,7 +28,7 @@ heatMap_create <- reactive({
                               font_size = ifelse(catType == 2, 14, 17),
                               title = genericTitle())
   
-  updateAceEditor(session, editorId = "heat_out", value = heatCode() )
+  shinyAce::updateAceEditor(session, editorId = "heat_out", value = heatCode() )
   
   return(heatMap)
 })
@@ -46,7 +46,7 @@ output$graphHeat <- renderPlot({
 output$graphHeat.ui <- renderUI({
   height <- PlotHeight()
   
-  withSpinner(plotOutput("graphHeat", height = height, width="100%"))
+  shinycssloaders::withSpinner(plotOutput("graphHeat", height = height, width="100%"))
 })
 
 output$downloadHeatPlot <- downloadHandler(

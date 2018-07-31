@@ -31,10 +31,10 @@ get_benchmarks <- reactive({
                                    remove_groups = remove_groups)
       
       bench <- ACC %>%
-        filter(endPoint %in% filtered_ep$endPoint) %>%
-        rename(Value = ACC_value,
+        dplyr::filter(endPoint %in% filtered_ep$endPoint) %>%
+        dplyr::rename(Value = ACC_value,
                Chemical = chnm) %>%
-        left_join(filtered_ep, by = "endPoint")
+        dplyr::left_join(filtered_ep, by = "endPoint")
 
     } else {
       bench <- rawData$benchmarks

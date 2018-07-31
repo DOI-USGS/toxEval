@@ -18,7 +18,7 @@ endpointGraph_create <- reactive({
                                       title = genericTitle(),
                                       font_size = 18) 
   
-  updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
+  shinyAce::updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
   return(endpointGraph)
 })
 
@@ -36,7 +36,7 @@ output$endpointGraph.ui <- renderUI({
   
   height <- PlotHeight_ep()
   
-  withSpinner(plotOutput("endpointGraph", height = height, width = "100%"))
+  shinycssloaders::withSpinner(plotOutput("endpointGraph", height = height, width = "100%"))
 })
 
 PlotHeight_ep = reactive({
@@ -49,7 +49,7 @@ PlotHeight_ep = reactive({
   
   if(filterBy != "All"){
     chemical_summary <- chemical_summary %>%
-      filter_(paste0(cat_col," == '", filterBy,"'"))
+      dplyr::filter_(paste0(cat_col," == '", filterBy,"'"))
   }
   
   n <- 35*length(unique(chemical_summary$endPoint))

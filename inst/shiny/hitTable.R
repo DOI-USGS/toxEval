@@ -16,7 +16,7 @@ output$hitsTable <- DT::renderDataTable({
                                    sum_logic = sum_logic,
                                    hit_threshold = hitThres)
   
-  updateAceEditor(session, editorId = "siteHit_out", value = siteHitCode() )
+  shinyAce::updateAceEditor(session, editorId = "siteHit_out", value = siteHitCode() )
   tableGroup
   
 })

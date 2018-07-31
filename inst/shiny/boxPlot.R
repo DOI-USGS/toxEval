@@ -50,7 +50,7 @@ output$graphGroup <- renderPlot({
   validate(
     need(!is.null(rawData_data$data), "Please select a data set")
   )
-  updateAceEditor(session, editorId = "boxCode_out", value = boxCode() )
+  shinyAce::updateAceEditor(session, editorId = "boxCode_out", value = boxCode() )
   
   boxPlots_create()
   
@@ -76,7 +76,7 @@ output$graphGroup.ui <- renderUI({
   
   height <- PlotHeight()
 
-  withSpinner(plotOutput("graphGroup", height = height, width="100%"))
+  shinycssloaders::withSpinner(plotOutput("graphGroup", height = height, width="100%"))
 })
 
 output$downloadBoxPlot <- downloadHandler(
