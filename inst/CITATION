@@ -1,0 +1,14 @@
+citHeader("To cite dataRetrieval in publications, please use:")
+
+bibentry(bibtype = "Manual",
+ author = personList(
+              as.person("Laura A. De Cicco"),
+              as.person("Steven R. Corsi")),
+  title = "User guide for toxEval",
+  publisher = "U.S. Geological Survey",
+  address="Reston, VA",
+  institution = "U.S. Geological Survey",
+  year = 2018,
+  url = "https://code.usgs.gov/WMA-DataScience/toxEval",
+  textVersion = "De Cicco, L.A., and Corsi, S.R., 2018, User guide for toxEval"
+)
