@@ -5,7 +5,7 @@
 \title{plot_tox_heatmap}
 \usage{
 plot_tox_heatmap(chemical_summary, chem_site, category = "Biological",
-  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 5), manual_remove = NULL,
+  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 10), manual_remove = NULL,
   mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE, font_size = NA,
   title = NA)
 }
