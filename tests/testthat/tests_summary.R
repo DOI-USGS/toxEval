@@ -33,10 +33,9 @@ test_that("Calculating tox_list", {
   expect_length(tox_list, 5)
   expect_equivalent(chemical_summary, chemical_summary1)
   
-  expect_warning(tox_list_2 <- create_toxEval(file.path(path_to_tox, "test_data.xlsx")))
-  expect_true(all(c("SiteID","Sample Date","CAS","Value") %in% names(tox_list_2$chem_data)))
-  expect_true(all(c("Class","CAS") %in% names(tox_list_2$chem_info)))
-  expect_true(all(c("SiteID","dec_lat","dec_lon","Short Name") %in% names(tox_list_2$chem_site)))
+  expect_true(all(c("SiteID","Sample Date","CAS","Value") %in% names(tox_list$chem_data)))
+  expect_true(all(c("Class","CAS") %in% names(tox_list$chem_info)))
+  expect_true(all(c("SiteID","dec_lat","dec_lon","Short Name") %in% names(tox_list$chem_site)))
   
   
 })

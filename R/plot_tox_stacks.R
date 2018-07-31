@@ -115,7 +115,7 @@ plot_tox_stacks <- function(chemical_summary,
   
   if(!single_site){
     
-    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE)
+    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
     
     graphData <- graphData %>%
       dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],

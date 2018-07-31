@@ -96,8 +96,6 @@ plot_tox_heatmap <- function(chemical_summary,
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
 
-  fill_label <- ifelse(mean_logic, "Mean EAR", "Max EAR")
-  
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- "Sites"
   }
@@ -135,10 +133,10 @@ plot_tox_heatmap <- function(chemical_summary,
     
     single_site <- length(unique(chemical_summary$site)) == 1
     
-    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE)
+    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
     
-    caption <- gsub(", k = sites","",y_label[['caption']])
-    fill_label <- ifelse(mean_logic, "mean", "max")
+    caption <- y_label[['caption']]
+    fill_label <- y_label[['y_label']]
     
     plot_back <- ggplot(data = graphData) +
       geom_point(data = complete_data_filled, aes(x = `Short Name`, y=category, shape=""), size = 2 ) +
@@ -164,6 +162,30 @@ plot_tox_heatmap <- function(chemical_summary,
             axis.ticks = element_blank(),
             plot.background = element_rect(fill = "transparent",colour = NA))
 
+    any_non_detects <- any(is.na(graphData$meanEAR))
+    complete_data_filled <- get_complete_set_category(chemical_summary, graphData, chem_site)
+    
+    if(any_non_detects & any_missing){
+      plot_back <- plot_back +
+        guides(colour=guide_legend("Non-detects", override.aes=list(colour="khaki", fill="khaki"), order = 2),
+               shape=guide_legend("Missing", order = 3),
+               fill = guide_colorbar(order=1)) 
+    } else if (any_non_detects){
+      plot_back <- plot_back +
+        guides(colour=guide_legend("Non-detects", override.aes=list(colour="khaki", fill="khaki"), order = 2),
+               fill = guide_colorbar(order=1),
+               shape = "none")    
+    } else if (any_missing){
+      plot_back <- plot_back +
+        guides(shape=guide_legend("Missing", order = 2),
+               fill = guide_colorbar(order=1),
+               colour = "none")
+    } else {
+      plot_back <- plot_back +
+        guides(fill = guide_colorbar(order=1),
+               shape = "none",
+               colour = "none")
+    }
   }
   
   if(!is.na(font_size)){
@@ -180,7 +202,8 @@ plot_tox_heatmap <- function(chemical_summary,
       plot_back <- plot_back +
         theme(plot.title = element_text(size=font_size))
     }
-  }  
+  }
+  
   
   return(plot_back)
 }
@@ -204,9 +227,11 @@ plot_heat_chemicals <- function(chemical_summary,
   }
   single_site <- length(unique(chemical_summary$site)) == 1
 
-  fill_text <- ifelse(mean_logic, "mean", "max")
-  fill_text <- bquote(italic(.(fill_text))~group("[", EAR["[" * j * "]"] , "]"))
+  y_label <- fancyLabels(category = "Chemical", mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
   
+  caption <- y_label[['caption']]
+  fill_text <- y_label[['y_label']]
+
   graphData <- graphData %>%
     dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
               by=c("site"="SiteID"))
@@ -226,7 +251,7 @@ plot_heat_chemicals <- function(chemical_summary,
     theme(axis.text.x = element_text( angle = 90,vjust=0.5,hjust = 1)) +
     ylab("") +
     xlab("") +
-    labs(fill = fill_text, caption = bquote(italic("j = samples"))) +
+    labs(fill = fill_text, caption = caption) +
     scale_fill_gradient( na.value = 'khaki',
                          trans = 'log', low = "white", high = "steelblue",
                          breaks=breaks,

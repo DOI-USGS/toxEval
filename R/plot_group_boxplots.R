@@ -380,17 +380,19 @@ fancyNumbers <- function(n){
   return(textReturn)
 }
 
-fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE){
+fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE, include_site = TRUE){
   
   pretty_cat <- switch(category, 
                        "Chemical" = "i = chemicals, j = samples, k = sites",
                        "Biological" = "i = chemicals in a specified grouping, j = samples, k = sites",
                        "Chemical Class" = "i = chemicals in a specified class, j = samples, k = sites"
   )
-  
+  if(!include_site){
+    pretty_cat <- gsub(", k = sites","",pretty_cat)
+  }
+  pretty_cat <- bquote(italic(.(pretty_cat)))
   word_stat <- ifelse(mean_logic, "mean", "max")
 
-  
   if(single_site){
     
     y_label <- switch(category,
@@ -407,36 +409,67 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE)
   
     if(sep){
       if(sum_logic){
-        y_label <- bquote(.(word_stat) ~ 
-                                 group("[", 
-                                       group("(",
-                                             sum(" "  ~ EAR["[" *i* "]"]),
-                                             ")")["[" *j* "]"],
-                                       "]")
-                               ["[" *k* "]"])
+        if(include_site){
+          y_label <- bquote(italic(.(word_stat)) ~ 
+                              group("[", 
+                                    group("(",
+                                          sum(" "  ~ EAR["[" *i* "]"]),
+                                          ")")["[" *j* "]"],
+                                    "]")
+                            ["[" *k* "]"])          
+        } else {
+          y_label <- bquote(italic(.(word_stat)) ~ 
+                              group("[", sum(" "~EAR["[" *i* "]"]),"]")["[" *j* "]"])
+        }
+
       } else {
-        y_label <- bquote(.(word_stat) ~ 
-                            group("[", 
-                                  max ~ group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
-                                  "]")
-                          ["[" *k* "]"])        
+        if(include_site){
+          y_label <- bquote(.(word_stat) ~ 
+                              group("[", 
+                                    italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
+                                    "]")
+                            ["[" *k* "]"])           
+        } else {
+          y_label <- bquote(.(word_stat) ~ 
+                              group("[", 
+                                    italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
+                                    "]")) 
+        }
+       
       }
       y_label <- list(y_label = y_label, caption = pretty_cat)
+      
     } else {
+      
       if(sum_logic){
-        y_label <- bquote(atop(.(word_stat) ~ 
-                                 group("[", 
-                                       group("(",
-                                             sum(" "  ~ EAR["[" *i* "]"]),
-                                             ")")["[" *j* "]"],
-                                       "]")
-                               ["[" *k* "]"], .(pretty_cat)))
+        if(include_site){
+          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+                                   group("[", 
+                                         group("(",
+                                               sum(" "  ~ EAR["[" *i* "]"]),
+                                               ")")["[" *j* "]"],
+                                         "]")
+                                 ["[" *k* "]"], .(pretty_cat)))
+        } else {
+          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+                                   group("[", sum(" "  ~ EAR["[" *i* "]"]),
+                                               ")")["[" *j* "]"], 
+                                 .(pretty_cat)))          
+        }
       } else {
-        y_label <- bquote(atop(.(word_stat) ~ 
-                                 group("[", 
-                                       max ~ group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
-                                       "]")
-                               ["[" *k* "]"], .(pretty_cat)))        
+
+        if(include_site){
+          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+                                   group("[", 
+                                         italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
+                                         "]")
+                                 ["[" *k* "]"], .(pretty_cat)))
+        } else {
+          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+                            italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"], 
+                            .(pretty_cat)))
+        }
+        
       }
     }
   }
