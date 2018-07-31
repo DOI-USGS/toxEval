@@ -424,13 +424,13 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE,
 
       } else {
         if(include_site){
-          y_label <- bquote(.(word_stat) ~ 
+          y_label <- bquote(italic(.(word_stat))* 
                               group("[", 
                                     italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
                                     "]")
                             ["[" *k* "]"])           
         } else {
-          y_label <- bquote(.(word_stat) ~ 
+          y_label <- bquote(italic(.(word_stat)) * 
                               group("[", 
                                     italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
                                     "]")) 
@@ -443,7 +443,7 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE,
       
       if(sum_logic){
         if(include_site){
-          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+          y_label <- bquote(atop(italic(.(word_stat)) * 
                                    group("[", 
                                          group("(",
                                                sum(" "*EAR["[" *i* "]"]),
@@ -451,7 +451,7 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE,
                                          "]")
                                  ["[" *k* "]"], .(pretty_cat)))
         } else {
-          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+          y_label <- bquote(atop(italic(.(word_stat)) * 
                                    group("[", sum(" "*EAR["[" *i* "]"]),
                                                ")")["[" *j* "]"], 
                                  .(pretty_cat)))          
@@ -459,13 +459,13 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE,
       } else {
 
         if(include_site){
-          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+          y_label <- bquote(atop(italic(.(word_stat)) * 
                                    group("[", 
                                          italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"],
                                          "]")
                                  ["[" *k* "]"], .(pretty_cat)))
         } else {
-          y_label <- bquote(atop(italic(.(word_stat)) ~ 
+          y_label <- bquote(atop(italic(.(word_stat)) * 
                             italic(max) * group("(",EAR["[" *i* "]"],")")["[" *j* "]"], 
                             .(pretty_cat)))
         }
