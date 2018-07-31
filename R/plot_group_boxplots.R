@@ -43,7 +43,6 @@
 #' @rdname plot_tox_boxplots
 #' @import ggplot2
 #' @importFrom stats median
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -124,8 +123,8 @@ plot_tox_boxplots <- function(chemical_summary,
       pretty_logs_new <- prettyLogs(chemical_summary$EAR)
 
       countNonZero <- chemical_summary %>%
-        group_by(category) %>%
-        summarise(nonZero = as.character(length(unique(CAS))),
+        dplyr::group_by(category) %>%
+        dplyr::summarise(nonZero = as.character(length(unique(CAS))),
                   hits = as.character(sum(EAR > hit_threshold))) %>%
         data.frame() 
       
@@ -134,13 +133,13 @@ plot_tox_boxplots <- function(chemical_summary,
       label <- "# Chemicals"
       
       if(!is.null(manual_remove)){
-        chemical_summary <- filter(chemical_summary, !(category %in% manual_remove))
+        chemical_summary <- dplyr::filter(chemical_summary, !(category %in% manual_remove))
       }
       
       orderColsBy <- chemical_summary %>%
-        group_by(category) %>%
-        summarise(median = median(EAR[EAR != 0])) %>%
-        arrange(median)
+        dplyr::group_by(category) %>%
+        dplyr::summarise(median = median(EAR[EAR != 0])) %>%
+        dplyr::arrange(median)
       
       orderedLevels <- orderColsBy$category
       
@@ -185,8 +184,8 @@ plot_tox_boxplots <- function(chemical_summary,
       pretty_logs_new <- prettyLogs(graphData$meanEAR)
       
       countNonZero <- graphData %>%
-        group_by(category) %>%
-        summarise(nonZero = as.character(length(unique(site[meanEAR>0]))),
+        dplyr::group_by(category) %>%
+        dplyr::summarise(nonZero = as.character(length(unique(site[meanEAR>0]))),
                   hits = as.character(sum(meanEAR > hit_threshold))) %>%
         data.frame()
       
@@ -222,7 +221,7 @@ plot_tox_boxplots <- function(chemical_summary,
               axis.title =   element_text(size=font_size))
     }
     
-    if(packageVersion("ggplot2") >= '3.0.0'){
+    if(utils::packageVersion("ggplot2") >= '3.0.0'){
       bioPlot <- bioPlot +
         coord_flip(clip = "off")
     } else {
@@ -233,7 +232,7 @@ plot_tox_boxplots <- function(chemical_summary,
     plot_info <- ggplot_build(bioPlot)
     layout_stuff <- plot_info$layout
     
-    if(packageVersion("ggplot2") >= "3.0.0"){
+    if(utils::packageVersion("ggplot2") >= "3.0.0"){
       xmin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
       xmax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
       ymax <- length(layout_stuff$panel_scales_x[[1]]$range$range)
@@ -313,28 +312,28 @@ tox_boxplot_data <- function(chemical_summary,
 
   if(!sum_logic){
     tox_boxplot_data <- chemical_summary %>%
-      group_by(site,category) %>%
-      summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
+      dplyr::group_by(site,category) %>%
+      dplyr::summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
       data.frame() 
       
   } else {
     tox_boxplot_data <- chemical_summary %>%
-      group_by(site,date,category) %>%
-      summarise(sumEAR=sum(EAR)) %>%
+      dplyr::group_by(site,date,category) %>%
+      dplyr::summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
-      group_by(site, category) %>%
-      summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+      dplyr::group_by(site, category) %>%
+      dplyr::summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
       data.frame()     
   }
 
   if(!is.null(manual_remove)){
-    tox_boxplot_data <- filter(tox_boxplot_data, !(category %in% manual_remove))
+    tox_boxplot_data <- dplyr::filter(tox_boxplot_data, !(category %in% manual_remove))
   }
   
   orderColsBy <- tox_boxplot_data %>%
-    group_by(category) %>%
-    summarise(median = median(meanEAR[meanEAR != 0])) %>%
-    arrange(median)
+    dplyr::group_by(category) %>%
+    dplyr::summarise(median = median(meanEAR[meanEAR != 0])) %>%
+    dplyr::arrange(median)
   
   orderedLevels <- orderColsBy$category
   

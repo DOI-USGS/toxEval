@@ -2,7 +2,7 @@ Package: toxEval
 Type: Package
 Title: ToxCast Evaluations
 Version: 1.0.0
-Date: 2018-07-11
+Date: 2018-07-31
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
                      email = "ldecicco@usgs.gov"),
@@ -30,9 +30,9 @@ Imports:
     DT (>= 0.1.24),
     leaflet  (>= 1.0.0),
     ggplot2 (>= 3.0.0),
+    magrittr,
     shiny,
     shinydashboard,
-    data.table,
     RColorBrewer,
     readxl,
     tools,
@@ -41,11 +41,10 @@ Imports:
 Suggests:
     rmarkdown,
     testthat,
-    knitr,
-    htmltools
+    knitr
 BugReports: https://github.com/USGS-R/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
 LazyData: yes
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

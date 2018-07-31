@@ -44,23 +44,6 @@ https://owi.usgs.gov/R/packages.html#research'),
 #'
 #' @name toxEval-package
 #' @docType package
-#' @importFrom dplyr filter
-#' @importFrom dplyr rename
-#' @importFrom dplyr group_by
-#' @importFrom dplyr summarize
-#' @importFrom dplyr summarise
-#' @importFrom dplyr select
-#' @importFrom dplyr arrange
-#' @importFrom dplyr distinct
-#' @importFrom dplyr left_join
-#' @importFrom dplyr right_join
-#' @importFrom dplyr desc
-#' @importFrom dplyr filter_
-#' @importFrom dplyr rename_
-#' @importFrom dplyr mutate
-#' @importFrom dplyr group_by_
-#' @importFrom dplyr select_
-#' @importFrom dplyr mutate_
 #' @author Laura De Cicco \email{ldecicco@@usgs.gov}. Steven Corsi  
 #' @keywords ToxCast
 NULL

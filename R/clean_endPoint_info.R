@@ -15,7 +15,6 @@
 #' filtered out and some additional categories in intended_target_family and
 #' intended_target_family_sub. The names in intended_target_family
 #' are revised to look more appealing in graphs and tables.
-#' @importFrom tools toTitleCase
 #' @examples 
 #' end_point_info <- end_point_info
 #' cleaned_ep <- clean_endPoint_info(end_point_info)

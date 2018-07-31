@@ -22,11 +22,8 @@
 #' @return data frame with one row per site, and the mas or mean EAR and frequency of 
 #' hits based on the category.
 #' 
-#' @import DT
 #' @rdname rank_sites_DT
 #' @importFrom stats median
-#' @importFrom tidyr spread unite
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -78,14 +75,14 @@ rank_sites_DT <- function(chemical_summary,
   ignoreIndex <- which(names(statsOfColumn) %in% c("site","category"))
   
   if(n > 20 & n<30){
-    colors <- c(brewer.pal(n = 12, name = "Set3"),
-                  brewer.pal(n = 8, name = "Set2"),
-                  brewer.pal(n = max(c(3,n-20)), name = "Set1"))
+    colors <- c(RColorBrewer::brewer.pal(n = 12, name = "Set3"),
+                RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+                RColorBrewer::brewer.pal(n = max(c(3,n-20)), name = "Set1"))
   } else if (n <= 20){
-    colors <- c(brewer.pal(n = 12, name = "Set3"),
-                  brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
+    colors <- c(RColorBrewer::brewer.pal(n = 12, name = "Set3"),
+                RColorBrewer::brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
   } else {
-    colors <- colorRampPalette(brewer.pal(11,"Spectral"))(n)
+    colors <- colorRampPalette(RColorBrewer::brewer.pal(11,"Spectral"))(n)
   }
   
   tableSumm <- DT::datatable(statsOfColumn, extensions = 'Buttons',
@@ -98,23 +95,23 @@ rank_sites_DT <- function(chemical_summary,
                                             # pageLength = nrow(statsOfColumn),
                                             order=list(list(colToSort,'desc'))))
 
-  tableSumm <- formatRound(tableSumm, names(statsOfColumn)[-ignoreIndex], 2)
+  tableSumm <- DT::formatRound(tableSumm, names(statsOfColumn)[-ignoreIndex], 2)
 
   for(i in 1:length(maxEARS)){
-    tableSumm <- formatStyle(tableSumm,
+    tableSumm <- DT::formatStyle(tableSumm,
                              names(statsOfColumn)[maxEARS[i]],
                              backgroundColor = colors[i])
-    tableSumm <- formatStyle(tableSumm,
+    tableSumm <- DT::formatStyle(tableSumm,
                              names(statsOfColumn)[freqCol[i]],
                              backgroundColor = colors[i])
 
-    tableSumm <- formatStyle(tableSumm, names(statsOfColumn)[maxEARS[i]],
-                             background = styleColorBar(range(statsOfColumn[,names(statsOfColumn)[maxEARS[i]]],na.rm = TRUE), 'goldenrod'),
+    tableSumm <- DT::formatStyle(tableSumm, names(statsOfColumn)[maxEARS[i]],
+                             background = DT::styleColorBar(range(statsOfColumn[,names(statsOfColumn)[maxEARS[i]]],na.rm = TRUE), 'goldenrod'),
                              backgroundSize = '100% 90%',
                              backgroundRepeat = 'no-repeat',
                              backgroundPosition = 'center' )
-    tableSumm <- formatStyle(tableSumm, names(statsOfColumn)[freqCol[i]],
-                             background = styleColorBar(range(statsOfColumn[,names(statsOfColumn)[freqCol[i]]],na.rm = TRUE), 'wheat'),
+    tableSumm <- DT::formatStyle(tableSumm, names(statsOfColumn)[freqCol[i]],
+                             background = DT::styleColorBar(range(statsOfColumn[,names(statsOfColumn)[freqCol[i]]],na.rm = TRUE), 'wheat'),
                              backgroundSize = '100% 90%',
                              backgroundRepeat = 'no-repeat',
                              backgroundPosition = 'center')
@@ -139,14 +136,14 @@ rank_sites <- function(chemical_summary,
   siteToFind <- unique(chemical_summary$shortName)
   
   if(category == "Chemical"){
-    chemical_summary <- mutate(chemical_summary, category = chnm)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemical_summary <- mutate(chemical_summary, category = Class)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = Class)
   } else {
-    chemical_summary <- mutate(chemical_summary, category = Bio_category)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
   }
   
-  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
+  chemical_summary <- dplyr::select(chemical_summary, -Class, -Bio_category, -chnm)
   
   if(length(siteToFind) == 1){
     chemical_summary$site <- chemical_summary$category
@@ -156,29 +153,29 @@ rank_sites <- function(chemical_summary,
 
   if(!sum_logic){
     statsOfColumn <- chemical_summary %>%
-      group_by(site, date, category) %>%
-      summarize(sumEAR = max(EAR),
+      dplyr::group_by(site, date, category) %>%
+      dplyr::summarize(sumEAR = max(EAR),
                 nHits = sum(sumEAR > hit_threshold)) %>%
-      group_by(site, category) %>%
-      summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
+      dplyr::group_by(site, category) %>%
+      dplyr::summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
                 freq = sum(nHits > 0)/n()) %>%
       data.frame()    
   } else {
     statsOfColumn <- chemical_summary %>%
-      group_by(site, date, category) %>%
-      summarise(sumEAR = sum(EAR),
+      dplyr::group_by(site, date, category) %>%
+      dplyr::summarise(sumEAR = sum(EAR),
                 nHits = sum(sumEAR > hit_threshold)) %>%
-      group_by(site, category) %>%
-      summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
+      dplyr::group_by(site, category) %>%
+      dplyr::summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
                 freq = sum(nHits > 0)/n()) %>%
       data.frame()
   }
 
   if(!(length(siteToFind) == 1)){
     statsOfColumn <- statsOfColumn %>%
-      gather(calc, value, -site, -category) %>%
-      unite(choice_calc, category, calc, sep=" ") %>%
-      spread(choice_calc, value)        
+      tidyr::gather(calc, value, -site, -category) %>%
+      tidyr::unite(choice_calc, category, calc, sep=" ") %>%
+      tidyr::spread(choice_calc, value)        
   }
   colToSort <- 2
   if("nSamples" %in% names(statsOfColumn)){

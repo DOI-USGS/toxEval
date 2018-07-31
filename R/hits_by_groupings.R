@@ -23,10 +23,7 @@
 #' @export
 #' @return data frame with one row per category, and one column per Biological grouping.
 #' @rdname hits_by_groupings_DT
-#' @import DT
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @importFrom stats median
-#' @importFrom tidyr spread unite
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -64,7 +61,7 @@ hits_by_groupings_DT <- function(chemical_summary,
                               hit_threshold = hit_threshold)
   
   cuts <- seq(0,max(as.matrix(tableData),na.rm=TRUE),length.out = 8)
-  colors <- brewer.pal(9,"Blues") #"RdYlBu"
+  colors <- RColorBrewer::brewer.pal(9,"Blues") #"RdYlBu"
   
   tableData1 <- DT::datatable(tableData, extensions = 'Buttons',
                               rownames = TRUE,
@@ -75,9 +72,9 @@ hits_by_groupings_DT <- function(chemical_summary,
   
   if(category != "Biological"){
     for(i in 1:ncol(tableData)){
-      tableData1 <- formatStyle(tableData1, columns = names(tableData)[i],
-                  backgroundColor = styleInterval(cuts = cuts,values = colors),
-                  color = styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
+      tableData1 <- DT::formatStyle(tableData1, columns = names(tableData)[i],
+                  backgroundColor = DT::styleInterval(cuts = cuts,values = colors),
+                  color = DT::styleInterval(0.75*max(tableData,na.rm=TRUE),values = c("black","white")),
                   `font-size` = '17px')
     }
   }
@@ -109,35 +106,35 @@ hits_by_groupings <- function(chemical_summary,
     
     if(!sum_logic){
       tableData <- chemical_summary %>%
-        group_by(site, Bio_category, category) %>%
-        summarize(meanEAR = ifelse(mean_logic, mean(EAR),max(EAR))) %>%
-        group_by(Bio_category, category) %>%
-        summarize(nSites = sum(meanEAR >  hit_threshold)) %>%
+        dplyr::group_by(site, Bio_category, category) %>%
+        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(EAR),max(EAR))) %>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarize(nSites = sum(meanEAR >  hit_threshold)) %>%
         data.frame()
     } else {
       tableData <- chemical_summary %>%
-        group_by(site, Bio_category, category, date) %>%
-        summarize(sumEAR = sum(EAR)) %>%
-        group_by(site, Bio_category, category) %>%
-        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-        group_by(Bio_category, category) %>%
-        summarize(nSites = sum(meanEAR >  hit_threshold)) %>%
+        dplyr::group_by(site, Bio_category, category, date) %>%
+        dplyr::summarize(sumEAR = sum(EAR)) %>%
+        dplyr::group_by(site, Bio_category, category) %>%
+        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarize(nSites = sum(meanEAR >  hit_threshold)) %>%
         data.frame()      
     }
   } else {
     
     if(!sum_logic){
       tableData <- chemical_summary %>%
-        group_by(Bio_category, category) %>%
-        summarise(nSites = sum(EAR > hit_threshold))%>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarise(nSites = sum(EAR > hit_threshold))%>%
         data.frame()      
     } else {
       tableData <- chemical_summary %>%
-        group_by(Bio_category, category, date)%>%
-        summarise(sumEAR=sum(EAR)) %>%
+        dplyr::group_by(Bio_category, category, date)%>%
+        dplyr::summarise(sumEAR=sum(EAR)) %>%
         data.frame() %>%
-        group_by(Bio_category, category) %>%
-        summarise(nSites = sum(sumEAR > hit_threshold))%>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarise(nSites = sum(sumEAR > hit_threshold))%>%
         data.frame()      
     }
   }
@@ -145,7 +142,7 @@ hits_by_groupings <- function(chemical_summary,
   if(category != "Biological"){
     
     tableData <- tableData %>%
-      spread(Bio_category, nSites)
+      tidyr::spread(Bio_category, nSites)
     
     sumOfColumns <- colSums(tableData[-1],na.rm = TRUE)
     
@@ -162,7 +159,7 @@ hits_by_groupings <- function(chemical_summary,
     rownames(tableData) <- groups[!is.na(groups)]
     
   } else {
-    tableData <- select(tableData, Bio_category, nSites)
+    tableData <- dplyr::select(tableData, Bio_category, nSites)
     rownames(tableData) <- tableData$Bio_category
     tableData <- tableData[,-1,drop=FALSE]
   }

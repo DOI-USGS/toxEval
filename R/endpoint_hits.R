@@ -28,11 +28,8 @@
 #' @export
 #' @return data frame with one row per endpoint that had a hit (based on the
 #' hit_threshold). The columns are based on the category.
-#' @import DT
 #' @rdname endpoint_hits_DT
 #' @importFrom stats median
-#' @importFrom tidyr spread unite
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -72,8 +69,8 @@ endpoint_hits_DT <- function(chemical_summary,
   if(category == "Chemical"){
     orig_names <- names(fullData)
     
-    casKey <- select(chemical_summary, chnm, CAS) %>%
-      distinct()
+    casKey <- dplyr::select(chemical_summary, chnm, CAS) %>%
+      dplyr::distinct()
     
     numeric_hits <- fullData
     hits <- sapply(fullData, function(x) as.character(x))
@@ -100,14 +97,14 @@ endpoint_hits_DT <- function(chemical_summary,
   n <- ncol(fullData)-1
   
   if(n > 20 & n<30){
-    colors <- c(brewer.pal(n = 12, name = "Set3"),
-                brewer.pal(n = 8, name = "Set2"),
-                brewer.pal(n = max(c(3,n-20)), name = "Set1"))
+    colors <- c(RColorBrewer::brewer.pal(n = 12, name = "Set3"),
+                RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+                RColorBrewer::brewer.pal(n = max(c(3,n-20)), name = "Set1"))
   } else if (n <= 20){
-    colors <- c(brewer.pal(n = 12, name = "Set3"),
-                brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
+    colors <- c(RColorBrewer::brewer.pal(n = 12, name = "Set3"),
+                RColorBrewer::brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
   } else {
-    colors <- colorRampPalette(brewer.pal(11,"Spectral"))(n)
+    colors <- colorRampPalette(RColorBrewer::brewer.pal(11,"Spectral"))(n)
   }
   
   fullData_dt <- DT::datatable(fullData, extensions = 'Buttons',
@@ -119,13 +116,13 @@ endpoint_hits_DT <- function(chemical_summary,
                                              order=list(list(1,'desc'))))
   
   for(i in 2:ncol(fullData)){
-    fullData_dt <- formatStyle(fullData_dt,
+    fullData_dt <- DT::formatStyle(fullData_dt,
                              names(fullData)[i],
                              backgroundColor = colors[i])
 
     if(category != "Chemical"){
-      fullData_dt <- formatStyle(fullData_dt, names(fullData)[i],
-                                 background = styleColorBar(range(fullData[,names(fullData)[i]],na.rm = TRUE), 'goldenrod'),
+      fullData_dt <- DT::formatStyle(fullData_dt, names(fullData)[i],
+                                 background = DT::styleColorBar(range(fullData[,names(fullData)[i]],na.rm = TRUE), 'goldenrod'),
                                  backgroundSize = '100% 90%',
                                  backgroundRepeat = 'no-repeat',
                                  backgroundPosition = 'center' )      
@@ -152,48 +149,48 @@ endpoint_hits <- function(chemical_summary,
   fullData <- fullData_init
   
   if(category == "Chemical"){
-    chemical_summary <- mutate(chemical_summary, category = chnm)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemical_summary <- mutate(chemical_summary, category = Class)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = Class)
   } else {
-    chemical_summary <- mutate(chemical_summary, category = Bio_category)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
   }
   
   if(length(unique(chemical_summary$site)) > 1){
     
     if(!sum_logic){
       fullData <- chemical_summary %>%
-        group_by(site, category, endPoint, date) %>%
-        summarize(sumEAR = max(EAR)) %>%
-        group_by(site, category, endPoint) %>%
-        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-        group_by(category, endPoint) %>%
-        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
-        spread(category, nSites)       
+        dplyr::group_by(site, category, endPoint, date) %>%
+        dplyr::summarize(sumEAR = max(EAR)) %>%
+        dplyr::group_by(site, category, endPoint) %>%
+        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
+        dplyr::group_by(category, endPoint) %>%
+        dplyr::summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        tidyr::spread(category, nSites)       
     } else {
       fullData <- chemical_summary %>%
-        group_by(site, category, endPoint, date) %>%
-        summarize(sumEAR = sum(EAR)) %>%
-        group_by(site, category, endPoint) %>%
-        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-        group_by(category, endPoint) %>%
-        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
-        spread(category, nSites)      
+        dplyr::group_by(site, category, endPoint, date) %>%
+        dplyr::summarize(sumEAR = sum(EAR)) %>%
+        dplyr::group_by(site, category, endPoint) %>%
+        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
+        dplyr::group_by(category, endPoint) %>%
+        dplyr::summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        tidyr::spread(category, nSites)      
     }
 
   } else {
     if(!sum_logic){
       fullData <- chemical_summary %>%
-        group_by(category, endPoint) %>%
-        summarise(nSites = sum(EAR > hit_threshold)) %>%
-        spread(category, nSites)        
+        dplyr::group_by(category, endPoint) %>%
+        dplyr::summarise(nSites = sum(EAR > hit_threshold)) %>%
+        tidyr::spread(category, nSites)        
     } else {
       fullData <- chemical_summary %>%
-        group_by(category, endPoint, date) %>%
-        summarize(sumEAR = sum(EAR)) %>%
-        group_by(category, endPoint) %>%
-        summarise(nSites = sum(sumEAR > hit_threshold)) %>%
-        spread(category, nSites)      
+        dplyr::group_by(category, endPoint, date) %>%
+        dplyr::summarize(sumEAR = sum(EAR)) %>%
+        dplyr::group_by(category, endPoint) %>%
+        dplyr::summarise(nSites = sum(sumEAR > hit_threshold)) %>%
+        tidyr::spread(category, nSites)      
     }
   }
 

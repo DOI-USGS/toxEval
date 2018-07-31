@@ -37,7 +37,6 @@
 #' @import ggplot2
 #' @importFrom stats median
 #' @importFrom grDevices colorRampPalette
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -96,12 +95,12 @@ plot_tox_stacks <- function(chemical_summary,
   }
 
   counts <- chemical_summary %>%
-    select(site, date) %>%
-    distinct() %>%
-    group_by(site) %>%
-    summarize(count = n()) %>%
-    left_join(select(chem_site, site=SiteID, `Short Name`, site_grouping), by="site") %>%
-    select(-site)
+    dplyr::select(site, date) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(site) %>%
+    dplyr::summarize(count = dplyr::n()) %>%
+    dplyr::left_join(dplyr::select(chem_site, site=SiteID, `Short Name`, site_grouping), by="site") %>%
+    dplyr::select(-site)
 
   siteToFind <- unique(chemical_summary$shortName)
 
@@ -119,7 +118,7 @@ plot_tox_stacks <- function(chemical_summary,
     y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE)
     
     graphData <- graphData %>%
-      left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
+      dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
     
     placement <- -0.05*diff(range(graphData$meanEAR))
@@ -157,15 +156,15 @@ plot_tox_stacks <- function(chemical_summary,
     y_label <- "EARs per Individual Sample"
     
     graphData <- chemical_summary %>%
-      select(-site) 
+      dplyr::select(-site) 
     
     placement <- -0.05*diff(range(graphData$meanEAR))
     
-    dates <- arrange(distinct(select(graphData, date))) 
+    dates <- dplyr::arrange(dplyr::distinct(dplyr::select(graphData, date))) 
     dates$index <- 1:(nrow(dates))
     
     graphData <- graphData %>%
-      left_join(dates, by="date")
+      dplyr::left_join(dates, by="date")
 
     if(category == "Biological"){
       graphData$category <- graphData$Bio_category
@@ -216,7 +215,7 @@ plot_tox_stacks <- function(chemical_summary,
     }
   }
   
-  if(packageVersion("ggplot2") >= '3.0.0'){
+  if(utils::packageVersion("ggplot2") >= '3.0.0'){
     upperPlot <- upperPlot +
       coord_cartesian(clip = "off")
   } 

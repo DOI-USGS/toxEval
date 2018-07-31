@@ -29,8 +29,6 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
-#' @importFrom utils packageVersion
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -82,7 +80,7 @@ plot_tox_endpoints <- function(chemical_summary,
     }
     
     chemical_summary <- chemical_summary %>%
-      filter_(paste0("category == '", filterBy,"'"))
+      dplyr::filter_(paste0("category == '", filterBy,"'"))
   }
   
   y_label <- fancyLabels(category, mean_logic, sum_logic, single_site)
@@ -90,8 +88,8 @@ plot_tox_endpoints <- function(chemical_summary,
   if(single_site){
     
     countNonZero <- chemical_summary %>%
-      group_by(endPoint) %>%
-      summarise(nonZero = as.character(sum(EAR>0)),
+      dplyr::group_by(endPoint) %>%
+      dplyr::summarise(nonZero = as.character(sum(EAR>0)),
                 hits = as.character(sum(EAR > hit_threshold)))
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -101,9 +99,9 @@ plot_tox_endpoints <- function(chemical_summary,
     nHitsEP <- countNonZero$hits
     
     orderColsBy <- chemical_summary %>%
-      group_by(endPoint) %>%
-      summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
-      arrange(median)
+      dplyr::group_by(endPoint) %>%
+      dplyr::summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
+      dplyr::arrange(median)
     
     orderedLevelsEP <- orderColsBy$endPoint
     
@@ -135,27 +133,27 @@ plot_tox_endpoints <- function(chemical_summary,
     
     if(!sum_logic){
       graphData <- chemical_summary %>%
-        group_by(site, category,endPoint) %>%
-        summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
+        dplyr::group_by(site, category,endPoint) %>%
+        dplyr::summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
         data.frame() %>%
-        mutate(category=as.character(category))      
+        dplyr::mutate(category=as.character(category))      
     } else {
       
       graphData <- chemical_summary %>%
-        group_by(site,date,category,endPoint) %>%
-        summarise(sumEAR=sum(EAR)) %>%
+        dplyr::group_by(site,date,category,endPoint) %>%
+        dplyr::summarise(sumEAR=sum(EAR)) %>%
         data.frame() %>%
-        group_by(site, category,endPoint) %>%
-        summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
+        dplyr::group_by(site, category,endPoint) %>%
+        dplyr::summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
         data.frame() %>%
-        mutate(category=as.character(category))      
+        dplyr::mutate(category=as.character(category))      
     }
 
     pretty_logs_new <- prettyLogs(graphData$meanEAR)
     
     countNonZero <- graphData %>%
-      group_by(endPoint) %>%
-      summarise(nonZero = as.character(sum(meanEAR>0)),
+      dplyr::group_by(endPoint) %>%
+      dplyr::summarise(nonZero = as.character(sum(meanEAR>0)),
                 hits = as.character(sum(meanEAR > hit_threshold)))
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -165,9 +163,9 @@ plot_tox_endpoints <- function(chemical_summary,
     nHitsEP <- countNonZero$hits
 
     orderColsBy <- graphData %>%
-      group_by(endPoint) %>%
-      summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-      arrange(median)
+      dplyr::group_by(endPoint) %>%
+      dplyr::summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+      dplyr::arrange(median)
   
     orderedLevelsEP <- orderColsBy$endPoint
   
@@ -204,7 +202,7 @@ plot_tox_endpoints <- function(chemical_summary,
 
   plot_layout <- ggplot_build(stackedPlot)$layout    
   
-  if(packageVersion("ggplot2") >= "2.2.1.9000"){
+  if(utils::packageVersion("ggplot2") >= "2.2.1.9000"){
     ymin <- 10^(plot_layout$panel_scales_y[[1]]$range$range[1])
     ymax <- 10^(plot_layout$panel_scales_y[[1]]$range$range[2])
     
@@ -260,7 +258,7 @@ plot_tox_endpoints <- function(chemical_summary,
     }
   } 
   
-  if(packageVersion("ggplot2") >= '3.0.0'){
+  if(utils::packageVersion("ggplot2") >= '3.0.0'){
     stackedPlot <- stackedPlot +
       coord_flip(clip = "off")
   } else {

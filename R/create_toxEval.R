@@ -213,6 +213,7 @@ rm_em_dash <- function(df){
 #' @param \dots additional parameters
 #'
 #' @export
+#' @importFrom magrittr "%>%"
 #' @examples 
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
