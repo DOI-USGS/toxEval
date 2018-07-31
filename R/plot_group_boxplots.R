@@ -413,13 +413,13 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE,
           y_label <- bquote(italic(.(word_stat)) ~ 
                               group("[", 
                                     group("(",
-                                          sum(" "  ~ EAR["[" *i* "]"]),
+                                          sum(" "*EAR["[" *i* "]"]),
                                           ")")["[" *j* "]"],
                                     "]")
                             ["[" *k* "]"])          
         } else {
           y_label <- bquote(italic(.(word_stat)) ~ 
-                              group("[", sum(" "~EAR["[" *i* "]"]),"]")["[" *j* "]"])
+                              group("[", sum(" "*EAR["[" *i* "]"]),"]")["[" *j* "]"])
         }
 
       } else {
@@ -446,13 +446,13 @@ fancyLabels <- function(category, mean_logic, sum_logic, single_site, sep=FALSE,
           y_label <- bquote(atop(italic(.(word_stat)) ~ 
                                    group("[", 
                                          group("(",
-                                               sum(" "  ~ EAR["[" *i* "]"]),
+                                               sum(" "*EAR["[" *i* "]"]),
                                                ")")["[" *j* "]"],
                                          "]")
                                  ["[" *k* "]"], .(pretty_cat)))
         } else {
           y_label <- bquote(atop(italic(.(word_stat)) ~ 
-                                   group("[", sum(" "  ~ EAR["[" *i* "]"]),
+                                   group("[", sum(" "*EAR["[" *i* "]"]),
                                                ")")["[" *j* "]"], 
                                  .(pretty_cat)))          
         }

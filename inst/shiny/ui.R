@@ -141,7 +141,7 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
   h3(textOutput("siteText")),
   fluidRow(
-    column(1, HTML("<b>Documentation:</b>")),
+    column(2, HTML("<b>Documentation:</b>")),
     # column(1, htmlOutput("Introduction_vignette")), #keeping to remember how to do it in the future
     column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/Introduction.html\" target=\"_blank\">Introduction</a>")),
     column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/basicWorkflow.html\" target=\"_blank\">Basic Workflow</a>")),
