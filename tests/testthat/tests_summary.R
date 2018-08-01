@@ -304,3 +304,18 @@ test_that("rank_sites_DT", {
   expect_true(all(c("site","Bisphenol A maxEAR","Bisphenol A freq",
                     "4-Nonylphenol, branched maxEAR") %in% names(cht$x$data)))
 })
+
+test_that("Calculating completness", {
+  testthat::skip_on_cran()
+  
+  graphData <- graph_chem_data(chemical_summary)
+  complete_df <- toxEval:::get_complete_set(chemical_summary, graphData, tox_list$chem_site)
+  expect_equal(length(unique(complete_df$chnm)), length(levels(chemical_summary$chnm)))
+  expect_equal(nrow(complete_df), length(levels(chemical_summary$chnm)) * length(unique(tox_list$chem_site$`Short Name`)))
+
+  graphData2 <- tox_boxplot_data(chemical_summary, "Biological")
+  complete_df_cat <- toxEval:::get_complete_set_category(chemical_summary, graphData2, tox_list$chem_site, category = "Biological")
+  
+  expect_equal(nrow(complete_df_cat), 855)
+  
+})
