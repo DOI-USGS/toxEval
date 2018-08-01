@@ -61,11 +61,24 @@ filtered_ep <- filter_groups(cleaned_ep,
                   groupCol = 'intended_target_family',
                   remove_groups = c('Background Measurement','Undefined'))
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, 
+                                        ACClong, 
+                                        filtered_ep)
 ######################################
-chem_class_plot <- plot_tox_boxplots(chemicalSummary, 
-                          category = 'Chemical Class')
+chem_class_plot <- plot_tox_boxplots(chemicalSummary,
+                                     category = 'Chemical Class')
 chem_class_plot
+
+######################################
+plot_stacks <- plot_tox_stacks(chemicalSummary, 
+                               tox_list$chem_site, 
+                               category = "Chemical Class")
+plot_stacks
+######################################
+plot_heat <- plot_tox_heatmap(chemicalSummary, 
+                               tox_list$chem_site, 
+                               category = "Chemical")
+plot_heat
 ```
 
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
@@ -73,11 +86,11 @@ This code opens up the example file, loads it into a `toxEval` object, grabs the
 There are 4 vignettes to help introduce and navigate the `toxEval` package:
 
 |Name|R command|Description |
-|----------|------------|------------|
-|[Introduction](https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/) | `vignette("Introduction", package="toxEval")`|Introduction to the toxEval |
-|[Basic Workflow](https://github.com/USGS-R/toxEval/blob/master/vignettes/basicWorkflow.Rmd/) | `vignette("basicWorkflow", package="toxEval")`|Quickstart guide to get overview of available functions |
-|[Prepare Data](https://github.com/USGS-R/toxEval/blob/master/vignettes/PrepareData.Rmd/) | `vignette("PrepareData", package="toxEval")`|Guide to preparing your data for toxEval analysis|
-|[Shiny App Guide](https://github.com/USGS-R/toxEval/blob/master/vignettes/shinyApp.Rmd/) | `vignette("shinyApp", package="toxEval")`|Guide to the toxEval shiny application|
+|----------|------------|-----------------------------------------|
+|[Introduction](http://usgs-r.github.io/toxEval/articles/Introduction.html) | `vignette("Introduction", package="toxEval")`|Introduction to the toxEval |
+|[Basic Workflow](http://usgs-r.github.io/toxEval/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")`|Quickstart guide to get overview of available functions |
+|[Prepare Data](http://usgs-r.github.io/toxEval/articles/PrepareData.html) | `vignette("PrepareData", package="toxEval")`|Guide to preparing your data for toxEval analysis|
+|[Shiny App Guide](http://usgs-r.github.io/toxEval/articles/shinyApp.html) | `vignette("shinyApp", package="toxEval")`|Guide to the toxEval shiny application|
 
 ### Reporting bugs
 
@@ -160,9 +173,8 @@ explore_endpoints()
 
 ## Citing toxEval
 
-This package has not been reviewed and approved as a USGS-product. The implication is that `toxEval` cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:
 
-```{r eval=FALSE}
+```{r cite}
 citation(package = "toxEval")
 ```
 

@@ -44,24 +44,47 @@ filtered_ep <- filter_groups(cleaned_ep,
                   groupCol = 'intended_target_family',
                   remove_groups = c('Background Measurement','Undefined'))
 
-chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
+chemicalSummary <- get_chemical_summary(tox_list, 
+                                        ACClong, 
+                                        filtered_ep)
 ######################################
-chem_class_plot <- plot_tox_boxplots(chemicalSummary, 
-                          category = 'Chemical Class')
+chem_class_plot <- plot_tox_boxplots(chemicalSummary,
+                                     category = 'Chemical Class')
 chem_class_plot
 ```
 
 ![](man/figures/unnamed-chunk-4-1.png)
 
+``` r
+
+######################################
+plot_stacks <- plot_tox_stacks(chemicalSummary, 
+                               tox_list$chem_site, 
+                               category = "Chemical Class")
+plot_stacks
+```
+
+![](man/figures/unnamed-chunk-4-2.png)
+
+``` r
+######################################
+plot_heat <- plot_tox_heatmap(chemicalSummary, 
+                               tox_list$chem_site, 
+                               category = "Chemical")
+plot_heat
+```
+
+![](man/figures/unnamed-chunk-4-3.png)
+
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
 
 There are 4 vignettes to help introduce and navigate the `toxEval` package:
 
-<table style="width:51%;">
+<table style="width:92%;">
 <colgroup>
 <col width="15%" />
 <col width="18%" />
-<col width="18%" />
+<col width="58%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -72,22 +95,22 @@ There are 4 vignettes to help introduce and navigate the `toxEval` package:
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd/">Introduction</a></td>
+<td><a href="http://usgs-r.github.io/toxEval/articles/Introduction.html">Introduction</a></td>
 <td><code>vignette(&quot;Introduction&quot;, package=&quot;toxEval&quot;)</code></td>
 <td>Introduction to the toxEval</td>
 </tr>
 <tr class="even">
-<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/basicWorkflow.Rmd/">Basic Workflow</a></td>
+<td><a href="http://usgs-r.github.io/toxEval/articles/basicWorkflow.html">Basic Workflow</a></td>
 <td><code>vignette(&quot;basicWorkflow&quot;, package=&quot;toxEval&quot;)</code></td>
 <td>Quickstart guide to get overview of available functions</td>
 </tr>
 <tr class="odd">
-<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/PrepareData.Rmd/">Prepare Data</a></td>
+<td><a href="http://usgs-r.github.io/toxEval/articles/PrepareData.html">Prepare Data</a></td>
 <td><code>vignette(&quot;PrepareData&quot;, package=&quot;toxEval&quot;)</code></td>
 <td>Guide to preparing your data for toxEval analysis</td>
 </tr>
 <tr class="even">
-<td><a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/shinyApp.Rmd/">Shiny App Guide</a></td>
+<td><a href="http://usgs-r.github.io/toxEval/articles/shinyApp.html">Shiny App Guide</a></td>
 <td><code>vignette(&quot;shinyApp&quot;, package=&quot;toxEval&quot;)</code></td>
 <td>Guide to the toxEval shiny application</td>
 </tr>
@@ -176,10 +199,24 @@ explore_endpoints()
 Citing toxEval
 --------------
 
-This package has not been reviewed and approved as a USGS-product. The implication is that `toxEval` cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:
-
 ``` r
 citation(package = "toxEval")
+#> 
+#> To cite toxEval in publications, please use:
+#> 
+#>   De Cicco, L.A., and Corsi, S.R., 2018, User guide for toxEval
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     author = {Laura A. {De Cicco} and Steven R. Corsi},
+#>     title = {User guide for toxEval},
+#>     publisher = {U.S. Geological Survey},
+#>     address = {Reston, VA},
+#>     institution = {U.S. Geological Survey},
+#>     year = {2018},
+#>     url = {https://code.usgs.gov/WMA-DataScience/toxEval},
+#>   }
 ```
 
 Disclaimer
