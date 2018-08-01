@@ -9,24 +9,12 @@
 #' 
 #' @param browse Logical. Use browser for running Shiny app.
 #' @export
-#' @importFrom shiny runApp
 #' @importFrom tools file_ext
-#' @importFrom leaflet leaflet
-#' @importFrom leaflet addLegend
-#' @importFrom leaflet addCircles
-#' @importFrom leaflet clearControls
-#' @importFrom leaflet clearShapes
-#' @importFrom shinycssloaders withSpinner
-#' @import DT
 #' @import ggplot2
-#' @import data.table
-#' @import RColorBrewer
-#' @import shinydashboard
-#' @import shinyAce
 #' @examples 
 #' \dontrun{
 #' explore_endpoints()
 #' }
 explore_endpoints <- function(browse=TRUE){
-  runApp(system.file('shiny', package='toxEval'), launch.browser = browse)
+  shiny::runApp(system.file('shiny', package='toxEval'), launch.browser = browse)
 }

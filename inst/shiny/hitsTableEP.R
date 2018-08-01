@@ -16,7 +16,7 @@ output$hitsTableEPs <- DT::renderDataTable({
                                sum_logic = sum_logic,
                                hit_threshold = hitThres,
                                include_links = toxCast())
-  updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
+  shinyAce::updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
   tableEPs
 })
 

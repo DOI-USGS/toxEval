@@ -29,9 +29,7 @@
 #' @rdname hits_summary_DT
 #' @return data frame with with one row per unique site/category combination. The columns
 #' are site, category, Samples with Hits, and Number of Samples.
-#' @import DT
 #' @importFrom stats median
-#' @importFrom dplyr full_join filter mutate select left_join right_join
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <-  system.file("extdata", package="toxEval")
@@ -81,8 +79,8 @@ hits_summary_DT <- function(chemical_summary,
                                             dom = 'Bfrtip',
                                             buttons = list('colvis')))
   
-  tableGroup <- formatStyle(tableGroup, names(hits_summaryOrdered)[meanChem],
-                            background = styleColorBar(range(hits_summaryOrdered[,meanChem],na.rm=TRUE), 'wheat'),
+  tableGroup <- DT::formatStyle(tableGroup, names(hits_summaryOrdered)[meanChem],
+                            background = DT::styleColorBar(range(hits_summaryOrdered[,meanChem],na.rm=TRUE), 'wheat'),
                             backgroundSize = '100% 90%',
                             backgroundRepeat = 'no-repeat',
                             backgroundPosition = 'center')
@@ -104,14 +102,14 @@ hits_summary <- function(chemical_summary,
   siteToFind <- unique(chemical_summary$site)
 
   if(category == "Chemical"){
-    chemical_summary <- mutate(chemical_summary, category = chnm)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemical_summary <- mutate(chemical_summary, category = Class)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = Class)
   } else {
-    chemical_summary <- mutate(chemical_summary, category = Bio_category)
+    chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
   }
   
-  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
+  chemical_summary <- dplyr::select(chemical_summary, -Class, -Bio_category, -chnm)
   
   if(length(siteToFind) == 1){
     chemical_summary$site <- chemical_summary$category
@@ -121,21 +119,21 @@ hits_summary <- function(chemical_summary,
   
   if(!sum_logic){
     hits_summary <- chemical_summary %>%
-      group_by(site,category,date) %>%
-      summarise(hits = sum(EAR > hit_threshold)) %>%
-      group_by(site,category) %>%
-      summarise(`Samples with hits` = sum(hits >= 1),
+      dplyr::group_by(site,category,date) %>%
+      dplyr::summarise(hits = sum(EAR > hit_threshold)) %>%
+      dplyr::group_by(site,category) %>%
+      dplyr::summarise(`Samples with hits` = sum(hits >= 1),
                 nSamples = n()) %>%   
-      arrange(desc(`Samples with hits`))    
+      dplyr::arrange(dplyr::desc(`Samples with hits`))    
   } else {
     hits_summary <- chemical_summary %>%
-      group_by(site, date,category) %>%
-      summarise(sumEAR = sum(EAR),
+      dplyr::group_by(site, date,category) %>%
+      dplyr::summarise(sumEAR = sum(EAR),
                 hits = sum(EAR > hit_threshold)) %>%
-      group_by(site,category) %>%
-      summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
+      dplyr::group_by(site,category) %>%
+      dplyr::summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
                 nSamples = n()) %>%
-      arrange(desc(`Samples with hits`))    
+      dplyr::arrange(dplyr::desc(`Samples with hits`))    
   }
 
   
@@ -143,7 +141,7 @@ hits_summary <- function(chemical_summary,
     hits_summary <- hits_summary[,c("category","Samples with hits","nSamples")]
   }
   
-  hits_summary <- rename(hits_summary, `Number of Samples`=nSamples)
+  hits_summary <- dplyr::rename(hits_summary, `Number of Samples`=nSamples)
   
   return(hits_summary)
 }

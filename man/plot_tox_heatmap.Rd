@@ -2,12 +2,12 @@
 % Please edit documentation in R/plot_heat_chemical.R
 \name{plot_tox_heatmap}
 \alias{plot_tox_heatmap}
-\title{plot_tox_heatmap}
+\title{Plot EAR heat maps}
 \usage{
 plot_tox_heatmap(chemical_summary, chem_site, category = "Biological",
-  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 10), manual_remove = NULL,
-  mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE, font_size = NA,
-  title = NA)
+  breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 10),
+  manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
+  plot_ND = TRUE, font_size = NA, title = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -49,8 +49,13 @@ This is a function where it may be ideal to create a custom order to the sites
 \href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
 the character vector sites to a factor with ordered levels.
 }
+\details{
+If there are site/parameters (chemical/chemical class/biological grouping) combinations that
+don't have data, those areas are represented by an "X". If there are 0 values,
+they are considered "non-detects", and represented with a distinct color.
+}
 \examples{
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package="toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 

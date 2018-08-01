@@ -34,7 +34,6 @@
 #' as a factor), site, date, EAR, Bio_category, shortName (of site), Class. The output of this 
 #' function is where you find EAR values for every chemical/endpoint combination.
 #' 
-#' @importFrom dplyr full_join filter mutate select left_join right_join anti_join
 #' @examples
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
@@ -92,32 +91,32 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     chem_data$Value <- as.numeric(chem_data$Value)
   }
   
-  chemical_summary <- full_join(ACC, 
-                               select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
-    filter(!is.na(ACC_value)) %>%
-    filter(!is.na(Value)) %>%
-    mutate(EAR = Value/ACC_value) %>%
-    rename(site = SiteID,
+  chemical_summary <- dplyr::full_join(ACC, 
+                                       dplyr::select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
+    dplyr::filter(!is.na(ACC_value)) %>%
+    dplyr::filter(!is.na(Value)) %>%
+    dplyr::mutate(EAR = Value/ACC_value) %>%
+    dplyr::rename(site = SiteID,
            date = `Sample Date`) 
   
   if(all(filtered_ep != "All")){
     chemical_summary <- chemical_summary %>%
-      select(CAS, chnm, endPoint, site, date, EAR) %>%
-      filter(endPoint %in% filtered_ep$endPoint) %>%
-      left_join(select(filtered_ep, endPoint, groupCol), by="endPoint")
+      dplyr::select(CAS, chnm, endPoint, site, date, EAR) %>%
+      dplyr::filter(endPoint %in% filtered_ep$endPoint) %>%
+      dplyr::left_join(dplyr::select(filtered_ep, endPoint, groupCol), by="endPoint")
     
   } else {
     
     chemical_summary <- chemical_summary %>%
-      select(CAS, chnm, endPoint, site, date, EAR, groupCol)       
+      dplyr::select(CAS, chnm, endPoint, site, date, EAR, groupCol)       
   
   }
   
   chemical_summary <- chemical_summary  %>%
-    left_join(select(chem_site, site=SiteID, `Short Name`),
+    dplyr::left_join(dplyr::select(chem_site, site=SiteID, `Short Name`),
               by="site") %>%
-    left_join(select(chem_info, CAS, Class), by="CAS") %>%
-    rename(Bio_category = groupCol,
+    dplyr::left_join(dplyr::select(chem_info, CAS, Class), by="CAS") %>%
+    dplyr::rename(Bio_category = groupCol,
            shortName = `Short Name`)
   
   if(!is.null(exclusion)){
@@ -145,11 +144,11 @@ orderClass <- function(graphData){
   chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
   
   orderClass_df <- graphData %>%
-    group_by(chnm, Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-    group_by(Class) %>%
-    summarise(max_med = max(median, na.rm = TRUE)) %>%
-    arrange(desc(max_med))
+    dplyr::group_by(chnm, Class) %>%
+    dplyr::summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+    dplyr::group_by(Class) %>%
+    dplyr::summarise(max_med = max(median, na.rm = TRUE)) %>%
+    dplyr::arrange(dplyr::desc(max_med))
   
   return(orderClass_df)
 }
@@ -160,14 +159,14 @@ orderChem <- function(graphData, orderClass_df){
   chnm <- Class <- meanEAR <- median <- ".dplyr"
   
   orderChem_df <- graphData %>%
-    group_by(chnm,Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+    dplyr::group_by(chnm,Class) %>%
+    dplyr::summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
     data.frame() %>%
-    mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
+    dplyr::mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
   
   orderChem_df$median[is.na(orderChem_df$median)] <- 0
   
-  orderChem_df <- arrange(orderChem_df, Class, median)
+  orderChem_df <- dplyr::arrange(orderChem_df, Class, median)
   
   return(orderChem_df)
 }
@@ -221,15 +220,15 @@ remove_flags <- function(ACC, flagsShort = c("Borderline",
   
   flags <- ".dplyr"
   
-  flag_hits <- select(ACC, flags) %>%
-    mutate(Borderline = grepl("Borderline active", flags),
+  flag_hits <- dplyr::select(ACC, flags) %>%
+    dplyr::mutate(Borderline = grepl("Borderline active", flags),
            Noisy = grepl("Noisy data", flags),
            OneAbove = grepl("Only one conc above baseline", flags),
            OnlyHighest = grepl("Only highest conc above baseline", flags),
            Biochemical = grepl("Biochemical assay with", flags),
            GainAC50 = grepl("Gain AC50", flags),
            HitCall = grepl("potentially confounded by overfitting", flags)) %>%
-    select(-flags)
+    dplyr::select(-flags)
   
   ACC <- ACC[rowSums(flag_hits[flagsShort]) == 0,]
 
@@ -256,16 +255,16 @@ exclude_points <- function(chemical_summary, exclusion){
   exclude_ep <- exclusion$endPoint[is.na(exclusion$CAS)]
   
   exclude_combo <- exclusion %>%
-    filter(!is.na(CAS),
+    dplyr::filter(!is.na(CAS),
            !is.na(endPoint))
   
   chem_filtered <- chemical_summary %>%
-    filter(!(CAS %in% exclude_chem)) %>%
-    filter(!(endPoint %in% exclude_ep)) 
+    dplyr::filter(!(CAS %in% exclude_chem)) %>%
+    dplyr::filter(!(endPoint %in% exclude_ep)) 
   
   if(nrow(exclude_combo) > 0){
     chem_filtered <- chem_filtered %>%
-      anti_join(exclude_combo, by=c("CAS","endPoint"))
+      dplyr::anti_join(exclude_combo, by=c("CAS","endPoint"))
   }
 
   return(chem_filtered)

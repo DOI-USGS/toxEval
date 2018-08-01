@@ -1,17 +1,7 @@
-library(dplyr)
-library(ggplot2)
-library(DT)
-library(leaflet)
-library(data.table)
-library(tidyr)
-library(toxEval)
-library(RColorBrewer)
-library(readxl)
-
 options(shiny.maxRequestSize=10*1024^2)
 
 cleaned_ep <- clean_endPoint_info(end_point_info) %>%
-  mutate(endPoint = assay_component_endpoint_name)
+  dplyr::mutate(endPoint = assay_component_endpoint_name)
 
 choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
 choicesPerGroup <- choicesPerGroup[which(as.numeric(choicesPerGroup) > 6)]
@@ -63,10 +53,10 @@ great_lakes <- c("Lake Superior",
 
 toxCast_val <<- TRUE
 
-shinyServer(function(input, output,session) {
+shiny::shinyServer(function(input, output,session) {
   
   observe({
-    if (input$close > 0) stopApp()    
+    if (input$close > 0) shiny::stopApp()    
   })
 
   source("getData.R",local=TRUE)$value

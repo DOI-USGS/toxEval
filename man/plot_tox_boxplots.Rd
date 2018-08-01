@@ -7,8 +7,8 @@
 \alias{tox_boxplot_data}
 \title{Grouped Boxplots}
 \usage{
-graph_chem_data(chemical_summary, manual_remove = NULL, mean_logic = FALSE,
-  sum_logic = TRUE)
+graph_chem_data(chemical_summary, manual_remove = NULL,
+  mean_logic = FALSE, sum_logic = TRUE)
 
 plot_tox_boxplots(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
@@ -69,6 +69,10 @@ The functions \code{plot_tox_boxplots} and \code{graph_chem_data} are functions 
 the statistical calculations to create the plot. \code{graph_chem_data} is specific
 to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and 
 "Chemical Class".
+
+Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette: 
+\href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
+for more information.
 }
 \examples{
 # This is the example workflow:

@@ -33,7 +33,7 @@ stackBarGroup_create <- reactive({
                                font_size = ifelse(catType == 2, 14, 17),
                                title = genericTitle())
   
-  updateAceEditor(session, editorId = "barCode_out", value = barCode() )
+  shinyAce::updateAceEditor(session, editorId = "barCode_out", value = barCode() )
   
   return(upperPlot)
 })

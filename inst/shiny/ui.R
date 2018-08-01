@@ -1,17 +1,10 @@
 library(toxEval)
+library(shiny)
 library(shinydashboard)
-library(dplyr)
-library(ggplot2)
-library(DT)
-library(leaflet)
-library(data.table)
-library(tidyr)
-library(RColorBrewer)
-library(shinyAce)
-library(shinycssloaders)
+library(magrittr)
 
 cleaned_ep <- clean_endPoint_info(end_point_info) %>%
-  rename(endPoint = assay_component_endpoint_name)
+  dplyr::rename(endPoint = assay_component_endpoint_name)
 
 trimmed_ep <- cleaned_ep
 choicesPerGroup <- apply(cleaned_ep, 2, function(x) length(unique(x[!is.na(x)])))
@@ -31,7 +24,7 @@ orderNames <- names(table(orderBy))
 nEndPoints <- as.integer(table(orderBy))
 
 df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
-  arrange(desc(nEndPoints))
+  dplyr::arrange(desc(nEndPoints))
 
 dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
 
@@ -148,7 +141,7 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
   h3(textOutput("siteText")),
   fluidRow(
-    column(1, HTML("<b>Documentation:</b>")),
+    column(2, HTML("<b>Documentation:</b>")),
     # column(1, htmlOutput("Introduction_vignette")), #keeping to remember how to do it in the future
     column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/Introduction.html\" target=\"_blank\">Introduction</a>")),
     column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/basicWorkflow.html\" target=\"_blank\">Basic Workflow</a>")),
@@ -159,10 +152,10 @@ body <- dashboardBody(
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-             withSpinner(leaflet::leafletOutput("mymap",height = "500px")),
+             shinycssloaders::withSpinner(leaflet::leafletOutput("mymap",height = "500px")),
             htmlOutput("mapFooter"),
             h4("R Code:"),
-            aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+            shinyAce::aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
@@ -177,50 +170,50 @@ body <- dashboardBody(
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             aceEditor(outputId = "boxCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+             shinyAce::aceEditor(outputId = "boxCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
-             withSpinner(plotOutput("stackBarGroup", width = "100%", height = "750px")),
+             shinycssloaders::withSpinner(plotOutput("stackBarGroup", width = "100%", height = "750px")),
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             aceEditor(outputId = "barCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+             shinyAce::aceEditor(outputId = "barCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Max EAR and Frequency", shiny::icon("bars")),
              value="maxEAR",
             h3(textOutput("meanText")),
             h3(textOutput("freqText")),
-            withSpinner(DT::dataTableOutput('tableSumm')),
+            shinycssloaders::withSpinner(DT::dataTableOutput('tableSumm')),
             downloadButton('downloadTable', 'Download CSV'),
             h4("R Code:"),
-            aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+            shinyAce::aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
              h3(textOutput("nGroup")),
-             withSpinner(DT::dataTableOutput('tableGroupSumm')),
+             shinycssloaders::withSpinner(DT::dataTableOutput('tableGroupSumm')),
             downloadButton('downloadGroupTable', 'Download CSV'),
             h4("R Code:"),
-            aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+            shinyAce::aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
             h3(textOutput("siteHitText")),
-            div(withSpinner(DT::dataTableOutput("hitsTable")), style="font-size:90%"),
+            div(shinycssloaders::withSpinner(DT::dataTableOutput("hitsTable")), style="font-size:90%"),
             downloadButton('downloadSiteHitTable', 'Download CSV'),
             h4("R Code:"),
-            aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+            shinyAce::aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              h3(textOutput("epHitTitle")),
-             div(withSpinner(DT::dataTableOutput("hitsTableEPs")), style="font-size:90%"),
+             div(shinycssloaders::withSpinner(DT::dataTableOutput("hitsTableEPs")), style="font-size:90%"),
              downloadButton('downloadHitTable', 'Download CSV'),
              h4("R Code:"),
-             aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+             shinyAce::aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
              value="endpoint",
@@ -237,7 +230,7 @@ body <- dashboardBody(
              column(3, downloadButton('downloadEndpoint_csv', 'Download CSV'))
             ),
             h4("R Code:"),
-            aceEditor(outputId = "epGraph_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+            shinyAce::aceEditor(outputId = "epGraph_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
                    value="heat",
@@ -248,7 +241,7 @@ body <- dashboardBody(
                column(3, downloadButton('downloadHeatPlot_csv', 'Download CSV'))
              ),
              h4("R Code:"),
-             aceEditor(outputId = "heat_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+             shinyAce::aceEditor(outputId = "heat_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tags$head(tags$link(rel="shortcut icon", href="favicon.ico"))
   ),

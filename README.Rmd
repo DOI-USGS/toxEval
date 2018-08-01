@@ -63,9 +63,9 @@ filtered_ep <- filter_groups(cleaned_ep,
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 ######################################
-bio_plot <- plot_tox_boxplots(chemicalSummary, 
+chem_class_plot <- plot_tox_boxplots(chemicalSummary, 
                           category = 'Chemical Class')
-bio_plot
+chem_class_plot
 ```
 
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.

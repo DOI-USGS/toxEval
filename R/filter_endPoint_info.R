@@ -23,7 +23,6 @@
 #' "BSK" (BioSeek) assay is removed.
 #' @param remove_groups Vector of groups within the selected 'groupCol' to remove.
 #' @export
-#' @importFrom dplyr rename
 #' @examples 
 #' end_point_info <- end_point_info
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
@@ -43,7 +42,7 @@ filter_groups <- function(ep,
   assay_source_name <- assay_component_endpoint_name <- ".dplyr"
   
   ep <- ep[,c("assay_component_endpoint_name",groupCol,"assay_source_name")] %>%
-    rename(endPoint = assay_component_endpoint_name,
+    dplyr::rename(endPoint = assay_component_endpoint_name,
            assaysFull = assay_source_name)
   names(ep)[names(ep) == groupCol] <- "groupCol"
   

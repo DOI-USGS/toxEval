@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>plot_tox_heatmap — plot_tox_heatmap • toxEval</title>
+<title>Plot EAR heat maps — plot_tox_heatmap • toxEval</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="plot_tox_heatmap — plot_tox_heatmap" />
+<meta property="og:title" content="Plot EAR heat maps — plot_tox_heatmap" />
 
 <meta property="og:description" content="The plot_tox_heatmap function creates a heat (tile) map with sites on the x-axis, 
 a specified grouping on the y-axis (defined by the category argument), and color shading 
@@ -127,7 +127,7 @@ the character vector sites to a factor with ordered levels." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>plot_tox_heatmap</h1>
+    <h1>Plot EAR heat maps</h1>
     
     <div class="hidden name"><code>plot_tox_heatmap.Rd</code></div>
     </div>
@@ -151,9 +151,9 @@ the character vector sites to a factor with ordered levels.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1e-05</span>, <span class='fl'>1e-04</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>, <span class='fl'>5</span>), <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1e-05</span>, <span class='fl'>1e-04</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>, <span class='fl'>10</span>),
+  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -204,9 +204,15 @@ opposed to ToxCast benchmarks.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If there are site/parameters (chemical/chemical class/biological grouping) combinations that
+don't have data, those areas are represented by an "X". If there are 0 values,
+they are considered "non-detects", and represented with a distinct color.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span>  <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
+    <pre class="examples"><div class='input'><span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span> <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
 <span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
 <span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
 
@@ -255,7 +261,9 @@ opposed to ToxCast benchmarks.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#details">Details</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

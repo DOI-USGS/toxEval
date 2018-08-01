@@ -26,14 +26,14 @@ plot_chemical_boxplots <- function(chemical_summary,
     n <- length(unique(chemical_summary$Class))
     
     if(n > 20 & n<30){
-      cbValues <- c(brewer.pal(n = 12, name = "Set3"),
-                    brewer.pal(n = 8, name = "Set2"),
-                    brewer.pal(n = max(c(3,n-20)), name = "Set1"))
+      cbValues <- c(RColorBrewer::brewer.pal(n = 12, name = "Set3"),
+                    RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+                    RColorBrewer::brewer.pal(n = max(c(3,n-20)), name = "Set1"))
     } else if (n <= 20){
-      cbValues <- c(brewer.pal(n = 12, name = "Set3"),
-                    brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
+      cbValues <- c(RColorBrewer::brewer.pal(n = 12, name = "Set3"),
+                    RColorBrewer::brewer.pal(n =  max(c(3,n-12)), name = "Set2"))     
     } else {
-      cbValues <- colorRampPalette(brewer.pal(11,"Spectral"))(n)
+      cbValues <- colorRampPalette(RColorBrewer::brewer.pal(11,"Spectral"))(n)
     }
 
   }
@@ -45,9 +45,9 @@ plot_chemical_boxplots <- function(chemical_summary,
   if(single_site){
     
     countNonZero <- chemical_summary %>%
-      select(chnm, Class, EAR) %>%
-      group_by(chnm, Class) %>%
-      summarize(nonZero = as.character(sum(EAR>0)),
+      dplyr::select(chnm, Class, EAR) %>%
+      dplyr::group_by(chnm, Class) %>%
+      dplyr::summarize(nonZero = as.character(sum(EAR>0)),
                 hits = as.character(sum(EAR > hit_threshold)))
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -79,9 +79,9 @@ plot_chemical_boxplots <- function(chemical_summary,
     pretty_logs_new <-  prettyLogs(graphData$meanEAR)
     
     countNonZero <- graphData %>%
-      select(chnm, Class, meanEAR) %>%
-      group_by(chnm, Class) %>%
-      summarize(nonZero = as.character(sum(meanEAR>0)),
+      dplyr::select(chnm, Class, meanEAR) %>%
+      dplyr::group_by(chnm, Class) %>%
+      dplyr::summarize(nonZero = as.character(sum(meanEAR>0)),
                 hits = as.character(sum(meanEAR > hit_threshold)))
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -134,7 +134,7 @@ plot_chemical_boxplots <- function(chemical_summary,
             axis.title =   element_text(size=font_size))
   }
 
-  if(packageVersion("ggplot2") >= '3.0.0'){
+  if(utils::packageVersion("ggplot2") >= '3.0.0'){
     toxPlot_All <- toxPlot_All +
       coord_flip(clip = "off")
   } else {
@@ -145,7 +145,7 @@ plot_chemical_boxplots <- function(chemical_summary,
   plot_info <- ggplot_build(toxPlot_All)
   layout_stuff <- plot_info$layout
   
-  if(packageVersion("ggplot2") >= "2.2.1.9000"){
+  if(utils::packageVersion("ggplot2") >= "2.2.1.9000"){
     ymin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
     ymax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
   } else {
@@ -202,21 +202,21 @@ graph_chem_data <- function(chemical_summary,
 
   if(!sum_logic){
     graphData <- chemical_summary %>%
-      group_by(site, chnm, Class) %>%
-      summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
+      dplyr::group_by(site, chnm, Class) %>%
+      dplyr::summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
       data.frame()     
   } else {
     graphData <- chemical_summary %>%
-      group_by(site,date,chnm, Class) %>%
-      summarise(sumEAR=sum(EAR)) %>%
+      dplyr::group_by(site,date,chnm, Class) %>%
+      dplyr::summarise(sumEAR=sum(EAR)) %>%
       data.frame() %>%
-      group_by(site, chnm, Class) %>%
-      summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
+      dplyr::group_by(site, chnm, Class) %>%
+      dplyr::summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
       data.frame() 
   }
   
   if(!is.null(manual_remove)){
-    graphData <- filter(graphData, !(chnm %in% manual_remove))
+    graphData <- dplyr::filter(graphData, !(chnm %in% manual_remove))
   }
   
   return(graphData)

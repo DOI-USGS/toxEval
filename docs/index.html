@@ -102,14 +102,6 @@
 <p>Once the data is loaded in the app, sample R code is shown below each tab. This can be copied into the R console (once the app is stopped…) to use as a base for exploring the package directly in R.</p>
 <p>Alternatively, an example workflow is shown here (also using example data provided in the package):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(toxEval)
-<span class="co">#&gt; This information is preliminary or provisional and is subject to</span>
-<span class="co">#&gt; revision. It is being provided to meet the need for timely best</span>
-<span class="co">#&gt; science. The information has not received final approval by the</span>
-<span class="co">#&gt; U.S. Geological Survey (USGS) and is provided on the condition</span>
-<span class="co">#&gt; that neither the USGS nor the U.S. Government shall be held liable</span>
-<span class="co">#&gt; for any damages resulting from the authorized or unauthorized use</span>
-<span class="co">#&gt; of the information.</span>
-<span class="co">#&gt; </span>
 <span class="co">#&gt; USGS Research Package:</span>
 <span class="co">#&gt; https://owi.usgs.gov/R/packages.html#research</span>
 path_to_file &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)
@@ -124,9 +116,9 @@ filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/fi
 
 chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, ACClong, filtered_ep)
 ######################################
-bio_plot &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary, 
+chem_class_plot &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary, 
                           <span class="dt">category =</span> <span class="st">'Chemical Class'</span>)
-bio_plot</code></pre></div>
+chem_class_plot</code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-4-1.png" width="768"></p>
 <p>This code opens up the example file, loads it into a <code>toxEval</code> object, grabs the pertinent ToxCast information, and creates a “chemicalSummary” data frame that is used in many of the plot and table functions.</p>
 <p>There are 4 vignettes to help introduce and navigate the <code>toxEval</code> package:</p>
@@ -263,6 +255,12 @@ bio_plot</code></pre></div>
 <h2>License</h2>
 <ul class="list-unstyled">
 <li>CC0</li>
+</ul>
+</div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing toxEval</a></li>
 </ul>
 </div>
 <div class="developers">

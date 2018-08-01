@@ -60,7 +60,7 @@ observe({
   nEndPoints <- as.integer(table(orderBy))
   
   df <- data.frame(orderNames,nEndPoints,stringsAsFactors = FALSE) %>%
-    arrange(desc(nEndPoints))
+    dplyr::arrange(desc(nEndPoints))
   
   dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
   

@@ -1,15 +1,6 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
-    paste(strwrap('This information is preliminary or provisional and
-is subject to revision. It is being provided to meet
-the need for timely best science. The information
-has not received final approval by the U.S. Geological
-Survey (USGS) and is provided on the condition that
-neither the USGS nor the U.S. Government shall be held
-liable for any damages resulting from the authorized
-or unauthorized use of the information.
-
-USGS Research Package: 
+    paste(strwrap('USGS Research Package: 
 https://owi.usgs.gov/R/packages.html#research'),
       collapse='\n'))
 }
@@ -44,23 +35,6 @@ https://owi.usgs.gov/R/packages.html#research'),
 #'
 #' @name toxEval-package
 #' @docType package
-#' @importFrom dplyr filter
-#' @importFrom dplyr rename
-#' @importFrom dplyr group_by
-#' @importFrom dplyr summarize
-#' @importFrom dplyr summarise
-#' @importFrom dplyr select
-#' @importFrom dplyr arrange
-#' @importFrom dplyr distinct
-#' @importFrom dplyr left_join
-#' @importFrom dplyr right_join
-#' @importFrom dplyr desc
-#' @importFrom dplyr filter_
-#' @importFrom dplyr rename_
-#' @importFrom dplyr mutate
-#' @importFrom dplyr group_by_
-#' @importFrom dplyr select_
-#' @importFrom dplyr mutate_
 #' @author Laura De Cicco \email{ldecicco@@usgs.gov}. Steven Corsi  
 #' @keywords ToxCast
 NULL

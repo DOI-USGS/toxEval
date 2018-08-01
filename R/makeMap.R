@@ -21,7 +21,6 @@
 #' Short Name, dec_lon, and dec_lat.
 #' @export
 #' @rdname make_tox_map
-#' @import leaflet
 #' @importFrom stats quantile
 #' @examples
 #' # This is the example workflow:
@@ -66,8 +65,8 @@ make_tox_map <- function(chemical_summary,
   
   if(length(siteToFind) == 1){
     
-    mapData <- filter(chem_site, SiteID == siteToFind) %>%
-      mutate(nSamples = median(mapData$count),
+    mapData <- dplyr::filter(chem_site, SiteID == siteToFind) %>%
+      dplyr::mutate(nSamples = median(mapData$count),
              meanMax = median(mapData$meanMax),
              sizes = median(mapData$sizes))
   }
@@ -138,20 +137,20 @@ map_tox_data <- function(chemical_summary,
   mapData <- chem_site[chem_site$`Short Name` %in% siteToFind,
                        c("Short Name", "dec_lat", "dec_lon", "SiteID")]
   
-  nSamples <- select(chemical_summary,site,date) %>%
-    distinct() %>%
-    group_by(site) %>%
-    summarize(count = n())
+  nSamples <- dplyr::select(chemical_summary,site,date) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(site) %>%
+    dplyr::summarize(count = n())
   
   meanStuff <- tox_boxplot_data(chemical_summary = chemical_summary, 
                          category = category,
                          mean_logic = mean_logic,
                          sum_logic = sum_logic) %>%
-    group_by(site) %>%
-    summarize(meanMax = max(meanEAR)) %>%
-    left_join(nSamples, by="site")
+    dplyr::group_by(site) %>%
+    dplyr::summarize(meanMax = max(meanEAR)) %>%
+    dplyr::left_join(nSamples, by="site")
   
-  mapData <- left_join(mapData, meanStuff, by=c("SiteID"="site"))
+  mapData <- dplyr::left_join(mapData, meanStuff, by=c("SiteID"="site"))
   
   col_types <- c("darkblue","dodgerblue","green4","gold1","orange","brown","red")
   
@@ -159,7 +158,7 @@ map_tox_data <- function(chemical_summary,
   
   if(length(siteToFind) > 1){
     leg_vals <- unique(as.numeric(quantile(mapData$meanMax, probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-    pal = colorBin(col_types, mapData$meanMax, bins = leg_vals)
+    pal = leaflet::colorBin(col_types, mapData$meanMax, bins = leg_vals)
     rad <-3*seq(1,4,length.out = 16)
     
     if(sum(mapData$count, na.rm = TRUE) == 0){
@@ -170,7 +169,7 @@ map_tox_data <- function(chemical_summary,
     
   } else {
     leg_vals <- unique(as.numeric(quantile(c(0,mapData$meanMax), probs=c(0,0.01,0.1,0.25,0.5,0.75,0.9,.99,1), na.rm=TRUE)))
-    pal = colorBin(col_types, c(0,mapData$meanMax), bins = leg_vals)
+    pal = leaflet::colorBin(col_types, c(0,mapData$meanMax), bins = leg_vals)
     mapData$sizes <- 3
   }
   
