@@ -1,4 +1,4 @@
-citHeader("To cite dataRetrieval in publications, please use:")
+citHeader("To cite toxEval in publications, please use:")
 
 bibentry(bibtype = "Manual",
  author = personList(
