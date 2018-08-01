@@ -32,14 +32,6 @@ Alternatively, an example workflow is shown here (also using example data provid
 
 ``` r
 library(toxEval)
-#> This information is preliminary or provisional and is subject to
-#> revision. It is being provided to meet the need for timely best
-#> science. The information has not received final approval by the
-#> U.S. Geological Survey (USGS) and is provided on the condition
-#> that neither the USGS nor the U.S. Government shall be held liable
-#> for any damages resulting from the authorized or unauthorized use
-#> of the information.
-#> 
 #> USGS Research Package:
 #> https://owi.usgs.gov/R/packages.html#research
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
@@ -54,9 +46,9 @@ filtered_ep <- filter_groups(cleaned_ep,
 
 chemicalSummary <- get_chemical_summary(tox_list, ACClong, filtered_ep)
 ######################################
-bio_plot <- plot_tox_boxplots(chemicalSummary, 
+chem_class_plot <- plot_tox_boxplots(chemicalSummary, 
                           category = 'Chemical Class')
-bio_plot
+chem_class_plot
 ```
 
 ![](man/figures/unnamed-chunk-4-1.png)
