@@ -67,9 +67,9 @@ filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
 stats_group <- hits_summary(chemical_summary, "Biological")
-\dontrun{
+
 hits_summary_DT(chemical_summary, category = "Biological")
 hits_summary_DT(chemical_summary, category = "Chemical Class")
 hits_summary_DT(chemical_summary, category = "Chemical")
-}
+
 }

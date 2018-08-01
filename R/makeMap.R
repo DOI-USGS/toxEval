@@ -30,8 +30,6 @@
 #' full_path <- file.path(path_to_tox, file_name)
 #' tox_list <- create_toxEval(full_path)
 #' 
-#' \dontrun{
-#' 
 #' ACC <- get_ACC(tox_list$chem_info$CAS)
 #' ACC <- remove_flags(ACC)
 #' 
@@ -42,7 +40,7 @@
 #' make_tox_map(chemical_summary, tox_list$chem_site, "Biological")   
 #' make_tox_map(chemical_summary, tox_list$chem_site, "Chemical Class")
 #' make_tox_map(chemical_summary, tox_list$chem_site, "Chemical") 
-#' }
+#' 
 make_tox_map <- function(chemical_summary,
                     chem_site,
                     category = "Biological",

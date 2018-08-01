@@ -183,7 +183,8 @@ my be useful on it's own.</p>
 <span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
 
 <span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+
 <span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
 <span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACC</span>)
 
@@ -193,8 +194,7 @@ my be useful on it's own.</p>
 
 <span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Biological"</span>)
 <span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical Class"</span>)
-<span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>)
-<span class='co'># }</span></pre>
+<span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

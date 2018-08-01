@@ -57,9 +57,9 @@ filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
 stats_df <- rank_sites(chemical_summary, "Biological")
-\dontrun{
+
 rank_sites_DT(chemical_summary, category = "Biological")
 rank_sites_DT(chemical_summary, category = "Chemical Class")
 rank_sites_DT(chemical_summary, category = "Chemical")
-}
+
 }
