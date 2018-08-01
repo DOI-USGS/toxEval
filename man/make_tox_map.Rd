@@ -46,8 +46,6 @@ file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 tox_list <- create_toxEval(full_path)
 
-\dontrun{
-
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
 
@@ -58,5 +56,5 @@ chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 make_tox_map(chemical_summary, tox_list$chem_site, "Biological")   
 make_tox_map(chemical_summary, tox_list$chem_site, "Chemical Class")
 make_tox_map(chemical_summary, tox_list$chem_site, "Chemical") 
-}
+
 }

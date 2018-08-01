@@ -41,11 +41,11 @@
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'
 #' site_df <- hits_by_groupings(chemical_summary, category = "Biological")
-#' \dontrun{
+#' 
 #' hits_by_groupings_DT(chemical_summary, category = "Biological")
 #' hits_by_groupings_DT(chemical_summary, category = "Chemical Class")
 #' hits_by_groupings_DT(chemical_summary, category = "Chemical")
-#' }
+#' 
 hits_by_groupings_DT <- function(chemical_summary, 
                            category = "Biological",
                            mean_logic = FALSE,

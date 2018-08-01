@@ -204,11 +204,11 @@ per site/category, there is one row per category.</p>
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 <span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
 
-<span class='no'>stats_group</span> <span class='kw'>&lt;-</span> <span class='fu'>hits_summary</span>(<span class='no'>chemical_summary</span>, <span class='st'>"Biological"</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>stats_group</span> <span class='kw'>&lt;-</span> <span class='fu'>hits_summary</span>(<span class='no'>chemical_summary</span>, <span class='st'>"Biological"</span>)
+
 <span class='fu'>hits_summary_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>)
 <span class='fu'>hits_summary_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)
-<span class='fu'>hits_summary_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)
-<span class='co'># }</span></pre>
+<span class='fu'>hits_summary_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
