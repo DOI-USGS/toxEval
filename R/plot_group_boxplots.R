@@ -24,6 +24,13 @@
 #' to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and 
 #' "Chemical Class".
 #' 
+#' Box plots are standard Tukey variety. The outliers are represented by dots, and 
+#' they are either less than (the 1st quartile - 1.5*IQR) or more than 
+#' (the 3rd quartile + 1.5*IQR), where IQR = 3rd quartile - 1st quartile.  The maximum line segment is at the 
+#' smaller of the maximum EAR value and 3rd quartile + 1.5 IQR, and the minimum line segment is 
+#' the larger of the smallest EAR value and 1st quartile – 1.5 IQR. The box part
+#' is bounded by the 1st and 3rd quartiles. See \code{grDevices::boxplot.stats}.
+#' 
 #' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param manual_remove Vector of categories to remove.

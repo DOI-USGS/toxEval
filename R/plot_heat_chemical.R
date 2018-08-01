@@ -1,4 +1,4 @@
-#' plot_tox_heatmap
+#' Plot EAR heat maps
 #' 
 #' The \code{plot_tox_heatmap} function creates a heat (tile) map with sites on the x-axis, 
 #' a specified grouping on the y-axis (defined by the category argument), and color shading 
@@ -14,6 +14,10 @@
 #' (for example, west-to-east). See the above section "Custom configuration"
 #' \href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
 #' the character vector sites to a factor with ordered levels.
+#' 
+#' If there are site/parameters (chemical/chemical class/biological grouping) combinations that
+#' don't have data, those areas are represented by an "X". If there are 0 values,
+#' they are considered "non-detects", and represented with a distinct color.
 #' 
 #' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param chem_site Data frame with columns SiteID, site_grouping, and Short Name.
