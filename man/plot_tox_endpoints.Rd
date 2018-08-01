@@ -46,6 +46,11 @@ create the boxplots are the mean or maximum (as defined by mean_logic) for each
 site as described in "Summarizing the data"in the Introduction vignette: 
 \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
 }
+\details{
+Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette: 
+\href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
+for more information.
+}
 \examples{
 # This is the example workflow:
 path_to_tox <-  system.file("extdata", package="toxEval")

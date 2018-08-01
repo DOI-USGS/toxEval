@@ -12,6 +12,10 @@
 #' site as described in "Summarizing the data"in the Introduction vignette: 
 #' \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
 #' 
+#' Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette: 
+#' \href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
+#' for more information.
+#' 
 #' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Either "Biological", "Chemical Class", or "Chemical".
 #' @param filterBy Character. Either "All" or one of the filtered categories.
