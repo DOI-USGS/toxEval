@@ -173,7 +173,7 @@ ggplot() +
 #  # To save a pdf:
 #  ggsave(ep_plot, file = "ep_plot.pdf")
 
-## ----rank_sites_DT, warning=FALSE----------------------------------------
+## ----rank_sites_DT, warning=FALSE------------------------------------
 library(DT)
 options(DT.options = list(pageLength = 5))
 
@@ -185,10 +185,10 @@ rank_sites_DT(chemical_summary,
               category = "Biological",
               hit_threshold = 0.1)
 
-## ----rank_sites_DT_site, warning=FALSE-----------------------------------
+## ----rank_sites_DT_site, warning=FALSE-------------------------------
 rank_sites_DT(maumee, category = "Biological")
 
-## ----hits_summary_DT, warning=FALSE--------------------------------------
+## ----hits_summary_DT, warning=FALSE----------------------------------
 
 hit_df <- hits_summary(chemical_summary,
                        category = "Biological",
@@ -198,10 +198,10 @@ hits_summary_DT(chemical_summary,
                 category = "Biological",
                 hit_threshold = 0.1)
 
-## ----hits_summary_DT_site, warning=FALSE---------------------------------
+## ----hits_summary_DT_site, warning=FALSE-----------------------------
 hits_summary_DT(maumee, category = "Biological")
 
-## ----endpoint_hits_DT, warning=FALSE-------------------------------------
+## ----endpoint_hits_DT, warning=FALSE---------------------------------
 
 ep_hits <- endpoint_hits(chemical_summary, 
                          category = "Biological", 
@@ -212,10 +212,10 @@ endpoint_hits_DT(chemical_summary,
                  hit_threshold = 0.1)
 
 
-## ----endpoint_hits_DT_site, warning=FALSE--------------------------------
+## ----endpoint_hits_DT_site, warning=FALSE----------------------------
 endpoint_hits_DT(maumee, category = "Biological")
 
-## ----hits_by_groupings_DT, warning=FALSE---------------------------------
+## ----hits_by_groupings_DT, warning=FALSE-----------------------------
 site_df <- hits_by_groupings(chemical_summary, 
                              category = "Chemical Class",
                              hit_threshold = 0.1)
@@ -224,10 +224,10 @@ hits_by_groupings_DT(chemical_summary,
                      category = "Chemical Class",
                      hit_threshold = 0.1)
 
-## ----hits_by_groupings_DT_site, warning=FALSE----------------------------
+## ----hits_by_groupings_DT_site, warning=FALSE------------------------
 hits_by_groupings_DT(maumee, category = "Chemical Class")
 
-## ----makeMap, warning=FALSE, message=FALSE-------------------------------
+## ----makeMap, warning=FALSE, message=FALSE---------------------------
 make_tox_map(chemical_summary, 
              chem_site = tox_list$chem_site, 
              category = "Biological")
@@ -240,13 +240,13 @@ make_tox_map(chemical_summary,
 #              category = "Chemical")
 
 
-## ----clean---------------------------------------------------------------
+## ----clean-----------------------------------------------------------
 #Trim some names:
 levels(chemical_summary$Class)[levels(chemical_summary$Class) == "Antimicrobial Disinfectants"] <- "Antimicrobial"
 levels(chemical_summary$Class)[levels(chemical_summary$Class) == "Detergent Metabolites"] <- "Detergent"
 levels(chemical_summary$Class)[levels(chemical_summary$Class) == "Flavors and Fragrances"] <- "Flavor/Fragrance"
 
-## ----sites---------------------------------------------------------------
+## ----sites-----------------------------------------------------------
 #Ordering the sites to flow "downstream" of the Great Lakes:
 sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
   "PresqueIsle","Ontonagon","Sturgeon","Tahquamenon","Burns",
@@ -274,7 +274,7 @@ tox_list$chem_site$site_grouping <- factor(tox_list$chem_site$site_grouping,
                levels=lakes_ordered)
 
 
-## ----fig.width=10--------------------------------------------------------
+## ----fig.width=10----------------------------------------------------
 summary_with_levels <- get_chemical_summary(tox_list,
                                             ACC,
                                             filtered_ep)
