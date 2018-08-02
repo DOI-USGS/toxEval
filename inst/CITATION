@@ -9,6 +9,6 @@ bibentry(bibtype = "Manual",
   address="Reston, VA",
   institution = "U.S. Geological Survey",
   year = 2018,
-  url = "https://code.usgs.gov/WMA-DataScience/toxEval",
+  url = "https://code.usgs.gov/water/toxEval",
   textVersion = "De Cicco, L.A., and Corsi, S.R., 2018, User guide for toxEval"
 )
