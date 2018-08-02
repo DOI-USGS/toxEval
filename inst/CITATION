@@ -4,11 +4,12 @@ bibentry(bibtype = "Manual",
  author = personList(
               as.person("Laura A. De Cicco"),
               as.person("Steven R. Corsi")),
-  title = "User guide for toxEval",
+  title = "toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.",
   publisher = "U.S. Geological Survey",
+  version = "1.0.0",
   address="Reston, VA",
   institution = "U.S. Geological Survey",
   year = 2018,
-  url = "https://code.usgs.gov/WMA-DataScience/toxEval",
-  textVersion = "De Cicco, L.A., and Corsi, S.R., 2018, User guide for toxEval"
+  url = "https://code.usgs.gov/water/toxEval",
+  textVersion = "De Cicco, L.A., Corsi, S.R, 2018, toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks. R package version 1.0.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I"
 )
