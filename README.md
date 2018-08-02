@@ -204,30 +204,27 @@ citation(package = "toxEval")
 #> 
 #> To cite toxEval in publications, please use:
 #> 
-#>   De Cicco, L.A., and Corsi, S.R., 2018, User guide for toxEval
+#>   De Cicco, L.A., Corsi, S.R, 2018, toxEval: Evaluation of
+#>   measured concentration data using the ToxCast high-throughput
+#>   screening database or a user-defined set of concentration
+#>   benchmarks. R package version 1.0.0.,
+#>   https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     author = {Laura A. {De Cicco} and Steven R. Corsi},
-#>     title = {User guide for toxEval},
+#>     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
 #>     publisher = {U.S. Geological Survey},
+#>     version = {1.0.0},
 #>     address = {Reston, VA},
 #>     institution = {U.S. Geological Survey},
 #>     year = {2018},
-#>     url = {https://code.usgs.gov/WMA-DataScience/toxEval},
+#>     url = {https://code.usgs.gov/water/toxEval},
 #>   }
 ```
 
 Disclaimer
 ----------
 
-This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at <https://www.usgs.gov/visual-id/credit_usgs.html#copyright>
-
-Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
-
-This software is provided "AS IS."
-
-Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
-
-[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
+This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.
