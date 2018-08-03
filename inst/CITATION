@@ -3,7 +3,10 @@ citHeader("To cite toxEval in publications, please use:")
 bibentry(bibtype = "Manual",
  author = personList(
               as.person("Laura A. De Cicco"),
-              as.person("Steven R. Corsi")),
+              as.person("Steven R. Corsi"),
+              as.person("Daniel L. Villeneuve"),
+              as.person("Brett R. Blackwell"),
+              as.person("Gerald T. Ankley")),
   title = "toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.",
   publisher = "U.S. Geological Survey",
   version = "1.0.0",
@@ -11,5 +14,5 @@ bibentry(bibtype = "Manual",
   institution = "U.S. Geological Survey",
   year = 2018,
   url = "https://code.usgs.gov/water/toxEval",
-  textVersion = "De Cicco, L.A., Corsi, S.R, 2018, toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks. R package version 1.0.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I"
+  textVersion = "De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R, Ankley, G.T., 2018, toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks. R package version 1.0.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I"
 )
