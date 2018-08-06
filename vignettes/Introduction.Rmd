@@ -13,7 +13,7 @@ vignette: >
 
 # Introduction
 
-The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. 
+The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to [ToxCast dat](https://www.epa.gov/chemical-research/toxicity-forecasting) (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. 
 
 The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `Shiny` R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided in the  [ShinyApp vignette](shinyApp.html).
 
@@ -33,6 +33,8 @@ An Exposure-Activity Ratio (EAR) is defined as the ratio of a measured concentra
 In order to get appropriate EAR results, it is important to use the correct units. The `toxEval` package assumes all measured concentrations are reported in micrograms per liter ($\mu$g/L). ToxCast data is reported in log($\mu$M), so the `toxEval` package automatically performs the unit conversion.
 
 A secondary option within `toxEval` is for the user to provide a set of "benchmark concentrations" to define custom biological responses to meet specific study objectives (e.g. water quality criteria). In this case, EAR values are replaced with toxicity quotients. Similar to EAR values, toxicity quotients are defined as the ratio of a measured concentration to the benchmark concentration. 
+
+EAR is basically synonymous with bioanalytical equivalent concentrations (BEQ). EAR is a ratio, and BEQ is a measure of concentration, but both convey the same information.
 
 ## What is an "endPoint"?
 
