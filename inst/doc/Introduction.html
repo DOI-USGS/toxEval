@@ -67,7 +67,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Introduction to toxEval</h1>
-<h4 class="date"><em>02 August, 2018</em></h4>
+<h4 class="date"><em>06 August, 2018</em></h4>
 
 
 <div id="TOC">
@@ -92,7 +92,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The <code>toxEval</code> R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to ToxCast data (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.</p>
+<p>The <code>toxEval</code> R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to <a href="https://www.epa.gov/chemical-research/toxicity-forecasting">ToxCast dat</a> (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.</p>
 <p>The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the <code>Shiny</code> R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided in the <a href="shinyApp.html">ShinyApp vignette</a>.</p>
 <p>This vignette provides a general overview of the concepts within <code>toxEval</code>, definitions of common terminology used throughout the package, and links to information to help understand fundamentals of the ToxCast database used within <code>toxEval</code>. In addition, instructions are provided for installing and updating the package from the Geological Survey R Archive Network (GRAN).</p>
 <div id="what-is-toxcast" class="section level2">
@@ -106,6 +106,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>An Exposure-Activity Ratio (EAR) is defined as the ratio of a measured concentration and a concentration that was determined to cause some activity in a specified ToxCast assay (“endPoint” concentration). An EAR &gt; 1.0 would indicate that the measured concentration is greater than the endpoint concentration. The ToxCast database (as provided in the current version of <code>toxEval</code>) provides as many as several hundred endPoints for more than 7000 chemicals. Each endPoint is a single test that was done to detect some form of biological activity.</p>
 <p>In order to get appropriate EAR results, it is important to use the correct units. The <code>toxEval</code> package assumes all measured concentrations are reported in micrograms per liter (<span class="math inline">\(\mu\)</span>g/L). ToxCast data is reported in log(<span class="math inline">\(\mu\)</span>M), so the <code>toxEval</code> package automatically performs the unit conversion.</p>
 <p>A secondary option within <code>toxEval</code> is for the user to provide a set of “benchmark concentrations” to define custom biological responses to meet specific study objectives (e.g. water quality criteria). In this case, EAR values are replaced with toxicity quotients. Similar to EAR values, toxicity quotients are defined as the ratio of a measured concentration to the benchmark concentration.</p>
+<p>EAR is basically synonymous with bioanalytical equivalent concentrations (BEQ). EAR is a ratio, and BEQ is a measure of concentration, but both convey the same information.</p>
 </div>
 <div id="what-is-an-endpoint" class="section level2">
 <h2>What is an “endPoint”?</h2>
