@@ -69,8 +69,9 @@ plot_stacks
 ``` r
 ######################################
 plot_heat <- plot_tox_heatmap(chemicalSummary, 
-                               tox_list$chem_site, 
-                               category = "Chemical")
+                              tox_list$chem_site, 
+                              category = "Chemical Class",
+                              font_size = 7)
 plot_heat
 ```
 

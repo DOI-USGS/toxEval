@@ -1,7 +1,7 @@
 library(hexSticker)
 
 outline = "#000080"
-background = "transparent" 
+background = "white" 
 sticker("./man/figures/toxEval.png",
         package = "",
         h_fill = background,

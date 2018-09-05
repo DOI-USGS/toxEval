@@ -1,8 +1,8 @@
 Package: toxEval
 Type: Package
 Title: ToxCast Evaluations
-Version: 1.0.0
-Date: 2018-07-31
+Version: 1.0.1
+Date: 2018-09-05
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
                      email = "ldecicco@usgs.gov"),

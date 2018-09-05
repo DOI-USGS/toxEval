@@ -131,8 +131,9 @@ plot_stacks</code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-4-2.png" width="768"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">######################################
 plot_heat &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span>(chemicalSummary, 
-                               tox_list<span class="op">$</span>chem_site, 
-                               <span class="dt">category =</span> <span class="st">"Chemical"</span>)
+                              tox_list<span class="op">$</span>chem_site, 
+                              <span class="dt">category =</span> <span class="st">"Chemical Class"</span>,
+                              <span class="dt">font_size =</span> <span class="dv">7</span>)
 plot_heat</code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-4-3.png" width="768"></p>
 <p>This code opens up the example file, loads it into a <code>toxEval</code> object, grabs the pertinent ToxCast information, and creates a “chemicalSummary” data frame that is used in many of the plot and table functions.</p>
