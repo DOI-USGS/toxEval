@@ -340,14 +340,13 @@ tox_boxplot_data <- function(chemical_summary,
     dplyr::arrange(median)
   
   orderedLevels <- orderColsBy$category
-  
-  if(any(is.na(orderColsBy$median))){
-    orderedLevels <- c(orderColsBy$category[is.na(orderColsBy$median)],
-                       orderColsBy$category[!is.na(orderColsBy$median)])
-  }
+
+  orderedLevels <- c(orderColsBy$category[is.na(orderColsBy$median)],
+                     orderColsBy$category[!is.na(orderColsBy$median)])
+
   
   tox_boxplot_data$category <- factor(as.character(tox_boxplot_data$category), 
-                               levels=orderedLevels[orderedLevels %in% unique(as.character(tox_boxplot_data$category))])
+                               levels=levels(tox_boxplot_data$category)[orderedLevels])
   
   return(tox_boxplot_data)
 }
