@@ -158,7 +158,7 @@ rank_sites <- function(chemical_summary,
                 nHits = sum(sumEAR > hit_threshold)) %>%
       dplyr::group_by(site, category) %>%
       dplyr::summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
-                freq = sum(nHits > 0)/n()) %>%
+                freq = sum(nHits > 0)/dplyr::n()) %>%
       data.frame()    
   } else {
     statsOfColumn <- chemical_summary %>%
@@ -167,7 +167,7 @@ rank_sites <- function(chemical_summary,
                 nHits = sum(sumEAR > hit_threshold)) %>%
       dplyr::group_by(site, category) %>%
       dplyr::summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
-                freq = sum(nHits > 0)/n()) %>%
+                freq = sum(nHits > 0)/dplyr::n()) %>%
       data.frame()
   }
 
