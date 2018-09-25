@@ -22,7 +22,7 @@ output$mapFooter <- renderUI({
   nSamples <- dplyr::select(chemical_summary,site,date) %>%
     dplyr::distinct() %>%
     dplyr::group_by(site) %>%
-    dplyr::summarize(count = n())
+    dplyr::summarize(count = dplyr::n())
   
   HTML(paste0("<h5>Size range represents number of samples. Ranges from ", min(nSamples$count,na.rm = TRUE),
               " - ", 
