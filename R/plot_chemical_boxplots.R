@@ -206,13 +206,15 @@ graph_chem_data <- function(chemical_summary,
       dplyr::summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
       data.frame()     
   } else {
+    #With new dplyr...will need to filter out na's in meanEAR
     graphData <- chemical_summary %>%
-      dplyr::group_by(site,date,chnm, Class) %>%
-      dplyr::summarise(sumEAR=sum(EAR)) %>%
+      dplyr::group_by(site,date,chnm) %>%
+      dplyr::summarise(sumEAR=sum(EAR,na.rm = TRUE)) %>%
       data.frame() %>%
-      dplyr::group_by(site, chnm, Class) %>%
+      dplyr::group_by(site, chnm) %>%
       dplyr::summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
-      data.frame() 
+      data.frame() %>%
+      dplyr::left_join(dplyr::distinct(dplyr::select(chemical_summary, chnm, Class)), by = "chnm")
   }
   
   if(!is.null(manual_remove)){

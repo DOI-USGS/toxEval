@@ -344,9 +344,14 @@ tox_boxplot_data <- function(chemical_summary,
   orderedLevels <- c(orderColsBy$category[is.na(orderColsBy$median)],
                      orderColsBy$category[!is.na(orderColsBy$median)])
 
-  
-  tox_boxplot_data$category <- factor(as.character(tox_boxplot_data$category), 
-                               levels=levels(tox_boxplot_data$category)[orderedLevels])
+  if(is.factor(tox_boxplot_data$category)){
+    tox_boxplot_data$category <- factor(as.character(tox_boxplot_data$category), 
+                                        levels=levels(tox_boxplot_data$category)[orderedLevels])    
+  } else {
+    tox_boxplot_data$category <- factor(tox_boxplot_data$category, 
+                                        levels=orderedLevels)    
+  }
+
   
   return(tox_boxplot_data)
 }

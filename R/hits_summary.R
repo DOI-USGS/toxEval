@@ -123,7 +123,7 @@ hits_summary <- function(chemical_summary,
       dplyr::summarise(hits = sum(EAR > hit_threshold)) %>%
       dplyr::group_by(site,category) %>%
       dplyr::summarise(`Samples with hits` = sum(hits >= 1),
-                nSamples = n()) %>%   
+                nSamples = dplyr::n()) %>%   
       dplyr::arrange(dplyr::desc(`Samples with hits`))    
   } else {
     hits_summary <- chemical_summary %>%
@@ -132,7 +132,7 @@ hits_summary <- function(chemical_summary,
                 hits = sum(EAR > hit_threshold)) %>%
       dplyr::group_by(site,category) %>%
       dplyr::summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
-                nSamples = n()) %>%
+                nSamples = dplyr::n()) %>%
       dplyr::arrange(dplyr::desc(`Samples with hits`))    
   }
 

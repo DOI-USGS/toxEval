@@ -138,7 +138,7 @@ map_tox_data <- function(chemical_summary,
   nSamples <- dplyr::select(chemical_summary,site,date) %>%
     dplyr::distinct() %>%
     dplyr::group_by(site) %>%
-    dplyr::summarize(count = n())
+    dplyr::summarize(count = dplyr::n())
   
   meanStuff <- tox_boxplot_data(chemical_summary = chemical_summary, 
                          category = category,
