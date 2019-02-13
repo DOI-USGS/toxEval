@@ -60,102 +60,53 @@
 #' 
 #' @param excel_file_path Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
 #' and could optionally contain Exclude and Benchmarks.
-#'
+#' @param \dots data frames to override data within the original x list.
+#' 
 #' @export
 #' @examples 
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
 #' excel_file_path <- file.path(path_to_tox, file_name)
 #' tox_list <- create_toxEval(excel_file_path)
-create_toxEval <- function(excel_file_path){
+create_toxEval <- function(excel_file_path, ...){
   
   if(!file.exists(excel_file_path)){
     stop("File does not exist, check path and spelling")
   } 
   
-  if(!all(c("Data","Chemicals","Sites") %in% readxl::excel_sheets(excel_file_path))){
-    stop("Excel file needs at least 3 sheets labeled 'Data', 'Chemicals', and 'Sites'")
+  if("Chemicals" %in% readxl::excel_sheets(excel_file_path)){
+    chem_info <- readxl::read_excel(excel_file_path, sheet = "Chemicals")
   }
   
-  req_cols <- c("CAS", "SiteID", "Value", "Sample Date")
-  chem_data <- readxl::read_excel(excel_file_path, sheet = "Data")
-  # Correct some common possibilities:
-  names(chem_data)[names(chem_data) %in% c("site","Site","Station","station")] <- "SiteID"
-  names(chem_data)[names(chem_data) %in% c("Date","date","sample","Sample")] <- "Sample Date"
-  names(chem_data)[names(chem_data) %in% c("casrn", "casn","CASRN","CASN")] <- "CAS"
-  chem_data <- check_cols(req_cols, chem_data)
-  
-  if(!is.numeric(chem_data$Value)){
-    stop("The 'Value' column in the Data sheet is not numeric")
+  if("Data" %in% readxl::excel_sheets(excel_file_path)){
+    chem_data <- readxl::read_excel(excel_file_path, sheet = "Data")
   }
   
-  req_cols <- c("CAS", "Class")
-  chem_info <- readxl::read_excel(excel_file_path, sheet = "Chemicals")
-  names(chem_info)[names(chem_info) %in% c("casrn", "casn","CASRN","CASN")] <- "CAS"
-  chem_info <- check_cols(req_cols, chem_info)
-
-  req_cols <- c("SiteID", "Short Name")
-  chem_site <- readxl::read_excel(excel_file_path, sheet = "Sites")
-  names(chem_site)[names(chem_site) %in% c("site","Site","Station","station")] <- "SiteID"
-  names(chem_site)[names(chem_site) %in% c("shortName", "map_name")] <- "Short Name" #others?
-  names(chem_site)[names(chem_site) %in% c("dec_long", "longitude", "long")] <- "dec_lon"
-  names(chem_site)[names(chem_site) %in% c("lat", "latitude")] <- "dec_lat"
-  chem_site <- check_cols(req_cols, chem_site)
-  
-  #Check columns needed for shiny app:
-  app_cols <- c("dec_lat","dec_lon")
-  chem_site <- check_cols(app_cols, chem_site, mandatory = FALSE)
-  
-  if(!("site_grouping" %in% names(chem_site))){
-    chem_site$site_grouping <- ""
+  if("Sites" %in% readxl::excel_sheets(excel_file_path)){
+    chem_site <- readxl::read_excel(excel_file_path, sheet = "Sites")
   }
-  
-  exclusions <- NULL
-  benchmarks <- NULL
   
   if("Exclude" %in% readxl::excel_sheets(excel_file_path)){
-    req_cols <- c("CAS", "endPoint")
     exclusions <- readxl::read_excel(excel_file_path, sheet = "Exclude")
-    names(exclusions)[names(exclusions) %in% c("casrn", "casn","CASRN","CASN")] <- "CAS"
-    exclusions <- check_cols(req_cols, exclusions)
+  } else {
+    exclusions <- NULL
   }
   
   if("Benchmarks" %in% readxl::excel_sheets(excel_file_path)){
-    req_cols <- c("CAS", "endPoint","ACC_value","chnm")
     benchmarks <- readxl::read_excel(excel_file_path, sheet = "Benchmarks")
-    
-    names(benchmarks)[names(benchmarks) %in% c("casrn", "casn","CASRN","CASN")] <- "CAS"
-    names(benchmarks)[names(benchmarks) %in% c("Value", "value","ACC","ACC_value")] <- "ACC_value"
-    names(benchmarks)[names(benchmarks) %in% c("chemical", "chnm","Chemical","Compound")] <- "chnm"
-    
-    benchmarks <- check_cols(req_cols, benchmarks)
-    if(!("groupCol" %in% names(benchmarks))){
-      benchmarks$groupCol <- "Benchmarks"
-    }
+  } else {
+    benchmarks <- NULL
   }
   
-  #Check that all CAS in Data in Chemical
-  data_cas <- unique(chem_data$CAS)
-  chem_cas <- unique(chem_info$CAS)
-  if(!all(data_cas %in% chem_cas)){
-    warning("Not all CAS in the Data sheet are listed in the Chemical sheet")
-  }
-  
-  #Check that all SiteID in Data in Sites
-  data_siteID <- unique(chem_data$SiteID)
-  site_siteID <- unique(chem_site$SiteID)
-  if(!all(data_siteID %in% site_siteID)){
-    warning("Not all SiteID in the Data sheet are listed in the Sites sheet")
-  }
-  rawData <- list(chem_data=chem_data,
+  rawTox <- list(chem_data=chem_data,
                   chem_info=chem_info,
                   chem_site=chem_site,
                   exclusions=exclusions,
                   benchmarks=benchmarks)
   
-  class(rawData) <- "toxEval"
+  rawTox <- as.toxEval(rawTox, ...)
   
-  return(rawData)
+  return(rawTox)
   
 }
 
@@ -239,4 +190,188 @@ summary.toxEval <- function(object, ...){
   message(length(CAS_w_data)," chemicals have ", bench_word, " information")
   message("Chemicals returned from this function do NOT have ", bench_word, " information:")
   return(unique(object$chem_info$CAS)[!(unique(object$chem_info$CAS) %in% CAS_w_data)])
+}
+
+
+allowed_names <- function(col_names, allowable, better){
+  if(any(allowable %in% col_names)){
+    col_names[col_names %in% allowable] <- better
+  }
+  return(col_names)
+}
+
+
+#' toxEval helper functions
+#' 
+#' A small collection of helper functions for toxEval
+#' 
+#' @export
+#' @param x list or toxEval object
+#' @param \dots data frames to override data within the original x list.
+#' @rdname helperToxEval
+#' 
+#' @examples
+#' path_to_tox <-  system.file("extdata", package="toxEval")
+#' file_name <- "OWC_data_fromSup.xlsx"
+#' full_path <- file.path(path_to_tox, file_name)
+#' tox_list <- create_toxEval(full_path)
+#' 
+#' # To over-ride one of the data frames:
+#' chem_data <- data.frame(CAS = "21145-77-7",
+#'                    Value = 1,
+#'                    "Sample Date" = as.Date("2012-01-01"),
+#'                    SiteID = "USGS-04249000")
+#' tox_list_new <- as.toxEval(tox_list, chem_data)
+#' 
+as.toxEval <- function(x, ...){
+  
+  matchReturn <- c(do.call("c",list(...)[sapply(list(...), class) == "list"]), #get the list parts
+                   list(...)[sapply(list(...), class) != "list"])
+
+  if(is.null(names(matchReturn))){
+    names(matchReturn) <- match.call(expand.dots = FALSE)$...
+  }
+  
+  if("chem_data" %in% names(matchReturn)){
+    message("Replacing chem_data from list with supplied data frame.")
+    x[["chem_data"]] <- matchReturn[["chem_data"]]
+  }
+  
+  if("chem_info" %in% names(matchReturn)){
+    message("Replacing chem_info from list with supplied data frame.")
+    x[["chem_info"]] <- matchReturn[["chem_info"]]    
+  }
+  
+  if("chem_site" %in% names(matchReturn)){
+    message("Replacing chem_site from list with supplied data frame.")
+    x[["chem_site"]] <- matchReturn[["chem_site"]]       
+  }
+  
+  if("exclusions" %in% names(matchReturn)){
+    message("Replacing exclusions from list with supplied data frame.")
+    x[["exclusions"]] <- matchReturn[["exclusions"]]      
+  }
+  
+  if("benchmarks" %in% names(matchReturn)){
+    message("Replacing benchmarks from list with supplied data frame.")
+    x[["benchmarks"]] <- matchReturn[["benchmarks"]]     
+  }
+  
+  names(x) <- names(x) %>%
+    tolower() %>%
+    allowed_names("data", "chem_data") %>%
+    allowed_names("chemicals", "chem_info")%>%
+    allowed_names("sites", "chem_site") %>%
+    allowed_names("exclude", "exclusions")
+
+  required_data <- c("chem_data","chem_info","chem_site")
+  
+  if(!all(required_data %in% names(x))){
+    stop("Missing", required_data[!required_data %in% names(x)])
+  }
+
+  chem_data <- x[["chem_data"]]
+  chem_info <- x[["chem_info"]]
+  chem_site <- x[["chem_site"]]
+
+  if("benchmarks" %in% names(x)){
+    benchmarks <- x[["benchmarks"]]
+  } else {
+    benchmarks <- NULL
+  }
+  
+  if("exclusions" %in% names(x)){
+    exclusions <- x[["exclusions"]]
+  } else {
+    exclusions <- NULL
+  }
+
+  # chem_data:
+  names(chem_data) <- names(chem_data) %>%
+    allowed_names(c("site","Site","Station","station"), "SiteID") %>%
+    allowed_names(c("Date","date","sample","Sample"), "Sample Date") %>%
+    allowed_names(c("casrn", "casn","CASRN","CASN"), "CAS")
+
+  chem_data <- check_cols(c("CAS", "SiteID", "Value", "Sample Date"), chem_data)
+  
+  if(!is.numeric(chem_data$Value)){
+    stop("The 'Value' column in the Data sheet is not numeric")
+  }
+  
+  # chem_info:
+  names(chem_info) <- names(chem_info) %>%
+    allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS")
+
+  chem_info <- check_cols(c("CAS", "Class"), chem_info)
+  
+  # chem_site:
+  names(chem_site) <- names(chem_site) %>%
+    allowed_names(c("site","Site","Station","station"),"SiteID") %>%
+    allowed_names(c("shortName", "map_name"),"Short Name") %>%
+    allowed_names(c("dec_long", "longitude", "long"),"dec_lon") %>%
+    allowed_names(c("lat", "latitude"),"dec_lat")
+
+  chem_site <- check_cols(c("SiteID", "Short Name"), chem_site)
+  
+  #Check columns needed for shiny app:
+  chem_site <- check_cols(c("dec_lat","dec_lon"),
+                          chem_site, mandatory = FALSE)
+  
+  if(!("site_grouping" %in% names(chem_site))){
+    chem_site$site_grouping <- ""
+  }
+  
+  if(!is.null(exclusions)){
+    
+    names(exclusions) <- names(exclusions) %>%
+      allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS")
+    
+    exclusions <- check_cols(c("CAS", "endPoint"), exclusions)
+  }
+  
+  if(!is.null(benchmarks)){
+    names(benchmarks) <- names(benchmarks) %>%
+      allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS") %>%
+      allowed_names(c("Value", "value","ACC","ACC_value"),"ACC_value") %>%
+      allowed_names(c("chemical", "chnm","Chemical","Compound"),"chnm")
+    
+    benchmarks <- check_cols(c("CAS", "endPoint","ACC_value","chnm"),
+                             benchmarks)
+    if(!("groupCol" %in% names(benchmarks))){
+      benchmarks$groupCol <- "Benchmarks"
+    }
+  }
+  
+  #Check that all CAS in Data in Chemical
+  data_cas <- unique(chem_data$CAS)
+  chem_cas <- unique(chem_info$CAS)
+  if(!all(data_cas %in% chem_cas)){
+    warning("Not all CAS in the Data sheet are listed in the Chemical sheet")
+  }
+  
+  #Check that all SiteID in Data in Sites
+  data_siteID <- unique(chem_data$SiteID)
+  site_siteID <- unique(chem_site$SiteID)
+  if(!all(data_siteID %in% site_siteID)){
+    warning("Not all SiteID in the Data sheet are listed in the Sites sheet")
+  }
+  rawData <- list(chem_data=chem_data,
+                  chem_info=chem_info,
+                  chem_site=chem_site,
+                  exclusions=exclusions,
+                  benchmarks=benchmarks)
+  
+  class(rawData) <- "toxEval"
+  
+  return(rawData)
+}
+
+#' @rdname helperToxEval
+#' @export
+#' @examples
+#' path_to_tox <-  system.file("extdata", package="toxEval")
+#' file_name <- "OWC_data_fromSup.xlsx"
+#' full_path <- file.path(path_to_tox, file_name)
+is.toxEvl <- function(x, ...){
+  
 }
