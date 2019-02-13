@@ -6,7 +6,6 @@
 
 language: r
 cache: packages
-dist: trusty
 
 matrix:
   include:
@@ -23,12 +22,11 @@ addons:
 
 env:
    global:
-     - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-     - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
      - NOT_CRAN="true"
      - _R_CHECK_FORCE_SUGGESTS_=false
      
 warnings_are_errors: true
+r_check_args: --as-cran 
 
 r_github_packages:
   - jimhester/covr

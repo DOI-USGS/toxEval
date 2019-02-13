@@ -18,7 +18,8 @@
 get_ACC <- function(CAS){
   
   # Getting rid of NSE warnings:
-  Structure_MolWt <- Substance_CASRN <- casn <- chnm <- flags <- MlWt <- ACC_value <- casrn <- endPoint <- ".dplyr"
+  Structure_MolWt <- Substance_CASRN <- casn <- Substance_Name <- ".dplyr"
+  chnm <- flags <- MlWt <- ACC_value <- casrn <- endPoint <- ".dplyr"
   
   chem_list <- dplyr::select(tox_chemicals,
                              casrn = Substance_CASRN,
@@ -32,7 +33,10 @@ get_ACC <- function(CAS){
     data.frame() %>%
     dplyr::mutate(ACC_value = 10^ACC,
                   ACC_value = ACC_value * MlWt) %>%
-    dplyr::filter(!is.na(ACC_value)) 
+    dplyr::filter(!is.na(ACC_value)) %>%
+    dplyr::left_join(dplyr::select(tox_chemicals, 
+                                   CAS = Substance_CASRN, 
+                                   chnm = Substance_Name), by="CAS")
 
   if(any(is.na(ACC$MlWt))){
     warning("Some chemicals are missing molecular weights")

@@ -4,11 +4,13 @@
 \alias{create_toxEval}
 \title{Load and check toxEval data}
 \usage{
-create_toxEval(excel_file_path)
+create_toxEval(excel_file_path, ...)
 }
 \arguments{
 \item{excel_file_path}{Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
 and could optionally contain Exclude and Benchmarks.}
+
+\item{\dots}{data frames to override data within the original x list.}
 }
 \value{
 The object returned from this function contains a list of between 

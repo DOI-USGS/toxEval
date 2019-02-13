@@ -1,20 +1,23 @@
 Package: toxEval
 Type: Package
 Title: ToxCast Evaluations
-Version: 1.0.2
-Date: 2018-09-25
+Version: 1.0.3
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
-                     email = "ldecicco@usgs.gov"),
+                     email = "ldecicco@usgs.gov",
+                     comment=c(ORCID="0000-0002-3915-9487")),
               person("Steven", "Corsi", 
                      role = c("aut"),
-                     email = "srcorsi@usgs.gov"),
+                     email = "srcorsi@usgs.gov",
+                     comment=c(ORCID="0000-0003-0583-5536")),
               person("Daniel", "Villeneuve", 
-                     role = c("aut")),
+                     role = c("aut"),
+                     comment=c(ORCID="0000-0003-2801-0203")),
               person("Brett", "Blackwell", 
                      role = c("aut")), 
               person("Gerald", "Ankley", 
-                     role = c("aut")), 
+                     role = c("aut"),
+                     comment=c(ORCID="0000-0002-9937-615X")), 
               person("Alison", "Appling", 
                      role = "rev", 
                      comment = "Reviewed for USGS"),
@@ -53,4 +56,4 @@ VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
 LazyData: yes
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
