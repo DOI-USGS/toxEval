@@ -22,6 +22,19 @@ The following workflow provides examples of toxEval analyses using these data. T
  
 Once the data is prepared as described in the  [Prepare Data vignette](PrepareData.html),  it can be loaded into R using the `create_toxEval` function.
 
+```{r setup1, include=FALSE}
+library(knitr)
+library(rmarkdown)
+options(continue=" ")
+options(width=60)
+#Set this to TRUE when creating pkgdown site:
+runTables <- FALSE
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+
 ```{r startup, message=FALSE}
 library(toxEval)
 path_to_tox <-  system.file("extdata", package="toxEval")
@@ -191,8 +204,6 @@ maumee_site <- filter(tox_list$chem_site, `Short Name` == "Maumee")
 In this example, the function `plot_tox_boxplots` is used with the subset of data from the Maumee River. For this single site graph, the number of chemicals that were detected and have associated endpoint ACCs represented are displayed. 
 
 ```{r maumeePlot, message=FALSE, warning=FALSE}
-library(ggplot2)
-
 plot_tox_boxplots(maumee, "Biological",title = maumee_site$Fullname[1])
 
 ```
@@ -271,61 +282,128 @@ See ["Box Plot Details"](#box_plot_details) for a description of what the lines 
 The following diagram describes the lines and dots within the boxplots:
 
 ```{r boxDetails, echo=FALSE}
-sample_df <- data.frame(parameter = "test",
-                        values = rnorm(510, mean = 500, sd = 300))
-
-#Make sure there are some outliers:
-sample_df$values[1] <- 1000
-sample_df$values[2] <- 900
-sample_df$values[3] <- -200
-sample_df$values[4] <- -600
-
-quartiles <- as.numeric(quantile(sample_df$values))
-IQR <- diff(quartiles[c(2,4)])
-
-upper_whisker <- max(sample_df$values[sample_df$values <
-                           (quartiles[4] + 1.5 * IQR)])
-lower_whisker <- min(sample_df$values[sample_df$values >
-                           (quartiles[2] - 1.5 * IQR)])
+library(ggplot2)
+ggplot_box_legend <- function(family = "serif"){
   
-upper_dots <- sample_df$values[sample_df$values > 
-                            quartiles[4] + 1.5*IQR]
-lower_dots <- sample_df$values[sample_df$values < 
-                            quartiles[2] - 1.5*IQR]
+  # Create data to use in the boxplot legend:
+  set.seed(100)
 
-label_df <- data.frame(parameter = "explaination",
-                       values = c(quartiles,
-                                  upper_whisker,
-                                  lower_whisker),
-                       names = c("Minimum", 
-                                 "Q1 = 25th percentile", "Median",
-                                 "Q3 = 75th percentile", "Maximum","",""))
+  sample_df <- data.frame(parameter = "test",
+                        values = sample(500))
 
+  # Extend the top whisker a bit:
+  sample_df$values[1:100] <- 701:800
+  # Make sure there's only 1 lower outlier:
+  sample_df$values[1] <- -350
+  
+  # Function to calculate important values:
+  ggplot2_boxplot <- function(x){
+  
+    quartiles <- as.numeric(quantile(x, 
+                                     probs = c(0.25, 0.5, 0.75)))
+    
+    names(quartiles) <- c("25th percentile", 
+                          "50th percentile\n(median)",
+                          "75th percentile")
+    
+    IQR <- diff(quartiles[c(1,3)])
+  
+    upper_whisker <- max(x[x < (quartiles[3] + 1.5 * IQR)])
+    lower_whisker <- min(x[x > (quartiles[1] - 1.5 * IQR)])
+      
+    upper_dots <- x[x > (quartiles[3] + 1.5*IQR)]
+    lower_dots <- x[x < (quartiles[1] - 1.5*IQR)]
+  
+    return(list("quartiles" = quartiles,
+                "25th percentile" = as.numeric(quartiles[1]),
+                "50th percentile\n(median)" = as.numeric(quartiles[2]),
+                "75th percentile" = as.numeric(quartiles[3]),
+                "IQR" = IQR,
+                "upper_whisker" = upper_whisker,
+                "lower_whisker" = lower_whisker,
+                "upper_dots" = upper_dots,
+                "lower_dots" = lower_dots))
+  }
+  
+  # Get those values:
+  ggplot_output <- ggplot2_boxplot(sample_df$values)
+  
+  # Lots of text in the legend, make it smaller and consistent font:
+  update_geom_defaults("text", 
+                     list(size = 3, 
+                          hjust = 0,
+                          family = family))
+  # Labels don't inherit text:
+  update_geom_defaults("label", 
+                     list(size = 3, 
+                          hjust = 0,
+                          family = family))
+  
+  # Create the legend:
+  # The main elements of the plot (the boxplot, error bars, and count)
+  # are the easy part.
+  # The text describing each of those takes a lot of fiddling to
+  # get the location and style just right:
+  explain_plot <- ggplot() +
+    stat_boxplot(data = sample_df,
+                 aes(x = parameter, y=values),
+                 geom ='errorbar', width = 0.3) +
+    geom_boxplot(data = sample_df,
+                 aes(x = parameter, y=values), 
+                 width = 0.3, fill = "lightgrey") +
+    geom_text(aes(x = 1, y = 950, label = "500"), hjust = 0.5) +
+    geom_text(aes(x = 1.17, y = 950,
+                  label = "Number of values"),
+              fontface = "bold", vjust = 0.4) +
+    theme_minimal(base_size = 5, base_family = family) +
+    geom_segment(aes(x = 2.3, xend = 2.3, 
+                     y = ggplot_output[["25th percentile"]], 
+                     yend = ggplot_output[["75th percentile"]])) +
+    geom_segment(aes(x = 1.2, xend = 2.3, 
+                     y = ggplot_output[["25th percentile"]], 
+                     yend = ggplot_output[["25th percentile"]])) +
+    geom_segment(aes(x = 1.2, xend = 2.3, 
+                     y = ggplot_output[["75th percentile"]], 
+                     yend = ggplot_output[["75th percentile"]])) +
+    geom_text(aes(x = 2.4, y = ggplot_output[["50th percentile\n(median)"]]), 
+              label = "Interquartile\nrange", fontface = "bold",
+              vjust = 0.4) +
+    geom_text(aes(x = c(1.17,1.17), 
+                  y = c(ggplot_output[["upper_whisker"]],
+                        ggplot_output[["lower_whisker"]]), 
+                  label = c("Largest value within 1.5 times\ninterquartile range above\n75th percentile",
+                            "Smallest value within 1.5 times\ninterquartile range below\n25th percentile")),
+                  fontface = "bold", vjust = 0.9) +
+    geom_text(aes(x = c(1.17), 
+                  y =  ggplot_output[["lower_dots"]], 
+                  label = "Outside value"), 
+              vjust = 0.5, fontface = "bold") +
+    geom_text(aes(x = c(1.9), 
+                  y =  ggplot_output[["lower_dots"]], 
+                  label = "-Value is >1.5 times and"), 
+              vjust = 0.5) +
+    geom_text(aes(x = 1.17, 
+                  y = ggplot_output[["lower_dots"]], 
+                  label = "<3 times the interquartile range\nbeyond either end of the box"), 
+              vjust = 1.5) +
+    geom_label(aes(x = 1.17, y = ggplot_output[["quartiles"]], 
+                  label = names(ggplot_output[["quartiles"]])),
+              vjust = c(0.4,0.85,0.4), 
+              fill = "white", label.size = 0) +
+    ylab("") + xlab("") +
+    theme(axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          panel.grid = element_blank(),
+          aspect.ratio = 4/3,
+          plot.title = element_text(hjust = 0.5, size = 10)) +
+    coord_cartesian(xlim = c(1.4,3.1), ylim = c(-600, 900)) +
+    labs(title = "EXPLANATION")
 
-ggplot() +
-  geom_hline(yintercept = label_df$values,linetype="dashed", color = "lightgrey") +
-  geom_boxplot(data = sample_df, aes(x = parameter, y=values), width = 0.2, fill = "steelblue") +  theme_bw() +
-  geom_text(data = label_df, aes(x = 0.75, y = values, label = names), vjust = 0.4) +
-  geom_segment(aes(x = 1.15, xend = 1.15, 
-                   y = label_df$values[2], yend = label_df$values[4]),
-               arrow = arrow(length = unit(0.2, "cm"), ends = "both")) +
-  geom_text(aes(x = 1.25, y = label_df$values[3]), 
-            label = "IQR = Q3-Q1", hjust = 0.2, vjust = 0.4) +
-  geom_text(aes(x = c(1.1,1.1), y = label_df$values[6:7]), 
-            label = c(bquote(italic(max)*"(y[y < (Q3 + 1.5*IQR)])"),
-                      bquote(italic(min)*"(y[y > (Q1 - 1.5*IQR)])")), 
-            hjust = 0, vjust = 0.4, parse = TRUE) +
-  geom_text(aes(x = c(1.1), y = mean(upper_dots)), 
-            label = "upper dots > Q3 + 1.5*IQR", hjust = 0, vjust = 0.4) +
-  geom_text(aes(x = c(1.1), y = mean(lower_dots)), 
-            label = "lower dots < Q1 - 1.5*IQR", hjust = 0, vjust = 0.4) +
-  ylab("") + xlab("") + 
-  labs(title = "ggplot2 boxplot explanation", 
-       caption = bquote(italic("Q = quartiles, IQR = Interquartile range, y = data"))) +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank())
+  return(explain_plot) 
+  
+}
+
+ggplot_box_legend()
 
 ```
 
@@ -354,25 +432,25 @@ Several tables are also provided in `toxEval`. Each table can be returned in the
 
 ## rank_sites_DT {#rank_sites_DT}
 
-The `rank_sites_DT` (`DT` option) and `rank_sites` (data frame option) functions create tables with one row per site. There are columns of the maximum or mean EAR (depending on the `mean_logic` argument) for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, columns specifying the frequency of the max or mean EAR exceeding a user specified `hit_threshold` are provided.
+The `rank_sites_DT` (interactive table:`DT` option) and `rank_sites` (data frame option) functions create tables with one row per site. There are columns of the maximum or mean EAR (depending on the `mean_logic` argument) for each category ("Chemical Class", "Chemical", or "Biological"). Additionally, columns specifying the frequency of the max or mean EAR exceeding a user specified `hit_threshold` are provided.
 
 
-```{r rank_sites_DT, warning=FALSE}
+```{r rank_sites_DT, warning=FALSE, eval=runTables}
 library(DT)
 options(DT.options = list(pageLength = 5))
 
 rank_df <- rank_sites(chemical_summary, 
                       category = "Biological",
                       hit_threshold = 0.1)
-
-rank_sites_DT(chemical_summary, 
+# To create an interactive table:
+rank_sites_DT(chemical_summary,
               category = "Biological",
               hit_threshold = 0.1)
 ```
 
 When `rank_sites_DT` is applied not to multiple sites (as above) but to a single site (as below), the tables show slightly different results. Instead of multiple columns for category, there is now 1 row per category (since the site is known).
 
-```{r rank_sites_DT_site, warning=FALSE}
+```{r rank_sites_DT_site, warning=FALSE, eval=runTables}
 rank_sites_DT(maumee, category = "Biological")
 ```
 
@@ -383,7 +461,7 @@ The `hits_summary_DT` (`DT` option) and `hits_summary` (data frame option) funct
 For each row, there are 4 columns. Site and category (as defined by the `category` argument) define the row. "Hits per Sample" are how many samples exceeded the `hit_threshold` for the specified category. "Number of Samples" is how many individual samples were collected at an individual site based on unique date.
 
 
-```{r hits_summary_DT, warning=FALSE}
+```{r hits_summary_DT, warning=FALSE, eval=runTables}
 
 hit_df <- hits_summary(chemical_summary,
                        category = "Biological",
@@ -396,7 +474,7 @@ hits_summary_DT(chemical_summary,
 
 When `hits_summary_DT` is applied not to multiple sites (as above) but to a single site (as below), the tables show slightly different results. Rather than one row per site/category, there is one row per category.
 
-```{r hits_summary_DT_site, warning=FALSE}
+```{r hits_summary_DT_site, warning=FALSE, eval=runTables}
 hits_summary_DT(maumee, category = "Biological")
 ```
 
@@ -405,7 +483,7 @@ hits_summary_DT(maumee, category = "Biological")
 
 The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create tables with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are the number of sites where the EAR exceeded the `hit_threshold` in that endpoint/category combination. If the category "Chemical" is chosen, an "info" link is provided to the chemical/endpoint information available in the ["ToxCast Dashboard"](https://actor.epa.gov/dashboard).
 .
-```{r endpoint_hits_DT, warning=FALSE}
+```{r endpoint_hits_DT, warning=FALSE, eval=runTables}
 
 ep_hits <- endpoint_hits(chemical_summary, 
                          category = "Biological", 
@@ -419,7 +497,7 @@ endpoint_hits_DT(chemical_summary,
 
 When `endpoint_hits_DT` is applied not to multiple sites (as above) but to a single site (as below), the tables show slightly different results. Rather than the number of sites with hits above a threshold, the number of samples with hits is presented.
 
-```{r endpoint_hits_DT_site, warning=FALSE}
+```{r endpoint_hits_DT_site, warning=FALSE, eval=runTables}
 endpoint_hits_DT(maumee, category = "Biological")
 ```
 
@@ -428,7 +506,7 @@ endpoint_hits_DT(maumee, category = "Biological")
 
 The `hits_by_groupings_DT` (`DT` option) and `hits_by_groupings` (data frame option) functions create tables with one row per category("Biological", "Chemical", or "Chemical Class"). The columns indicate the "Biological" groupings. The values in the table signify how many sites have exceeded the `hit_threshold` for that particular "Biological"/category combination. If the user chooses "Biological" as the category, it is a simple 2-column table of "Biological" groupings and number of sites (nSites).
 
-```{r hits_by_groupings_DT, warning=FALSE}
+```{r hits_by_groupings_DT, warning=FALSE, eval=runTables}
 site_df <- hits_by_groupings(chemical_summary, 
                              category = "Chemical Class",
                              hit_threshold = 0.1)
@@ -440,7 +518,7 @@ hits_by_groupings_DT(chemical_summary,
 
 The tables show slightly different results for a single site, presenting the number of samples where EAR exceeded the `hit_threshold` rather than the number of sites.
 
-```{r hits_by_groupings_DT_site, warning=FALSE}
+```{r hits_by_groupings_DT_site, warning=FALSE, eval=runTables}
 hits_by_groupings_DT(maumee, category = "Chemical Class")
 ```
 
@@ -448,7 +526,7 @@ hits_by_groupings_DT(maumee, category = "Chemical Class")
 
 The function `make_tox_map` creates a `leaflet` map of the data. This function places symbols at the location of each site in the data file that represent the magnitude of EAR (color) and the number of samples in the data set (size).  This is the only function that requires "dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the `chem_site` argument. There is an option ("mean_logic") to set whether to show the mean or maximum EAR at each site.
 
-```{r makeMap, warning=FALSE, message=FALSE}
+```{r makeMap, warning=FALSE, message=FALSE, eval=runTables}
 make_tox_map(chemical_summary, 
              chem_site = tox_list$chem_site, 
              category = "Biological")
