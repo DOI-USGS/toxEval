@@ -110,7 +110,7 @@ create_toxEval <- function(excel_file_path, ...){
   
 }
 
-check_cols <- function(req_cols, tab, mandatory=TRUE){
+check_cols <- function(req_cols, tab, tab_name, mandatory=TRUE){
   
   #allow column names to be case and whitespace insensitive:
   req_cols_low <- tolower(req_cols)
@@ -128,10 +128,10 @@ check_cols <- function(req_cols, tab, mandatory=TRUE){
     miss_col <- req_cols_low[!req_cols_low %in% names(tab)]
     
     if(mandatory){
-      stop(tab," tab missing ",miss_col," column")
+      stop("Missing ",miss_col," column in ", tab_name)
     } else {
-      warning(tab," tab missing optional column: ",miss_col,".\n
-              This could cause Shiny app to not work properly")
+      warning("Missing optional column: ",miss_col," in",tab_name,
+              ".\nThis could cause Shiny app to not work properly")
     }
   }
   # Transform the column names the "required" names:
@@ -292,7 +292,7 @@ as.toxEval <- function(x, ...){
     allowed_names(c("Date","date","sample","Sample"), "Sample Date") %>%
     allowed_names(c("casrn", "casn","CASRN","CASN"), "CAS")
 
-  chem_data <- check_cols(c("CAS", "SiteID", "Value", "Sample Date"), chem_data)
+  chem_data <- check_cols(c("CAS", "SiteID", "Value", "Sample Date"), chem_data, tab_name = "chem_data")
   
   if(!is.numeric(chem_data$Value)){
     stop("The 'Value' column in the Data sheet is not numeric")
@@ -302,7 +302,7 @@ as.toxEval <- function(x, ...){
   names(chem_info) <- names(chem_info) %>%
     allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS")
 
-  chem_info <- check_cols(c("CAS", "Class"), chem_info)
+  chem_info <- check_cols(c("CAS", "Class"), chem_info, tab_name = "chem_info")
   
   # chem_site:
   names(chem_site) <- names(chem_site) %>%
@@ -311,11 +311,11 @@ as.toxEval <- function(x, ...){
     allowed_names(c("dec_long", "longitude", "long"),"dec_lon") %>%
     allowed_names(c("lat", "latitude"),"dec_lat")
 
-  chem_site <- check_cols(c("SiteID", "Short Name"), chem_site)
+  chem_site <- check_cols(c("SiteID", "Short Name"), chem_site, tab_name = "chem_site")
   
   #Check columns needed for shiny app:
   chem_site <- check_cols(c("dec_lat","dec_lon"),
-                          chem_site, mandatory = FALSE)
+                          chem_site, mandatory = FALSE, tab_name = "chem_site")
   
   if(!("site_grouping" %in% names(chem_site))){
     chem_site$site_grouping <- ""
@@ -326,7 +326,7 @@ as.toxEval <- function(x, ...){
     names(exclusions) <- names(exclusions) %>%
       allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS")
     
-    exclusions <- check_cols(c("CAS", "endPoint"), exclusions)
+    exclusions <- check_cols(c("CAS", "endPoint"), exclusions, tab_name = "exclusions")
   }
   
   if(!is.null(benchmarks)){
@@ -336,7 +336,7 @@ as.toxEval <- function(x, ...){
       allowed_names(c("chemical", "chnm","Chemical","Compound"),"chnm")
     
     benchmarks <- check_cols(c("CAS", "endPoint","ACC_value","chnm"),
-                             benchmarks)
+                             benchmarks, tab_name = "benchmarks")
     if(!("groupCol" %in% names(benchmarks))){
       benchmarks$groupCol <- "Benchmarks"
     }
