@@ -12,11 +12,11 @@ output:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "vignettes/"
+  fig.path = "man/figures/"
 )
 ```
 
-# toxEval <img src="vignettes/logo.png" alt="toxEval" height="150px" align="right" />
+# toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
 
 [![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval)
 [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master)

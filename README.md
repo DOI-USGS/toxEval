@@ -1,5 +1,5 @@
-toxEval <img src="vignettes/logo.png" alt="toxEval" height="150px" align="right" />
-===================================================================================
+toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
+=====================================================================================
 
 [![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master) [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 
@@ -53,7 +53,7 @@ chem_class_plot <- plot_tox_boxplots(chemicalSummary,
 chem_class_plot
 ```
 
-![](vignettes/unnamed-chunk-4-1.png)
+![](man/figures/unnamed-chunk-4-1.png)
 
 ``` r
 
@@ -64,7 +64,7 @@ plot_stacks <- plot_tox_stacks(chemicalSummary,
 plot_stacks
 ```
 
-![](vignettes/unnamed-chunk-4-2.png)
+![](man/figures/unnamed-chunk-4-2.png)
 
 ``` r
 ######################################
@@ -75,7 +75,7 @@ plot_heat <- plot_tox_heatmap(chemicalSummary,
 plot_heat
 ```
 
-![](vignettes/unnamed-chunk-4-3.png)
+![](man/figures/unnamed-chunk-4-3.png)
 
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
 
