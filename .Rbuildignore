@@ -7,7 +7,7 @@ images
 alternative_benchmark.R
 ^.*\.Rproj$
 ^\.Rproj\.user$
-index.Rmd
+README.Rmd
 README_files
 ^\.travis\.yml$
 ^\.Rproj\.gitignore

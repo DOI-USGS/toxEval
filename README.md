@@ -1,7 +1,7 @@
-toxEval 
-=====================================================================================
+toxEval <img src="vignettes/logo.png" alt="toxEval" height="150px" align="right" />
+===================================================================================
 
-[![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval)  [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master) [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
+[![travis](https://travis-ci.org/USGS-R/toxEval.svg?branch=master)](https://travis-ci.org/USGS-R/toxEval) [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master) [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 
 The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to [https://www.epa.gov/chemical-research/toxicity-forecasting](ToxCast%20data) (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.
 
@@ -10,6 +10,9 @@ The functions within this package allow great flexibly for exploring the potenti
 Quickstart
 ----------
 
+<p align="center">
+<img src="https://code.usgs.gov/water/toxEval/raw/master/man/figures/app.gif" alt="app_demo">
+</p>
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
 ``` r
@@ -50,6 +53,7 @@ chem_class_plot <- plot_tox_boxplots(chemicalSummary,
 chem_class_plot
 ```
 
+![](vignettes/unnamed-chunk-4-1.png)
 
 ``` r
 
@@ -60,6 +64,7 @@ plot_stacks <- plot_tox_stacks(chemicalSummary,
 plot_stacks
 ```
 
+![](vignettes/unnamed-chunk-4-2.png)
 
 ``` r
 ######################################
@@ -69,6 +74,8 @@ plot_heat <- plot_tox_heatmap(chemicalSummary,
                               font_size = 7)
 plot_heat
 ```
+
+![](vignettes/unnamed-chunk-4-3.png)
 
 This code opens up the example file, loads it into a `toxEval` object, grabs the pertinent ToxCast information, and creates a "chemicalSummary" data frame that is used in many of the plot and table functions.
 
