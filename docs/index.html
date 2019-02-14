@@ -85,7 +85,7 @@
     
 <div id="toxeval" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#toxeval" class="anchor"></a>toxEval <img src="articles/logo.png" alt="toxEval" height="150px" align="right">
+<a href="#toxeval" class="anchor"></a>toxEval <img src="reference/figures/logo.png" alt="toxEval" height="150px" align="right">
 </h1></div>
 
 <p>The <code>toxEval</code> R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to <a href="ToxCast%20data">https://www.epa.gov/chemical-research/toxicity-forecasting</a> (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.</p>
@@ -122,21 +122,21 @@ chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="referenc
 chem_class_plot &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary,
                                      <span class="dt">category =</span> <span class="st">'Chemical Class'</span>)
 chem_class_plot</code></pre></div>
-<p><img src="articles/unnamed-chunk-4-1.png" width="768"></p>
+<p><img src="reference/figures/unnamed-chunk-4-1.png" width="768"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
 ######################################
 plot_stacks &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(chemicalSummary, 
                                tox_list<span class="op">$</span>chem_site, 
                                <span class="dt">category =</span> <span class="st">"Chemical Class"</span>)
 plot_stacks</code></pre></div>
-<p><img src="articles/unnamed-chunk-4-2.png" width="768"></p>
+<p><img src="reference/figures/unnamed-chunk-4-2.png" width="768"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">######################################
 plot_heat &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span>(chemicalSummary, 
                               tox_list<span class="op">$</span>chem_site, 
                               <span class="dt">category =</span> <span class="st">"Chemical Class"</span>,
                               <span class="dt">font_size =</span> <span class="dv">7</span>)
 plot_heat</code></pre></div>
-<p><img src="articles/unnamed-chunk-4-3.png" width="768"></p>
+<p><img src="reference/figures/unnamed-chunk-4-3.png" width="768"></p>
 <p>This code opens up the example file, loads it into a <code>toxEval</code> object, grabs the pertinent ToxCast information, and creates a “chemicalSummary” data frame that is used in many of the plot and table functions.</p>
 <p>There are 4 vignettes to help introduce and navigate the <code>toxEval</code> package:</p>
 <table class="table table">
