@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Load and check toxEval data — create_toxEval • toxEval</title>
+<title>toxEval helper functions — as.toxEval • toxEval</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,14 +30,9 @@
 
 
 
-<meta property="og:title" content="Load and check toxEval data — create_toxEval" />
+<meta property="og:title" content="toxEval helper functions — as.toxEval" />
 
-<meta property="og:description" content="This function is used to load a data file for analysis in the form of a 
-single Excel file. The Excel file should include 3 mandatory sheets named 
-&quot;Data&quot;, &quot;Chemicals&quot;, and &quot;Sites&quot;. Additionally there are 2 optional sheets: 
-&quot;Exclude&quot; and &quot;Benchmarks&quot;. This function creates a data frame for each 
-sheet,  perform basic checks on the data to assure that required columns are
-included for each sheet" />
+<meta property="og:description" content="A small collection of helper functions for toxEval" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -122,31 +117,27 @@ included for each sheet" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Load and check toxEval data</h1>
+    <h1>toxEval helper functions</h1>
     
-    <div class="hidden name"><code>create_toxEval.Rd</code></div>
+    <div class="hidden name"><code>helperToxEval.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function is used to load a data file for analysis in the form of a 
-single Excel file. The Excel file should include 3 mandatory sheets named 
-"Data", "Chemicals", and "Sites". Additionally there are 2 optional sheets: 
-"Exclude" and "Benchmarks". This function creates a data frame for each 
-sheet,  perform basic checks on the data to assure that required columns are
-included for each sheet</p>
+    <p>A small collection of helper functions for toxEval</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>create_toxEval</span>(<span class='no'>excel_file_path</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>as.toxEval</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='fu'>is.toxEvl</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>excel_file_path</th>
-      <td><p>Path to Excel file that contains at least 3 sheets: Data, Chemicals, and Sites, 
-and could optionally contain Exclude and Benchmarks.</p></td>
+      <th>x</th>
+      <td><p>list or toxEval object</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
@@ -154,70 +145,28 @@ and could optionally contain Exclude and Benchmarks.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>The object returned from this function contains a list of between 
-three and five data frames. The minimum data frames returned are chem_data 
-(containing at least the columns: "CAS", "SiteID", "Value", "Sample Date"),
-chem_info (containing at least the columns: "CAS", "Class"), and
-chem_site (containing at least the columns: "SiteID", "Short Name". For the
-Shiny app, "dec_lat" and "dec_lon" are also required). The optional data 
-frames are exclusions (containing at least the columns: "CAS" and "endPoint"),
-and benchmarks (containing at least the columns: "CAS", "endPoint",
-"ACC_value" and "chnm")</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Required columns in the Data sheet include "CAS", "SiteID", "Value", and 
-"Sample Date". The "Value" column includes concentration measurements in 
-units of \(\mu\)g/L. "Sample Date" can be either a date or date/time or an integer.
-Additional columns may be included for user purposes, but will not be used in
-toxEval.</p>
-<p>Required columns in the Chemical sheet include "CAS", "Class". "CAS" values in 
-this sheet must exactly match corresponding "CAS" values in the Data sheet. The 
-"Class" designation allows  data to be grouped in a user-specified way. For 
-example, in a data set of multiple pesticides, it may be valuable to explore 
-differences and similarities to of insecticides, herbicides and fungicides. 
-Additional columns may be included for user purposes, but will not be used in
-toxEval.</p>
-<p>Required columns in the Sites sheet includes "SiteID", "Short Name", and for 
-the Shiny application "dec_lat","dec_lon". Values in the "SiteID" column in 
-this sheet exactly match corresponding values in the "SiteID" column in the 
-Data sheet. Additional columns may be included for user purposes, but will not 
-be used in toxEval.</p>
-<p>When using the optional sheet Exclude, columns required include "CAS" and 
-"endPoint". These are used to exclude particular chemicals (via CAS), 
-ToxCast endpoints (via endPoint), or a unique chemical/endpoint combination. 
-Additional columns may be included for user purposes, but will not be used 
-in toxEval.</p>
-<p>When using the optional sheet Benchmarks, columns required include "CAS", 
-"endPoint","ACC_value" and "chnm". This sheet is used to over-ride the 
-functions using endpoints from the ToxCast database, allowing the user
-to import endpoint information from other sources. It could also be useful 
-for reproducing results in the future (for example, if after ToxCast updates, 
-analysis with an older version of ToxCast may be reproduced by including the
-selected ToxCast endpoint database in this sheet. Additional columns may be included for user 
-purposes, but will not be used in toxEval.</p>
-<p>For more information, see the "Prepare Data" vignette: <a href='../doc/PrepareData.html'><code><a href='../articles/PrepareData.html'>vignette("PrepareData", package = "toxEval")</a></code></a>.</p>
-<p>All remaining toxEval functions use data from via the list that is returned 
-from this function.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
 <span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
-<span class='no'>excel_file_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'>create_toxEval</span>(<span class='no'>excel_file_path</span>)</div></pre>
+<span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
+<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+
+<span class='co'># To over-ride one of the data frames:</span>
+<span class='no'>chem_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>CAS</span> <span class='kw'>=</span> <span class='st'>"21145-77-7"</span>,
+                   <span class='kw'>Value</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+                   <span class='st'>"Sample Date"</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='st'>"2012-01-01"</span>),
+                   <span class='kw'>SiteID</span> <span class='kw'>=</span> <span class='st'>"USGS-04249000"</span>)
+<span class='no'>tox_list_new</span> <span class='kw'>&lt;-</span> <span class='fu'>as.toxEval</span>(<span class='no'>tox_list</span>, <span class='no'>chem_data</span>)</div><div class='output co'>#&gt; <span class='message'>Replacing chem_data from list with supplied data frame.</span></div><div class='input'>
+<span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
+<span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
+<span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/file.path'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 
