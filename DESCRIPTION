@@ -24,7 +24,7 @@ Authors@R: c(person("Laura", "DeCicco",
               person("Dalma", "Martinovic", 
                      role = "rev", 
                      comment = "Reviewed for USGS"))
-Description: Data analysis package for estimating potential biological effects from concentrations determined from environmental samples.
+Description: Data analysis package for estimating potential biological effects from chemical concentrations in environmental samples. Included are a set of functions to analyze, visualize, and organize measured concentration data as it relates to user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. 
 License: CC0
 Copyright: This software is in the public domain because it contains materials
     that originally came from the United States Geological Survey, an agency of
