@@ -1,6 +1,6 @@
 Package: toxEval
 Type: Package
-Title: Exploring biological relevance of environmental chemistry observations.
+Title: Exploring Biological Relevance of Environmental Chemistry Observations.
 Version: 1.0.3
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
