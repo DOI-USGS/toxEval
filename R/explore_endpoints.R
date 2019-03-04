@@ -12,7 +12,7 @@
 #' @importFrom tools file_ext
 #' @import ggplot2
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' explore_endpoints()
 #' }
 explore_endpoints <- function(browse=TRUE){
