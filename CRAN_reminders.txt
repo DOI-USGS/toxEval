@@ -1,0 +1,5 @@
+CRAN submissions:
+  1. Turn off DT tables in basicWorkflow
+  2. Turn dontrun to donttest in explore_endpoints
+  3. Remove badge links from readme
+  
