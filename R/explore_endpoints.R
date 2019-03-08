@@ -10,9 +10,13 @@
 #' @param browse Logical. Use browser for running Shiny app.
 #' @export
 #' @importFrom tools file_ext
+#' @importFrom shinyAce updateAceEditor
+#' @importFrom shinyAce aceEditor
+#' @importFrom shinycssloaders withSpinner
+#' @import shinydashboard
 #' @import ggplot2
 #' @examples 
-#' \donttest{
+#' \dontrun{
 #' explore_endpoints()
 #' }
 explore_endpoints <- function(browse=TRUE){
