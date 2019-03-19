@@ -156,9 +156,8 @@ Please consider reporting bugs and asking questions on the Issues page:
 
 ## Citing toxEval
 
-This package has not been reviewed and approved as a USGS-product. The implication is that `toxEval` cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:
 
-```{r, eval=FALSE}
+```{r}
 citation(package = "toxEval")
 ```
 
