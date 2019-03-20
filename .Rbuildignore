@@ -23,4 +23,7 @@ code.json
 man/figures/app.gif
 CRAN_reminders.txt
 _pkgdown.yml
+vignettes/toxEval.bib
+vignettes/References.Rmd
+pkgdown/favicon/*
 

@@ -1,3 +1,52 @@
 template:
   params:
     ganalytics: UA-53797708-7
+navbar:
+  type: default
+  left:
+  - text: Background
+    href: articles/Introduction.html
+  - text: Basic Workflow
+    href: articles/basicWorkflow.html
+  - text: Function Help Pages
+    href: reference/index.html
+  - text: Data Preperation
+    href: articles/PrepareData.html
+  - text: Shiny App
+    href: articles/shinyApp.html
+  - text: Bibliograpy
+    href: articles/References.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/USGS-R/toxEval
+reference:
+  - title: Import Data
+    contents:
+      - create_toxEval
+  - title: ToxCast Data
+    desc: Data provided in the package from ToxCast database.
+    contents:
+      - end_point_info
+      - ToxCast_ACC
+      - tox_chemicals
+  - title: Clean Data
+    desc:  Functions to prepare data for analysis
+    contents:
+      - clean_endPoint_info
+      - get_ACC
+      - get_chemical_summary
+      - remove_flags
+      - filter_groups
+  - title: Visualize Data
+    desc: Functions to create graphs and tables of output.
+    contents:
+      - plot_tox_boxplots
+      - plot_tox_endpoints
+      - plot_tox_stacks
+      - plot_tox_heatmap
+      - hits_summary
+      - hits_by_groupings
+      - rank_sites
+      - endpoint_hits
+      - make_tox_map
+      - explore_endpoints

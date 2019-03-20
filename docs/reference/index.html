@@ -8,6 +8,13 @@
 
 <title>Function reference • toxEval</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
@@ -80,39 +87,32 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../articles/Introduction.html">Background</a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/basicWorkflow.html">Basic Workflow</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/basicWorkflow.html">Basic Workflow</a>
-    </li>
-    <li>
-      <a href="../articles/Introduction.html">Introduction to toxEval</a>
-    </li>
-    <li>
-      <a href="../articles/PrepareData.html">Preparing toxEval Data</a>
-    </li>
-    <li>
-      <a href="../articles/shinyApp.html">Shiny App</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Function Help Pages</a>
+</li>
+<li>
+  <a href="../articles/PrepareData.html">Data Preperation</a>
+</li>
+<li>
+  <a href="../articles/shinyApp.html">Shiny App</a>
+</li>
+<li>
+  <a href="../articles/References.html">Bibliograpy</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/USGS-R/toxEval">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -139,29 +139,25 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-import-data" class="hasAnchor"><a href="#section-import-data" class="anchor"></a>Import Data</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="clean_endPoint_info.html">clean_endPoint_info()</a></code> </p>
-        </td>
-        <td><p>clean_endPoint_info</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="create_toxEval.html">create_toxEval()</a></code> </p>
         </td>
         <td><p>Load and check toxEval data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="endpoint_hits_DT.html">endpoint_hits_DT()</a></code> <code><a href="endpoint_hits_DT.html">endpoint_hits()</a></code> </p>
-        </td>
-        <td><p>Rank endpoints by category</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-toxcast-data" class="hasAnchor"><a href="#section-toxcast-data" class="anchor"></a>ToxCast Data</h2>
+          <p class="section-desc"><p>Data provided in the package from ToxCast database.</p></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="end_point_info.html">end_point_info</a></code> </p>
@@ -170,15 +166,29 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="explore_endpoints.html">explore_endpoints()</a></code> </p>
+          <p><code><a href="ToxCast_ACC.html">ToxCast_ACC</a></code> </p>
         </td>
-        <td><p>Explore data in the Shiny Application</p></td>
+        <td><p>ACC values included with toxEval.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="filter_groups.html">filter_groups()</a></code> </p>
+          <p><code><a href="tox_chemicals.html">tox_chemicals</a></code> </p>
         </td>
-        <td><p>Filter endPoints based on groups and assays.</p></td>
+        <td><p>ToxCast Chemical Information</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-clean-data" class="hasAnchor"><a href="#section-clean-data" class="anchor"></a>Clean Data</h2>
+          <p class="section-desc"><p>Functions to prepare data for analysis</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="clean_endPoint_info.html">clean_endPoint_info()</a></code> </p>
+        </td>
+        <td><p>clean_endPoint_info</p></td>
       </tr><tr>
         
         <td>
@@ -194,28 +204,24 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="helperToxEval.html">as.toxEval()</a></code> <code><a href="helperToxEval.html">is.toxEvl()</a></code> </p>
+          <p><code><a href="remove_flags.html">remove_flags()</a></code> </p>
         </td>
-        <td><p>toxEval helper functions</p></td>
+        <td><p>Remove endpoints with specific data quality flags from data</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="hits_by_groupings_DT.html">hits_by_groupings_DT()</a></code> <code><a href="hits_by_groupings_DT.html">hits_by_groupings()</a></code> </p>
+          <p><code><a href="filter_groups.html">filter_groups()</a></code> </p>
         </td>
-        <td><p>Biological hits per category</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="hits_summary_DT.html">hits_summary_DT()</a></code> <code><a href="hits_summary_DT.html">hits_summary()</a></code> </p>
-        </td>
-        <td><p>Summary of hits per site/category</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="make_tox_map.html">make_tox_map()</a></code> <code><a href="make_tox_map.html">map_tox_data()</a></code> </p>
-        </td>
-        <td><p>Create an interactive map of the data</p></td>
-      </tr><tr>
+        <td><p>Filter endPoints based on groups and assays.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-visualize-data" class="hasAnchor"><a href="#section-visualize-data" class="anchor"></a>Visualize Data</h2>
+          <p class="section-desc"><p>Functions to create graphs and tables of output.</p></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="plot_tox_boxplots.html">graph_chem_data()</a></code> <code><a href="plot_tox_boxplots.html">plot_tox_boxplots()</a></code> <code><a href="plot_tox_boxplots.html">tox_boxplot_data()</a></code> </p>
@@ -230,15 +236,27 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="plot_tox_stacks.html">plot_tox_stacks()</a></code> </p>
+        </td>
+        <td><p>Plot stacked bar charts</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plot_tox_heatmap.html">plot_tox_heatmap()</a></code> </p>
         </td>
         <td><p>Plot EAR heat maps</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot_tox_stacks.html">plot_tox_stacks()</a></code> </p>
+          <p><code><a href="hits_summary_DT.html">hits_summary_DT()</a></code> <code><a href="hits_summary_DT.html">hits_summary()</a></code> </p>
         </td>
-        <td><p>Plot stacked bar charts</p></td>
+        <td><p>Summary of hits per site/category</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="hits_by_groupings_DT.html">hits_by_groupings_DT()</a></code> <code><a href="hits_by_groupings_DT.html">hits_by_groupings()</a></code> </p>
+        </td>
+        <td><p>Biological hits per category</p></td>
       </tr><tr>
         
         <td>
@@ -248,33 +266,21 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="remove_flags.html">remove_flags()</a></code> </p>
+          <p><code><a href="endpoint_hits_DT.html">endpoint_hits_DT()</a></code> <code><a href="endpoint_hits_DT.html">endpoint_hits()</a></code> </p>
         </td>
-        <td><p>Remove endpoints with specific data quality flags from data</p></td>
+        <td><p>Rank endpoints by category</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="summary.toxEval.html">summary(<i>&lt;toxEval&gt;</i>)</a></code> </p>
+          <p><code><a href="make_tox_map.html">make_tox_map()</a></code> <code><a href="make_tox_map.html">map_tox_data()</a></code> </p>
         </td>
-        <td><p>Summary of tox_list</p></td>
+        <td><p>Create an interactive map of the data</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ToxCast_ACC.html">ToxCast_ACC</a></code> </p>
+          <p><code><a href="explore_endpoints.html">explore_endpoints()</a></code> </p>
         </td>
-        <td><p>ACC values included with toxEval.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="toxEval-package.html">toxEval-package</a></code> </p>
-        </td>
-        <td><p>Analyze ToxCast data in relation to measured concentrations.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tox_chemicals.html">tox_chemicals</a></code> </p>
-        </td>
-        <td><p>ToxCast Chemical Information</p></td>
+        <td><p>Explore data in the Shiny Application</p></td>
       </tr>
     </tbody>
     </table>
@@ -283,7 +289,10 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-import-data">Import Data</a></li>
+      <li><a href="#section-toxcast-data">ToxCast Data</a></li>
+      <li><a href="#section-clean-data">Clean Data</a></li>
+      <li><a href="#section-visualize-data">Visualize Data</a></li>
     </ul>
   </div>
 </div>
