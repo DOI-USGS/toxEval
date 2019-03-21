@@ -25,5 +25,6 @@ CRAN_reminders.txt
 _pkgdown.yml
 vignettes/toxEval.bib
 vignettes/References.Rmd
+vignettes/benchmarkds.Rmd
+vignettes/does_curves.Rmd
 pkgdown/favicon/*
-

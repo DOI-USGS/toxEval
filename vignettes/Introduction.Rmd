@@ -78,38 +78,9 @@ Some functions will also include a calculation for a "hit". A threshold is defin
 
 # Package logistics
 
-## Installation of R and RStudio
-
-The following link provides instructions for installation of R and RStudio:
-
-[Installation Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
-
-Following these instructions will add the USGS R repository (GRAN) the user's R profile. For users who have previously installed R and RStudio, GRAN can be added the R profile by pasting the following into the R console:
-
-```{r, eval=FALSE}
-rprofile_path = file.path(Sys.getenv("HOME"), ".Rprofile")
-write('\noptions(repos=c(getOption(\'repos\'),
-    CRAN=\'https://cloud.r-project.org\',
-    USGS=\'https://owi.usgs.gov/R\'))\n',
-      rprofile_path, 
-      append =  TRUE)
-
-cat('Your Rprofile has been updated to include GRAN.
-    Please restart R for changes to take effect.')
-```
-
-*RESTART RSTUDIO!*
-
-Useful links:
-
-* [Download R Windows](https://cran.r-project.org/bin/windows/base/)
-* [Download R Mac](https://cran.r-project.org/bin/macosx/)
-* [Download RStudio](https://www.rstudio.com/products/rstudio/download/)
-
-
 ## Installation of toxEval
 
-This section assumes GRAN was added to the R profile as described above.
+`toxEval` is available on any CRAN mirror. 
 
 ```{r, eval=FALSE}
 install.packages("toxEval")
@@ -117,11 +88,11 @@ install.packages("toxEval")
 
 ## Update toxEval
 
+`toxEval` does require a fair number of additional packages to run properly. These dependencies offer many benefits, such as a smooth running intuitive Shiny app. The drawbacks however are that there becomes more risk that those dependencies could change their output/workflow over time. `toxEval` developers will try to stay on top of those changes, but it is a challenge. It is important to always update *all* of your packages therefore.....not just `toxEval`. `toxEval` may push out a new version to keep up with a critical change in a dependent package, and if you only update `toxEval`, the update could cause bugs (we will attempt to mandate the package version of each package, but it still is best to stay on top of new package versions). 
+
 <img style="float: right;" src="update.png">
 
-Regularly, it is a good idea to update *ALL* of installed packages in R. If using RStudio, this is done by using the Update button in the "Packages" tab in RStudio. Selecting this option checks CRAN and GRAN for updates. 
-
-
+Regularly, it is a good idea to update *ALL* of installed packages in R. If using RStudio, this is done by using the Update button in the "Packages" tab in RStudio. Selecting this option checks CRAN for updates. 
 Within the R-console, packages can be updated with the command:
 ```{r eval=FALSE}
 update.packages()
@@ -136,7 +107,7 @@ If you discover an issue that you feel is a bug in the package or have a questio
 
 This package has not been reviewed and approved as a USGS-product. The implication is that `toxEval` cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 citation(package = "toxEval")
 ```
 

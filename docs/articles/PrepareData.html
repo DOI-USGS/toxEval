@@ -56,16 +56,28 @@
   <a href="../articles/basicWorkflow.html">Basic Workflow</a>
 </li>
 <li>
-  <a href="../reference/index.html">Function Help Pages</a>
+  <a href="../reference/index.html">Function Help</a>
 </li>
 <li>
   <a href="../articles/PrepareData.html">Data Preperation</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
 <li>
-  <a href="../articles/shinyApp.html">Shiny App</a>
-</li>
-<li>
-  <a href="../articles/References.html">Bibliograpy</a>
+      <a href="../articles/shinyApp.html">Shiny App</a>
+    </li>
+    <li>
+      <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
+    </li>
+    <li>
+      <a href="../articles/does_curves.html">Dose Response Curves</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -89,7 +101,7 @@
     <div class="page-header toc-ignore">
       <h1>Preparing toxEval Data</h1>
             
-            <h4 class="date">20 March, 2019</h4>
+            <h4 class="date">21 March, 2019</h4>
       
       
       <div class="hidden name"><code>PrepareData.Rmd</code></div>
@@ -170,9 +182,9 @@
 <ul>
 <li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry.</p></li>
 <li><p>Chemical: A character column defining the name of the chemicals.</p></li>
-<li><p>endPoint: A character column naming the benchmark (e.g. “Acute”, “Chronic”).</p></li>
+<li><p>endPoint: A character column naming the benchmark (e.g. “Acute”, “Chronic”).</p></li>
 <li><p>Value: The concentration (in identical units as what is reported in the “Data” sheet) of the benchmark.</p></li>
-<li><p>groupCol: A character column that groups endpoints. This is analogous to the Biological groupings from the ToxCast analysis (e.g. “Fish”, “Invertebrates”).</p></li>
+<li><p>groupCol: A character column that groups endpoints. This is analogous to the Biological groupings from the ToxCast analysis (e.g. “Fish”, “Invertebrates”).</p></li>
 </ul>
 <p>Note: Additional columns may be useful to organize the data. These additional columns will be ignored by <code>toxEval</code> and will not influence a <code>toxEval</code> analysis.</p>
 </div>

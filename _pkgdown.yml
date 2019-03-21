@@ -8,14 +8,18 @@ navbar:
     href: articles/Introduction.html
   - text: Basic Workflow
     href: articles/basicWorkflow.html
-  - text: Function Help Pages
+  - text: Function Help
     href: reference/index.html
   - text: Data Preperation
     href: articles/PrepareData.html
-  - text: Shiny App
-    href: articles/shinyApp.html
-  - text: Bibliograpy
-    href: articles/References.html
+  - text: Articles
+    menu:
+      - text: Shiny App
+        href: articles/shinyApp.html
+      - text: Exploring Benchmarks
+        href: articles/benchmarks.html
+      - text: Dose Response Curves
+        href: articles/does_curves.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/USGS-R/toxEval
