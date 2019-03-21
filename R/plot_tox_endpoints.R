@@ -82,9 +82,7 @@ plot_tox_endpoints <- function(chemical_summary,
     if(!(filterBy %in% unique(chemical_summary$category))){
       stop("filterBy argument doesn't match data")
     }
-    
-    chemical_summary <- chemical_summary %>%
-      dplyr::filter_(paste0("category == '", filterBy,"'"))
+    chemical_summary <- chemical_summary[chemical_summary["category"] == filterBy,]
   }
   
   y_label <- fancyLabels(category, mean_logic, sum_logic, single_site)

@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introduction
 
-The majority of the examples in this documentation create EAR values from "benchmarks" set by the ToxCast database. Here we describe a way to export those benchmarks as well as a way to provide your own custom benchmark data.
+The majority of the examples in this documentation create EAR values from concentration "benchmarks" (concentrations of concern) set by the ToxCast database. Here we describe a way to export those benchmarks as well as a way to provide your own custom benchmark data.
 
 # Exporting Benchmarks
 

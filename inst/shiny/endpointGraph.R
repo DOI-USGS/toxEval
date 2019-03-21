@@ -48,8 +48,7 @@ PlotHeight_ep = reactive({
   chemical_summary <- chemical_summary()
   
   if(filterBy != "All"){
-    chemical_summary <- chemical_summary %>%
-      dplyr::filter_(paste0(cat_col," == '", filterBy,"'"))
+    chemical_summary <- chemical_summary[chemical_summary[cat_col] == filterBy,]
   }
   
   n <- 35*length(unique(chemical_summary$endPoint))
@@ -67,11 +66,9 @@ output$downloadEndpoint <- downloadHandler(
   filename = "endPoint.png",
   
   content = function(file) {
-    device <- function(..., width, height) {
-      grDevices::png(..., width = width, height = height,
-                     res = 300, units = "in")
-    }
-    ggsave(file, plot = endpointGraph_create(), device = device)
+    ggplot2::ggsave(file, plot = endpointGraph_create(), 
+                    device = "png", width = 11,
+                    height = PlotHeight_ep()/300)
   }
 )
 
