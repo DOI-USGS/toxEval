@@ -114,6 +114,9 @@ plot_tox_endpoints <- function(chemical_summary,
     
     pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
     
+    chemical_summary$endPoint <- factor(chemical_summary$endPoint, 
+                                        levels = orderedLevelsEP)
+    
     stackedPlot <- ggplot(data = chemical_summary)+
       scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
       theme_minimal() +
