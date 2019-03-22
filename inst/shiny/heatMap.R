@@ -76,31 +76,33 @@ heatCode <- reactive({
   plot_ND = input$plot_ND_heat
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
-  if(sum_logic){
-    heatCode <- paste0(rCodeSetup(),"
+  
+  heatCode <- paste0(rCodeSetup(),"
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
 # and re-order the 'levels' of that factor
-plot_tox_heatmap(chemical_summary,
-                 chem_site = tox_list$chem_site,
-                 category = '",category,"',
-                 mean_logic = ",mean_logic,",
-                 title = '",genericTitle(),"',
-                 plot_ND = ",plot_ND,")")
+heat_map <- plot_tox_heatmap(chemical_summary,
+            chem_site = tox_list$chem_site,
+            category = '",category,"',
+            mean_logic = ",mean_logic,",
+            title = '",genericTitle(),"',
+            plot_ND = ",plot_ND)
+  if(!sum_logic){
+    heatCode <- paste0(heatCode,",
+            sum_logic = FALSE)")
   } else {
-    heatCode <- paste0(rCodeSetup(),"
-# To re-order the x-axis, 
-# Convert tox_list$chem_site$`Short Name` to a factor,
-# and re-order the 'levels' of that factor
-plot_tox_heatmap(chemical_summary,
-                 chem_site = tox_list$chem_site,
-                 category = '",category,"',
-                 mean_logic = ",mean_logic,",
-                 sum_logic = FALSE,
-                 title = '",genericTitle(),"',
-                 plot_ND = ",plot_ND,")")    
+    heatCode <- paste0(heatCode,")")
   }
   
-  HTML(heatCode)
+  heatCode <- paste0(heatCode,"
+heat_map
+# To save:
+# Fiddle with height and width (in inches) for best results:
+                     # Change file name extension to save as png.
+                     # ggplot2::ggsave(heat_map, file='heat.pdf',
+                     #                        height = 11,
+                     #                        width = 7)")
+  
+  return(heatCode)
   
 })

@@ -113,7 +113,7 @@ ep_plot <- plot_tox_endpoints(chemical_summary,
     epGraphCode <- paste0(epGraphCode,")")
 
   } else {
-    epGraphCode <- paste0(epGraphCode,"
+    epGraphCode <- paste0(epGraphCode,",
                         sum_logic = FALSE)")
   }
   epGraphCode <- paste0(epGraphCode,"  

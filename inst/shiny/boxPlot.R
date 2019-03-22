@@ -5,6 +5,7 @@ boxPlots_create <- reactive({
   hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   plot_ND = input$plot_ND
   chemical_summary <- chemical_summary()
+  
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
   mean_logic <- as.logical(input$meanEAR)
@@ -119,7 +120,7 @@ bio_plot <- plot_tox_boxplots(chemical_summary,
   if(sum_logic){
     bioPlotCode <- paste0(bioPlotCode,")")
   } else {
-    bioPlotCode <- paste0(bioPlotCode,"
+    bioPlotCode <- paste0(bioPlotCode,",
                           sum_logic = FALSE)")
 
   }

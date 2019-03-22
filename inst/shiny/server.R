@@ -169,6 +169,9 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
                        Bio_category = character(),
                        stringsAsFactors = FALSE)
     }
+    validate(
+      need(nrow(chemical_summary) > 0, "No data matched this combination")
+    )
     
     return(chemical_summary)
     

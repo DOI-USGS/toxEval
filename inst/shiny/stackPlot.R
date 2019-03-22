@@ -90,7 +90,7 @@ stack_plot <- plot_tox_stacks(chemical_summary,
                   top_num = ",top_num)
 
   if(!sum_logic){
-    stackPlotCode <- paste0(stackPlotCode,"
+    stackPlotCode <- paste0(stackPlotCode,",
                             sum_logic = FALSE)")
   } else {
     stackPlotCode <- paste0(stackPlotCode,")")
