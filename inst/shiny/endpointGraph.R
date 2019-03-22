@@ -5,6 +5,7 @@ endpointGraph_create <- reactive({
   hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   chemical_summary <- chemical_summary()
   catType <- as.numeric(input$radioMaxGroup)
+  top_num <- as.numeric(input$topNum)
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   category <- c("Biological","Chemical","Chemical Class")[catType]
@@ -16,7 +17,8 @@ endpointGraph_create <- reactive({
                                       hit_threshold = hitThres,
                                       filterBy = filterBy,
                                       title = genericTitle(),
-                                      font_size = 18) 
+                                      font_size = 18,
+                                      top_num = top_num) 
   
   shinyAce::updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
   return(endpointGraph)
@@ -36,7 +38,7 @@ output$endpointGraph.ui <- renderUI({
   
   height <- PlotHeight_ep()
   
-  shinycssloaders::withSpinner(plotOutput("endpointGraph", height = height, width = "100%"))
+  plotOutput("endpointGraph", height = height, width = "100%")
 })
 
 PlotHeight_ep = reactive({
@@ -45,13 +47,19 @@ PlotHeight_ep = reactive({
   catType = as.numeric(input$radioMaxGroup)
   cat_col <- c("Bio_category","chnm","Class")[catType]
   
+  top_num <- as.numeric(input$topNum)
+  
   chemical_summary <- chemical_summary()
   
   if(filterBy != "All"){
     chemical_summary <- chemical_summary[chemical_summary[cat_col] == filterBy,]
   }
   
-  n <- 35*length(unique(chemical_summary$endPoint))
+  if(is.na(top_num)){
+    n <- 35*length(unique(chemical_summary$endPoint))
+  } else {
+    n <- 35*top_num
+  }
   
   if(n < 500){
     return(500)

@@ -30,6 +30,8 @@
 #' @param title Character title for plot. 
 #' @param palette Vector of color palette for fill. Can be a named vector
 #' to specify specific color for specific categories. 
+#' @param top_num Integer number of endpoints to include in the graph. If NA, all 
+#' endpoints will be included.
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -52,7 +54,8 @@
 #' plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
 #' plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
 #' plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
-#' 
+#' plot_tox_endpoints(chemical_summary, category = "Chemical", 
+#'                    filterBy = "Atrazine", top_num = 10)
 plot_tox_endpoints <- function(chemical_summary, 
                               category = "Biological",
                               filterBy = "All",
@@ -62,7 +65,8 @@ plot_tox_endpoints <- function(chemical_summary,
                               sum_logic = TRUE,
                               font_size = NA,
                               title = NA,
-                              palette = NA){
+                              palette = NA, 
+                              top_num = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -110,6 +114,13 @@ plot_tox_endpoints <- function(chemical_summary,
     if(any(is.na(orderColsBy$median))){
       orderedLevelsEP <- c(orderColsBy$endPoint[is.na(orderColsBy$median)],
                            orderColsBy$endPoint[!is.na(orderColsBy$median)])
+    }
+    
+    if(!is.na(top_num)){
+      orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
+      chemical_summary <- chemical_summary[chemical_summary[["endPoint"]] %in% orderedLevelsEP,]
+      nSamplesEP <- nSamplesEP[(length(nSamplesEP)-top_num+1):length(nSamplesEP)]
+      namesToPlotEP <- orderedLevelsEP
     }
     
     pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
@@ -179,6 +190,13 @@ plot_tox_endpoints <- function(chemical_summary,
                           orderColsBy$endPoint[!is.na(orderColsBy$median)])
     }
   
+    if(!is.na(top_num)){
+      orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
+      graphData <- graphData[graphData[["endPoint"]] %in% orderedLevelsEP,]
+      nSamplesEP <- nSamplesEP[(length(nSamplesEP)-top_num+1):length(nSamplesEP)]
+      namesToPlotEP <- orderedLevelsEP
+    }
+    
     graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
     
     stackedPlot <- ggplot(graphData)+
@@ -191,7 +209,6 @@ plot_tox_endpoints <- function(chemical_summary,
       stackedPlot <- stackedPlot +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
     }
-      
     
     if(!all(is.na(palette))){
       stackedPlot <- stackedPlot +
@@ -222,6 +239,7 @@ plot_tox_endpoints <- function(chemical_summary,
   }
   
   label <- "# Sites"
+  
   if(single_site){
     label <- "# Chemicals"
   }
@@ -270,7 +288,6 @@ plot_tox_endpoints <- function(chemical_summary,
     stackedPlot <- stackedPlot +
       coord_flip()   
   }
-
   
   return(stackedPlot)
 }
