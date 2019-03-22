@@ -98,26 +98,32 @@ epGraphCode <- reactive({
   filterBy <- epDF[['epGroup']]
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
-  if(sum_logic){
-    epGraphCode <- paste0(rCodeSetup(),"
-ep_plot <- plot_tox_endpoints(chemical_summary, 
-                    category = '",category,"',
-                    mean_logic = ",mean_logic,",
-                    hit_threshold = ",hitThres,",
-                    title = '",genericTitle(),"'
-                    filterBy = '",filterBy,"')
-ep_plot")
-  } else {
-    epGraphCode <- paste0(rCodeSetup(),"
+  top_num <- as.numeric(input$topNum)
+  
+  epGraphCode <- paste0(rCodeSetup(),"
 ep_plot <- plot_tox_endpoints(chemical_summary, 
                         category = '",category,"',
                         mean_logic = ",mean_logic,",
-                        sum_logic = FALSE,
                         hit_threshold = ",hitThres,",
-                        title = '",genericTitle(),"'
-                        filterBy = '",filterBy,"')
-ep_plot")    
+                        title = '",genericTitle(),"',
+                        top_num = ",top_num,",
+                        filterBy = '",filterBy,"'")
+  
+  if(sum_logic){
+    epGraphCode <- paste0(epGraphCode,")")
+
+  } else {
+    epGraphCode <- paste0(epGraphCode,"
+                        sum_logic = FALSE)")
   }
+  epGraphCode <- paste0(epGraphCode,"  
+ep_plot
+# To save:
+# Fiddle with height and width (in inches) for best results:
+# Change file name extension to save as png.
+# ggplot2::ggsave(ep_plot, file='ep_box.pdf',
+#                        height = 7,
+#                        width = 7)")
   
   return(epGraphCode)
   
