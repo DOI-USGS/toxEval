@@ -282,16 +282,16 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
       )
     } else {
       pretty_cat <- switch(category, 
-                           "Chemical" = "for all chemicals",
-                           "Biological" = "for chemicals within a grouping",
-                           "Chemical Class" = "for chemicals within a class"
+                           "Chemical" = "",
+                           "Biological" = "for chemicals within a grouping ",
+                           "Chemical Class" = "for chemicals within a class "
       )      
     }
     
     if(site == "All"){
       
       if(sum_logic){
-        title <- paste("Summing EARs",pretty_cat, "of a sample,")
+        title <- paste0("Summing EARs ",pretty_cat, "of a sample,")
       } else {
         title <- paste("Max EARs",pretty_cat, "of a sample,")
       }

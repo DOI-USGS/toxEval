@@ -105,7 +105,7 @@ plot_tox_endpoints <- function(chemical_summary,
 
     orderColsBy <- chemical_summary %>%
       dplyr::group_by(endPoint) %>%
-      dplyr::summarise(median = mean(EAR[EAR != 0], na.rm = TRUE)) %>%
+      dplyr::summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
       dplyr::arrange(median)
     
     orderedLevelsEP <- orderColsBy$endPoint
