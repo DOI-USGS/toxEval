@@ -20,7 +20,7 @@ stackBarGroup_create <- reactive({
                                      levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
   }
 
-  include_legend <- !(catType == 2)
+  top_num <- ifelse(catType == 2, 5, NA)
 
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
@@ -29,9 +29,10 @@ stackBarGroup_create <- reactive({
                                category = category,
                                mean_logic = mean_logic,
                                sum_logic = sum_logic,
-                               include_legend = include_legend,
+                               include_legend = TRUE,
                                font_size = ifelse(catType == 2, 14, 17),
-                               title = genericTitle())
+                               title = genericTitle(),
+                               top_num = top_num)
   
   shinyAce::updateAceEditor(session, editorId = "barCode_out", value = barCode() )
   
@@ -72,7 +73,7 @@ barCode <- reactive({
   
   catType = as.numeric(input$radioMaxGroup)
   category <- c("Biological","Chemical","Chemical Class")[catType]
-  include_legend <- !(catType == 2)
+  top_num <- ifelse(catType == 2, 5, NA)
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
   
@@ -87,7 +88,8 @@ stack_plot <- plot_tox_stacks(chemical_summary,
                   mean_logic = ",mean_logic,",
                   sum_logic = FALSE,
                   title = '",genericTitle(),"',
-                  include_legend = ",include_legend,")
+                  include_legend = TRUE,
+                  top_num = ",top_num,")
 stack_plot")    
   } else {
   stackPlotCode <- paste0(rCodeSetup(),"
@@ -99,7 +101,8 @@ stack_plot <- plot_tox_stacks(chemical_summary,
                   category = '",category,"',
                   mean_logic = ",mean_logic,",
                   title = '",genericTitle(),"',
-                  include_legend = ",include_legend,")
+                  include_legend = TRUE,
+                  top_num = ",top_num,")
 stack_plot")    
   }
 

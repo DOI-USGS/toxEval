@@ -6,7 +6,7 @@
 \usage{
 plot_tox_stacks(chemical_summary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE, manual_remove = NULL,
-  include_legend = TRUE, font_size = NA, title = NA)
+  include_legend = TRUE, font_size = NA, title = NA, top_num = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -29,6 +29,9 @@ opposed to ToxCast benchmarks.}
 \item{font_size}{Numeric value to adjust the axis font size.}
 
 \item{title}{Character title for plot.}
+
+\item{top_num}{Integer number to include in the graph. If NA, all 
+data will be included.}
 }
 \description{
 The \code{plot_tox_stacks} function creates a set of boxplots representing EAR 
@@ -72,5 +75,5 @@ chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
-
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5)
 }

@@ -73,6 +73,5 @@ chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
 plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
 plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
-plot_tox_endpoints(chemical_summary, category = "Chemical", 
-                   filterBy = "Atrazine", top_num = 10)
+plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 10)
 }
