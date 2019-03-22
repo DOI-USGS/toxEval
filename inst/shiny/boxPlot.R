@@ -109,27 +109,29 @@ boxCode <- reactive({
   hitThres <- ifelse(include_thresh, hitThresValue(),NA)
   category <- c("Biological","Chemical","Chemical Class")[catType]
   
+bioPlotCode <- paste0(rCodeSetup(),"
+bio_plot <- plot_tox_boxplots(chemical_summary, 
+                        category = '",category,"',
+                        mean_logic = ",mean_logic,",
+                        hit_threshold = ",hitThres,",
+                        title = '",genericTitle(),"',
+                        plot_ND = ",plot_ND)
   if(sum_logic){
-    bioPlotCode <- paste0(rCodeSetup(),"
-bio_plot <- plot_tox_boxplots(chemical_summary, 
-                          category = '",category,"',
-                          mean_logic = ",mean_logic,",
-                          hit_threshold = ",hitThres,",
-                          title = '",genericTitle(),"',
-                          plot_ND = ",plot_ND,")
-bio_plot")    
+    bioPlotCode <- paste0(bioPlotCode,")")
   } else {
-    bioPlotCode <- paste0(rCodeSetup(),"
-bio_plot <- plot_tox_boxplots(chemical_summary, 
-                          category = '",category,"',
-                          mean_logic = ",mean_logic,",
-                          hit_threshold = ",hitThres,",
-                          sum_logic = FALSE,
-                          title = '",genericTitle(),"',
-                          plot_ND = ",plot_ND,")
-bio_plot")
+    bioPlotCode <- paste0(bioPlotCode,"
+                          sum_logic = FALSE)")
+
   }
 
+  bioPlotCode <- paste0(bioPlotCode,"
+bio_plot
+# To save:
+# Fiddle with height and width (in inches) for best results:
+# Change file name extension to save as png.
+# ggplot2::ggsave(bio_plot, file='boxplot.pdf',
+#                        height = 9,
+#                        width = 11)")
   
   return(bioPlotCode)
   
