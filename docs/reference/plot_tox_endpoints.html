@@ -171,7 +171,7 @@ site as described in "Summarizing the data"in the Introduction vignette:
     <pre class="usage"><span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"All"</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>top_num</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -220,6 +220,11 @@ opposed to ToxCast benchmarks.</p></td>
       <td><p>Vector of color palette for fill. Can be a named vector
 to specify specific color for specific categories.</p></td>
     </tr>
+    <tr>
+      <th>top_num</th>
+      <td><p>Integer number of endpoints to include in the graph. If NA, all 
+endpoints will be included.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -245,8 +250,8 @@ for more information.</p>
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 <span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
 
-<span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"Cell Cycle"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Transformation introduced infinite values in continuous y-axis</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Transformation introduced infinite values in continuous y-axis</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</span></div><div class='img'><img src='plot_tox_endpoints-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>, <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"PAHs"</span>)</div><div class='img'><img src='plot_tox_endpoints-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>, <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"Atrazine"</span>)</div><div class='img'><img src='plot_tox_endpoints-3.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+<span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"Cell Cycle"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Transformation introduced infinite values in continuous y-axis</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Transformation introduced infinite values in continuous y-axis</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing non-finite values (stat_boxplot).</span></div><div class='img'><img src='plot_tox_endpoints-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>, <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"PAHs"</span>)</div><div class='img'><img src='plot_tox_endpoints-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>, <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"Atrazine"</span>)</div><div class='img'><img src='plot_tox_endpoints-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_endpoints</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>,
+                   <span class='kw'>filterBy</span> <span class='kw'>=</span> <span class='st'>"Atrazine"</span>, <span class='kw'>top_num</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='img'><img src='plot_tox_endpoints-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

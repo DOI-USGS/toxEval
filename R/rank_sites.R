@@ -95,7 +95,7 @@ rank_sites_DT <- function(chemical_summary,
                                             # pageLength = nrow(statsOfColumn),
                                             order=list(list(colToSort,'desc'))))
 
-  tableSumm <- DT::formatRound(tableSumm, names(statsOfColumn)[-ignoreIndex], 2)
+  tableSumm <- DT::formatSignif(tableSumm, names(statsOfColumn)[-ignoreIndex], 2)
 
   for(i in 1:length(maxEARS)){
     tableSumm <- DT::formatStyle(tableSumm,

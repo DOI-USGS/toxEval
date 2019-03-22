@@ -83,11 +83,9 @@ output$downloadBoxPlot <- downloadHandler(
 
   filename = "boxPlot.png",
   content = function(file) {
-    device <- function(..., width, height) {
-      grDevices::png(..., width = width, height = height,
-                     res = 300, units = "in")
-    }
-    ggsave(file, plot = boxPlot_prints(), device = device)
+    ggplot2::ggsave(file, plot = boxPlot_prints(), 
+                    device = "png", width = 11,
+                    height = PlotHeight()/200)
   }
 )
 

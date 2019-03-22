@@ -33,6 +33,8 @@
 #' @param include_legend Logical. Used to include legend or not.
 #' @param font_size Numeric value to adjust the axis font size.
 #' @param title Character title for plot. 
+#' @param top_num Integer number to include in the graph. If NA, all 
+#' data will be included.
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -56,7 +58,7 @@
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
-#' 
+#' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5)
 plot_tox_stacks <- function(chemical_summary, 
                             chem_site,
                             category = "Biological",
@@ -65,7 +67,8 @@ plot_tox_stacks <- function(chemical_summary,
                             manual_remove = NULL,
                             include_legend = TRUE, 
                             font_size = NA,
-                            title = NA){
+                            title = NA,
+                            top_num = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
@@ -107,6 +110,7 @@ plot_tox_stacks <- function(chemical_summary,
   cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
   
   cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
+  suppressWarnings(RNGversion("3.5.0"))
   set.seed(4)
   cbValues <- sample(cbValues)
 
@@ -134,6 +138,27 @@ plot_tox_stacks <- function(chemical_summary,
     } else {
       label_samples$site_grouping <- factor(levels(chem_site$site_grouping)[1],
                                             levels = levels(chem_site$site_grouping))
+    }
+    
+    if(!is.na(top_num)){
+      orig_cat <- levels(graphData$category)
+      
+      top_data <- graphData %>%
+        dplyr::group_by(category) %>%
+        dplyr::summarize(maxEAR = max(meanEAR, na.rm = TRUE)) %>%
+        dplyr::arrange(desc(maxEAR)) %>%
+        dplyr::top_n(maxEAR, n=top_num) %>%
+        dplyr::mutate(category = as.character(category)) %>%
+        dplyr::pull(category)
+      
+      other_text <- paste0("Others (",length(orig_cat)-top_num,")")
+      
+      graphData <- graphData %>%
+        dplyr::mutate(category = as.character(category),
+                      category = ifelse(category %in% top_data,
+                                        category, other_text),
+                      category = factor(category, levels = c(top_data, other_text)))
+      
     }
     
     upperPlot <- ggplot(graphData, 
@@ -172,6 +197,27 @@ plot_tox_stacks <- function(chemical_summary,
       graphData$category <- graphData$Class
     } else {
       graphData$category <- graphData$chnm
+    }
+    
+    if(!is.na(top_num)){
+      orig_cat <- levels(graphData$category)
+      
+      top_data <- graphData %>%
+        dplyr::group_by(category) %>%
+        dplyr::summarize(maxEAR = max(EAR, na.rm = TRUE)) %>%
+        dplyr::arrange(desc(maxEAR)) %>%
+        dplyr::top_n(maxEAR, n=top_num) %>%
+        dplyr::mutate(category = as.character(category)) %>%
+        dplyr::pull(category)
+      
+      other_text <- paste0("Others (",length(orig_cat)-top_num,")")
+      
+      graphData <- graphData %>%
+        dplyr::mutate(category = as.character(category),
+                      category = ifelse(category %in% top_data,
+                                        category, other_text),
+                      category = factor(category, levels = c(top_data, other_text)))
+      
     }
     
     upperPlot <- ggplot(graphData, aes(x=index, y=EAR, fill = category)) +

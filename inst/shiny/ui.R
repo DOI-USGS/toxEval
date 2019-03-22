@@ -68,24 +68,67 @@ path_to_file <- 'Choose File'"
 names(shortFlags) <- flagsALL
 header <- dashboardHeader(title = "toxEval",
                           tags$li(class = "dropdown", 
-                            div(style="text-align:center;
-                                font-size: 20px;
-                                height: 50px;
-                                font-weight: 300;
-                                margin-right:25px;
-                                font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-                                line-height: 50px;
-                                color: #fff;",
-                                textOutput("title_text", inline = TRUE))),
+                                  div(style="text-align:left;
+                                      font-size: 20px;
+                                      height: 50px;
+                                      font-weight: 300;
+                                      margin-right:25px;
+                                      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                                      line-height: 50px;
+                                      color: #fff;",
+                                      textOutput("title_text", inline = TRUE))),
+                          tags$li(class = "dropdown", tags$a(
+                            type = "button",
+                            style="color: #fff; 
+                            font-weight: 300;
+                            font-size: 16px;
+                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                            margin-right:13px;margin-top:7px;margin-bottom:7px",
+                            href = "http://usgs-r.github.io/toxEval/articles/Introduction.html", 
+                            target="_blank",
+                            "Introduction"
+                          )),
+                          tags$li(class = "dropdown", tags$a(
+                            type = "button",
+                            # class = "btn action-button",
+                            style="color: #fff; 
+                            font-weight: 300;
+                            font-size: 16px;
+                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                            margin-right:13px;margin-top:7px;margin-bottom:7px",
+                            href = "http://usgs-r.github.io/toxEval/articles/basicWorkflow.html", 
+                            target="_blank",
+                            "Workflow"
+                          )),
+                          tags$li(class = "dropdown", tags$a(
+                            style="color: #fff; 
+                            font-weight: 300;
+                            font-size: 16px;
+                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                            margin-right:13px;margin-top:7px;margin-bottom:7px",
+                            href = "http://usgs-r.github.io/toxEval/articles/PrepareData.html", 
+                            target="_blank",
+                            "Prepare Data"
+                          )),
+                          tags$li(class = "dropdown", tags$a(
+                            style="color: #fff; 
+                            font-weight: 300;
+                            font-size: 16px;
+                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                            margin-right:13px;margin-top:7px;margin-bottom:7px",
+                            href = "http://usgs-r.github.io/toxEval/articles/shinyApp.html", 
+                            target="_blank",
+                            "Using the Shiny App"
+                          )),
                           tags$li(class = "dropdown", tags$button(
-                                    id = 'close',
-                                    type = "button",
-                                    class = "btn action-button",
-                                    style='color: #000000; 
-                                    margin-right:13px;margin-top:7px;margin-bottom:7px',
-                                    onclick = "setTimeout(function(){window.close();},500);",  # close browser
-                                    "Stop ToxEval"
-                                  )))
+                            id = 'close',
+                            type = "button",
+                            class = "btn action-button",
+                            style='color: #000000; 
+                            margin-right:13px;margin-top:7px;margin-bottom:7px',
+                            onclick = "setTimeout(function(){window.close();},500);",  # close browser
+                            "Stop ToxEval"
+                          )))
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -140,15 +183,6 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   h3(textOutput("siteText")),
-  fluidRow(
-    column(2, HTML("<b>Documentation:</b>")),
-    # column(1, htmlOutput("Introduction_vignette")), #keeping to remember how to do it in the future
-    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/Introduction.html\" target=\"_blank\">Introduction</a>")),
-    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/basicWorkflow.html\" target=\"_blank\">Basic Workflow</a>")),
-    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/PrepareData.html\" target=\"_blank\">Prepare Your Data</a>")),
-    column(1, HTML("<a href=\"http://usgs-r.github.io/toxEval/articles/shinyApp.html\" target=\"_blank\">Using the Shiny App</a>"))
-  ),
-  h4(""),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
@@ -222,7 +256,8 @@ body <- dashboardBody(
                                     choices = "All",
                                     multiple = FALSE,
                                     selected = "All")),
-               column(3, checkboxInput("plot_thres_ep", "Consider Threshold?", FALSE))
+               column(2, checkboxInput("plot_thres_ep", "Consider Threshold?", FALSE)),
+               column(2,numericInput("topNum",label = "Number to Show",value = 10))
              ),
             uiOutput("endpointGraph.ui"),
             fluidRow(

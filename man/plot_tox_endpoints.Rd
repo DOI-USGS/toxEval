@@ -7,7 +7,7 @@
 plot_tox_endpoints(chemical_summary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = NA,
   mean_logic = FALSE, sum_logic = TRUE, font_size = NA, title = NA,
-  palette = NA)
+  palette = NA, top_num = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -33,6 +33,9 @@ opposed to ToxCast benchmarks.}
 
 \item{palette}{Vector of color palette for fill. Can be a named vector
 to specify specific color for specific categories.}
+
+\item{top_num}{Integer number of endpoints to include in the graph. If NA, all 
+endpoints will be included.}
 }
 \description{
 The \code{plot_tox_endpoints} function creates a set of boxplots representing EAR 
@@ -70,5 +73,5 @@ chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
 plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
 plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
-
+plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 10)
 }

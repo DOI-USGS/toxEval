@@ -54,11 +54,9 @@ output$downloadHeatPlot <- downloadHandler(
   filename = "heatPlot.png",
 
   content = function(file) {
-    device <- function(..., width, height) {
-      grDevices::png(..., width = width, height = height,
-                     res = 300, units = "in")
-    }
-    ggsave(file, plot = heatMap_create(), device = device)
+    ggplot2::ggsave(file, plot = heatMap_create(), 
+                    device = "png", width = 11,
+                    height = PlotHeight()/200)
   }
 )
 
