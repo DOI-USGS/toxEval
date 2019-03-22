@@ -67,8 +67,8 @@ plot_chemical_boxplots <- function(chemical_summary,
     
     countNonZero <- chemical_summary %>%
       dplyr::group_by(chnm, Class) %>%
-      dplyr::summarize(nonZero = as.character(length(unique(endPoint[EAR>0]))),
-                hits = as.character(sum(EAR > hit_threshold)))
+      dplyr::summarize(nonZero = as.character(length(unique(endPoint[EAR > 0]))),
+                hits = as.character(length(unique(date[EAR > hit_threshold]))))
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     

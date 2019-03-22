@@ -109,5 +109,5 @@ single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
 plot_tox_boxplots(single_site, 
                   category = "Biological") 
 plot_tox_boxplots(single_site, 
-                  category = "Chemical") 
+                  category = "Chemical", hit_threshold = 0.001) 
 }
