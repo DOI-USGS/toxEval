@@ -72,7 +72,7 @@ plot_tox_stacks <- function(chemical_summary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
-  site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
+  site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- maxEAR <- ".dplyr"
   SiteID <- site_grouping <- n <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
   
   if(!("site_grouping" %in% names(chem_site))){
@@ -146,7 +146,7 @@ plot_tox_stacks <- function(chemical_summary,
       top_data <- graphData %>%
         dplyr::group_by(category) %>%
         dplyr::summarize(maxEAR = max(meanEAR, na.rm = TRUE)) %>%
-        dplyr::arrange(desc(maxEAR)) %>%
+        dplyr::arrange(dplyr::desc(maxEAR)) %>%
         dplyr::top_n(maxEAR, n=top_num) %>%
         dplyr::mutate(category = as.character(category)) %>%
         dplyr::pull(category)
@@ -205,7 +205,7 @@ plot_tox_stacks <- function(chemical_summary,
       top_data <- graphData %>%
         dplyr::group_by(category) %>%
         dplyr::summarize(maxEAR = max(EAR, na.rm = TRUE)) %>%
-        dplyr::arrange(desc(maxEAR)) %>%
+        dplyr::arrange(dplyr::desc(maxEAR)) %>%
         dplyr::top_n(maxEAR, n=top_num) %>%
         dplyr::mutate(category = as.character(category)) %>%
         dplyr::pull(category)

@@ -11,7 +11,7 @@ plot_chemical_boxplots <- function(chemical_summary,
                                    hit_threshold = NA){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  chnm <- Class <- meanEAR <- x <- y <- ".dplyr"
+  chnm <- Class <- meanEAR <- x <- y <- max_med <- endPoint <- ".dplyr"
 
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",
@@ -35,7 +35,6 @@ plot_chemical_boxplots <- function(chemical_summary,
     } else {
       cbValues <- colorRampPalette(RColorBrewer::brewer.pal(11,"Spectral"))(n)
     }
-
   }
   
   single_site <- length(unique(chemical_summary$site)) == 1
@@ -44,11 +43,32 @@ plot_chemical_boxplots <- function(chemical_summary,
   
   if(single_site){
     
-    countNonZero <- chemical_summary %>%
-      dplyr::select(chnm, Class, EAR) %>%
+    # Single site order:
+    orderColsBy <- chemical_summary %>%
       dplyr::group_by(chnm, Class) %>%
-      dplyr::summarize(nonZero = as.character(sum(EAR>0)),
-                hits = as.character(sum(EAR > hit_threshold)))
+      dplyr::summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
+      dplyr::arrange(median)
+
+    class_order <- orderColsBy %>%
+      dplyr::group_by(Class) %>%
+      dplyr::summarise(max_med = max(median, na.rm = TRUE)) %>%
+      dplyr::arrange(max_med) %>%
+      dplyr::pull(Class)
+    
+    orderedLevels <- chemical_summary %>%
+      dplyr::group_by(chnm, Class) %>%
+      dplyr::summarise(median = median(EAR[EAR != 0])) %>%
+      dplyr::mutate(Class = factor(Class, levels = rev(class_order))) %>%
+      dplyr::arrange(Class, dplyr::desc(median)) %>%
+      dplyr::pull(chnm)
+
+    chemical_summary$Class <- factor(as.character(chemical_summary$Class), levels = rev(class_order))
+    chemical_summary$chnm <- factor(as.character(chemical_summary$chnm), levels = rev(orderedLevels))
+    
+    countNonZero <- chemical_summary %>%
+      dplyr::group_by(chnm, Class) %>%
+      dplyr::summarize(nonZero = as.character(length(unique(endPoint[EAR > 0]))),
+                hits = as.character(length(unique(date[EAR > hit_threshold]))))
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     

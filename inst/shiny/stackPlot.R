@@ -76,22 +76,7 @@ barCode <- reactive({
   top_num <- ifelse(catType == 2, 5, NA)
   mean_logic <- as.logical(input$meanEAR)
   sum_logic <- as.logical(input$sumEAR)
-  
-  if(!sum_logic){
-    stackPlotCode <- paste0(rCodeSetup(),"
-# To re-order the x-axis, 
-# Convert tox_list$chem_site$`Short Name` to a factor,
-# and re-order the 'levels' of that factor
-stack_plot <- plot_tox_stacks(chemical_summary, 
-                  chem_site = tox_list$chem_site,
-                  category = '",category,"',
-                  mean_logic = ",mean_logic,",
-                  sum_logic = FALSE,
-                  title = '",genericTitle(),"',
-                  include_legend = TRUE,
-                  top_num = ",top_num,")
-stack_plot")    
-  } else {
+
   stackPlotCode <- paste0(rCodeSetup(),"
 # To re-order the x-axis, 
 # Convert tox_list$chem_site$`Short Name` to a factor,
@@ -102,10 +87,23 @@ stack_plot <- plot_tox_stacks(chemical_summary,
                   mean_logic = ",mean_logic,",
                   title = '",genericTitle(),"',
                   include_legend = TRUE,
-                  top_num = ",top_num,")
-stack_plot")    
-  }
+                  top_num = ",top_num)
 
+  if(!sum_logic){
+    stackPlotCode <- paste0(stackPlotCode,",
+                            sum_logic = FALSE)")
+  } else {
+    stackPlotCode <- paste0(stackPlotCode,")")
+  }
+    
+  stackPlotCode <- paste0(stackPlotCode,"
+stack_plot
+# To save:
+# Fiddle with height and width (in inches) for best results:
+# Change file name extension to save as png.
+# ggplot2::ggsave(stack_plot, file='stack.pdf',
+#                        height = 5,
+#                        width = 7)")
   
   return(stackPlotCode)
   

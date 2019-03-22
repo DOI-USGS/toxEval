@@ -172,7 +172,7 @@ legend for "Chemical" if there are hundreds of chemicals.</p>
 
     <pre class="usage"><span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>include_legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>top_num</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -216,6 +216,11 @@ opposed to ToxCast benchmarks.</p></td>
       <th>title</th>
       <td><p>Character title for plot.</p></td>
     </tr>
+    <tr>
+      <th>top_num</th>
+      <td><p>Integer number to include in the graph. If NA, all 
+data will be included.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -245,8 +250,7 @@ the character vector sites to a factor with ordered levels.</p>
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 <span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
 
-<span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Biological"</span>)</div><div class='img'><img src='plot_tox_stacks-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical Class"</span>)</div><div class='img'><img src='plot_tox_stacks-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>, <span class='kw'>include_legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='img'><img src='plot_tox_stacks-3.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+<span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Biological"</span>)</div><div class='img'><img src='plot_tox_stacks-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical Class"</span>)</div><div class='img'><img src='plot_tox_stacks-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>, <span class='kw'>include_legend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='img'><img src='plot_tox_stacks-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_stacks</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='st'>"Chemical"</span>, <span class='kw'>top_num</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='img'><img src='plot_tox_stacks-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

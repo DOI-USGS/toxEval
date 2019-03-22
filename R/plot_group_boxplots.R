@@ -78,7 +78,11 @@
 #'                   category = "Biological",
 #'                   palette = cbValues,
 #'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
-#' 
+#' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
+#' plot_tox_boxplots(single_site, 
+#'                   category = "Biological") 
+#' plot_tox_boxplots(single_site, 
+#'                   category = "Chemical", hit_threshold = 0.001) 
 plot_tox_boxplots <- function(chemical_summary, 
                               category = "Biological",
                               manual_remove = NULL,

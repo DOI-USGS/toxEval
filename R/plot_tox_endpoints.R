@@ -54,7 +54,9 @@
 #' plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
 #' plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
 #' plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
-#' plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 10)
+#' plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 5)
+#' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
+#' plot_tox_endpoints(single_site, category = "Chemical", top_num = 7)
 plot_tox_endpoints <- function(chemical_summary, 
                               category = "Biological",
                               filterBy = "All",
@@ -70,6 +72,7 @@ plot_tox_endpoints <- function(chemical_summary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
+  CAS <- nonZero <- hits <-  ".dplyr"
   
   if(category == "Biological"){
     chemical_summary$category <- chemical_summary$Bio_category
@@ -94,19 +97,16 @@ plot_tox_endpoints <- function(chemical_summary,
     
     countNonZero <- chemical_summary %>%
       dplyr::group_by(endPoint) %>%
-      dplyr::summarise(nonZero = as.character(sum(EAR>0)),
+      dplyr::summarise(nonZero = as.character(length(unique(CAS[EAR>0]))),
                 hits = as.character(sum(EAR > hit_threshold)))
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
 
     namesToPlotEP <- as.character(countNonZero$endPoint)
-    
-    nSamplesEP <- countNonZero$nonZero
-    nHitsEP <- countNonZero$hits
-    
+
     orderColsBy <- chemical_summary %>%
       dplyr::group_by(endPoint) %>%
-      dplyr::summarise(median = mean(EAR[EAR != 0], na.rm = TRUE)) %>%
+      dplyr::summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
       dplyr::arrange(median)
     
     orderedLevelsEP <- orderColsBy$endPoint
@@ -119,8 +119,8 @@ plot_tox_endpoints <- function(chemical_summary,
     if(!is.na(top_num)){
       orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
       chemical_summary <- chemical_summary[chemical_summary[["endPoint"]] %in% orderedLevelsEP,]
-      nSamplesEP <- nSamplesEP[(length(nSamplesEP)-top_num+1):length(nSamplesEP)]
-      namesToPlotEP <- orderedLevelsEP
+      countNonZero <- countNonZero[countNonZero[["endPoint"]] %in% orderedLevelsEP,]
+      countNonZero$endPoint <- factor(countNonZero$endPoint, levels = orderedLevelsEP)
     }
     
     pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
@@ -175,8 +175,6 @@ plot_tox_endpoints <- function(chemical_summary,
     countNonZero$hits[countNonZero$hits == "0"] <- ""
 
     namesToPlotEP <- as.character(countNonZero$endPoint)
-    nSamplesEP <- countNonZero$nonZero
-    nHitsEP <- countNonZero$hits
 
     orderColsBy <- graphData %>%
       dplyr::group_by(endPoint) %>%
@@ -193,8 +191,9 @@ plot_tox_endpoints <- function(chemical_summary,
     if(!is.na(top_num)){
       orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
       graphData <- graphData[graphData[["endPoint"]] %in% orderedLevelsEP,]
-      nSamplesEP <- nSamplesEP[(length(nSamplesEP)-top_num+1):length(nSamplesEP)]
-      namesToPlotEP <- orderedLevelsEP
+      countNonZero <- countNonZero[countNonZero[["endPoint"]] %in% orderedLevelsEP,]
+      countNonZero$endPoint <- factor(countNonZero$endPoint, levels = orderedLevelsEP)
+
     }
     
     graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
@@ -238,6 +237,8 @@ plot_tox_endpoints <- function(chemical_summary,
     xmin <- plot_layout$panel_ranges[[1]]$x.range[1]
   }
   
+  countNonZero$ymax <- ymax
+  
   label <- "# Sites"
   
   if(single_site){
@@ -245,14 +246,14 @@ plot_tox_endpoints <- function(chemical_summary,
   }
   
   stackedPlot <- stackedPlot +
-    geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymin,label=nSamplesEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+    geom_text(data=countNonZero, aes(x=endPoint, y=ymin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
     geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
               aes(x = x,  y=y, label = label),
               size=ifelse(is.na(font_size),3,0.30*font_size))     
   
-  if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {
+  if(isTRUE(sum(as.numeric(countNonZero$hits), na.rm = TRUE) > 0)) {
     stackedPlot <- stackedPlot +
-      geom_text(data=data.frame(), aes(x=namesToPlotEP, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+      geom_text(data=countNonZero, aes(x=endPoint, y=ymax,label=hits),size=ifelse(is.na(font_size),3,0.30*font_size)) +
       geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
               aes(x = x,  y=y, label = label),
               size=ifelse(is.na(font_size),3,0.30*font_size))
