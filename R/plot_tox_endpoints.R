@@ -101,12 +101,13 @@ plot_tox_endpoints <- function(chemical_summary,
     countNonZero$hits[countNonZero$hits == "0"] <- ""
 
     namesToPlotEP <- as.character(countNonZero$endPoint)
+    
     nSamplesEP <- countNonZero$nonZero
     nHitsEP <- countNonZero$hits
     
     orderColsBy <- chemical_summary %>%
       dplyr::group_by(endPoint) %>%
-      dplyr::summarise(median = quantile(EAR[EAR != 0],0.5)) %>%
+      dplyr::summarise(median = mean(EAR[EAR != 0], na.rm = TRUE)) %>%
       dplyr::arrange(median)
     
     orderedLevelsEP <- orderColsBy$endPoint
