@@ -10,7 +10,7 @@ navbar:
     href: articles/basicWorkflow.html
   - text: Function Help
     href: reference/index.html
-  - text: Data Preperation
+  - text: Data Preparation
     href: articles/PrepareData.html
   - text: Articles
     menu:
