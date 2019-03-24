@@ -72,7 +72,7 @@
 #'                               category = "Biological") 
 #' cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
 #' names(cbValues) <- levels(graphData$category)
-#' 
+#' \donttest{
 #' plot_tox_boxplots(chemical_summary, 
 #'                   hit_threshold = 0.1,
 #'                   category = "Biological",
@@ -83,6 +83,7 @@
 #'                   category = "Biological") 
 #' plot_tox_boxplots(single_site, 
 #'                   category = "Chemical", hit_threshold = 0.001) 
+#'}
 plot_tox_boxplots <- function(chemical_summary, 
                               category = "Biological",
                               manual_remove = NULL,
