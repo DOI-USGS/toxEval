@@ -3,3 +3,5 @@ toxEval.Rproj
 .Rhistory
 .RData
 inst/shiny/*.png
+doc
+Meta

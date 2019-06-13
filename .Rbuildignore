@@ -28,3 +28,8 @@ vignettes/References.Rmd
 vignettes/benchmarkds.Rmd
 vignettes/does_curves.Rmd
 pkgdown/favicon/*
+^doc$
+^Meta$
+vignettes/bibliography.Rmd
+vignettes/toxeval.bib
+
