@@ -23,7 +23,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -39,9 +40,9 @@
 
 <meta property="og:title" content="Endpoint information from ToxCast — end_point_info" />
 
-<meta property="og:description" content="Downloaded on October 2015 from ToxCast. The file name of the
-raw data was &quot;Assay_Summary_151020.csv&quot; from the zip file 
-&quot;Assay_Information_Oct_2015.zip&quot;. At the time
+<meta property="og:description" content="Downloaded on October 2018 from ToxCast. The file name of the
+raw data was &quot;Assay_Summary_190226.csv&quot; from the zip file 
+&quot;INVITRODB_V3_1_SUMMARY&quot; folder. At the time
 of the toxEval package release, these data were found at:
 https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data
 in the section marked &quot;Download Assay Information&quot;, in the 
@@ -88,7 +89,7 @@ ToxCast &amp;amp; Tox21 high-throughput assay information data set." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
       </span>
     </div>
 
@@ -124,6 +125,9 @@ ToxCast &amp;amp; Tox21 high-throughput assay information data set." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../articles/bibliography.html">Bibliograpy</a>
+</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -152,9 +156,9 @@ ToxCast &amp;amp; Tox21 high-throughput assay information data set." />
 
     <div class="ref-description">
     
-    <p>Downloaded on October 2015 from ToxCast. The file name of the
-raw data was "Assay_Summary_151020.csv" from the zip file 
-"Assay_Information_Oct_2015.zip". At the time
+    <p>Downloaded on October 2018 from ToxCast. The file name of the
+raw data was "Assay_Summary_190226.csv" from the zip file 
+"INVITRODB_V3_1_SUMMARY" folder. At the time
 of the toxEval package release, these data were found at:
 <a href='https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data'>https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data</a>
 in the section marked "Download Assay Information", in the 
@@ -165,7 +169,7 @@ ToxCast &amp; Tox21 high-throughput assay information data set.</p>
         
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p><a href='https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide'>https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide</a></p>
+    <p><a href='https://doi.org/10.23645/epacomptox.6062479.v3'>https://doi.org/10.23645/epacomptox.6062479.v3</a></p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -175,20 +179,18 @@ are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide. 
-Retrieved from <a href='https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide'>https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide</a>.</p>
+<a href='https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide'>https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide</a>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>end_point_info</span> <span class='kw'>&lt;-</span> <span class='no'>end_point_info</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>end_point_info</span>[,<span class='fl'>1</span>:<span class='fl'>5</span>])</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 6 x 5</span><span>
-#&gt;     aid  acid  aeid  asid assay_source_name
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            
-#&gt; </span><span style='color: #555555;'>1</span><span>     1     1     1     1 ACEA             
-#&gt; </span><span style='color: #555555;'>2</span><span>     1     1     2     1 ACEA             
-#&gt; </span><span style='color: #555555;'>3</span><span>     2     2     3     2 APR              
-#&gt; </span><span style='color: #555555;'>4</span><span>     2     2     4     2 APR              
-#&gt; </span><span style='color: #555555;'>5</span><span>     2     3     5     2 APR              
-#&gt; </span><span style='color: #555555;'>6</span><span>     2     3     6     2 APR              </div></span></pre>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>end_point_info</span>[,<span class='fl'>1</span>:<span class='fl'>5</span>])</div><div class='output co'>#&gt;   aid acid aeid asid assay_source_name
+#&gt; 1   1    1    2    1              ACEA
+#&gt; 2   1 1804 1852    1              ACEA
+#&gt; 3   2    2    3    2               APR
+#&gt; 4   2    2    4    2               APR
+#&gt; 5   2    3    5    2               APR
+#&gt; 6   2    3    6    2               APR</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -212,7 +214,7 @@ Retrieved from <a href='https://www.epa.gov/chemical-research/toxcast-assay-anno
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
 </div>
       </footer>
    </div>

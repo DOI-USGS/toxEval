@@ -20,6 +20,8 @@ navbar:
         href: articles/benchmarks.html
       - text: Dose Response Curves
         href: articles/does_curves.html
+  - text: Bibliograpy
+    href: articles/bibliography.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/USGS-R/toxEval

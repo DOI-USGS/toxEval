@@ -13,7 +13,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Exploring Biological Relevance of Environmental Chemistry Observations">
 <meta property="og:description" content="Data analysis package for estimating potential biological effects from chemical concentrations in environmental samples. Included are a set of functions to analyze, visualize, and organize measured concentration data as it relates to user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. A description of the analysis can be found in Blackwell et al. (2017) &lt;doi:10.1021/acs.est.7b01613&gt;.">
@@ -43,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
       </span>
     </div>
 
@@ -78,6 +79,9 @@
       <a href="articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="articles/bibliography.html">Bibliograpy</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -115,32 +119,37 @@
 <p align="center">
 <img src="https://code.usgs.gov/water/toxEval/raw/master/man/figures/app.gif" alt="app_demo"></p>
 <p>Installation instructions are below. To quickly get going in <code>toxEval</code>, run:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(toxEval)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
 <a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="reference/explore_endpoints.html">explore_endpoints</a></span>()</a></code></pre></div>
 <p>Then click on the “Load Example Data” in the upper right corner. This loads the example data that is found here:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)</a></code></pre></div>
 <p>Once the data is loaded in the app, sample R code is shown below each tab. This can be copied into the R console (once the app is stopped…) to use as a base for exploring the package directly in R.</p>
 <p>Alternatively, an example workflow is shown here (also using example data provided in the package):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(toxEval)</a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; USGS Research Package:</span></a>
-<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; https://owi.usgs.gov/R/packages.html#research</span></a>
-<a class="sourceLine" id="cb3-4" title="4">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)</a>
-<a class="sourceLine" id="cb3-5" title="5">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
-<a class="sourceLine" id="cb3-6" title="6">ACClong &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)</a>
-<a class="sourceLine" id="cb3-7" title="7">ACClong &lt;-<span class="st"> </span><span class="kw"><a href="reference/remove_flags.html">remove_flags</a></span>(ACClong)</a>
-<a class="sourceLine" id="cb3-8" title="8"></a>
-<a class="sourceLine" id="cb3-9" title="9">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)</a>
-<a class="sourceLine" id="cb3-10" title="10">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/filter_groups.html">filter_groups</a></span>(cleaned_ep, </a>
-<a class="sourceLine" id="cb3-11" title="11">                  <span class="dt">groupCol =</span> <span class="st">'intended_target_family'</span>,</a>
-<a class="sourceLine" id="cb3-12" title="12">                  <span class="dt">remove_groups =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">'Background Measurement'</span>,<span class="st">'Undefined'</span>))</a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; Registered S3 methods overwritten by 'ggplot2':</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;   method         from </span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt;   [.quosures     rlang</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt;   c.quosures     rlang</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt;   print.quosures rlang</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; USGS Research Package:</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; https://owi.usgs.gov/R/packages.html#research</span></a>
+<a class="sourceLine" id="cb3-9" title="9">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)</a>
+<a class="sourceLine" id="cb3-10" title="10">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
+<a class="sourceLine" id="cb3-11" title="11">ACClong &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)</a>
+<a class="sourceLine" id="cb3-12" title="12">ACClong &lt;-<span class="st"> </span><span class="kw"><a href="reference/remove_flags.html">remove_flags</a></span>(ACClong)</a>
 <a class="sourceLine" id="cb3-13" title="13"></a>
-<a class="sourceLine" id="cb3-14" title="14">chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, </a>
-<a class="sourceLine" id="cb3-15" title="15">                                        ACClong, </a>
-<a class="sourceLine" id="cb3-16" title="16">                                        filtered_ep)</a>
-<a class="sourceLine" id="cb3-17" title="17"><span class="co">######################################</span></a>
-<a class="sourceLine" id="cb3-18" title="18">chem_class_plot &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary,</a>
-<a class="sourceLine" id="cb3-19" title="19">                                     <span class="dt">category =</span> <span class="st">'Chemical Class'</span>)</a>
-<a class="sourceLine" id="cb3-20" title="20">chem_class_plot</a></code></pre></div>
+<a class="sourceLine" id="cb3-14" title="14">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)</a>
+<a class="sourceLine" id="cb3-15" title="15">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="reference/filter_groups.html">filter_groups</a></span>(cleaned_ep, </a>
+<a class="sourceLine" id="cb3-16" title="16">                  <span class="dt">groupCol =</span> <span class="st">'intended_target_family'</span>,</a>
+<a class="sourceLine" id="cb3-17" title="17">                  <span class="dt">remove_groups =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'Background Measurement'</span>,<span class="st">'Undefined'</span>))</a>
+<a class="sourceLine" id="cb3-18" title="18"></a>
+<a class="sourceLine" id="cb3-19" title="19">chemicalSummary &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, </a>
+<a class="sourceLine" id="cb3-20" title="20">                                        ACClong, </a>
+<a class="sourceLine" id="cb3-21" title="21">                                        filtered_ep)</a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="co">######################################</span></a>
+<a class="sourceLine" id="cb3-23" title="23">chem_class_plot &lt;-<span class="st"> </span><span class="kw"><a href="reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(chemicalSummary,</a>
+<a class="sourceLine" id="cb3-24" title="24">                                     <span class="dt">category =</span> <span class="st">'Chemical Class'</span>)</a>
+<a class="sourceLine" id="cb3-25" title="25">chem_class_plot</a></code></pre></div>
 <p><img src="reference/figures/unnamed-chunk-4-1.png" width="768"></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"></a>
 <a class="sourceLine" id="cb4-2" title="2"><span class="co">######################################</span></a>
@@ -233,11 +242,11 @@
 <h2 class="hasAnchor">
 <a href="#installation-of-toxeval" class="anchor"></a>Installation of toxEval</h2>
 <p>To install the toxEval package, you must be using R 3.0 or greater and run the following command:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"toxEval"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>)</a></code></pre></div>
 <p>To get inter-CRAN release updates, use the command:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"toxEval"</span>,<span class="dt">repos=</span><span class="st">"https://owi.usgs.gov/R"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>,<span class="dt">repos=</span><span class="st">"https://owi.usgs.gov/R"</span>)</a></code></pre></div>
 <p>To get cutting-edge changes, install from GitHub using the <code>devtools</code> packages:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)</a>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw">install_github</span>(<span class="st">"USGS-R/toxEval"</span>)</a></code></pre></div>
 <p>Regularly, it is a good idea to update <em>ALL</em> your packages in R. If using RStudio, this is quite easy, there’s an Update button in the “Packages” tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.</p>
 <div class="figure">
@@ -252,13 +261,13 @@
 <li>Open RStudio</li>
 <li>In the Console (lower-left window of RStudio) paste the following:</li>
 </ol>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(toxEval)</a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
 <a class="sourceLine" id="cb9-2" title="2"><span class="kw"><a href="reference/explore_endpoints.html">explore_endpoints</a></span>()</a></code></pre></div>
 </div>
 <div id="citing-toxeval" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citing-toxeval" class="anchor"></a>Citing toxEval</h2>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="dt">package =</span> <span class="st">"toxEval"</span>)</a>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="dt">package =</span> <span class="st">"toxEval"</span>)</a>
 <a class="sourceLine" id="cb10-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; To cite toxEval in publications, please use:</span></a>
 <a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; </span></a>
@@ -279,9 +288,8 @@
 <a class="sourceLine" id="cb10-19" title="19"><span class="co">#&gt;     address = {Reston, VA},</span></a>
 <a class="sourceLine" id="cb10-20" title="20"><span class="co">#&gt;     institution = {U.S. Geological Survey},</span></a>
 <a class="sourceLine" id="cb10-21" title="21"><span class="co">#&gt;     year = {2018},</span></a>
-<a class="sourceLine" id="cb10-22" title="22"><span class="co">#&gt;     doi = {10.5066/P906UQ5I},</span></a>
-<a class="sourceLine" id="cb10-23" title="23"><span class="co">#&gt;     url = {https://code.usgs.gov/water/toxEval},</span></a>
-<a class="sourceLine" id="cb10-24" title="24"><span class="co">#&gt;   }</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-22" title="22"><span class="co">#&gt;     url = {https://code.usgs.gov/water/toxEval},</span></a>
+<a class="sourceLine" id="cb10-23" title="23"><span class="co">#&gt;   }</span></a></code></pre></div>
 </div>
 <div id="disclaimer" class="section level2">
 <h2 class="hasAnchor">
@@ -319,7 +327,7 @@
 <li>Laura DeCicco <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3915-9487" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
 <li>Steven Corsi <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-0583-5536" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
 <li>Daniel Villeneuve <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-2801-0203" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
-<li>Brett Blackwell <br><small class="roles"> Author </small>  </li>
+<li>Brett Blackwell <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1296-4539" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
 <li>Gerald Ankley <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-9937-615X" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
@@ -346,7 +354,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
 </div>
       </footer>
 </div>
