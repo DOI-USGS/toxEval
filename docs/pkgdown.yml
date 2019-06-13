@@ -1,9 +1,10 @@
-pandoc: 2.7.1
-pkgdown: 1.3.0
-pkgdown_sha: ~
+pandoc: 2.7.2
+pkgdown: 1.3.0.9000
+pkgdown_sha: 04e3f6ee259b17bed7246f237652e4ba7d6742d4
 articles:
   basicWorkflow: basicWorkflow.html
   benchmarks: benchmarks.html
+  bibliography: bibliography.html
   does_curves: does_curves.html
   Introduction: Introduction.html
   PrepareData: PrepareData.html

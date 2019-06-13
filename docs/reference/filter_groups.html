@@ -23,7 +23,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -89,7 +90,7 @@ reconsidered based on individual study objectives." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
       </span>
     </div>
 
@@ -124,6 +125,9 @@ reconsidered based on individual study objectives." />
       <a href="../articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../articles/bibliography.html">Bibliograpy</a>
 </li>
       </ul>
       
@@ -165,9 +169,9 @@ reconsidered based on individual study objectives.</p>
     </div>
 
     <pre class="usage"><span class='fu'>filter_groups</span>(<span class='no'>ep</span>, <span class='kw'>groupCol</span> <span class='kw'>=</span> <span class='st'>"intended_target_family"</span>,
-  <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"ATG"</span>, <span class='st'>"NVS"</span>, <span class='st'>"OT"</span>, <span class='st'>"TOX21"</span>, <span class='st'>"CEETOX"</span>, <span class='st'>"APR"</span>, <span class='st'>"CLD"</span>,
+  <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ATG"</span>, <span class='st'>"NVS"</span>, <span class='st'>"OT"</span>, <span class='st'>"TOX21"</span>, <span class='st'>"CEETOX"</span>, <span class='st'>"APR"</span>, <span class='st'>"CLD"</span>,
   <span class='st'>"TANGUAY"</span>, <span class='st'>"NHEERL_PADILLA"</span>, <span class='st'>"NCCT_SIMMONS"</span>, <span class='st'>"ACEA"</span>),
-  <span class='kw'>remove_groups</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Background Measurement"</span>, <span class='st'>"Undefined"</span>))</pre>
+  <span class='kw'>remove_groups</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Background Measurement"</span>, <span class='st'>"Undefined"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -226,7 +230,7 @@ objective target for the assay". Much more detail can be discovered in that docu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
 </div>
       </footer>
    </div>

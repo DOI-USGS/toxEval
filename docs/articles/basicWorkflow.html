@@ -13,7 +13,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Basic Workflow">
 <meta property="og:description" content="">
@@ -43,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
       </span>
     </div>
 
@@ -79,6 +80,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../articles/bibliography.html">Bibliograpy</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -97,7 +101,7 @@
 
       
       </header><script src="basicWorkflow_files/htmlwidgets-1.3/htmlwidgets.js"></script><script src="basicWorkflow_files/jquery-1.12.4/jquery.min.js"></script><link href="basicWorkflow_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="basicWorkflow_files/datatables-binding-0.5/datatables.js"></script><link href="basicWorkflow_files/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="basicWorkflow_files/datatables-binding-0.7/datatables.js"></script><link href="basicWorkflow_files/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="basicWorkflow_files/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet">
 <script src="basicWorkflow_files/dt-core-1.10.16/js/jquery.dataTables.min.js"></script><link href="basicWorkflow_files/dt-ext-buttons-1.10.16/css/buttons.dataTables.min.css" rel="stylesheet">
 <script src="basicWorkflow_files/dt-ext-buttons-1.10.16/js/dataTables.buttons.min.js"></script><script src="basicWorkflow_files/dt-ext-buttons-1.10.16/js/buttons.flash.min.js"></script><script src="basicWorkflow_files/dt-ext-buttons-1.10.16/js/buttons.html5.min.js"></script><script src="basicWorkflow_files/dt-ext-buttons-1.10.16/js/buttons.colVis.min.js"></script><script src="basicWorkflow_files/dt-ext-buttons-1.10.16/js/buttons.print.min.js"></script><link href="basicWorkflow_files/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet">
@@ -109,7 +113,7 @@
     <div class="page-header toc-ignore">
       <h1>Basic Workflow</h1>
             
-            <h4 class="date">25 March, 2019</h4>
+            <h4 class="date">13 June, 2019</h4>
       
       
       <div class="hidden name"><code>basicWorkflow.Rmd</code></div>
@@ -128,10 +132,10 @@
 <h1 class="hasAnchor">
 <a href="#load-data" class="anchor"></a>Load Data</h1>
 <p>Once the data is prepared as described in the <a href="PrepareData.html">Prepare Data vignette</a>, it can be loaded into R using the <code>create_toxEval</code> function.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(toxEval)</a>
-<a class="sourceLine" id="cb1-2" title="2">path_to_tox &lt;-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
+<a class="sourceLine" id="cb1-2" title="2">path_to_tox &lt;-<span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>)</a>
 <a class="sourceLine" id="cb1-3" title="3">file_name &lt;-<span class="st"> "OWC_data_fromSup.xlsx"</span></a>
-<a class="sourceLine" id="cb1-4" title="4">full_path &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(path_to_tox, file_name)</a>
+<a class="sourceLine" id="cb1-4" title="4">full_path &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(path_to_tox, file_name)</a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(full_path)</a></code></pre></div>
 <p>The <code>create_toxEval</code> function will check that required columns are included, and give messages if there are unusual issues such as sites that don’t match up with data, or chemicals that don’t match up with chemical information.</p>
@@ -209,7 +213,7 @@
 <td>
 <p>This function takes the data frame from ‘end_point_info’ and filters the endpoints in 3 steps. First, the user specifies the “groupCol” argument, which is a column header from <code>end_point_info</code>. Second, the user specifies the assays to use. Finally, the user can also choose to remove specific group(s) from the category. The default is to remove “Background Measurement” and “Undefined”. Choices for this should be reconsidered based on individual study objectives.</p>
 <p>The default category (“groupCol”) is “intended_target_family”. Depending on the study, other categories may be more relevant. To discover options, examine the column names in the data frame <code>end_point_info</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(end_point_info)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(end_point_info)</a></code></pre></div>
 <p>The provided <code>end_point_info</code> data frame is an important tool for grouping ToxCast end points. The end points that are basically the primary key for <code>toxEval</code> analysis are in the column “assay_component_endpoint_name”.</p>
 <p>By default, the BioSeek set of assays are removed. The list of assays and their short names are in the Assay Name table to the right.</p>
 </td>
@@ -278,13 +282,13 @@
 <a class="sourceLine" id="cb4-2" title="2"></a>
 <a class="sourceLine" id="cb4-3" title="3">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep,</a>
 <a class="sourceLine" id="cb4-4" title="4">              <span class="dt">groupCol =</span> <span class="st">"intended_target_family"</span>,</a>
-<a class="sourceLine" id="cb4-5" title="5">              <span class="dt">assays =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, </a>
+<a class="sourceLine" id="cb4-5" title="5">              <span class="dt">assays =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, </a>
 <a class="sourceLine" id="cb4-6" title="6">                         <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,</a>
 <a class="sourceLine" id="cb4-7" title="7">                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),</a>
-<a class="sourceLine" id="cb4-8" title="8">              <span class="dt">remove_groups =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Background Measurement"</span>,</a>
+<a class="sourceLine" id="cb4-8" title="8">              <span class="dt">remove_groups =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Background Measurement"</span>,</a>
 <a class="sourceLine" id="cb4-9" title="9">                                <span class="st">"Undefined"</span>))</a></code></pre></div>
 <p>What is happening here is that the supplied data frame <code>end_point_info</code> is first cleaned up. That means that the first letter of each category is capitalized (except acronyms), and certain endpoints are removed as discussed above. Next, the <code>clean_endPoint_info</code> output is filtered to just the “intended_target_family” category. The assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed based on the “remove_groups” arguments. The options for “remove_groups” are:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(cleaned_ep<span class="op">$</span>intended_target_family)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(cleaned_ep<span class="op">$</span>intended_target_family)</a></code></pre></div>
 <pre><code>##  [1] "Cell Cycle"              "Nuclear Receptor"       
 ##  [3] "Cell Morphology"         "DNA Binding"            
 ##  [5] "Background Measurement"  "Growth Factor"          
@@ -299,7 +303,7 @@
 ## [23] "Steroid Hormone"         "Transferase"            
 ## [25] "Zebrafish"               "Undefined"</code></pre>
 <p>Note: the function <code>clean_endPoint_info</code> converted <code>NA</code> groups to “Undefined”. Using other categories, the options for “remove_groups” are the <code>unique</code> output of that category. For instance, if it was decided that “intended_target_family_sub” was more appropriate, the group options would be found by running:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(end_point_info<span class="op">$</span>intended_target_family_sub)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(end_point_info<span class="op">$</span>intended_target_family_sub)</a></code></pre></div>
 <p>The <code>clean_endPoint_info</code> function is really only useful when using the “intended_target_family” and “intended_target_family_sub” categories.</p>
 </div>
 <div id="get_chemical_summary" class="section level2">
@@ -328,10 +332,10 @@
 <a class="sourceLine" id="cb10-3" title="3">                  <span class="dt">hit_threshold =</span> <span class="fl">0.001</span>)</a></code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/plot_box_thres-1.png" width="700"></p>
 <p>The graph shows a slightly different result for a single site. In the example below, a subset of data from the Maumee River is defined that will be used throughout this document to facilitate single site examples.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)</a>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
 <a class="sourceLine" id="cb11-2" title="2"></a>
-<a class="sourceLine" id="cb11-3" title="3">maumee &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(chemical_summary, shortName <span class="op">==</span><span class="st"> "Maumee"</span>)</a>
-<a class="sourceLine" id="cb11-4" title="4">maumee_site &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/filter">filter</a></span>(tox_list<span class="op">$</span>chem_site, <span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> <span class="op">==</span><span class="st"> "Maumee"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb11-3" title="3">maumee &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(chemical_summary, shortName <span class="op">==</span><span class="st"> "Maumee"</span>)</a>
+<a class="sourceLine" id="cb11-4" title="4">maumee_site &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(tox_list<span class="op">$</span>chem_site, <span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> <span class="op">==</span><span class="st"> "Maumee"</span>)</a></code></pre></div>
 <p>In this example, the function <code>plot_tox_boxplots</code> is used with the subset of data from the Maumee River. For this single site graph, the number of chemicals that were detected and have associated endpoint ACCs represented are displayed.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(maumee, <span class="st">"Biological"</span>,<span class="dt">title =</span> maumee_site<span class="op">$</span>Fullname[<span class="dv">1</span>])</a></code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/maumeePlot-1.png" width="700"></p>
@@ -420,8 +424,8 @@
 <h2 class="hasAnchor">
 <a href="#rank_sites_DT" class="anchor"></a>rank_sites_DT</h2>
 <p>The <code>rank_sites_DT</code> (interactive table:<code>DT</code> option) and <code>rank_sites</code> (data frame option) functions create tables with one row per site. There are columns of the maximum or mean EAR (depending on the <code>mean_logic</code> argument) for each category (“Chemical Class”, “Chemical”, or “Biological”). Additionally, columns specifying the frequency of the max or mean EAR exceeding a user specified <code>hit_threshold</code> are provided.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(DT)</a>
-<a class="sourceLine" id="cb21-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/options">options</a></span>(<span class="dt">DT.options =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">pageLength =</span> <span class="dv">5</span>))</a>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(DT)</a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="dt">DT.options =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">pageLength =</span> <span class="dv">5</span>))</a>
 <a class="sourceLine" id="cb21-3" title="3"></a>
 <a class="sourceLine" id="cb21-4" title="4">rank_df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rank_sites_DT.html">rank_sites</a></span>(chemical_summary, </a>
 <a class="sourceLine" id="cb21-5" title="5">                      <span class="dt">category =</span> <span class="st">"Biological"</span>,</a>
@@ -512,14 +516,14 @@
 <li>Trim chemical class names to make the labels more readable in graphs</li>
 </ol>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="co">#Trim some names:</span></a>
-<a class="sourceLine" id="cb31-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(chemical_summary<span class="op">$</span>Class)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Antimicrobial Disinfectants"</span>] &lt;-<span class="st"> "Antimicrobial"</span></a>
-<a class="sourceLine" id="cb31-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(chemical_summary<span class="op">$</span>Class)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Detergent Metabolites"</span>] &lt;-<span class="st"> "Detergent"</span></a>
-<a class="sourceLine" id="cb31-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(chemical_summary<span class="op">$</span>Class)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Flavors and Fragrances"</span>] &lt;-<span class="st"> "Flavor/Fragrance"</span></a></code></pre></div>
+<a class="sourceLine" id="cb31-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(chemical_summary<span class="op">$</span>Class)[<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Antimicrobial Disinfectants"</span>] &lt;-<span class="st"> "Antimicrobial"</span></a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(chemical_summary<span class="op">$</span>Class)[<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Detergent Metabolites"</span>] &lt;-<span class="st"> "Detergent"</span></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(chemical_summary<span class="op">$</span>Class)[<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(chemical_summary<span class="op">$</span>Class) <span class="op">==</span><span class="st"> "Flavors and Fragrances"</span>] &lt;-<span class="st"> "Flavor/Fragrance"</span></a></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Rearrange the order of sites and lakes within the graphics: This example converts the site and lake lists to factors and orders these Great Lakes tributary sites in a logical manner by lake and location within each lake:</li>
 </ol>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="co">#Ordering the sites to flow "downstream" of the Great Lakes:</span></a>
-<a class="sourceLine" id="cb32-2" title="2">sitesOrdered &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"StLouis"</span>,<span class="st">"Nemadji"</span>,<span class="st">"WhiteWI"</span>,<span class="st">"Bad"</span>,<span class="st">"Montreal"</span>,</a>
+<a class="sourceLine" id="cb32-2" title="2">sitesOrdered &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"StLouis"</span>,<span class="st">"Nemadji"</span>,<span class="st">"WhiteWI"</span>,<span class="st">"Bad"</span>,<span class="st">"Montreal"</span>,</a>
 <a class="sourceLine" id="cb32-3" title="3">  <span class="st">"PresqueIsle"</span>,<span class="st">"Ontonagon"</span>,<span class="st">"Sturgeon"</span>,<span class="st">"Tahquamenon"</span>,<span class="st">"Burns"</span>,</a>
 <a class="sourceLine" id="cb32-4" title="4">  <span class="st">"IndianaHC"</span>,<span class="st">"StJoseph"</span>,<span class="st">"PawPaw"</span>,<span class="st">"Kalamazoo"</span>,<span class="st">"GrandMI"</span>,</a>
 <a class="sourceLine" id="cb32-5" title="5">  <span class="st">"Milwaukee"</span>,<span class="st">"Muskegon"</span>,<span class="st">"WhiteMI"</span>,<span class="st">"PereMarquette"</span>,<span class="st">"Manitowoc"</span>,</a>
@@ -532,16 +536,16 @@
 <a class="sourceLine" id="cb32-12" title="12">  <span class="st">"Genesee"</span>,<span class="st">"Oswego"</span>,<span class="st">"BlackNY"</span>,<span class="st">"Oswegatchie"</span>,<span class="st">"Grass"</span>,</a>
 <a class="sourceLine" id="cb32-13" title="13">  <span class="st">"Raquette"</span>,<span class="st">"StRegis"</span>)</a>
 <a class="sourceLine" id="cb32-14" title="14"></a>
-<a class="sourceLine" id="cb32-15" title="15"> tox_list<span class="op">$</span>chem_site<span class="op">$</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(tox_list<span class="op">$</span>chem_site<span class="op">$</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>,</a>
+<a class="sourceLine" id="cb32-15" title="15"> tox_list<span class="op">$</span>chem_site<span class="op">$</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(tox_list<span class="op">$</span>chem_site<span class="op">$</span><span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span>,</a>
 <a class="sourceLine" id="cb32-16" title="16">               <span class="dt">levels =</span> sitesOrdered)</a>
 <a class="sourceLine" id="cb32-17" title="17"></a>
-<a class="sourceLine" id="cb32-18" title="18">lakes_ordered &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Lake Superior"</span>,</a>
+<a class="sourceLine" id="cb32-18" title="18">lakes_ordered &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Lake Superior"</span>,</a>
 <a class="sourceLine" id="cb32-19" title="19">                  <span class="st">"Lake Michigan"</span>,</a>
 <a class="sourceLine" id="cb32-20" title="20">                  <span class="st">"Lake Huron"</span>,</a>
 <a class="sourceLine" id="cb32-21" title="21">                  <span class="st">"Lake Erie"</span>,</a>
 <a class="sourceLine" id="cb32-22" title="22">                  <span class="st">"Lake Ontario"</span>)</a>
 <a class="sourceLine" id="cb32-23" title="23"></a>
-<a class="sourceLine" id="cb32-24" title="24">tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping,</a>
+<a class="sourceLine" id="cb32-24" title="24">tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(tox_list<span class="op">$</span>chem_site<span class="op">$</span>site_grouping,</a>
 <a class="sourceLine" id="cb32-25" title="25">               <span class="dt">levels=</span>lakes_ordered)</a></code></pre></div>
 <p>The <code>plot_tox_stacks</code> and <code>plot_tox_heatmap</code> functions will be affected by these site level adjustments. Compare the output here to what was shown in the sections <a href="#plot_tox_heatmap">plot_tox_heatmap</a> and <a href="#plot_tox_stacks">plot_tox_stacks</a> above.</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1">summary_with_levels &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list,</a>
@@ -613,7 +617,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
 </div>
       </footer>
 </div>

@@ -1,7 +1,7 @@
 Package: toxEval
 Type: Package
 Title: Exploring Biological Relevance of Environmental Chemistry Observations
-Version: 1.0.4
+Version: 1.1.0.9000
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
                      email = "ldecicco@usgs.gov",
@@ -14,7 +14,8 @@ Authors@R: c(person("Laura", "DeCicco",
                      role = c("aut"),
                      comment=c(ORCID="0000-0003-2801-0203")),
               person("Brett", "Blackwell", 
-                     role = c("aut")), 
+                     role = c("aut"),
+                     comment=c(ORCID="0000-0003-1296-4539")), 
               person("Gerald", "Ankley", 
                      role = c("aut"),
                      comment=c(ORCID="0000-0002-9937-615X")), 

@@ -13,7 +13,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to toxEval">
 <meta property="og:description" content="">
@@ -43,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
       </span>
     </div>
 
@@ -79,6 +80,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../articles/bibliography.html">Bibliograpy</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -101,7 +105,7 @@
     <div class="page-header toc-ignore">
       <h1>Introduction to toxEval</h1>
             
-            <h4 class="date">25 March, 2019</h4>
+            <h4 class="date">13 June, 2019</h4>
       
       
       <div class="hidden name"><code>Introduction.Rmd</code></div>
@@ -140,17 +144,17 @@
 <h2 class="hasAnchor">
 <a href="#what-is-a-group" class="anchor"></a>What is a “group”?</h2>
 <p>Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>end_point_info</code> data:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(toxEval)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
 <a class="sourceLine" id="cb1-2" title="2">end_point_info &lt;-<span class="st"> </span>end_point_info</a></code></pre></div>
 <p>See the help file <code><a href="../reference/end_point_info.html">?end_point_info</a></code> for specifics on how the table was downloaded.</p>
 <p>Throughout the <code>toxEval</code> analysis, there are graphing and table functions that will summarize EARs based on either “Biological” groupings (as defined by a group of endPoints) or “Chemical Class” groupings (as defined by a group of chemicals).</p>
 <p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(end_point_info,</a>
 <a class="sourceLine" id="cb2-2" title="2">              <span class="dt">groupCol =</span> <span class="st">"intended_target_family"</span>,</a>
-<a class="sourceLine" id="cb2-3" title="3">              <span class="dt">assays =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, </a>
+<a class="sourceLine" id="cb2-3" title="3">              <span class="dt">assays =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, </a>
 <a class="sourceLine" id="cb2-4" title="4">                         <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,</a>
 <a class="sourceLine" id="cb2-5" title="5">                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),</a>
-<a class="sourceLine" id="cb2-6" title="6">              <span class="dt">remove_groups =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Background Measurement"</span>,</a>
+<a class="sourceLine" id="cb2-6" title="6">              <span class="dt">remove_groups =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Background Measurement"</span>,</a>
 <a class="sourceLine" id="cb2-7" title="7">                                <span class="st">"Undefined"</span>))</a></code></pre></div>
 <p>What is happening here is that the supplied data frame <code>end_point_info</code> is filtered to just the “intended_target_family” group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
 </div>
@@ -169,7 +173,7 @@
 <h2 class="hasAnchor">
 <a href="#installation-of-toxeval" class="anchor"></a>Installation of toxEval</h2>
 <p><code>toxEval</code> is available on any CRAN mirror.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"toxEval"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>)</a></code></pre></div>
 </div>
 <div id="update-toxeval" class="section level2">
 <h2 class="hasAnchor">
@@ -177,7 +181,7 @@
 <p><code>toxEval</code> does require a fair number of additional packages to run properly. These dependencies offer many benefits, such as a smooth running intuitive Shiny app. The drawbacks however are that there becomes more risk that those dependencies could change their output/workflow over time. <code>toxEval</code> developers will try to stay on top of those changes, but it is a challenge. It is important to always update <em>all</em> of your packages therefore…..not just <code>toxEval</code>. <code>toxEval</code> may push out a new version to keep up with a critical change in a dependent package, and if you only update <code>toxEval</code>, the update could cause bugs (we will attempt to mandate the package version of each package, but it still is best to stay on top of new package versions).</p>
 <p><img style="float: right;" src="update.png"></p>
 <p>Regularly, it is a good idea to update <em>ALL</em> of installed packages in R. If using RStudio, this is done by using the Update button in the “Packages” tab in RStudio. Selecting this option checks CRAN for updates. Within the R-console, packages can be updated with the command:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/update.packages">update.packages</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>()</a></code></pre></div>
 </div>
 <div id="reporting-bugs" class="section level2">
 <h2 class="hasAnchor">
@@ -188,7 +192,7 @@
 <h2 class="hasAnchor">
 <a href="#citing-toxeval" class="anchor"></a>Citing toxEval</h2>
 <p>This package has not been reviewed and approved as a USGS-product. The implication is that <code>toxEval</code> cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation</a></span>(<span class="dt">package =</span> <span class="st">"toxEval"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="dt">package =</span> <span class="st">"toxEval"</span>)</a></code></pre></div>
 <pre><code>## 
 ## To cite toxEval in publications, please use:
 ## 
@@ -209,7 +213,6 @@
 ##     address = {Reston, VA},
 ##     institution = {U.S. Geological Survey},
 ##     year = {2018},
-##     doi = {10.5066/P906UQ5I},
 ##     url = {https://code.usgs.gov/water/toxEval},
 ##   }</code></pre>
 </div>
@@ -256,7 +259,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
 </div>
       </footer>
 </div>
