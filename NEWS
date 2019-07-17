@@ -1,3 +1,7 @@
+toxEval 1.1.0
+===========
+* Switched to version 3 of the ToxCast database
+
 toxEval 1.0.0
 ===========
 * Initial release includes functions on incorporating
