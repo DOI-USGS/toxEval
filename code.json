@@ -3,7 +3,7 @@
     "name": "toxEval",
     "organization": "U.S. Geological Survey",
     "description": "Data analysis package for estimating potential biological effects from concentrations determined from environmental samples.",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "status": "Production",
 
     "permissions": {
