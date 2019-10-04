@@ -33,3 +33,4 @@ pkgdown/favicon/*
 vignettes/bibliography.Rmd
 vignettes/toxeval.bib
 vignettes/toxeval_orig.bib
+updateV3.R
