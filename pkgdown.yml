@@ -1,0 +1,12 @@
+pandoc: '2.2'
+pkgdown: 1.4.1
+pkgdown_sha: ~
+articles:
+  Introduction: Introduction.html
+  PrepareData: PrepareData.html
+  basicWorkflow: basicWorkflow.html
+  benchmarks: benchmarks.html
+  bibliography: bibliography.html
+  does_curves: does_curves.html
+  shinyApp: shinyApp.html
+
