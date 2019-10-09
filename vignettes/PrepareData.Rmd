@@ -5,9 +5,6 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
-    fig_caption: yes
-    fig_height: 10
-    fig_width: 7
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Prepare Data}
