@@ -5,9 +5,6 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
-    fig_caption: yes
-    fig_height: 10
-    fig_width: 7
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Prepare Data}
@@ -24,7 +21,10 @@ For all cases within `toxEval`, a "sample" is considered a unique site/date. The
 
 Input data for toxEval should be prepared in a Microsoft &trade; Excel file using specifically named sheets (also known as tabs). There are 3 mandatory sheets (Data, Chemical, Sites), and 2 optional sheets (Exclude, Benchmarks). The sheets should appear as follows (although the order is not important):
 
-![Organize Sheets](tabs.png)
+```{r tabIMAGE, echo=FALSE}
+knitr::include_graphics("tabs.png")
+```
+
 
 Each sheet has mandatory columns; the order of the columns is not important, but the names of the columns are important. Additional columns can be included but will be ignored. The top row of each sheet must contain the column names (headers), and the second row should begin with the data. That means no titles or comment rows should precede the data. 
 
@@ -44,7 +44,10 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 As an example, the first several rows of a minimal example would look like this:
 
-![Example Data](data.png)
+```{r updateIMAGE, echo=FALSE}
+knitr::include_graphics("data.png")
+```
+
 
 ## Chemicals
 

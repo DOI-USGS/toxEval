@@ -5,8 +5,6 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
-    fig_height: 10
-    fig_width: 7
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Shiny App}
@@ -42,7 +40,10 @@ explore_endpoints()
 
 The computer's default browser will open up and display the following page:
 
-![Main Layout of Shiny App](main.png)
+```{r mainImage, echo=FALSE}
+knitr::include_graphics("main.png")
+```
+
 
 The app can be divided into 3 main sections:
 
@@ -54,9 +55,11 @@ The bottom section, "R Code:", displays the R code to reproduce the analysis dir
 
 ## Sidebar options
 
-<img style="float: right;" src="sidebar.png">
+```{r sideImage, echo=FALSE, fig.align='right', out.extra='style="float:right; padding:10px"'}
+knitr::include_graphics("sidebar.png")
+```
 
-The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will not go into the scientific details of what options to choose. These details are dependent on individual study objectives as defined by the user. An example case study that has defined options for a specific study of water quality has been published in [Blackwell te al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613).
+The sidebar offers a host of options for customizing the analysis. This document will attempt to describe the logistics of options. This document will not go into the scientific details of what options to choose. These details are dependent on individual study objectives as defined by the user. An example case study that has defined options for a specific study of water quality has been published in [Blackwell et al., 2017](https://pubs.acs.org/doi/10.1021/acs.est.7b01613).
 
 
 ### A. Load Data File
@@ -87,7 +90,9 @@ The "ACC" column is in log($\mu$M), and the "Value" column is the ACC converted 
  
 ### E. Assay
 
-<img style="float: right;" src="assays.png">
+```{r assayIMAGE, echo=FALSE, fig.align='right', out.extra='style="float:right; padding:10px"'}
+knitr::include_graphics("assays.png")
+```
 
 The "Assay" dropdown menu offers the option to remove certain sets of assays from the analysis (see image to the right). By default, the "BioSeek" assay is not included. Clicking on any of the options will not have an immediate affect until the "Switch Assays" button is clicked.
 
@@ -101,7 +106,9 @@ The options in the "Group" dropdown change depending on the choice in Annotation
 
 ### H. Flags
 
-<img style="float: right;" src="flags.png">
+```{r flagImage, echo=FALSE, fig.align='right', out.extra='style="float:right; padding:10px"'}
+knitr::include_graphics("flags.png")
+```
 
 ToxCast endpoint:chemical assay results may have data quality flags associated with them. The "Flags" dropdown menu provide the user with a choice to include or exclude endpoints with specific flags associated with them. By default, endPoints flagged with "Noisy Data", "Only one conc above baseline, active", and "Hit-call potentially confounded by overfitting" are included in the analysis, and all other endpoints with associated flags are excluded. The scope of the analysis may user customization for flagged endPoints. Clicking on the flag checkboxes will not have an immediate affect until the "Switch Flags" button is clicked.
 
