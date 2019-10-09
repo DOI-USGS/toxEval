@@ -66,10 +66,10 @@ library(toxEval)
 path_to_file <- 'Choose File'"
 
 names(shortFlags) <- flagsALL
-header <- dashboardHeader(title = "toxEval",
+header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                           tags$li(class = "dropdown", 
                                   div(style="text-align:left;
-                                      font-size: 20px;
+                                      font-size: 15px;
                                       height: 50px;
                                       font-weight: 300;
                                       margin-right:25px;
