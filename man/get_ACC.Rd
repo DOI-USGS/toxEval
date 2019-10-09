@@ -18,7 +18,7 @@ The \code{get_ACC} function retrieves the activity concentration at cutoff
 }
 \details{
 The data used in toxEval were combined from files in the 
-"INVITRODB_V2_LEVEL5" directory that were included in the October 2015 
+"INVITRODB_V3_LEVEL5" directory that were included in the October 2018 
 release of the ToxCast database. The function \code{get_ACC} will 
 convert the ACC values in the ToxCast database from units of (log \eqn{\mu}M) 
 to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.

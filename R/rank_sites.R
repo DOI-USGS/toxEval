@@ -136,14 +136,14 @@ rank_sites <- function(chemical_summary,
   siteToFind <- unique(chemical_summary$shortName)
   
   if(category == "Chemical"){
-    chemical_summary <- dplyr::mutate(chemical_summary, category = chnm)
+    chemical_summary <- mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemical_summary <- dplyr::mutate(chemical_summary, category = Class)
+    chemical_summary <- mutate(chemical_summary, category = Class)
   } else {
-    chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
+    chemical_summary <- mutate(chemical_summary, category = Bio_category)
   }
   
-  chemical_summary <- dplyr::select(chemical_summary, -Class, -Bio_category, -chnm)
+  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
   
   if(length(siteToFind) == 1){
     chemical_summary$site <- chemical_summary$category
@@ -153,21 +153,21 @@ rank_sites <- function(chemical_summary,
 
   if(!sum_logic){
     statsOfColumn <- chemical_summary %>%
-      dplyr::group_by(site, date, category) %>%
-      dplyr::summarize(sumEAR = max(EAR),
+      group_by(site, date, category) %>%
+      summarize(sumEAR = max(EAR),
                 nHits = sum(sumEAR > hit_threshold)) %>%
-      dplyr::group_by(site, category) %>%
-      dplyr::summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
-                freq = sum(nHits > 0)/dplyr::n()) %>%
+      group_by(site, category) %>%
+      summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
+                freq = sum(nHits > 0)/n()) %>%
       data.frame()    
   } else {
     statsOfColumn <- chemical_summary %>%
-      dplyr::group_by(site, date, category) %>%
-      dplyr::summarise(sumEAR = sum(EAR),
+      group_by(site, date, category) %>%
+      summarise(sumEAR = sum(EAR),
                 nHits = sum(sumEAR > hit_threshold)) %>%
-      dplyr::group_by(site, category) %>%
-      dplyr::summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
-                freq = sum(nHits > 0)/dplyr::n()) %>%
+      group_by(site, category) %>%
+      summarise(maxEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR)),
+                freq = sum(nHits > 0)/n()) %>%
       data.frame()
   }
 

@@ -102,14 +102,14 @@ hits_summary <- function(chemical_summary,
   siteToFind <- unique(chemical_summary$site)
 
   if(category == "Chemical"){
-    chemical_summary <- dplyr::mutate(chemical_summary, category = chnm)
+    chemical_summary <- mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemical_summary <- dplyr::mutate(chemical_summary, category = Class)
+    chemical_summary <- mutate(chemical_summary, category = Class)
   } else {
-    chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
+    chemical_summary <- mutate(chemical_summary, category = Bio_category)
   }
   
-  chemical_summary <- dplyr::select(chemical_summary, -Class, -Bio_category, -chnm)
+  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
   
   if(length(siteToFind) == 1){
     chemical_summary$site <- chemical_summary$category
@@ -119,21 +119,21 @@ hits_summary <- function(chemical_summary,
   
   if(!sum_logic){
     hits_summary <- chemical_summary %>%
-      dplyr::group_by(site,category,date) %>%
-      dplyr::summarise(hits = sum(EAR > hit_threshold)) %>%
-      dplyr::group_by(site,category) %>%
-      dplyr::summarise(`Samples with hits` = sum(hits >= 1),
-                nSamples = dplyr::n()) %>%   
-      dplyr::arrange(dplyr::desc(`Samples with hits`))    
+      group_by(site,category,date) %>%
+      summarise(hits = sum(EAR > hit_threshold)) %>%
+      group_by(site,category) %>%
+      summarise(`Samples with hits` = sum(hits >= 1),
+                nSamples = n()) %>%   
+      arrange(desc(`Samples with hits`))    
   } else {
     hits_summary <- chemical_summary %>%
-      dplyr::group_by(site, date,category) %>%
-      dplyr::summarise(sumEAR = sum(EAR),
+      group_by(site, date,category) %>%
+      summarise(sumEAR = sum(EAR),
                 hits = sum(EAR > hit_threshold)) %>%
-      dplyr::group_by(site,category) %>%
-      dplyr::summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
-                nSamples = dplyr::n()) %>%
-      dplyr::arrange(dplyr::desc(`Samples with hits`))    
+      group_by(site,category) %>%
+      summarise(`Samples with hits` = sum(sumEAR > hit_threshold),
+                nSamples = n()) %>%
+      arrange(desc(`Samples with hits`))    
   }
 
   
@@ -141,7 +141,7 @@ hits_summary <- function(chemical_summary,
     hits_summary <- hits_summary[,c("category","Samples with hits","nSamples")]
   }
   
-  hits_summary <- dplyr::rename(hits_summary, `Number of Samples`=nSamples)
+  hits_summary <- rename(hits_summary, `Number of Samples`=nSamples)
   
   return(hits_summary)
 }

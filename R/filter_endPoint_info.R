@@ -42,7 +42,7 @@ filter_groups <- function(ep,
   assay_source_name <- assay_component_endpoint_name <- ".dplyr"
   
   ep <- ep[,c("assay_component_endpoint_name",groupCol,"assay_source_name")] %>%
-    dplyr::rename(endPoint = assay_component_endpoint_name,
+    rename(endPoint = assay_component_endpoint_name,
            assaysFull = assay_source_name)
   names(ep)[names(ep) == groupCol] <- "groupCol"
   

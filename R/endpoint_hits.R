@@ -69,8 +69,8 @@ endpoint_hits_DT <- function(chemical_summary,
   if(category == "Chemical"){
     orig_names <- names(fullData)
     
-    casKey <- dplyr::select(chemical_summary, chnm, CAS) %>%
-      dplyr::distinct()
+    casKey <- select(chemical_summary, chnm, CAS) %>%
+      distinct()
     
     numeric_hits <- fullData
     hits <- sapply(fullData, function(x) as.character(x))
@@ -149,47 +149,47 @@ endpoint_hits <- function(chemical_summary,
   fullData <- fullData_init
   
   if(category == "Chemical"){
-    chemical_summary <- dplyr::mutate(chemical_summary, category = chnm)
+    chemical_summary <- mutate(chemical_summary, category = chnm)
   } else if (category == "Chemical Class"){
-    chemical_summary <- dplyr::mutate(chemical_summary, category = Class)
+    chemical_summary <- mutate(chemical_summary, category = Class)
   } else {
-    chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
+    chemical_summary <- mutate(chemical_summary, category = Bio_category)
   }
   
   if(length(unique(chemical_summary$site)) > 1){
     
     if(!sum_logic){
       fullData <- chemical_summary %>%
-        dplyr::group_by(site, category, endPoint, date) %>%
-        dplyr::summarize(sumEAR = max(EAR)) %>%
-        dplyr::group_by(site, category, endPoint) %>%
-        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-        dplyr::group_by(category, endPoint) %>%
-        dplyr::summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        group_by(site, category, endPoint, date) %>%
+        summarize(sumEAR = max(EAR)) %>%
+        group_by(site, category, endPoint) %>%
+        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
+        group_by(category, endPoint) %>%
+        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
         tidyr::spread(category, nSites)       
     } else {
       fullData <- chemical_summary %>%
-        dplyr::group_by(site, category, endPoint, date) %>%
-        dplyr::summarize(sumEAR = sum(EAR)) %>%
-        dplyr::group_by(site, category, endPoint) %>%
-        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
-        dplyr::group_by(category, endPoint) %>%
-        dplyr::summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        group_by(site, category, endPoint, date) %>%
+        summarize(sumEAR = sum(EAR)) %>%
+        group_by(site, category, endPoint) %>%
+        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR),max(sumEAR))) %>%
+        group_by(category, endPoint) %>%
+        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
         tidyr::spread(category, nSites)      
     }
 
   } else {
     if(!sum_logic){
       fullData <- chemical_summary %>%
-        dplyr::group_by(category, endPoint) %>%
-        dplyr::summarise(nSites = sum(EAR > hit_threshold)) %>%
+        group_by(category, endPoint) %>%
+        summarise(nSites = sum(EAR > hit_threshold)) %>%
         tidyr::spread(category, nSites)        
     } else {
       fullData <- chemical_summary %>%
-        dplyr::group_by(category, endPoint, date) %>%
-        dplyr::summarize(sumEAR = sum(EAR)) %>%
-        dplyr::group_by(category, endPoint) %>%
-        dplyr::summarise(nSites = sum(sumEAR > hit_threshold)) %>%
+        group_by(category, endPoint, date) %>%
+        summarize(sumEAR = sum(EAR)) %>%
+        group_by(category, endPoint) %>%
+        summarise(nSites = sum(sumEAR > hit_threshold)) %>%
         tidyr::spread(category, nSites)      
     }
   }
