@@ -24,7 +24,7 @@
 #' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param chem_site Data frame with at least columns SiteID, site_grouping, and Short Name.
-#' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
+#' @param mean_logic Logical. \code{TRUE} displays the mean sample from each site,
 #' \code{FALSE} displays the maximum sample from each site.
 #' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
 #' \code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
@@ -32,7 +32,8 @@
 #' @param manual_remove Vector of categories to remove.
 #' @param include_legend Logical. Used to include legend or not.
 #' @param font_size Numeric value to adjust the axis font size.
-#' @param title Character title for plot. 
+#' @param title Character title for plot.
+#' @param y_label Character for x label. Default is NA which produces an automatic label.
 #' @param top_num Integer number to include in the graph. If NA, all 
 #' data will be included.
 #' @export
@@ -59,6 +60,9 @@
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5)
+#' 
+#' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
+#' plot_tox_stacks(single_site, tox_list$chem_site, "Chemical", top_num = 5)
 plot_tox_stacks <- function(chemical_summary, 
                             chem_site,
                             category = "Biological",
@@ -68,6 +72,7 @@ plot_tox_stacks <- function(chemical_summary,
                             include_legend = TRUE, 
                             font_size = NA,
                             title = NA,
+                            y_label = NA,
                             top_num = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
@@ -118,8 +123,12 @@ plot_tox_stacks <- function(chemical_summary,
   single_site <- length(siteToFind) == 1
   
   if(!single_site){
-    
-    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
+
+    if(is.na(y_label)){
+      y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
+    } else {
+      names(y_label) <- "y_label"
+    }
     
     graphData <- graphData %>%
       left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
@@ -164,21 +173,36 @@ plot_tox_stacks <- function(chemical_summary,
     upperPlot <- ggplot(graphData, 
                         aes(x=`Short Name`, y=meanEAR, fill = category)) +
       theme_minimal() +
-      xlab("") +
-      ylab(y_label[["y_label"]]) +
       facet_grid(. ~ site_grouping, scales="free", space="free") +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+            axis.title.x = element_blank()) +
       geom_text(data = counts, 
                 aes(label = count, x=`Short Name`,y = placement), 
                 size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
       geom_text(data = label_samples,hjust=1,
                 aes(x=x,y=y,label=label),
-                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE) +
-      labs(caption = y_label[["caption"]])  
+                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE) 
+    
+    if(!isTRUE(y_label[["y_label"]] == "")){
+      upperPlot <- upperPlot +
+        ylab(y_label[["y_label"]])
+      
+      if("caption" %in% names(y_label)){
+        upperPlot <- upperPlot +
+          labs(caption = y_label[["caption"]]) 
+      }
+    } else {
+      upperPlot <- upperPlot +
+        theme(axis.title.y = element_blank())
+    }
 
   } else {
-
-    y_label <- "EARs per Individual Sample"
+    
+    if(is.na(y_label)){
+      y_label <- "EARs per Individual Sample"
+    } else {
+      y_label <- y_label
+    }
     
     graphData <- chemical_summary %>%
       select(-site) 
@@ -224,8 +248,15 @@ plot_tox_stacks <- function(chemical_summary,
       theme_minimal() +
       theme(axis.text.x=element_blank(),
             axis.ticks.x=element_blank()) +
-      xlab("Individual Samples") +
-      ylab(y_label) 
+      xlab("Individual Samples") 
+    
+    if(!isTRUE(y_label == "")){
+      upperPlot <- upperPlot +
+        ylab(y_label)
+    } else {
+      upperPlot <- upperPlot +
+        theme(axis.title.y = element_blank())
+    }
   }
   
   upperPlot <- upperPlot +
@@ -260,12 +291,10 @@ plot_tox_stacks <- function(chemical_summary,
               plot.caption = element_text(size=font_size))
     }
   }
-  
-  if(utils::packageVersion("ggplot2") >= '3.0.0'){
-    upperPlot <- upperPlot +
-      coord_cartesian(clip = "off")
-  } 
 
+  upperPlot <- upperPlot +
+    coord_cartesian(clip = "off")
+  
   return(upperPlot)
 }
 
