@@ -149,7 +149,7 @@ test_that("Table functions", {
                     "DNA Binding freq","Nuclear Receptor maxEAR",
                     "Nuclear Receptor freq","Esterase maxEAR",
                     "Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
-  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),4.2992)
+  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),4.3004)
   expect_equal(round(statStuff[["DNA Binding freq"]][which(statStuff[["site"]] == "Raisin")],4),0.8409)
   
   groupStuff <- hits_summary(chemical_summary, "Biological", hit_threshold = 1)
@@ -167,12 +167,12 @@ test_that("Chem plotting functions", {
   
   graphData <- graph_chem_data(chemical_summary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","meanEAR")))
-  expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
-  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
+  expect_equal(levels(graphData$Class)[1], "Herbicides")
+  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Dyes/Pigments")
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
-                                       graphData[["chnm"]] == "1-Methylnaphthalene"],4),2.279e-06)
+                                       graphData[["chnm"]] == "Naphthalene"],4), 5.729e-05)
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
-                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.9975)
+                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),1.199)
   
   
 })
@@ -186,7 +186,7 @@ test_that("Map stuff functions", {
   expect_type(mapDataList, "list")
   expect_equal(length(mapDataList), 2)
   map_df <- mapDataList[["mapData"]]
-  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4),1.271)
+  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4), 13.88)
   expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],26)
   expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],6.6)
   
@@ -203,12 +203,12 @@ test_that("Table endpoint hits", {
   bt <- endpoint_hits_DT(chemical_summary, category = "Biological")
   expect_type(bt, "list")
   expect_true(all(names(bt$x$data) %in% c("endPoint","Nuclear Receptor","DNA Binding",
-                                  "Phosphatase","Steroid Hormone","Esterase")))
+                                          "Cell Cycle","Steroid Hormone","Esterase")))
   expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
   
   bt_df <- endpoint_hits(chemical_summary, category = "Biological")
   expect_true(all(names(bt_df) %in% c("endPoint","Nuclear Receptor","DNA Binding",     
-                                      "Esterase","Steroid Hormone")))
+                                      "Cell Cycle", "Esterase", "Steroid Hormone")))
   expect_equal(bt_df[["Nuclear Receptor"]][bt_df[["endPoint"]] == "NVS_NR_hPPARg"],11)
   expect_true(is.na(bt_df[["Esterase"]][bt_df[["endPoint"]] == "NVS_NR_hPPARg"]))
   
@@ -224,9 +224,9 @@ test_that("Table endpoint hits", {
   cht <- endpoint_hits_DT(chemical_summary, category = "Chemical")
   expect_type(cht, "list")
   
-  expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A","Fluoranthene","Tris(2-chloroethyl) phosphate",
+  expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A","Metolachlor",
                                            "4-Nonylphenol, branched","Triphenyl phosphate",
-                                           "Metolachlor","Atrazine")))
+                                           "Phenanthrene","Atrazine")))
 })
 
 test_that("hits_by_groupings_DT", {
@@ -238,25 +238,25 @@ test_that("hits_by_groupings_DT", {
   expect_true("nSites" %in% names(bt$x$data))
   
   bt_df <- hits_by_groupings(chemical_summary, category = "Chemical Class")
-  expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Esterase",        
-                                      "Steroid Hormone","Zebrafish")))
+  expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Cell Cycle", "Esterase",        
+                                      "Steroid Hormone","Zebrafish", "CYP")))
   expect_true(all(c("Detergent Metabolites","Antioxidants","Herbicides") %in% rownames(bt_df)))
-  expect_equal(bt_df[["Nuclear Receptor"]], c(10,11,7,11,rep(0,9)))
+  expect_equal(bt_df[["Nuclear Receptor"]], c(27, 11, 10, 12, rep(0,9)))
   
   expect_error(hits_by_groupings_DT(chemical_summary, category = "Class"))
   
   ct <- hits_by_groupings_DT(chemical_summary, category = "Chemical Class")
   expect_type(ct, "list")
   expect_true(all(class(ct) %in% c("datatables","htmlwidget")))
-  expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
-                                          "Phosphatase","Esterase","Steroid Hormone",
+  expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding","Cell Cycle",
+                                          "Esterase", "CYP", "Steroid Hormone",
                                           "Zebrafish")))
   
   cht <- hits_by_groupings_DT(chemical_summary, category = "Chemical")
   expect_type(cht, "list")
   
-  expect_true(all(names(cht$x$data) %in% c(" ","Nuclear Receptor","DNA Binding",
-                                           "Phosphatase","Esterase","Steroid Hormone",
+  expect_true(all(names(cht$x$data) %in% c(" ","Nuclear Receptor","DNA Binding", "Cell Cycle",
+                                           "CYP", "Esterase","Steroid Hormone",
                                            "Zebrafish")))
 })
 
@@ -316,6 +316,6 @@ test_that("Calculating completness", {
   graphData2 <- tox_boxplot_data(chemical_summary, "Biological")
   complete_df_cat <- toxEval:::get_complete_set_category(chemical_summary, graphData2, tox_list$chem_site, category = "Biological")
   
-  expect_equal(nrow(complete_df_cat), 855)
+  expect_equal(nrow(complete_df_cat), 1026)
   
 })

@@ -190,6 +190,8 @@ orderChem <- function(graphData, orderClass_df){
 #' Hit-call potentially confounded by overfitting \tab HitCall \cr
 #' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
 #' Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
+#' Less than 50% efficacy \tab LessThan50 \cr
+#' AC50 less than lowest concentration tested \tab ACCLessThan \cr
 #' }
 #' Asterisks indicate flags removed in the function as default.
 #' 
@@ -197,7 +199,7 @@ orderChem <- function(graphData, orderClass_df){
 #' @param ACC data frame with columns: casn, chnm, endPoint, and ACC_value
 #' @param flagsShort vector of flags to to trigger REMOVAL of chemical:endPoint 
 #' combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-#' "Noisy", "HitCall", "GainAC50", "Biochemical".
+#' "Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan".
 #' @export
 #' @examples 
 #' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
@@ -215,7 +217,9 @@ remove_flags <- function(ACC, flagsShort = c("Borderline",
               "Noisy",
               "HitCall",
               "GainAC50",
-              "Biochemical"),
+              "Biochemical",
+              "LessThan50",
+              "ACCLessThan"),
             several.ok = TRUE)
   
   flags <- ".dplyr"
@@ -227,7 +231,9 @@ remove_flags <- function(ACC, flagsShort = c("Borderline",
            OnlyHighest = grepl("Only highest conc above baseline", flags),
            Biochemical = grepl("Biochemical assay with", flags),
            GainAC50 = grepl("Gain AC50", flags),
-           HitCall = grepl("potentially confounded by overfitting", flags)) %>%
+           HitCall = grepl("potentially confounded by overfitting", flags),
+           LessThan50 = grepl("Less than 50% efficacy", flags),
+           ACCLessThan = grepl("AC50 less than lowest concentration tested", flags)) %>%
     select(-flags)
   
   ACC <- ACC[rowSums(flag_hits[flagsShort]) == 0,]
@@ -242,6 +248,8 @@ remove_flags <- function(ACC, flagsShort = c("Borderline",
   # We are leaving in with the defaults:
   # c("Hit-call potentially confounded by overfitting",
   #   "Only one conc above baseline, active",
+  #   "AC50 less than lowest concentration tested",
+  #   "Less than 50% efficacy",
   #   "Noisy data")
   
 }
