@@ -31,16 +31,17 @@
 #' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
 #' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @param manual_remove Vector of categories to remove.
-#' @param mean_logic Logical.  \code{TRUE} displays the mean sample from each site,
+#' @param mean_logic Logical. \code{TRUE} displays the mean sample from each site,
 #' \code{FALSE} displays the maximum sample from each site.
 #' @param sum_logic Logical. \code{TRUE} sums the EARs in a specified grouping,
 #' \code{FALSE} does not. \code{FALSE} may be better for traditional benchmarks as
 #' opposed to ToxCast benchmarks.
-#' @param plot_ND Logical. Logical. Whether or not to plot "Biological" groupings,
+#' @param plot_ND Logical. Whether or not to plot "Biological" groupings,
 #' "Chemical Class" groupings, or "Chemical" that do not have any detections. 
 #' @param hit_threshold Numeric threshold defining a "hit".
 #' @param font_size Numeric value to adjust the axis font size.
-#' @param title Character Title for plot.
+#' @param title Character title for plot. Default is NA which produces no title.
+#' @param x_label Character for x label. Default is NA which produces an automatic label.
 #' @param palette Vector of color palette for boxplot fill. Can be a named vector
 #' to specify specific colors for specific categories. 
 #' @export
@@ -92,6 +93,7 @@ plot_tox_boxplots <- function(chemical_summary,
                               plot_ND = TRUE, 
                               font_size = NA,
                               title = NA,
+                              x_label = NA,
                               palette = NA,
                               hit_threshold = NA){
   
@@ -108,6 +110,7 @@ plot_tox_boxplots <- function(chemical_summary,
                                        plot_ND = plot_ND,
                                        font_size = font_size,
                                        title = title,
+                                       x_label = x_label,
                                        palette = palette,
                                        hit_threshold = hit_threshold)
     return(chemPlot)
@@ -119,7 +122,12 @@ plot_tox_boxplots <- function(chemical_summary,
     }
     single_site <- length(unique(chemical_summary$site)) == 1
     
-    y_label <- fancyLabels(category, mean_logic, sum_logic, single_site)
+    # Since the graph is rotated...
+    if(is.na(x_label)){
+      y_label <- fancyLabels(category, mean_logic, sum_logic, single_site)
+    } else {
+      y_label <- x_label
+    }
     
     if(single_site){
       
@@ -202,8 +210,7 @@ plot_tox_boxplots <- function(chemical_summary,
       
       label <- "# Sites"
       
-      bioPlot <- ggplot(data = graphData)+
-        scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
+      bioPlot <- ggplot(data = graphData) +
         theme_bw() +
         xlab("") +
         theme(plot.background = element_rect(fill = "transparent",colour = NA),
@@ -224,40 +231,41 @@ plot_tox_boxplots <- function(chemical_summary,
           geom_boxplot(aes(x=category, y=meanEAR),lwd=0.1,outlier.size=1, fill = "steelblue")      
       }
     }
+    
     if(!is.na(font_size)){
       bioPlot <- bioPlot +
         theme(axis.text = element_text(size = font_size),
               axis.title =   element_text(size=font_size))
     }
     
-    if(utils::packageVersion("ggplot2") >= '3.0.0'){
+    if(isTRUE(y_label == "")){
       bioPlot <- bioPlot +
-        coord_flip(clip = "off")
+        scale_y_log10(labels = fancyNumbers,
+                      breaks = pretty_logs_new)  +
+        theme(axis.title.x = element_blank())
     } else {
       bioPlot <- bioPlot +
-        coord_flip()      
+        scale_y_log10(y_label,
+                      labels = fancyNumbers,
+                      breaks = pretty_logs_new)  
     }
     
+    bioPlot <- bioPlot +
+      coord_flip(clip = "off")
+
     plot_info <- ggplot_build(bioPlot)
     layout_stuff <- plot_info$layout
     
-    if(utils::packageVersion("ggplot2") >= "3.0.0"){
-      xmin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
-      xmax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
-      ymax <- length(layout_stuff$panel_scales_x[[1]]$range$range)
-    } else {
-      xmin <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[1]))
-      xmax <- suppressWarnings(10^(layout_stuff$panel_ranges[[1]]$x.range[2]))
-      ymax <- suppressWarnings(layout_stuff$panel_ranges[[1]]$y.range[2])
-    }
-    
+    xmin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
+    xmax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
+    ymax <- length(layout_stuff$panel_scales_x[[1]]$range$range)
+
     bioPlot_w_labels <- bioPlot + 
       geom_text(data=countNonZero, aes(x=category, y=xmin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
       geom_text(data=data.frame(x = Inf, y=xmin, label = label, stringsAsFactors = FALSE), 
                 aes(x = x,  y=y, label = label),
                 size=ifelse(is.na(font_size),3,0.30*font_size))
       
-    
     nHitsEP <- countNonZero$hits
     
     if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {

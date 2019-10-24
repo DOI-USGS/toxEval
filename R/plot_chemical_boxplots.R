@@ -7,6 +7,7 @@ plot_chemical_boxplots <- function(chemical_summary,
                                    plot_ND = TRUE,
                                    font_size = NA,
                                    title = NA,
+                                   x_label = NA,
                                    palette = NA,
                                    hit_threshold = NA){
   
@@ -39,7 +40,12 @@ plot_chemical_boxplots <- function(chemical_summary,
   
   single_site <- length(unique(chemical_summary$site)) == 1
   
-  y_label <- fancyLabels(category = "Chemical", mean_logic, sum_logic, single_site)
+  # Since the graph is rotated...
+  if(is.na(x_label)){
+    y_label <- fancyLabels(category = "Chemical", mean_logic, sum_logic, single_site)
+  } else {
+    y_label <- x_label
+  }
   
   if(single_site){
     
@@ -123,7 +129,6 @@ plot_chemical_boxplots <- function(chemical_summary,
   }
   
   toxPlot_All <- toxPlot_All +
-    scale_y_log10(y_label, labels=fancyNumbers,breaks=pretty_logs_new)  +
     theme_bw() +
     scale_x_discrete(drop = TRUE) +
     geom_hline(yintercept = hit_threshold, linetype="dashed", color="black") +
@@ -136,6 +141,18 @@ plot_chemical_boxplots <- function(chemical_summary,
           panel.border = element_blank(),
           axis.ticks = element_blank(),
           plot.title = element_text(hjust = 0.5))  
+  
+  if(isTRUE(y_label == "")){
+    toxPlot_All <- toxPlot_All +
+      scale_y_log10(labels = fancyNumbers,
+                    breaks = pretty_logs_new)  +
+      theme(axis.title.x = element_blank())
+  } else {
+    toxPlot_All <- toxPlot_All +
+      scale_y_log10(y_label,
+                    labels = fancyNumbers,
+                    breaks = pretty_logs_new)  
+  }
   
   if(all(is.na(palette))){
     toxPlot_All <- toxPlot_All +
@@ -151,28 +168,19 @@ plot_chemical_boxplots <- function(chemical_summary,
   if(!is.na(font_size)){
     toxPlot_All <- toxPlot_All +
       theme(axis.text = element_text(size = font_size),
-            axis.title =   element_text(size=font_size))
+            axis.title = element_text(size=font_size))
   }
 
-  if(utils::packageVersion("ggplot2") >= '3.0.0'){
-    toxPlot_All <- toxPlot_All +
+
+  toxPlot_All <- toxPlot_All +
       coord_flip(clip = "off")
-  } else {
-    toxPlot_All <- toxPlot_All +
-      coord_flip()      
-  }
-  
+
   plot_info <- ggplot_build(toxPlot_All)
   layout_stuff <- plot_info$layout
   
-  if(utils::packageVersion("ggplot2") >= "2.2.1.9000"){
-    ymin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
-    ymax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
-  } else {
-    ymin <- 10^(layout_stuff$panel_ranges[[1]]$x.range[1])
-    ymax <- 10^(layout_stuff$panel_ranges[[1]]$x.range[2])
-  }
-  
+  ymin <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[1])
+  ymax <- 10^(layout_stuff$panel_scales_y[[1]]$range$range[2])
+
   toxPlot_All_withLabels <- toxPlot_All +
     geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size)) +
     geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
