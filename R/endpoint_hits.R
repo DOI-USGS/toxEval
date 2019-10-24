@@ -6,8 +6,8 @@
 #' values in the table are the number of sites where the EAR exceeded the 
 #' user-defined EAR hit_threshold in that endpoint/category combination. If the 
 #' category "Chemical" is chosen, an "info" link is provided to the 
-#' chemical/endpoint information available in the "ToxCast Dashboard" 
-#' \url{https://actor.epa.gov/dashboard/}.
+#' chemical information available in the "Comptox Dashboard" 
+#' \url{https://comptox.epa.gov/dashboard/}.
 #' 
 #' The tables show slightly different results when choosing to explore data
 #' from a single site rather than all sites. The value displayed in this 
@@ -84,8 +84,7 @@ endpoint_hits_DT <- function(chemical_summary,
             } else{
               hit_char <- as.character(fullData[k,z])
             }
-            hits[k,z] <- paste(hit_char,createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]],
-                                    endpoint = fullData[k,1]))
+            hits[k,z] <- paste(hit_char,createLink(cas = casKey$CAS[casKey$chnm == names(fullData)[z]]))
           }
         }
       }
@@ -217,10 +216,9 @@ endpoint_hits <- function(chemical_summary,
 #' 
 #' Create links
 #' @param cas character
-#' @param endpoint character
 #' @param hits character
 #' @export
 #' @keywords internal
-createLink <- function(cas, endpoint) {
-  paste0('<a href="http://actor.epa.gov/dashboard/#selected/',cas,"+",endpoint,'" target="_blank">&#9432;</a>')
+createLink <- function(cas) {
+  paste0('<a href="https://comptox.epa.gov/dashboard/dsstoxdb/results?search=',cas,'#invitrodb-bioassays-toxcast-tox21" target="_blank">&#9432;</a>')
 }

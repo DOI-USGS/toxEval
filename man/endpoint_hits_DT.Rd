@@ -41,8 +41,8 @@ one column per category("Biological", "Chemical", or "Chemical Class"). The
 values in the table are the number of sites where the EAR exceeded the 
 user-defined EAR hit_threshold in that endpoint/category combination. If the 
 category "Chemical" is chosen, an "info" link is provided to the 
-chemical/endpoint information available in the "ToxCast Dashboard" 
-\url{https://actor.epa.gov/dashboard/}.
+chemical information available in the "Comptox Dashboard" 
+\url{https://comptox.epa.gov/dashboard/}.
 }
 \details{
 The tables show slightly different results when choosing to explore data

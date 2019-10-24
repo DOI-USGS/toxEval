@@ -481,7 +481,7 @@ hits_summary_DT(maumee, category = "Biological")
 
 ## endpoint_hits_DT {#endpoint_hits_DT}
 
-The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create tables with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are the number of sites where the EAR exceeded the `hit_threshold` in that endpoint/category combination. If the category "Chemical" is chosen, an "info" link is provided to the chemical/endpoint information available in the ["ToxCast Dashboard"](https://actor.epa.gov/dashboard).
+The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create tables with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are the number of sites where the EAR exceeded the `hit_threshold` in that endpoint/category combination. If the category "Chemical" is chosen, an "info" link is provided to the chemical/endpoint information available in the ["Comptox Dashboard"](https://comptox.epa.gov/dashboard).
 .
 ```{r endpoint_hits_DT, warning=FALSE, eval=runTables}
 
