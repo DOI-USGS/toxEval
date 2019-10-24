@@ -12,8 +12,8 @@ graph_chem_data(chemical_summary, manual_remove = NULL,
 
 plot_tox_boxplots(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
-  plot_ND = TRUE, font_size = NA, title = NA, palette = NA,
-  hit_threshold = NA)
+  plot_ND = TRUE, font_size = NA, title = NA, x_label = NA,
+  palette = NA, hit_threshold = NA)
 
 tox_boxplot_data(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE)
@@ -32,12 +32,14 @@ opposed to ToxCast benchmarks.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{plot_ND}{Logical. Logical. Whether or not to plot "Biological" groupings,
+\item{plot_ND}{Logical. Whether or not to plot "Biological" groupings,
 "Chemical Class" groupings, or "Chemical" that do not have any detections.}
 
 \item{font_size}{Numeric value to adjust the axis font size.}
 
-\item{title}{Character Title for plot.}
+\item{title}{Character title for plot. Default is NA which produces no title.}
+
+\item{x_label}{Character for x label. Default is NA which produces an automatic label.}
 
 \item{palette}{Vector of color palette for boxplot fill. Can be a named vector
 to specify specific colors for specific categories.}

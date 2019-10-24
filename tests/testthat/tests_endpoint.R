@@ -35,13 +35,15 @@ test_that("Removing flags", {
   
   ACC <- get_ACC(CAS)
   ACC_noFlags <- remove_flags(ACC, 
-                                  flagsShort = c("Borderline",
-                                                 "OnlyHighest",
-                                                 "OneAbove",
-                                                 "Noisy",
-                                                 "HitCall",
-                                                 "GainAC50",
-                                                 "Biochemical"))
+                              flagsShort = c("Borderline",
+                                             "OnlyHighest",
+                                             "OneAbove",
+                                             "Noisy",
+                                             "HitCall",
+                                             "GainAC50",
+                                             "Biochemical",
+                                             "ACCLessThan",
+                                             "LessThan50"))
   expect_lt(nrow(ACC_noFlags), nrow(ACC))
   expect_true(all(is.na(ACC_noFlags$flags)))
   
