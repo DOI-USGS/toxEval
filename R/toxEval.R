@@ -79,30 +79,30 @@ NULL
 # 
 # x <- data.table::fread(file.path(path_to_files, files[1]), data.table = FALSE)
 # 
-# filtered <- dplyr::select(x, chnm, casn, aenm, logc_min, logc_max, modl_acc,
+# filtered <- select(x, chnm, casn, aenm, logc_min, logc_max, modl_acc,
 #                           modl, actp, modl_ga, flags, hitc,gsid_rep)
-# filtered <- dplyr::filter(x, hitc == 1)
+# filtered <- filter(x, hitc == 1)
 # 
 # for(i in files[-1]){
 #   subX <- data.table::fread(file.path(path_to_files,i), data.table = FALSE)
 #   
-#   subFiltered <- dplyr::select(subX, chnm, casn, aenm, logc_min, logc_max, modl_acc,
+#   subFiltered <- select(subX, chnm, casn, aenm, logc_min, logc_max, modl_acc,
 #                                modl, actp, modl_ga, flags, hitc,gsid_rep)
-#   subFiltered <- dplyr::filter(subFiltered, hitc == 1)
+#   subFiltered <- filter(subFiltered, hitc == 1)
 #   
-#   filtered <- dplyr::bind_rows(filtered, subFiltered)
+#   filtered <- bind_rows(filtered, subFiltered)
 # }
 # 
-# ACCgain <- dplyr::filter(filtered, hitc == 1)
-# ACCgain <- dplyr::filter(ACCgain, gsid_rep == 1)
-# ACCgain <- dplyr::select(ACCgain, casn, chnm, aenm, modl_acc, flags)
+# ACCgain <- filter(filtered, hitc == 1)
+# ACCgain <- filter(ACCgain, gsid_rep == 1)
+# ACCgain <- select(ACCgain, casn, chnm, aenm, modl_acc, flags)
 # ACCgain <- tidyr::spread(ACCgain, key = aenm, value = modl_acc)
 # 
 # ACC <- ACCgain
 # ACC <- tidyr::gather(ACC, endPoint, ACC, -casn, -chnm, -flags)
-# ACC <- dplyr::filter(ACC, !is.na(ACC))
-# ACC <- dplyr::rename(ACC, CAS = casn)
-# ACC <- dplyr::select(ACC, -chnm)
+# ACC <- filter(ACC, !is.na(ACC))
+# ACC <- rename(ACC, CAS = casn)
+# ACC <- select(ACC, -chnm)
 # 
 # saveRDS(ACC, "ACC_v3.rds")
 # ToxCast_ACCv3 <- readRDS("ACC_v3.rds")

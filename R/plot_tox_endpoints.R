@@ -96,8 +96,8 @@ plot_tox_endpoints <- function(chemical_summary,
   if(single_site){
     
     countNonZero <- chemical_summary %>%
-      dplyr::group_by(endPoint) %>%
-      dplyr::summarise(nonZero = as.character(length(unique(CAS[EAR>0]))),
+      group_by(endPoint) %>%
+      summarise(nonZero = as.character(length(unique(CAS[EAR>0]))),
                 hits = as.character(sum(EAR > hit_threshold)))
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -105,9 +105,9 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- chemical_summary %>%
-      dplyr::group_by(endPoint) %>%
-      dplyr::summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
-      dplyr::arrange(median)
+      group_by(endPoint) %>%
+      summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
+      arrange(median)
     
     orderedLevelsEP <- orderColsBy$endPoint
     
@@ -149,27 +149,27 @@ plot_tox_endpoints <- function(chemical_summary,
     
     if(!sum_logic){
       graphData <- chemical_summary %>%
-        dplyr::group_by(site, category,endPoint) %>%
-        dplyr::summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
+        group_by(site, category,endPoint) %>%
+        summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
         data.frame() %>%
-        dplyr::mutate(category=as.character(category))      
+        mutate(category=as.character(category))      
     } else {
       
       graphData <- chemical_summary %>%
-        dplyr::group_by(site,date,category,endPoint) %>%
-        dplyr::summarise(sumEAR=sum(EAR)) %>%
+        group_by(site,date,category,endPoint) %>%
+        summarise(sumEAR=sum(EAR)) %>%
         data.frame() %>%
-        dplyr::group_by(site, category,endPoint) %>%
-        dplyr::summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
+        group_by(site, category,endPoint) %>%
+        summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
         data.frame() %>%
-        dplyr::mutate(category=as.character(category))      
+        mutate(category=as.character(category))      
     }
 
     pretty_logs_new <- prettyLogs(graphData$meanEAR)
     
     countNonZero <- graphData %>%
-      dplyr::group_by(endPoint) %>%
-      dplyr::summarise(nonZero = as.character(sum(meanEAR>0)),
+      group_by(endPoint) %>%
+      summarise(nonZero = as.character(sum(meanEAR>0)),
                 hits = as.character(sum(meanEAR > hit_threshold)))
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -177,9 +177,9 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- graphData %>%
-      dplyr::group_by(endPoint) %>%
-      dplyr::summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-      dplyr::arrange(median)
+      group_by(endPoint) %>%
+      summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+      arrange(median)
   
     orderedLevelsEP <- orderColsBy$endPoint
   

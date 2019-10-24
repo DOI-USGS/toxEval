@@ -124,7 +124,7 @@ plot_tox_heatmap <- function(chemical_summary,
                            sum_logic = sum_logic)
 
     graphData <- graphData %>%
-      dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
+      left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
                 by=c("site"="SiteID"))
     
     # This requires non-detects to be 0. If that changes we'll need to update:
@@ -237,7 +237,7 @@ plot_heat_chemicals <- function(chemical_summary,
   fill_text <- y_label[['y_label']]
 
   graphData <- graphData %>%
-    dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
+    left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
               by=c("site"="SiteID"))
   
   # This requires non-detects to be 0. If that changes we'll need to update:
@@ -302,15 +302,15 @@ get_complete_set <- function(chemical_summary, graphData, chem_site){
   
   `Short Name` <- site_grouping <- Class <- chnm <- ".dplyr"
   
-  complete_data <- dplyr::select(chem_site, `Short Name`, site_grouping)
+  complete_data <- select(chem_site, `Short Name`, site_grouping)
   complete_data_filled <- data.frame()
   
   for(chms in levels(chemical_summary$chnm)){
     complete_data$chnm <- chms
-    complete_data_filled <- dplyr::bind_rows(complete_data_filled, complete_data)
+    complete_data_filled <- bind_rows(complete_data_filled, complete_data)
   }
   complete_data_filled$chnm <- factor(complete_data_filled$chnm, levels = levels(graphData$chnm))
-  complete_data_filled <- dplyr::left_join(complete_data_filled, dplyr::distinct(dplyr::select(chemical_summary, chnm, Class)), by="chnm")
+  complete_data_filled <- left_join(complete_data_filled, distinct(select(chemical_summary, chnm, Class)), by="chnm")
   return(complete_data_filled)
 }
 
@@ -319,13 +319,13 @@ get_complete_set_category <- function(chemical_summary, graphData, chem_site, ca
   
   `Short Name` <- site_grouping <- Class <- chnm <- ".dplyr"
   
-  complete_data <- dplyr::select(chem_site, `Short Name`, site_grouping)
+  complete_data <- select(chem_site, `Short Name`, site_grouping)
   complete_data_filled <- data.frame()
   categories <- levels(graphData$category)
   
   for(cats in categories){
     complete_data$category <- cats
-    complete_data_filled <- dplyr::bind_rows(complete_data_filled, complete_data)
+    complete_data_filled <- bind_rows(complete_data_filled, complete_data)
   }
   complete_data_filled$category <- factor(complete_data_filled$category, levels = levels(graphData$category))
 
