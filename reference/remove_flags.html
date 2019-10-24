@@ -59,6 +59,8 @@ Noisy dataNoisy
 Hit-call potentially confounded by overfittingHitCall
 Gain AC50 &amp;lt; lowest conc &amp;amp; loss AC50 &amp;lt; mean conc*GainAC50
 Biochemical assay with &amp;lt; 50% efficacyBiochemical*
+Less than 50
+AC50 less than lowest concentration testedACCLessThan
 
 Asterisks indicate flags removed in the function as default." />
 <meta property="og:image" content="/logo.png" />
@@ -104,7 +106,7 @@ Asterisks indicate flags removed in the function as default." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.0</span>
       </span>
     </div>
 
@@ -186,6 +188,8 @@ flagsShort value (used in the remove_flags function) are as follows:</p><table c
 <tr><td>Hit-call potentially confounded by overfitting</td><td>HitCall</td></tr>
 <tr><td>Gain AC50 &lt; lowest conc &amp; loss AC50 &lt; mean conc*</td><td>GainAC50</td></tr>
 <tr><td>Biochemical assay with &lt; 50% efficacy</td><td>Biochemical*</td></tr>
+<tr><td>Less than 50<!-- % efficacy \tab LessThan50 \cr -->
+AC50 less than lowest concentration tested</td><td>ACCLessThan</td></tr>
 </table>
 <p>Asterisks indicate flags removed in the function as default.</p>
     </div>
@@ -204,7 +208,7 @@ flagsShort value (used in the remove_flags function) are as follows:</p><table c
       <th>flagsShort</th>
       <td><p>vector of flags to to trigger REMOVAL of chemical:endPoint 
 combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-"Noisy", "HitCall", "GainAC50", "Biochemical".</p></td>
+"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan".</p></td>
     </tr>
     </table>
 

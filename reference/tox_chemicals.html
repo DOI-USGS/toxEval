@@ -94,7 +94,7 @@ data set." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.0</span>
       </span>
     </div>
 
@@ -183,20 +183,20 @@ data set.</p>
 "Structure_MolWt"</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>tox_chemicals</span>)</div><div class='output co'>#&gt;   ToxCast_chid DSSTox_Substance_Id DSSTox_Structure_Id DSSTox_QC.Level
-#&gt; 1        20005       DTXSID7020005           DTXCID505     DSSTox_High
-#&gt; 2        20006       DTXSID2020006           DTXCID606      DSSTox_Low
-#&gt; 3        20007       DTXSID7020007           DTXCID707      DSSTox_Low
-#&gt; 4        20009       DTXSID7020009           DTXCID909      DSSTox_Low
-#&gt; 5        20014       DTXSID6020014          DTXCID9014      DSSTox_Low
-#&gt; 6        20015       DTXSID1020015          DTXCID1015      DSSTox_Low
-#&gt;               Substance_Name Substance_CASRN  Substance_Type Substance_Note
-#&gt; 1                  Acetamide         60-35-5 Single Compound           &lt;NA&gt;
-#&gt; 2              Acetaminophen        103-90-2 Single Compound           &lt;NA&gt;
-#&gt; 3              Acetohexamide        968-81-0 Single Compound           &lt;NA&gt;
-#&gt; 4               Acetonitrile         75-05-8 Single Compound           &lt;NA&gt;
-#&gt; 5         Dehydroacetic acid        520-45-6 Single Compound           &lt;NA&gt;
-#&gt; 6 1-Acetyl-2-phenylhydrazine        114-83-0 Single Compound           &lt;NA&gt;
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>tox_chemicals</span>)</div><div class='output co'>#&gt;   Substance_CASRN             Substance_Name ToxCast_chid DSSTox_Substance_Id
+#&gt; 1         60-35-5                  Acetamide        20005       DTXSID7020005
+#&gt; 2        103-90-2              Acetaminophen        20006       DTXSID2020006
+#&gt; 3        968-81-0              Acetohexamide        20007       DTXSID7020007
+#&gt; 4         75-05-8               Acetonitrile        20009       DTXSID7020009
+#&gt; 5        520-45-6         Dehydroacetic acid        20014       DTXSID6020014
+#&gt; 6        114-83-0 1-Acetyl-2-phenylhydrazine        20015       DTXSID1020015
+#&gt;   DSSTox_Structure_Id DSSTox_QC.Level  Substance_Type Substance_Note
+#&gt; 1           DTXCID505     DSSTox_High Single Compound               
+#&gt; 2           DTXCID606      DSSTox_Low Single Compound               
+#&gt; 3           DTXCID707      DSSTox_Low Single Compound               
+#&gt; 4           DTXCID909      DSSTox_Low Single Compound               
+#&gt; 5          DTXCID9014      DSSTox_Low Single Compound               
+#&gt; 6          DTXCID1015      DSSTox_Low Single Compound               
 #&gt;                              Structure_SMILES
 #&gt; 1                                     CC(N)=O
 #&gt; 2                       CC(=O)NC1=CC=C(O)C=C1
