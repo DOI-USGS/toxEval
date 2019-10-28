@@ -6,7 +6,8 @@
 \usage{
 plot_tox_stacks(chemical_summary, chem_site, category = "Biological",
   mean_logic = FALSE, sum_logic = TRUE, manual_remove = NULL,
-  include_legend = TRUE, font_size = NA, title = NA, top_num = NA)
+  include_legend = TRUE, font_size = NA, title = NA, y_label = NA,
+  top_num = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -15,7 +16,7 @@ plot_tox_stacks(chemical_summary, chem_site, category = "Biological",
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\item{mean_logic}{Logical. \code{TRUE} displays the mean sample from each site,
 \code{FALSE} displays the maximum sample from each site.}
 
 \item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
@@ -29,6 +30,8 @@ opposed to ToxCast benchmarks.}
 \item{font_size}{Numeric value to adjust the axis font size.}
 
 \item{title}{Character title for plot.}
+
+\item{y_label}{Character for x label. Default is NA which produces an automatic label.}
 
 \item{top_num}{Integer number to include in the graph. If NA, all 
 data will be included.}
@@ -75,5 +78,10 @@ chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
-plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5)
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5, y_label = "EAR")
+
+single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
+plot_tox_stacks(single_site, tox_list$chem_site, "Chemical", top_num = 5)
+plot_tox_stacks(single_site, chem_site = tox_list$chem_site, 
+               category = "Chemical", top_num = 5, y_label = "EAR")
 }

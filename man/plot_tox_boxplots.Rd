@@ -23,7 +23,7 @@ tox_boxplot_data(chemical_summary, category = "Biological",
 
 \item{manual_remove}{Vector of categories to remove.}
 
-\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\item{mean_logic}{Logical. \code{TRUE} displays the mean sample from each site,
 \code{FALSE} displays the maximum sample from each site.}
 
 \item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
@@ -101,12 +101,16 @@ graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
                               category = "Biological") 
 cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
 names(cbValues) <- levels(graphData$category)
+plot_tox_boxplots(chemical_summary, "Biological", x_label = "EAR")
+plot_tox_boxplots(chemical_summary, "Biological", x_label = "")
 \donttest{
 plot_tox_boxplots(chemical_summary, 
                   hit_threshold = 0.1,
                   category = "Biological",
                   palette = cbValues,
                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
+plot_tox_boxplots(chemical_summary,
+                  category = "Chemical", x_label = "EAR")
 single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
 plot_tox_boxplots(single_site, 
                   category = "Biological") 

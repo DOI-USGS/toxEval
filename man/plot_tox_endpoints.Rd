@@ -7,7 +7,7 @@
 plot_tox_endpoints(chemical_summary, category = "Biological",
   filterBy = "All", manual_remove = NULL, hit_threshold = NA,
   mean_logic = FALSE, sum_logic = TRUE, font_size = NA, title = NA,
-  palette = NA, top_num = NA)
+  x_label = NA, palette = NA, top_num = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -20,7 +20,7 @@ plot_tox_endpoints(chemical_summary, category = "Biological",
 
 \item{hit_threshold}{Numeric threshold defining a "hit".}
 
-\item{mean_logic}{Logical.  \code{TRUE} displays the mean sample from each site,
+\item{mean_logic}{Logical. \code{TRUE} displays the mean sample from each site,
 \code{FALSE} displays the maximum sample from each site.}
 
 \item{sum_logic}{logical. \code{TRUE} sums the EARs in a specified grouping,
@@ -30,6 +30,8 @@ opposed to ToxCast benchmarks.}
 \item{font_size}{Numeric to adjust the axis font size.}
 
 \item{title}{Character title for plot.}
+
+\item{x_label}{Character for x label. Default is NA which produces an automatic label.}
 
 \item{palette}{Vector of color palette for fill. Can be a named vector
 to specify specific color for specific categories.}
@@ -61,7 +63,6 @@ file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
 
-
 tox_list <- create_toxEval(full_path)
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC)
@@ -71,6 +72,7 @@ filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
 plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
+plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle", x_label = "EAR")
 plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
 plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
 plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 5)
