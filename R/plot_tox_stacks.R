@@ -59,10 +59,12 @@
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
-#' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5)
+#' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5, y_label = "EAR")
 #' 
 #' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
 #' plot_tox_stacks(single_site, tox_list$chem_site, "Chemical", top_num = 5)
+#' plot_tox_stacks(single_site, chem_site = tox_list$chem_site, 
+#'                category = "Chemical", top_num = 5, y_label = "EAR")
 plot_tox_stacks <- function(chemical_summary, 
                             chem_site,
                             category = "Biological",
