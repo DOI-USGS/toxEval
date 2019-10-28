@@ -7,7 +7,7 @@
 plot_tox_heatmap(chemical_summary, chem_site, category = "Biological",
   breaks = c(1e-05, 1e-04, 0.001, 0.01, 0.1, 1, 10),
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
-  plot_ND = TRUE, font_size = NA, title = NA)
+  plot_ND = TRUE, font_size = NA, title = NA, legend_lab = NA)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -33,6 +33,8 @@ opposed to ToxCast benchmarks.}
 \item{font_size}{Numeric value to adjust the axis font size.}
 
 \item{title}{Character title for plot.}
+
+\item{legend_lab}{Character label for legend. Default is NA which produces an automatic label.}
 }
 \description{
 The \code{plot_tox_heatmap} function creates a heat (tile) map with sites on the x-axis, 
@@ -99,6 +101,11 @@ plot_tox_heatmap(chemical_summary,
                  category = "Biological",
                  manual_remove = "Undefined")
 plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical Class")
+plot_tox_heatmap(chemical_summary, tox_list$chem_site, 
+                 category = "Chemical Class",
+                 legend_lab = "EAR")
 plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical")
+plot_tox_heatmap(chemical_summary, tox_list$chem_site, 
+                 category = "Chemical", legend_lab = "EAR")
 
 }

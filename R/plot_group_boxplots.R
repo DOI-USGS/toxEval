@@ -73,12 +73,16 @@
 #'                               category = "Biological") 
 #' cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
 #' names(cbValues) <- levels(graphData$category)
+#' plot_tox_boxplots(chemical_summary, "Biological", x_label = "EAR")
+#' plot_tox_boxplots(chemical_summary, "Biological", x_label = "")
 #' \donttest{
 #' plot_tox_boxplots(chemical_summary, 
 #'                   hit_threshold = 0.1,
 #'                   category = "Biological",
 #'                   palette = cbValues,
 #'                   title = 'Maximum EAR per site, grouped by biological activity groupings') 
+#' plot_tox_boxplots(chemical_summary,
+#'                   category = "Chemical", x_label = "EAR")
 #' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
 #' plot_tox_boxplots(single_site, 
 #'                   category = "Biological") 
@@ -177,7 +181,6 @@ plot_tox_boxplots <- function(chemical_summary,
               panel.border = element_blank(),
               axis.ticks = element_blank(),
               plot.title = element_text(hjust = 0.5)) + 
-        scale_y_log10(y_label,labels=fancyNumbers,breaks=pretty_logs_new) +
         geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
       
       if(!all(is.na(palette))){
@@ -241,7 +244,7 @@ plot_tox_boxplots <- function(chemical_summary,
     if(isTRUE(y_label == "")){
       bioPlot <- bioPlot +
         scale_y_log10(labels = fancyNumbers,
-                      breaks = pretty_logs_new)  +
+                      breaks = pretty_logs_new) +
         theme(axis.title.x = element_blank())
     } else {
       bioPlot <- bioPlot +
