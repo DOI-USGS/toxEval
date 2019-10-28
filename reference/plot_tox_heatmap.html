@@ -183,7 +183,7 @@ the character vector sites to a factor with ordered levels.</p>
     <pre class="usage"><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
   <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1e-05</span>, <span class='fl'>1e-04</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>, <span class='fl'>10</span>),
   <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>legend_lab</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -231,6 +231,10 @@ opposed to ToxCast benchmarks.</p></td>
     <tr>
       <th>title</th>
       <td><p>Character title for plot.</p></td>
+    </tr>
+    <tr>
+      <th>legend_lab</th>
+      <td><p>Character label for legend. Default is NA which produces an automatic label.</p></td>
     </tr>
     </table>
 
@@ -283,7 +287,10 @@ they are considered "non-detects", and represented with a distinct color.</p>
 <span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>,
                  <span class='no'>tox_list</span>$<span class='no'>chem_site</span>,
                  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-                 <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='st'>"Undefined"</span>)</div><div class='img'><img src='plot_tox_heatmap-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)</div><div class='img'><img src='plot_tox_heatmap-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)</div><div class='img'><img src='plot_tox_heatmap-3.png' alt='' width='700' height='433' /></div><div class='input'>
+                 <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='st'>"Undefined"</span>)</div><div class='img'><img src='plot_tox_heatmap-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)</div><div class='img'><img src='plot_tox_heatmap-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>,
+                 <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>,
+                 <span class='kw'>legend_lab</span> <span class='kw'>=</span> <span class='st'>"EAR"</span>)</div><div class='img'><img src='plot_tox_heatmap-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)</div><div class='img'><img src='plot_tox_heatmap-4.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>,
+                 <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>, <span class='kw'>legend_lab</span> <span class='kw'>=</span> <span class='st'>"EAR"</span>)</div><div class='img'><img src='plot_tox_heatmap-5.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
