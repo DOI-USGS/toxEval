@@ -262,7 +262,7 @@ The `plot_tox_endpoints` function creates a set of boxplots representing EAR val
 After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or maximum (as defined by `mean_logic`) for each site as described in ["Summarizing the data"](Introduction.html#summarize_data).
 
 ```{r endpoints, warning=FALSE}
-plot_tox_endpoints(chemical_summary, 
+plot_tox_endpoints(chemical_summary, top_num = 10,
                     category = "Biological", 
                     filterBy = "Cell Cycle")
 
