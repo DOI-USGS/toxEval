@@ -86,21 +86,22 @@ plot_chemical_boxplots <- function(chemical_summary,
     
     if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
-        geom_boxplot(aes(x=chnm, y=EAR, fill=chnm),lwd=0.1,outlier.size=1) +
+        geom_boxplot(aes(x=chnm, y=EAR, fill=chnm),
+                     lwd = 0.1, outlier.size=1) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
-        geom_boxplot(aes(x=chnm, y=EAR, fill=Class),
-                     lwd=0.1,outlier.size=1)
+        geom_boxplot(aes(x = chnm, y = EAR, fill = Class),
+                     lwd = 0.1, outlier.size = 1)
     }
     
   } else {
     
-    graphData <- graph_chem_data(chemical_summary=chemical_summary, 
-                                 manual_remove=manual_remove,
-                                 mean_logic=mean_logic,
-                                 sum_logic=sum_logic)
+    graphData <- graph_chem_data(chemical_summary = chemical_summary, 
+                                 manual_remove = manual_remove,
+                                 mean_logic = mean_logic,
+                                 sum_logic = sum_logic)
     
     pretty_logs_new <-  prettyLogs(graphData$meanEAR)
     
@@ -113,19 +114,19 @@ plot_chemical_boxplots <- function(chemical_summary,
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     
     label <- "# Sites"
-    toxPlot_All <- ggplot(data=graphData) 
+    toxPlot_All <- ggplot(data = graphData) 
     
     if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
-        geom_boxplot(aes(x=chnm, y=meanEAR, fill=chnm),lwd=0.1,outlier.size=1) +
+        geom_boxplot(aes(x = chnm, y = meanEAR, fill = chnm),
+                     lwd = 0.1, outlier.size = 1) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
-        geom_boxplot(aes(x=chnm, y=meanEAR, fill=Class),
-                     lwd=0.1,outlier.size=1)
+        geom_boxplot(aes(x = chnm, y = meanEAR, fill = Class),
+                     lwd = 0.1, outlier.size = 1)
     }
- 
   }
   
   toxPlot_All <- toxPlot_All +
@@ -171,7 +172,6 @@ plot_chemical_boxplots <- function(chemical_summary,
             axis.title = element_text(size=font_size))
   }
 
-
   toxPlot_All <- toxPlot_All +
       coord_flip(clip = "off")
 
@@ -184,17 +184,17 @@ plot_chemical_boxplots <- function(chemical_summary,
   toxPlot_All_withLabels <- toxPlot_All +
     geom_text(data=countNonZero, aes(x=chnm,label=nonZero, y=ymin), size = ifelse(is.na(font_size),2,0.30*font_size)) +
     geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
-            aes(x=x,  y=y, label = label),
-            size=ifelse(is.na(font_size),3,0.30*font_size)) 
+            aes(x = x,  y = y, label = label),
+            size=ifelse(is.na(font_size), 3, 0.30*font_size)) 
   
   nHitsEP <- countNonZero$hits
   
   if(isTRUE(sum(as.numeric(nHitsEP), na.rm = TRUE) > 0)) {
     toxPlot_All_withLabels <- toxPlot_All_withLabels +
-      geom_text(data=countNonZero, aes(x=chnm, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
-      geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
+      geom_text(data = countNonZero, aes(x=chnm, y=ymax,label=nHitsEP),size=ifelse(is.na(font_size),3,0.30*font_size)) +
+      geom_text(data = data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
                 aes(x = x,  y=y, label = label),
-                size=ifelse(is.na(font_size),3,0.30*font_size))
+                size=ifelse(is.na(font_size), 3, 0.30*font_size))
   }
   
   if(!all(is.na(title))){
@@ -209,9 +209,9 @@ plot_chemical_boxplots <- function(chemical_summary,
   
   if(!is.na(hit_threshold)) {
     toxPlot_All_withLabels <- toxPlot_All_withLabels +
-      geom_text(data=data.frame(x = Inf, y=hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
+      geom_text(data = data.frame(x = Inf, y = hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
                 aes(x = x,  y=y, label = label),
-                size=ifelse(is.na(font_size),3,0.30*font_size))
+                size = ifelse(is.na(font_size), 3, 0.30*font_size))
   }
   
   return(toxPlot_All_withLabels)
@@ -223,25 +223,23 @@ plot_chemical_boxplots <- function(chemical_summary,
 graph_chem_data <- function(chemical_summary, 
                             manual_remove=NULL,
                             mean_logic = FALSE,
-                            sum_logic = TRUE){
+                            sum_logic = TRUE, ...){
   
   site <- chnm <- Class <- EAR <- sumEAR <- meanEAR <- ".dplyr"
 
-
   if(!sum_logic){
     graphData <- chemical_summary %>%
-      group_by(site, chnm, Class) %>%
-      summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
-      data.frame()     
+      group_by(site, chnm, Class, ...) %>%
+      summarise(meanEAR = ifelse(mean_logic, mean(EAR), max(EAR))) %>%
+      ungroup()     
   } else {
-    #With new dplyr...will need to filter out na's in meanEAR
     graphData <- chemical_summary %>%
-      group_by(site,date,chnm) %>%
-      summarise(sumEAR=sum(EAR,na.rm = TRUE)) %>%
-      data.frame() %>%
-      group_by(site, chnm) %>%
-      summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
-      data.frame() %>%
+      group_by(site, date, chnm, ...) %>%
+      summarise(sumEAR = sum(EAR, na.rm = TRUE)) %>%
+      ungroup() %>%
+      group_by(site, chnm, ...) %>%
+      summarise(meanEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+      ungroup() %>%
       left_join(distinct(select(chemical_summary, chnm, Class)), by = "chnm")
   }
   
