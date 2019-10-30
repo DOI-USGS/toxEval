@@ -114,7 +114,7 @@
     <div class="page-header toc-ignore">
       <h1>Basic Workflow</h1>
             
-            <h4 class="date">29 October, 2019</h4>
+            <h4 class="date">30 October, 2019</h4>
       
       
       <div class="hidden name"><code>basicWorkflow.Rmd</code></div>
@@ -385,7 +385,7 @@
 <a href="#plot_tox_endpoints" class="anchor"></a>plot_tox_endpoints</h2>
 <p>The <code>plot_tox_endpoints</code> function creates a set of boxplots representing EAR values for each endPoint based on a selected filter. The data is first filtered down to what group is specified in the <code>filterBy</code> argument. The <code>filterBy</code> argument must match one of the unique options in the <code>category</code>. For example, if the <code>category</code> is “Chemical Class”, then the <code>filterBy</code> argument must be one of the defined “Chemical Class” options such as “Herbicide”.</p>
 <p>After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or maximum (as defined by <code>mean_logic</code>) for each site as described in <a href="Introduction.html#summarize_data">“Summarizing the data”</a>.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(chemical_summary, </a>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(chemical_summary, <span class="dt">top_num =</span> <span class="dv">10</span>,</a>
 <a class="sourceLine" id="cb18-2" data-line-number="2">                    <span class="dt">category =</span> <span class="st">"Biological"</span>, </a>
 <a class="sourceLine" id="cb18-3" data-line-number="3">                    <span class="dt">filterBy =</span> <span class="st">"Cell Cycle"</span>)</a></code></pre></div>
 <p><img src="basicWorkflow_files/figure-html/endpoints-1.png" width="700"></p>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ToxCast Chemical Information — tox_chemicals • toxEval</title>
+<title>Prepare boxplot data — graph_chem_data • toxEval</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,15 +42,10 @@
 
 
 
-<meta property="og:title" content="ToxCast Chemical Information — tox_chemicals" />
-<meta property="og:description" content="Downloaded on October 2015 from ToxCast. The file name of the
-raw data was &quot;TOX21IDs_v4b_23Oct2014_QCdetails.xlsx&quot;, 
-from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
-of toxEval package release, this information was found:
-https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data
-in the section marked &quot;Download ToxCast Chemical Information&quot;. This 
-was in the &quot;ToxCast &amp;amp; Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)&quot;
-data set." />
+<meta property="og:title" content="Prepare boxplot data — graph_chem_data" />
+<meta property="og:description" content="A set of functions to prepare the data for boxplots. Often, these
+functions are used within the plotting functions. They are exported however
+to allow custom graphs to be created." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -154,44 +149,90 @@ data set." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>ToxCast Chemical Information</h1>
+    <h1>Prepare boxplot data</h1>
     
-    <div class="hidden name"><code>tox_chemicals.Rd</code></div>
+    <div class="hidden name"><code>graph_data_prep.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Downloaded on October 2015 from ToxCast. The file name of the
-raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx", 
-from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
-of toxEval package release, this information was found:
-<a href='https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data'>https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data</a>
-in the section marked "Download ToxCast Chemical Information". This 
-was in the "ToxCast &amp; Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
-data set.</p>
+    <p>A set of functions to prepare the data for boxplots. Often, these
+functions are used within the plotting functions. They are exported however
+to allow custom graphs to be created.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>graph_chem_data</span>(<span class='no'>chemical_summary</span>, <span class='no'>...</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
+<span class='fu'>tox_boxplot_data</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+<span class='fu'>side_by_side_data</span>(<span class='no'>gd_left</span>, <span class='no'>gd_right</span>, <span class='kw'>left_title</span> <span class='kw'>=</span> <span class='st'>"Left"</span>,
+  <span class='kw'>right_title</span> <span class='kw'>=</span> <span class='st'>"Right"</span>)</pre>
 
-    <p>data frame with columns:    
-"Substance_Name","Substance_CASRN",
-"Structure_MolWt"</p>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>chemical_summary</th>
+      <td><p>Data frame from <code><a href='get_chemical_summary.html'>get_chemical_summary</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional group_by arguments. This can be handy for creating facet graphs.</p></td>
+    </tr>
+    <tr>
+      <th>manual_remove</th>
+      <td><p>Vector of categories to remove.</p></td>
+    </tr>
+    <tr>
+      <th>mean_logic</th>
+      <td><p>Logical. <code>TRUE</code> displays the mean sample from each site,
+<code>FALSE</code> displays the maximum sample from each site.</p></td>
+    </tr>
+    <tr>
+      <th>sum_logic</th>
+      <td><p>Logical. <code>TRUE</code> sums the EARs in a specified grouping,
+<code>FALSE</code> does not. <code>FALSE</code> may be better for traditional benchmarks as
+opposed to ToxCast benchmarks.</p></td>
+    </tr>
+    <tr>
+      <th>category</th>
+      <td><p>Character. Either "Biological", "Chemical Class", or "Chemical".</p></td>
+    </tr>
+    <tr>
+      <th>gd_left</th>
+      <td><p>Data frame that must include the columns chnm, Class, and either EAR or meanEAR.</p></td>
+    </tr>
+    <tr>
+      <th>gd_right</th>
+      <td><p>Data frame that must include the columns chnm, Class, and either EAR or meanEAR.</p></td>
+    </tr>
+    <tr>
+      <th>left_title</th>
+      <td><p>Character that will be associated with the "gd_left" data 
+frame in a column named "guide_side".</p></td>
+    </tr>
+    <tr>
+      <th>right_title</th>
+      <td><p>Character that will be associated with the "gd_right" data 
+frame in a column named "guide_side".</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>tox_chemicals</span>)</div><div class='output co'>#&gt;   Substance_CASRN             Substance_Name Structure_MolWt
-#&gt; 1         60-35-5                  Acetamide         59.0672
-#&gt; 2        103-90-2              Acetaminophen        151.1626
-#&gt; 3        968-81-0              Acetohexamide        324.3953
-#&gt; 4         75-05-8               Acetonitrile         41.0519
-#&gt; 5        520-45-6         Dehydroacetic acid        168.1467
-#&gt; 6        114-83-0 1-Acetyl-2-phenylhydrazine        150.1778</div></pre>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The function side_by_side_data will combine two data frames,
+either the output of <code><a href='get_chemical_summary.html'>get_chemical_summary</a></code> or <code>graph_chem_data</code>,
+into a single data frame. The important work here is that the chemicals
+and classes factor levels are ordered primarily based on "gd_left", but
+include "gd_right" when the contents are mismatched.</p>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#details">Details</a></li>
     </ul>
 
   </div>
