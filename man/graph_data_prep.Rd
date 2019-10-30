@@ -32,14 +32,25 @@ opposed to ToxCast benchmarks.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 
-\item{gd_left}{data.frame}
+\item{gd_left}{Data frame that must include the columns chnm, Class, and either EAR or meanEAR.}
 
-\item{gd_right}{data.frame}
+\item{gd_right}{Data frame that must include the columns chnm, Class, and either EAR or meanEAR.}
 
-\item{left_title}{Character}
+\item{left_title}{Character that will be associated with the "gd_left" data 
+frame in a column named "guide_side".}
 
-\item{right_title}{Character}
+\item{right_title}{Character that will be associated with the "gd_right" data 
+frame in a column named "guide_side".}
 }
 \description{
-A set of functions to prepare the data for boxplots.
+A set of functions to prepare the data for boxplots. Often, these
+functions are used within the plotting functions. They are exported however
+to allow custom graphs to be created.
+}
+\details{
+The function side_by_side_data will combine two data frames,
+either the output of \code{\link{get_chemical_summary}} or \code{\link{graph_chem_data}},
+into a single data frame. The important work here is that the chemicals
+and classes factor levels are ordered primarily based on "gd_left", but
+include "gd_right" when the contents are mismatched.
 }
