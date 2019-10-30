@@ -5,12 +5,8 @@
 \alias{tox_chemicals}
 \title{ToxCast Chemical Information}
 \value{
-data frame with columns: "ToxCast_chid","DSSTox_Substance_Id",
-"DSSTox_Structure_Id","DSSTox_QC.Level",    
-"Substance_Name","Substance_CASRN",    
-"Substance_Type","Substance_Note",     
-"Structure_SMILES","Structure_InChI",    
-"Structure_InChIKey","Structure_Formula",  
+data frame with columns:    
+"Substance_Name","Substance_CASRN",
 "Structure_MolWt"
 }
 \description{
