@@ -304,7 +304,8 @@ plot_tox_boxplots <- function(chemical_summary,
   
 }
 
-#' @rdname plot_tox_boxplots
+#' @rdname graph_data_prep
+#' @param category Character. Either "Biological", "Chemical Class", or "Chemical".
 #' @export
 tox_boxplot_data <- function(chemical_summary, 
                       category = "Biological",
@@ -333,16 +334,16 @@ tox_boxplot_data <- function(chemical_summary,
   if(!sum_logic){
     tox_boxplot_data <- chemical_summary %>%
       group_by(site,category) %>%
-      summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
+      summarise(meanEAR = ifelse(mean_logic, mean(EAR), max(EAR))) %>%
       data.frame() 
       
   } else {
     tox_boxplot_data <- chemical_summary %>%
-      group_by(site,date,category) %>%
-      summarise(sumEAR=sum(EAR)) %>%
+      group_by(site, date, category) %>%
+      summarise(sumEAR = sum(EAR)) %>%
       data.frame() %>%
       group_by(site, category) %>%
-      summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+      summarise(meanEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
       data.frame()     
   }
 
@@ -365,10 +366,9 @@ tox_boxplot_data <- function(chemical_summary,
                                         levels=levels(tox_boxplot_data$category)[orderedLevels])    
   } else {
     tox_boxplot_data$category <- factor(tox_boxplot_data$category, 
-                                        levels=orderedLevels)    
+                                        levels = orderedLevels)    
   }
 
-  
   return(tox_boxplot_data)
 }
 
@@ -376,7 +376,7 @@ prettyLogs <- function(x){
   pretty_range <- range(x[x > 0])
   pretty_logs <- 10^(-10:10)
   log_index <- which(pretty_logs < pretty_range[2] & pretty_logs > pretty_range[1])
-  log_index <- c(log_index[1]-1,log_index, log_index[length(log_index)]+1)
+  log_index <- c(log_index[1]-1, log_index, log_index[length(log_index)] + 1)
   pretty_logs_new <-  pretty_logs[log_index] 
   return(pretty_logs_new)
 }
