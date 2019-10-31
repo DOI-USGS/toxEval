@@ -43,7 +43,7 @@ reference:
       - get_chemical_summary
       - remove_flags
       - filter_groups
-      - graph_data_prep
+      - side_by_side_data
   - title: Visualize Data
     desc: Functions to create graphs and tables of output.
     contents:
