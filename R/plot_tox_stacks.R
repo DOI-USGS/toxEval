@@ -104,6 +104,9 @@ plot_tox_stacks <- function(chemical_summary,
     } 
   }
 
+  # Since this is linear scale...the 0's are good!
+  graphData$meanEAR[is.na(graphData$meanEAR)] <- 0
+  
   counts <- chemical_summary %>%
     select(site, date) %>%
     distinct() %>%
@@ -180,10 +183,10 @@ plot_tox_stacks <- function(chemical_summary,
             axis.title.x = element_blank()) +
       geom_text(data = counts, 
                 aes(label = count, x=`Short Name`,y = placement), 
-                size=ifelse(is.na(font_size),3,0.30*font_size),inherit.aes = FALSE) +
+                size=ifelse(is.na(font_size), 3, 0.30*font_size), inherit.aes = FALSE) +
       geom_text(data = label_samples,hjust=1,
-                aes(x=x,y=y,label=label),
-                size=ifelse(is.na(font_size),2,0.25*font_size),inherit.aes = FALSE) 
+                aes(x = x, y = y,label = label),
+                size = ifelse(is.na(font_size),2, 0.25*font_size), inherit.aes = FALSE) 
     
     if(!isTRUE(y_label[["y_label"]] == "")){
       upperPlot <- upperPlot +
@@ -209,7 +212,7 @@ plot_tox_stacks <- function(chemical_summary,
     graphData <- chemical_summary %>%
       select(-site) 
     
-    placement <- -0.05*diff(range(graphData$meanEAR))
+    placement <- -0.05*diff(range(graphData$EAR))
     
     dates <- arrange(distinct(select(graphData, date))) 
     dates$index <- 1:(nrow(dates))
@@ -262,7 +265,7 @@ plot_tox_stacks <- function(chemical_summary,
   }
   
   upperPlot <- upperPlot +
-    geom_col()  +
+    geom_col(na.rm = TRUE)  +
     theme(plot.margin = unit(c(5.5,5.5,5.5,12), "pt"))
   
   if(length(unique(graphData$category)) <= length(cbValues)){

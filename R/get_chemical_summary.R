@@ -144,8 +144,9 @@ orderClass <- function(graphData){
   chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
   
   orderClass_df <- graphData %>%
+    mutate(logEAR = log(meanEAR)) %>% 
     group_by(chnm, Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+    summarise(median = quantile(logEAR[logEAR != 0],0.5)) %>%
     group_by(Class) %>%
     summarise(max_med = max(median, na.rm = TRUE)) %>%
     arrange(desc(max_med))
@@ -159,9 +160,10 @@ orderChem <- function(graphData, orderClass_df){
   chnm <- Class <- meanEAR <- median <- ".dplyr"
   
   orderChem_df <- graphData %>%
-    group_by(chnm,Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-    data.frame() %>%
+    mutate(logEAR = log(meanEAR)) %>% 
+    group_by(chnm, Class) %>%
+    summarise(median = quantile(logEAR[logEAR != 0], 0.5)) %>%
+    ungroup() %>%
     mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
   
   orderChem_df$median[is.na(orderChem_df$median)] <- 0

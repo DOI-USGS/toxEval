@@ -104,7 +104,7 @@ plot_tox_boxplots <- function(chemical_summary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  x <- y <- CAS <- hits <- ".dplyr"
+  x <- y <- CAS <- logEAR <- hits <- ".dplyr"
 
   if(category == "Chemical"){
 
@@ -160,8 +160,9 @@ plot_tox_boxplots <- function(chemical_summary,
       }
       
       orderColsBy <- chemical_summary %>%
+        mutate(logEAR = log(EAR)) %>% 
         group_by(category) %>%
-        summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
+        summarise(median = median(logEAR[logEAR != 0], na.rm = TRUE)) %>%
         ungroup() %>% 
         arrange(median)
       

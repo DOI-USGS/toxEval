@@ -15,7 +15,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- meanEAR <- x <- y <- max_med <- endPoint <- ".dplyr"
-  ymin <- ymax <- hits <- hit_label <- ".dplyr"
+  ymin <- ymax <- logEAR <- hits <- hit_label <- ".dplyr"
 
   cbValues <- c("#E41A1C","#377EB8","#4DAF4A","#984EA3","#FF7F00","#FFFF33","#A65628",
                 "#DCDA4B","#999999","#00FFFF","#CEA226","#CC79A7","#4E26CE",

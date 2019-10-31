@@ -84,7 +84,7 @@ plot_tox_endpoints <- function(chemical_summary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
-  CAS <- nonZero <- hits <-  ".dplyr"
+  CAS <- nonZero <- hits <- logEAR <-  ".dplyr"
   
   if(category == "Biological"){
     chemical_summary$category <- chemical_summary$Bio_category
