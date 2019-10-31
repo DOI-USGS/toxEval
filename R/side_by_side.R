@@ -191,9 +191,9 @@ get_concentration_summary <- function(tox_list,
       left_join(tox_names_key, by = "CAS")
     
     if(any(is.na(chemical_summary$chnm))){
-      if("Chemical" %in% names(chem_data)){
+      if("Chemical" %in% names(chem_info)){
         chemical_summary <- chemical_summary %>% 
-          left_join(select(chem_data, CAS, Chemical), by = "CAS")        
+          left_join(select(chem_info, CAS, Chemical), by = "CAS")        
       } else {
         chemical_summary$Chemical = as.character(as.numeric(factor(chemical_summary$CAS)))
       }
@@ -205,9 +205,9 @@ get_concentration_summary <- function(tox_list,
     }
     
   } else {
-    if("Chemical" %in% names(chem_data)){
+    if("Chemical" %in% names(chem_info)){
       chemical_summary <- chemical_summary %>% 
-        left_join(select(chem_data, CAS, chnm = Chemical), by = "CAS")        
+        left_join(select(chem_info, CAS, chnm = Chemical), by = "CAS")        
     } else {
       message("Add a Chemical column to the Chemicals tab to get custom chemical names")
       chemical_summary$chnm = as.character(as.numeric(factor(chemical_summary$CAS)))
