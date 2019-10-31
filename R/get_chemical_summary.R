@@ -92,7 +92,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
   }
   
   chemical_summary <- full_join(ACC, 
-                                       select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
+                                select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value)) %>%
     filter(!is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%

@@ -2,12 +2,9 @@
 % Please edit documentation in R/create_toxEval.R
 \name{as.toxEval}
 \alias{as.toxEval}
-\alias{is.toxEvl}
 \title{toxEval helper functions}
 \usage{
 as.toxEval(x, ...)
-
-is.toxEvl(x, ...)
 }
 \arguments{
 \item{x}{list or toxEval object}
@@ -30,7 +27,4 @@ chem_data <- data.frame(CAS = "21145-77-7",
                    SiteID = "USGS-04249000")
 tox_list_new <- as.toxEval(tox_list, chem_data)
 
-path_to_tox <-  system.file("extdata", package="toxEval")
-file_name <- "OWC_data_fromSup.xlsx"
-full_path <- file.path(path_to_tox, file_name)
 }

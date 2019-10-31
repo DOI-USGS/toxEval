@@ -54,3 +54,32 @@ into a single data frame. The important work here is that the chemicals
 and classes factor levels are ordered primarily based on "gd_left", but
 include "gd_right" when the contents are mismatched.
 }
+\examples{
+path_to_tox <-  system.file("extdata", package="toxEval")
+file_name <- "OWC_data_fromSup.xlsx"
+full_path <- file.path(path_to_tox, file_name)
+
+tox_list <- create_toxEval(full_path)
+
+ACC <- get_ACC(tox_list$chem_info$CAS)
+ACC <- remove_flags(ACC)
+
+cleaned_ep <- clean_endPoint_info(end_point_info)
+filtered_ep <- filter_groups(cleaned_ep)
+
+chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+# Let's say we want to compare 2 chemical summaries
+# We'll look at one summing EARs, and with concentrations
+# First, we need a chemical summary for concentrations:
+chemical_summary_conc <- get_concentration_summary(tox_list)
+
+gd_tox <- graph_chem_data(chemical_summary)
+gd_conc <- graph_chem_data(chemical_summary_conc)
+
+ch_combo <- side_by_side_data(gd_tox, gd_conc, 
+                              left_title = "ToxCast", 
+                              right_title = "Concentrations")
+plot_chemical_boxplots(ch_combo, guide_side, 
+                       x_label = "") +
+  ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
+}
