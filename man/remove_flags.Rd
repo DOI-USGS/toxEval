@@ -32,7 +32,7 @@ Noisy data \tab Noisy \cr
 Hit-call potentially confounded by overfitting \tab HitCall \cr
 Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
 Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
-Less than 50% efficacy \tab LessThan50 \cr
+Less than 50\% efficacy \tab LessThan50 \cr
 AC50 less than lowest concentration tested \tab ACCLessThan \cr
 }
 Asterisks indicate flags removed in the function as default.
@@ -40,5 +40,7 @@ Asterisks indicate flags removed in the function as default.
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
 ACC <- get_ACC(CAS)
+nrow(ACC)
 ACC <- remove_flags(ACC)
+nrow(ACC)
 }

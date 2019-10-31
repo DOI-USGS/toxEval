@@ -27,5 +27,7 @@ described in the paper linked above.
 }
 \examples{
 end_point_info <- end_point_info
+nrow(end_point_info)
 cleaned_ep <- clean_endPoint_info(end_point_info)
+nrow(cleaned_ep)
 }

@@ -51,13 +51,23 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'
-#' plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
-#' plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle", x_label = "EAR")
-#' plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
+#' plot_tox_endpoints(chemical_summary, 
+#'                    filterBy = "Cell Cycle",
+#'                    top_num = 10)
+#' plot_tox_endpoints(chemical_summary, 
+#'                    filterBy = "Cell Cycle",
+#'                    top_num = 10, 
+#'                    x_label = "EAR")
+#' plot_tox_endpoints(chemical_summary, 
+#'                    category = "Chemical Class",
+#'                    top_num = 10, filterBy = "PAHs")
+#' plot_tox_endpoints(chemical_summary,
+#'                    category = "Chemical Class", filterBy = "PAHs",
+#'                    top_num = 10, hit_threshold = 0.001)
 #' plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
-#' plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 5)
+#' plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 10)
 #' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
-#' plot_tox_endpoints(single_site, category = "Chemical", top_num = 7)
+#' plot_tox_endpoints(single_site, category = "Chemical", top_num = 10)
 plot_tox_endpoints <- function(chemical_summary, 
                               category = "Biological",
                               filterBy = "All",
@@ -99,12 +109,15 @@ plot_tox_endpoints <- function(chemical_summary,
     y_label = x_label
   }
   
+  chemical_summary$EAR[chemical_summary$EAR == 0] <- NA
+  
   if(single_site){
     
     countNonZero <- chemical_summary %>%
       group_by(endPoint) %>%
-      summarise(nonZero = as.character(length(unique(CAS[EAR>0]))),
-                hits = as.character(sum(EAR > hit_threshold)))
+      summarise(nonZero = as.character(length(unique(CAS[!is.na(EAR)]))),
+                hits = as.character(sum(EAR > hit_threshold, na.rm = TRUE))) %>% 
+      ungroup()
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
 
@@ -112,7 +125,9 @@ plot_tox_endpoints <- function(chemical_summary,
 
     orderColsBy <- chemical_summary %>%
       group_by(endPoint) %>%
-      summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
+      summarise(median = quantile(EAR[!is.na(EAR)], 0.5, na.rm = TRUE),
+                mean = mean(EAR, na.rm = TRUE)) %>%
+      ungroup() %>% 
       arrange(median)
     
     orderedLevelsEP <- orderColsBy$endPoint
@@ -129,53 +144,65 @@ plot_tox_endpoints <- function(chemical_summary,
       countNonZero$endPoint <- factor(countNonZero$endPoint, levels = orderedLevelsEP)
     }
     
-    pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
+    pretty_logs_new <-  prettyLogs(chemical_summary$EAR[!is.na(chemical_summary$EAR)])
     
     chemical_summary$endPoint <- factor(chemical_summary$endPoint, 
                                         levels = orderedLevelsEP)
     
     stackedPlot <- ggplot(data = chemical_summary) +
-      theme_minimal() +
-      xlab("") +
-      theme(axis.text.y = element_text(vjust = .25,hjust=1)) +
-      geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+      theme_bw() +
+      theme(axis.text = element_text(color = "black"),
+            axis.title.y = element_blank(),
+            panel.background = element_blank(),
+            plot.background = element_rect(fill = "transparent",colour = NA),
+            strip.background = element_rect(fill = "transparent",colour = NA),
+            strip.text.y = element_blank(),
+            panel.border = element_blank(),
+            axis.ticks = element_blank(),
+            plot.title = element_text(hjust = 0.5),
+            axis.text.y = element_text(vjust = .25, hjust=1)) +
+      geom_hline(yintercept = hit_threshold, linetype="dashed",
+                 color = "black", na.rm = TRUE)
     
     if(!all(is.na(palette))){
       stackedPlot <- stackedPlot +
-        geom_boxplot(aes(x=endPoint, y=EAR, fill = endPoint)) +
+        geom_boxplot(aes(x = endPoint, y = EAR, fill = endPoint), 
+                     na.rm = TRUE) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       stackedPlot <- stackedPlot +
-        geom_boxplot(aes(x=endPoint, y=EAR), fill = "steelblue") 
+        geom_boxplot(aes(x = endPoint, y = EAR), 
+                     fill = "steelblue", na.rm = TRUE) 
     }
     
   } else {
     
     if(!sum_logic){
       graphData <- chemical_summary %>%
-        group_by(site, category,endPoint) %>%
-        summarise(meanEAR=ifelse(mean_logic,mean(EAR),max(EAR))) %>%
-        data.frame() %>%
+        group_by(site, category, endPoint) %>%
+        summarise(meanEAR=ifelse(mean_logic, mean(EAR), max(EAR))) %>%
+        ungroup() %>%
         mutate(category=as.character(category))      
     } else {
       
       graphData <- chemical_summary %>%
-        group_by(site,date,category,endPoint) %>%
-        summarise(sumEAR=sum(EAR)) %>%
-        data.frame() %>%
-        group_by(site, category,endPoint) %>%
-        summarise(meanEAR=ifelse(mean_logic,mean(sumEAR),max(sumEAR))) %>%
-        data.frame() %>%
-        mutate(category=as.character(category))      
+        group_by(site, date, category, endPoint) %>%
+        summarise(sumEAR=sum(EAR, na.rm = TRUE)) %>%
+        ungroup() %>%
+        group_by(site, category, endPoint) %>%
+        summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+        ungroup() %>%
+        mutate(category = as.character(category))      
     }
 
     pretty_logs_new <- prettyLogs(graphData$meanEAR)
     
     countNonZero <- graphData %>%
       group_by(endPoint) %>%
-      summarise(nonZero = as.character(sum(meanEAR>0)),
-                hits = as.character(sum(meanEAR > hit_threshold)))
+      summarise(nonZero = as.character(sum(meanEAR>0, na.rm = TRUE)),
+                hits = as.character(sum(meanEAR > hit_threshold, na.rm = TRUE))) %>% 
+      ungroup()
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
 
@@ -183,7 +210,8 @@ plot_tox_endpoints <- function(chemical_summary,
 
     orderColsBy <- graphData %>%
       group_by(endPoint) %>%
-      summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+      summarise(median = quantile(meanEAR[!is.na(meanEAR)], 0.5), na.rm = TRUE) %>%
+      ungroup() %>% 
       arrange(median)
   
     orderedLevelsEP <- orderColsBy$endPoint
@@ -204,36 +232,47 @@ plot_tox_endpoints <- function(chemical_summary,
     graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
     
     stackedPlot <- ggplot(graphData) +
-      theme_minimal() +
-      xlab("") +
-      theme(axis.text.y = element_text(vjust = .25,hjust=1)) 
+      theme_bw() +
+      theme(axis.text = element_text(color = "black"),
+            axis.title.y = element_blank(),
+            panel.background = element_blank(),
+            plot.background = element_rect(fill = "transparent",colour = NA),
+            strip.background = element_rect(fill = "transparent",colour = NA),
+            strip.text.y = element_blank(),
+            panel.border = element_blank(),
+            axis.ticks = element_blank(),
+            plot.title = element_text(hjust = 0.5),
+            axis.text.y = element_text(vjust = .25, hjust=1)) 
     
     if(!is.na(hit_threshold)){
       stackedPlot <- stackedPlot +
-        geom_hline(yintercept = hit_threshold, linetype="dashed", color="black")
+        geom_hline(yintercept = hit_threshold, na.rm = TRUE, 
+                   linetype="dashed", color="black")
     }
     
     if(!all(is.na(palette))){
       stackedPlot <- stackedPlot +
-        geom_boxplot(aes(x=endPoint, y=meanEAR, fill = endPoint)) +
+        geom_boxplot(aes(x = endPoint, y = meanEAR, fill = endPoint), 
+                     na.rm = TRUE) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       stackedPlot <- stackedPlot +
-        geom_boxplot(aes(x=endPoint, y=meanEAR), fill = "steelblue") 
+        geom_boxplot(aes(x=endPoint, y=meanEAR), na.rm = TRUE,
+                     fill = "steelblue") 
     }
     
   }
   if(isTRUE(y_label == "")){
     stackedPlot <- stackedPlot +
-      scale_y_log10(labels=fancyNumbers, 
-                    breaks=pretty_logs_new) +
+      scale_y_log10(labels = fancyNumbers, 
+                    breaks = pretty_logs_new) +
       theme(axis.title.x = element_blank())
   } else {
     stackedPlot <- stackedPlot +
       scale_y_log10(y_label, 
-                    labels=fancyNumbers, 
-                    breaks=pretty_logs_new)
+                    labels = fancyNumbers, 
+                    breaks = pretty_logs_new)
   }
   
   plot_layout <- ggplot_build(stackedPlot)$layout    
@@ -253,22 +292,21 @@ plot_tox_endpoints <- function(chemical_summary,
   }
   
   stackedPlot <- stackedPlot +
-    geom_text(data=countNonZero, aes(x=endPoint, y=ymin,label=nonZero),size=ifelse(is.na(font_size),3,0.30*font_size)) +
-    geom_text(data=data.frame(x = Inf, y=ymin, label = label, stringsAsFactors = FALSE), 
-              aes(x = x,  y=y, label = label),
-              size=ifelse(is.na(font_size),3,0.30*font_size))     
-  
-  if(isTRUE(sum(as.numeric(countNonZero$hits), na.rm = TRUE) > 0)) {
-    stackedPlot <- stackedPlot +
-      geom_text(data=countNonZero, aes(x=endPoint, y=ymax,label=hits),size=ifelse(is.na(font_size),3,0.30*font_size)) +
-      geom_text(data=data.frame(x = Inf, y=ymax, label = "# Hits", stringsAsFactors = FALSE), 
-              aes(x = x,  y=y, label = label),
-              size=ifelse(is.na(font_size), 3, 0.30*font_size))
-  }
+    geom_text(data = countNonZero, 
+              aes(x = endPoint, y=ymin,label=nonZero),
+              size=ifelse(is.na(font_size), 3, 0.30*font_size)) +
+    geom_text(data = data.frame(x = Inf, y = ymin, label = label, stringsAsFactors = FALSE), 
+              aes(x = x,  y = y, label = label),
+              size = ifelse(is.na(font_size), 3, 0.30*font_size))     
   
   if(!is.na(hit_threshold)) {
     stackedPlot <- stackedPlot +
-      geom_text(data=data.frame(x = Inf, y = hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
+      geom_text(data = countNonZero, aes(x = endPoint, y = ymax, label = hits),
+                size=ifelse(is.na(font_size),3,0.30*font_size)) +
+      geom_text(data = data.frame(x = Inf, y = ymax, label = "# Hits", stringsAsFactors = FALSE), 
+              aes(x = x,  y=y, label = label),
+              size=ifelse(is.na(font_size), 3, 0.30*font_size)) +
+      geom_text(data = data.frame(x = Inf, y = hit_threshold, label = "Threshold", stringsAsFactors = FALSE), 
                 aes(x = x,  y=y, label = label),
                 size=ifelse(is.na(font_size), 3, 0.30*font_size))
   }
@@ -276,7 +314,7 @@ plot_tox_endpoints <- function(chemical_summary,
   if(!is.na(font_size)){
     stackedPlot <- stackedPlot +
       theme(axis.text = element_text(size = font_size),
-            axis.title =   element_text(size=font_size))
+            axis.title =   element_text(size = font_size))
   }
 
   if(!is.na(title)){
@@ -288,14 +326,9 @@ plot_tox_endpoints <- function(chemical_summary,
         theme(plot.title = element_text(size=font_size))
     }
   } 
-  
-  if(utils::packageVersion("ggplot2") >= '3.0.0'){
-    stackedPlot <- stackedPlot +
-      coord_flip(clip = "off")
-  } else {
-    stackedPlot <- stackedPlot +
-      coord_flip()   
-  }
+
+  stackedPlot <- stackedPlot +
+    coord_flip(clip = "off")
   
   return(stackedPlot)
 }

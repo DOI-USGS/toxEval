@@ -28,6 +28,12 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     } else {
       chemical_summary <- chemical_summary[chemical_summary$EAR > 0,]
     }
+  } else {
+    if("meanEAR" %in% names(chemical_summary)){
+      chemical_summary$meanEAR[chemical_summary$meanEAR == 0] <- NA
+    } else {
+      chemical_summary$EAR[chemical_summary$EAR == 0] <- NA
+    }
   }
 
   if(length(unique(chemical_summary$Class)) > length(cbValues)){
@@ -70,7 +76,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     # Single site order:
     orderColsBy <- chemical_summary %>%
       group_by(chnm, Class, ...) %>%
-      summarise(median = median(EAR[EAR != 0], na.rm = TRUE)) %>%
+      summarise(median = median(EAR[!is.na(EAR)], na.rm = TRUE)) %>%
       arrange(median) %>% 
       ungroup()
 
@@ -86,7 +92,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
 
     orderedLevels <- chemical_summary %>%
       group_by(chnm, Class, ...) %>%
-      summarise(median = median(EAR[EAR != 0])) %>%
+      summarise(median = median(EAR[!is.na(EAR)])) %>%
       ungroup() %>% 
       mutate(Class = factor(Class, levels = rev(class_order)),
              chnm = as.character(chnm)) %>%
@@ -100,31 +106,31 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     
     countNonZero <- chemical_summary %>%
       group_by(...) %>% 
-      mutate(ymin = min(EAR[EAR > 0], na.rm = TRUE),
-             ymax = max(EAR[EAR > 0], na.rm = TRUE)) %>% 
+      mutate(ymin = min(EAR[!is.na(EAR)], na.rm = TRUE),
+             ymax = max(EAR[!is.na(EAR)], na.rm = TRUE)) %>% 
       group_by(chnm, Class, ymin, ymax, ...) %>%
-      summarize(nonZero = as.character(length(unique(endPoint[EAR > 0]))),
-                hits = as.character(sum(EAR[EAR > 0] > hit_threshold))) %>% 
+      summarize(nonZero = as.character(length(unique(endPoint[!is.na(EAR)]))),
+                hits = as.character(sum(EAR[!is.na(EAR)] > hit_threshold))) %>% 
       ungroup()
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
     
     label <- "# Endpoints"
 
-    pretty_logs_new <-  prettyLogs(chemical_summary$EAR)
+    pretty_logs_new <-  prettyLogs(chemical_summary$EAR[!is.na(chemical_summary$EAR)])
     
     toxPlot_All <- ggplot(data=chemical_summary)
     
     if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x = chnm, y = EAR, fill = chnm),
-                     lwd = 0.1, outlier.size=1) +
+                     lwd = 0.1, outlier.size = 1, na.rm = TRUE) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x = chnm, y = EAR, fill = Class),
-                     lwd = 0.1, outlier.size = 1)
+                     lwd = 0.1, outlier.size = 1, na.rm = TRUE)
     }
     
   } else {
@@ -134,19 +140,20 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
                                    manual_remove = manual_remove,
                                    mean_logic = mean_logic,
                                    sum_logic = sum_logic)
+      graph_data$meanEAR[graph_data$meanEAR == 0] <- NA
     } else {
       graph_data <- chemical_summary
     }
     
-    pretty_logs_new <-  prettyLogs(graph_data$meanEAR)
+    pretty_logs_new <-  prettyLogs(graph_data$meanEAR[!is.na(graph_data$meanEAR)])
     
     countNonZero <- graph_data %>%
       group_by(...) %>% 
-      mutate(ymin = min(meanEAR[meanEAR > 0], na.rm = TRUE),
-             ymax = max(meanEAR[meanEAR > 0], na.rm = TRUE)) %>% 
+      mutate(ymin = min(meanEAR[!is.na(meanEAR)], na.rm = TRUE),
+             ymax = max(meanEAR[!is.na(meanEAR)], na.rm = TRUE)) %>% 
       group_by(chnm, Class, ymin, ymax, ...) %>%
-      summarize(nonZero = as.character(sum(meanEAR > 0)),
-                hits = as.character(sum(meanEAR[meanEAR > 0] > hit_threshold))) %>% 
+      summarize(nonZero = as.character(sum(!is.na(meanEAR))),
+                hits = as.character(sum(meanEAR[!is.na(meanEAR)] > hit_threshold))) %>% 
       ungroup() 
     
     countNonZero$hits[countNonZero$hits == "0"] <- ""
@@ -157,21 +164,22 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x = chnm, y = meanEAR, fill = Class),
-                     lwd = 0.1, outlier.size = 1) +
+                     lwd = 0.1, outlier.size = 1, na.rm = TRUE) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x = chnm, y = meanEAR, fill = Class),
-                     lwd = 0.1, outlier.size = 1)
+                     lwd = 0.1, outlier.size = 1, na.rm = TRUE)
     }
   }
   
   toxPlot_All <- toxPlot_All +
     theme_bw() +
     scale_x_discrete(drop = TRUE) +
-    geom_hline(yintercept = hit_threshold, linetype="dashed", color="black") +
-    theme(axis.text = element_text( color = "black"),
+    geom_hline(yintercept = hit_threshold, linetype = "dashed",
+               color = "black", na.rm = TRUE) +
+    theme(axis.text = element_text(color = "black"),
           axis.title.y = element_blank(),
           panel.background = element_blank(),
           plot.background = element_rect(fill = "transparent",colour = NA),
@@ -196,12 +204,12 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
   if(all(is.na(palette))){
     toxPlot_All <- toxPlot_All +
       scale_fill_manual(values = cbValues, drop=FALSE) +
-      guides(fill=guide_legend(ncol=6)) +
-      theme(legend.position="bottom",
+      guides(fill = guide_legend(ncol = 6)) +
+      theme(legend.position = "bottom",
             legend.justification = "left",
             legend.background = element_rect(fill = "transparent", colour = "transparent"),
             legend.title=element_blank(),
-            legend.key.height = unit(1,"line"))
+            legend.key.height = unit(1, "line"))
   }
     
   if(!is.na(font_size)){
@@ -222,18 +230,22 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
   
   toxPlot_All_withLabels <- toxPlot_All +
     geom_text(data = countNonZero, aes(x = chnm, label = nonZero, y = ymin), 
-              size = ifelse(is.na(font_size),2,0.30*font_size)) +
+              size = ifelse(is.na(font_size), 2, 0.30*font_size), 
+              position = position_nudge(y = -0.05)) +
     geom_text(data = labels_df, 
             aes(x = x,  y = ymin, label = label),
+            position = position_nudge(y = -0.05),
             size = ifelse(is.na(font_size), 3, 0.30*font_size)) 
   
   if(!is.na(hit_threshold)) {
     toxPlot_All_withLabels <- toxPlot_All_withLabels +
       geom_text(data = countNonZero, aes(x = chnm, y = ymax, label = hits),
-                size=ifelse(is.na(font_size), 3, 0.30*font_size)) +
+                size = ifelse(is.na(font_size), 2, 0.30*font_size),
+                position = position_nudge(y = 0.05)) +
       geom_text(data = labels_df, 
                 aes(x = x,  y = ymax, label = hit_label),
-                size=ifelse(is.na(font_size), 3, 0.30*font_size))
+                position = position_nudge(y = 0.05),
+                size = ifelse(is.na(font_size), 3, 0.30*font_size))
   }
   
   if(!all(is.na(title))){
