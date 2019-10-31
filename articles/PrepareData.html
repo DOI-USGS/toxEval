@@ -144,10 +144,11 @@
 <div id="chemicals" class="section level2">
 <h2 class="hasAnchor">
 <a href="#chemicals" class="anchor"></a>Chemicals</h2>
-<p>The “Chemicals” sheet is used to define chemicals included in the “Data” sheet. Two columns are required in this sheet: “CAS” and “Class”. The columns can be in any order, but the first row of the sheet must be the header (column names).</p>
+<p>The “Chemicals” sheet is used to define chemicals included in the “Data” sheet. Two columns are required in this sheet: “CAS” and “Class”. The columns can be in any order, but the first row of the sheet must be the header (column names). If you need chemical names that do not match up wiht the “tox_chemical” list provided in the package, you will want to include a 3rd column “Chemical” which is the chemical name to use for plots and tables.</p>
 <ul>
 <li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose “Format Cells”, and choose “Text” as the category to assure they retain their format. The unique CAS values in this column <em>must</em> match with the CAS values in the “Data” sheet.</p></li>
 <li><p>Class: A character column defining the class of chemicals. Most <code>toxEval</code> functions will allow groupings by either chemical, class (as defined here), or biological grouping. In the example data set provided with the package, the chemicals were organized in classes such as “Fuels”, “Herbicides”, “Insecticides”, etc. The choice of classes is up to the researcher. Chemical class analysis can be ignored, and in that case, it is just important to put a single repeating entry in the “Class” column.</p></li>
+<li><p>Chemical (optional): A character column defining the name of the chemical. The chemical names can be automatically assigned from the supplied data frame “tox_chemicals”. However, there may be chemicals that are in your data but not on that list. If you will be plotting those chemicals using either concentrations or custom benchmarks, you will need to supply a name for plotting and tables.</p></li>
 </ul>
 <p>Note: Additional columns may be useful to organize the data. These additional columns will be ignored by <code>toxEval</code> and will not influence a <code>toxEval</code> analysis.</p>
 </div>
