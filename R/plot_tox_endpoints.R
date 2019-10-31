@@ -124,9 +124,10 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- chemical_summary %>%
+      mutate(logEAR = log(EAR),
+             endPoint = as.character(endPoint)) %>% 
       group_by(endPoint) %>%
-      summarise(median = quantile(EAR[!is.na(EAR)], 0.5, na.rm = TRUE),
-                mean = mean(EAR, na.rm = TRUE)) %>%
+      summarise(median = median(logEAR, na.rm = TRUE)) %>%
       ungroup() %>% 
       arrange(median)
     
@@ -209,8 +210,9 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- graphData %>%
+      mutate(logEAR = log(meanEAR)) %>% 
       group_by(endPoint) %>%
-      summarise(median = quantile(meanEAR[!is.na(meanEAR)], 0.5), na.rm = TRUE) %>%
+      summarise(median = quantile(logEAR[!is.na(logEAR)], 0.5), na.rm = TRUE) %>%
       ungroup() %>% 
       arrange(median)
   
