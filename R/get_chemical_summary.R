@@ -1,4 +1,4 @@
-#' Compute EAR values from measured concentrations and ACC values.
+#' Compute EAR values
 #' 
 #' This function computes Exposure:Activity ratios using user-provided measured 
 #' concentration data from the output of \code{\link{create_toxEval}},
@@ -48,7 +48,7 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' 
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
-#'                                  
+#' head(chemical_summary)                             
 get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All", 
                                  chem_data=NULL, chem_site=NULL, 
                                  chem_info=NULL, exclusion=NULL){
@@ -141,11 +141,12 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
 orderClass <- function(graphData){
   
-  chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
+  chnm <- Class <- logEAR <- meanEAR <- median <- max_med <- ".dplyr"
   
   orderClass_df <- graphData %>%
+    mutate(logEAR = log(meanEAR)) %>% 
     group_by(chnm, Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
+    summarise(median = quantile(logEAR[logEAR != 0],0.5)) %>%
     group_by(Class) %>%
     summarise(max_med = max(median, na.rm = TRUE)) %>%
     arrange(desc(max_med))
@@ -156,12 +157,13 @@ orderClass <- function(graphData){
 
 orderChem <- function(graphData, orderClass_df){
   
-  chnm <- Class <- meanEAR <- median <- ".dplyr"
+  chnm <- Class <- logEAR <- meanEAR <- median <- ".dplyr"
   
   orderChem_df <- graphData %>%
-    group_by(chnm,Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0],0.5)) %>%
-    data.frame() %>%
+    mutate(logEAR = log(meanEAR)) %>% 
+    group_by(chnm, Class) %>%
+    summarise(median = quantile(logEAR[logEAR != 0], 0.5)) %>%
+    ungroup() %>%
     mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
   
   orderChem_df$median[is.na(orderChem_df$median)] <- 0
@@ -190,7 +192,7 @@ orderChem <- function(graphData, orderClass_df){
 #' Hit-call potentially confounded by overfitting \tab HitCall \cr
 #' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
 #' Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
-#' Less than 50% efficacy \tab LessThan50 \cr
+#' Less than 50\% efficacy \tab LessThan50 \cr
 #' AC50 less than lowest concentration tested \tab ACCLessThan \cr
 #' }
 #' Asterisks indicate flags removed in the function as default.
@@ -204,7 +206,9 @@ orderChem <- function(graphData, orderClass_df){
 #' @examples 
 #' CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
 #' ACC <- get_ACC(CAS)
+#' nrow(ACC)
 #' ACC <- remove_flags(ACC)
+#' nrow(ACC)
 remove_flags <- function(ACC, flagsShort = c("Borderline",
                                                  "OnlyHighest",
                                                  "GainAC50",

@@ -42,4 +42,5 @@ objective target for the assay". Much more detail can be discovered in that docu
 end_point_info <- end_point_info
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
+head(filtered_ep)
 }

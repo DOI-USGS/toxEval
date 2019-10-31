@@ -61,7 +61,7 @@ NULL
 #'@export ToxCast_ACC
 #'@keywords datasets
 #'@examples
-#'ACCColumnNames <- names(ToxCast_ACC)
+#'head(ToxCast_ACC)
 NULL
 
 # If we need to update the ACC data frame, here is

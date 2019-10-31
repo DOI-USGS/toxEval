@@ -17,7 +17,9 @@
 #' are revised to look more appealing in graphs and tables.
 #' @examples 
 #' end_point_info <- end_point_info
+#' nrow(end_point_info)
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
+#' nrow(cleaned_ep)
 clean_endPoint_info <- function(end_point_info){
   
   end_point_info <- end_point_info[!(end_point_info$assay_source_name == "ATG" & end_point_info$signal_direction == "loss"),]

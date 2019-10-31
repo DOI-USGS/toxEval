@@ -20,7 +20,7 @@ ACC values are the in the "ACC" column (winning model) and units are
 log micro-Molarity (log \eqn{\mu}M).
 }
 \examples{
-ACCColumnNames <- names(ToxCast_ACC)
+head(ToxCast_ACC)
 }
 \references{
 Toxicology, EPA's National Center for Computational (2018): ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.

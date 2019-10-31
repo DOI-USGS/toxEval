@@ -71,11 +71,21 @@ cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle")
-plot_tox_endpoints(chemical_summary, filterBy = "Cell Cycle", x_label = "EAR")
-plot_tox_endpoints(chemical_summary, category = "Chemical Class", filterBy = "PAHs")
+plot_tox_endpoints(chemical_summary, 
+                   filterBy = "Cell Cycle",
+                   top_num = 10)
+plot_tox_endpoints(chemical_summary, 
+                   filterBy = "Cell Cycle",
+                   top_num = 10, 
+                   x_label = "EAR")
+plot_tox_endpoints(chemical_summary, 
+                   category = "Chemical Class",
+                   top_num = 10, filterBy = "PAHs")
+plot_tox_endpoints(chemical_summary,
+                   category = "Chemical Class", filterBy = "PAHs",
+                   top_num = 10, hit_threshold = 0.001)
 plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
-plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 5)
+plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 10)
 single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
-plot_tox_endpoints(single_site, category = "Chemical", top_num = 7)
+plot_tox_endpoints(single_site, category = "Chemical", top_num = 10)
 }
