@@ -141,7 +141,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
 orderClass <- function(graphData){
   
-  chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
+  chnm <- Class <- logEAR <- meanEAR <- median <- max_med <- ".dplyr"
   
   orderClass_df <- graphData %>%
     mutate(logEAR = log(meanEAR)) %>% 
@@ -157,7 +157,7 @@ orderClass <- function(graphData){
 
 orderChem <- function(graphData, orderClass_df){
   
-  chnm <- Class <- meanEAR <- median <- ".dplyr"
+  chnm <- Class <- logEAR <- meanEAR <- median <- ".dplyr"
   
   orderChem_df <- graphData %>%
     mutate(logEAR = log(meanEAR)) %>% 
