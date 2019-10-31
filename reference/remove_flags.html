@@ -59,7 +59,7 @@ Noisy dataNoisy
 Hit-call potentially confounded by overfittingHitCall
 Gain AC50 &amp;lt; lowest conc &amp;amp; loss AC50 &amp;lt; mean conc*GainAC50
 Biochemical assay with &amp;lt; 50% efficacyBiochemical*
-Less than 50
+Less than 50% efficacyLessThan50
 AC50 less than lowest concentration testedACCLessThan
 
 Asterisks indicate flags removed in the function as default." />
@@ -188,8 +188,8 @@ flagsShort value (used in the remove_flags function) are as follows:</p><table c
 <tr><td>Hit-call potentially confounded by overfitting</td><td>HitCall</td></tr>
 <tr><td>Gain AC50 &lt; lowest conc &amp; loss AC50 &lt; mean conc*</td><td>GainAC50</td></tr>
 <tr><td>Biochemical assay with &lt; 50% efficacy</td><td>Biochemical*</td></tr>
-<tr><td>Less than 50<!-- % efficacy \tab LessThan50 \cr -->
-AC50 less than lowest concentration tested</td><td>ACCLessThan</td></tr>
+<tr><td>Less than 50% efficacy</td><td>LessThan50</td></tr>
+<tr><td>AC50 less than lowest concentration tested</td><td>ACCLessThan</td></tr>
 </table>
 <p>Asterisks indicate flags removed in the function as default.</p>
     </div>
@@ -216,7 +216,8 @@ combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>CAS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"121-00-6"</span>,<span class='st'>"136-85-6"</span>,<span class='st'>"80-05-7"</span>,<span class='st'>"84-65-1"</span>,<span class='st'>"5436-43-1"</span>,<span class='st'>"126-73-8"</span>)
 <span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>CAS</span>)
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_flags</span>(<span class='no'>ACC</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>ACC</span>)</div><div class='output co'>#&gt; [1] 346</div><div class='input'><span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'>remove_flags</span>(<span class='no'>ACC</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>ACC</span>)</div><div class='output co'>#&gt; [1] 213</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

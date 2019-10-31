@@ -182,7 +182,21 @@ to units of \(\mu\)g/L, and reformat the data as input to toxEval.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>CAS</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"121-00-6"</span>,<span class='st'>"136-85-6"</span>,<span class='st'>"80-05-7"</span>,<span class='st'>"84-65-1"</span>,<span class='st'>"5436-43-1"</span>,<span class='st'>"126-73-8"</span>)
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'>get_ACC</span>(<span class='no'>CAS</span>)</div></pre>
+<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'>get_ACC</span>(<span class='no'>CAS</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>ACC</span>)</div><div class='output co'>#&gt;       CAS                  flags                         endPoint       ACC
+#&gt; 1 84-65-1 Less than 50% efficacy        TOX21_ERa_LUC_BG1_Agonist 1.2032253
+#&gt; 2 84-65-1                   &lt;NA&gt;  TOX21_H2AX_HTRF_CHO_Agonist_ch2 1.2853634
+#&gt; 3 84-65-1                   &lt;NA&gt;            TOX21_HDAC_Inhibition 0.7328529
+#&gt; 4 80-05-7                   &lt;NA&gt;    ACEA_AR_agonist_AUC_viability 1.1370128
+#&gt; 5 80-05-7                   &lt;NA&gt;          ACEA_AR_antagonist_80hr 1.0658444
+#&gt; 6 80-05-7                   &lt;NA&gt; ACEA_AR_antagonist_AUC_viability 1.0953307
+#&gt;       MlWt ACC_value          chnm
+#&gt; 1 208.2121  3324.538 Anthraquinone
+#&gt; 2 208.2121  4016.700 Anthraquinone
+#&gt; 3 208.2121  1125.535 Anthraquinone
+#&gt; 4 228.2863  3129.627   Bisphenol A
+#&gt; 5 228.2863  2656.588   Bisphenol A
+#&gt; 6 228.2863  2843.221   Bisphenol A</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

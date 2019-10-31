@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute EAR values from measured concentrations and ACC values. — get_chemical_summary • toxEval</title>
+<title>Compute EAR values — get_chemical_summary • toxEval</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -42,7 +42,7 @@
 
 
 
-<meta property="og:title" content="Compute EAR values from measured concentrations and ACC values. — get_chemical_summary" />
+<meta property="og:title" content="Compute EAR values — get_chemical_summary" />
 <meta property="og:description" content="This function computes Exposure:Activity ratios using user-provided measured 
 concentration data from the output of create_toxEval,
 and joins the data with the activity concentration at cutoff data provided by 
@@ -151,7 +151,7 @@ benchmark data can be provided to perform the same &quot;toxEval&quot; analysis.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute EAR values from measured concentrations and ACC values.</h1>
+    <h1>Compute EAR values</h1>
     
     <div class="hidden name"><code>get_chemical_summary.Rd</code></div>
     </div>
@@ -236,7 +236,21 @@ endPoints that may not be important to the analysis at hand.</p>
 <span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
 <span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
 
-<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)</div></pre>
+<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>chemical_summary</span>)</div><div class='output co'>#&gt;       CAS          chnm                  endPoint          site
+#&gt; 1 84-65-1 Anthraquinone TOX21_ERa_LUC_BG1_Agonist USGS-04024000
+#&gt; 2 84-65-1 Anthraquinone TOX21_ERa_LUC_BG1_Agonist USGS-04024000
+#&gt; 3 84-65-1 Anthraquinone TOX21_ERa_LUC_BG1_Agonist USGS-04067500
+#&gt; 4 84-65-1 Anthraquinone TOX21_ERa_LUC_BG1_Agonist USGS-04067500
+#&gt; 5 84-65-1 Anthraquinone TOX21_ERa_LUC_BG1_Agonist USGS-04067500
+#&gt; 6 84-65-1 Anthraquinone TOX21_ERa_LUC_BG1_Agonist USGS-04067500
+#&gt;                  date          EAR     Bio_category shortName         Class
+#&gt; 1 2011-05-01 13:00:00 1.804762e-05 Nuclear Receptor   StLouis Dyes/Pigments
+#&gt; 2 2013-04-27 10:40:00 9.023810e-06 Nuclear Receptor   StLouis Dyes/Pigments
+#&gt; 3 2011-03-21 15:36:00 1.503968e-05 Nuclear Receptor Menominee Dyes/Pigments
+#&gt; 4 2011-04-26 12:15:00 9.023810e-06 Nuclear Receptor Menominee Dyes/Pigments
+#&gt; 5 2011-04-28 13:48:00 6.015873e-06 Nuclear Receptor Menominee Dyes/Pigments
+#&gt; 6 2011-06-21 09:56:00 9.023810e-06 Nuclear Receptor Menominee Dyes/Pigments</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
