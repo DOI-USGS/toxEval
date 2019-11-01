@@ -52,6 +52,7 @@ Suggests:
     rmarkdown,
     testthat,
     knitr,
+    here,
     openxlsx
 BugReports: https://github.com/USGS-R/toxEval/issues
 VignetteBuilder: knitr
