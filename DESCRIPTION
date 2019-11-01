@@ -51,7 +51,8 @@ Imports:
 Suggests:
     rmarkdown,
     testthat,
-    knitr
+    knitr,
+    openxlsx
 BugReports: https://github.com/USGS-R/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true

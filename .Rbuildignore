@@ -25,7 +25,9 @@ CRAN_reminders.txt
 _pkgdown.yml
 vignettes/toxEval.bib
 vignettes/References.Rmd
-vignettes/benchmarkds.Rmd
+vignettes/benchmarks.Rmd
+vignettes/OWC_custom_bench.xlsx
+vignettes/bench_tab.png
 vignettes/does_curves.Rmd
 pkgdown/favicon/*
 ^doc$

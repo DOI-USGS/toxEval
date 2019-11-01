@@ -19,46 +19,24 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)
+
+library(dplyr)
+library(toxEval)
 ```
 
 # Introduction
 
-The majority of the examples in this documentation create EAR values from concentration "benchmarks" (concentrations of concern) set by the ToxCast database. Here we describe a way to export those benchmarks as well as a way to provide your own custom benchmark data.
+The majority of the examples in this documentation create EAR values from concentration "benchmarks" set by the ToxCast database. Here we describe a way to provide your own custom benchmarks data.
 
-# Exporting Benchmarks
+# Preparing the benchmark data
 
-Within the Shiny app, there is a button labeled "Download Benchmarks". If you are navigating the app and find a set of conditions that make sense for your analysis, it is probably a good idea to create a record of the ToxCast ACC values. 
+Input data for a custom toxEval input file should be prepared in a Microsoft &trade; Excel file using specifically named sheets (also known as tabs). There are 4 mandatory sheets (Data, Chemical, Sites, Benchmarks). The sheets should appear as follows (although the order is not important):
 
-Let's use the data provided in the package to show an example of how to do this directly in R:
-
-```{r exportingBenchmarks}
-library(dplyr)
-library(toxEval)
-
-path_to_file <- file.path(system.file("extdata", package="toxEval"),
-                          "OWC_data_fromSup.xlsx") 
-tox_list <- create_toxEval(path_to_file)
-ACC <- get_ACC(tox_list$chem_info$CAS)
-ACC <- remove_flags(ACC = ACC)
-
-cleaned_ep <- clean_endPoint_info(end_point_info)
-filtered_ep <- filter_groups(cleaned_ep)
-
-
-benchmarks <- ACC %>%
-  filter(endPoint %in% filtered_ep$endPoint) %>%
-  rename(Value = ACC_value,
-         Chemical = chnm) %>%
-  left_join(filtered_ep, by = "endPoint")
-
-names(benchmarks)
-
+```{r tabIMAGE, echo=FALSE}
+knitr::include_graphics("bench_tab.png")
 ```
 
-The "benchmarks" data frame includes all the information you would need to reproduce the `toxEval` analysis in the future. This can be important if the ToxCast database is updated, yet you want to reproduce your original results.
-
-
-# Mandatory Information for Benchmarks
+## Mandatory Information for Benchmarks
 
 The mandatory columns are: CAS, Value, groupCol, Chemical. Additional column can be included, but will be ignored by `toxEval` functions. 
 
@@ -76,11 +54,11 @@ The mandatory columns are: CAS, Value, groupCol, Chemical. Additional column can
 
 This section describes how to use the "benchmarks" option to create a custom analysis. 
 
-The example data provided in `toxEval` is taken from the supplemental information in Baldwin, et al ((2016)[https://doi.org/10.1016/j.scitotenv.2016.02.137]). The third supplemental table provides water quality guideline benchmarks. We'll provide that table here in a more user-friendly format, with associated CAS values. Please see  Baldwin, et al ((2016)[https://doi.org/10.1016/j.scitotenv.2016.02.137]) for references to the values.
+The example data provided in `toxEval` is taken from the supplemental information in Baldwin, et al [2016](https://doi.org/10.1016/j.scitotenv.2016.02.137). The third supplemental table provides water quality guideline benchmarks. We'll provide that table here in a more user-friendly format, with associated CAS values.
 
-## Raw Benchmark data
+## Create custom benchmark toxEval file
 
-The following data can be copy/pasted into a csv file (the information between the single quotes), or run as R code as follows:
+You can make your own benchmark Microsoft &trade; Excel file for the example data provided in the package. The benchmark data come from tab 3 of the supplemental table file in Baldwin, et al [2016](https://doi.org/10.1016/j.scitotenv.2016.02.137). It has been cleaned up to simple text to be copy/pasted into a csv file (the information between the single quotes), or run as R code as follows:
 
 ```{r getRawBenchmarks}
 raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
@@ -173,29 +151,49 @@ head(bench)
 
 ```
 
-Now we need to get that information into a "tox_list". There are 2 options. The "bench" data frame can be exported to a text file, and that file could be input into the Excel file in the "Benchmarks" tab. 
+Now we need to get that information into a "tox_list". Here is how to create the Microsoft &trade; Excel file using the `openxlsx` package:
 
-Alternatively, we can do it directly in R:
+```{r getToxList, eval=FALSE}
 
-```{r getToxList}
+path_to_file <- file.path(system.file("extdata",
+                                      package="toxEval"),
+                          "OWC_data_fromSup.xlsx") 
+tox_list <- create_toxEval(path_to_file)
 
-tox_list_wq_bench <- tox_list
-tox_list_wq_bench[["benchmarks"]] <- bench
+tox_list_wq_bench <- list(Data = tox_list$chem_data,
+                          Chemicals = tox_list$chem_info,
+                          Sites = tox_list$chem_site,
+                          Benchmarks = bench)
 
-tox_list_wq_bench <- as.toxEval(tox_list_wq_bench)
+library(openxlsx)
+
+write.xlsx(tox_list_wq_bench, 
+           file = "OWC_custom_bench.xlsx")
 
 ```
 
-Then, we can use this new benchmark tox_list to generate our custom benchmark figures and tables.
+Now, we can use this new benchmark tox_list to generate our custom benchmark figures and tables.
 
-```{r plotStuff}
-summary_bench <- get_chemical_summary(tox_list_wq_bench)
+```{r plotStuff, eval=FALSE}
+tox_list_bench <- create_toxEval("OWC_custom_bench.xlsx")
+```
+
+```{r getBenchstuff, echo=FALSE}
+library(here)
+tox_list_bench <- create_toxEval(here("vignettes/OWC_custom_bench.xlsx"))
+
+```
+
+
+```{r plotBenchmarks}
+  summary_bench <- get_chemical_summary(tox_list_bench)
 
 plot_tox_boxplots(summary_bench, category = "Chemical")
 
 plot_tox_stacks(summary_bench,
-                chem_site = tox_list_wq_bench$chem_site,
-                category = "Chemical", include_legend = FALSE)
+                chem_site = tox_list_bench$chem_site,
+                category = "Chemical", 
+                include_legend = FALSE)
 
 plot_tox_endpoints(summary_bench)
 
@@ -203,8 +201,39 @@ plot_tox_endpoints(summary_bench)
 
 ```{r heatmap, fig.height=10}
 plot_tox_heatmap(summary_bench, 
-                 tox_list_wq_bench$chem_site, 
+                 tox_list_bench$chem_site, 
                  category = "Chemical")
 
 ```
 
+
+# Exporting Benchmarks
+
+It is also possible to export the equivalent "Benchmark" data from the ToxCast analysis. Within the Shiny app, there is a button labeled "Download Benchmarks". If you are navigating the app and find a set of conditions that make sense for your analysis, it is probably a good idea to create a record of the ToxCast ACC values. 
+
+Let's use the data provided in the package to show an example of how to do this directly in R:
+
+```{r exportingBenchmarks}
+library(dplyr)
+library(toxEval)
+
+path_to_file <- file.path(system.file("extdata", package="toxEval"),
+                          "OWC_data_fromSup.xlsx") 
+tox_list <- create_toxEval(path_to_file)
+ACC <- get_ACC(tox_list$chem_info$CAS)
+ACC <- remove_flags(ACC = ACC)
+
+cleaned_ep <- clean_endPoint_info(end_point_info)
+filtered_ep <- filter_groups(cleaned_ep)
+
+benchmarks <- ACC %>%
+  filter(endPoint %in% filtered_ep$endPoint) %>%
+  rename(Value = ACC_value,
+         Chemical = chnm) %>%
+  left_join(filtered_ep, by = "endPoint")
+
+names(benchmarks)
+
+```
+
+The "benchmarks" data frame includes all the information you would need to reproduce the `toxEval` analysis in the future. This can be important if the ToxCast database is updated, yet you want to reproduce your original results.
