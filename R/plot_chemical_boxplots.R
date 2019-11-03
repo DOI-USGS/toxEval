@@ -166,13 +166,13 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     if(!all(is.na(palette))){
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x = chnm, y = meanEAR, fill = Class),
-                     lwd = 0.1, outlier.size = 1, na.rm = TRUE) +
+                     lwd = 0.1, outlier.size = 1, na.rm = !plot_ND) +
         scale_fill_manual(values = palette) +
         theme(legend.position = "none")
     } else {
       toxPlot_All <- toxPlot_All +
         geom_boxplot(aes(x = chnm, y = meanEAR, fill = Class),
-                     lwd = 0.1, outlier.size = 1, na.rm = TRUE)
+                     lwd = 0.1, outlier.size = 1, na.rm = !plot_ND)
     }
   }
   

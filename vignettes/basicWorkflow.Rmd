@@ -84,6 +84,8 @@ Through the ToxCast program quality assurance procedures, information is examine
 | Hit-call potentially confounded by overfitting | HitCall |
 | Gain AC50 < lowest conc & loss AC50 < mean conc  | GainAC50 |
 | Biochemical assay with < 50% efficacy | Biochemical |
+| Less than 50% efficacy | LessThan50 |
+| AC50 less than lowest concentration tested | ACCLessThan |
 
 The function is written to exclude results with the flags "Borderline", "OnlyHighest", "GainAC50", "Biochemical" as a default. If the user prefers a different list, the full list must be specified (default values will be ignored).
 
