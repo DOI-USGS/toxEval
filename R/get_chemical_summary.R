@@ -141,7 +141,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
 orderClass <- function(graphData){
   
-  chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
+  chnm <- Class <- logEAR <- meanEAR <- median <- max_med <- ".dplyr"
   
   graphData$meanEAR[graphData$meanEAR == 0] <- NA
   

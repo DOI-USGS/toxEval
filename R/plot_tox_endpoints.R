@@ -124,7 +124,7 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- chemical_summary %>%
-      mutate(EAR = case_when(EAR == 0, NA, EAR),
+      mutate(EAR = ifelse(EAR == 0, NA, EAR),
              logEAR = log(EAR),
              endPoint = as.character(endPoint)) %>% 
       group_by(endPoint) %>%
