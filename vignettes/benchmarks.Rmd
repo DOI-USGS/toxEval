@@ -73,7 +73,7 @@ raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
 62-73-7,Dichlorvos,EPA_chronic,0.0058
 84852-15-3,"4-Nonylphenol, branched",EPA_chronic,6.6
 106-46-7,"1,4-Dichlorobenzene",EPA_chronic,15
-75-25-2,Tribromomethane (bromoform),EPA_chronic,320
+75-25-2,Bromoform,EPA_chronic,320
 80-05-7,Bisphenol A,other_acute,1518
 120-12-7,Anthracene,other_acute,13
 50-32-8,Benzo(a)pyrene,other_acute,0.24
@@ -87,7 +87,7 @@ raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
 63-25-2,Carbaryl,other_acute,3.3
 2921-88-2,Chlorpyrifos,other_acute,0.02
 106-46-7,"1,4-Dichlorobenzene",other_acute,180
-75-25-2,Tribromomethane (bromoform),other_acute,2300
+75-25-2,Bromoform,other_acute,2300
 80-05-7,Bisphenol A,other_chronic,0.86
 120-12-7,Anthracene,other_chronic,0.012
 50-32-8,Benzo(a)pyrene,other_chronic,0.015
@@ -107,16 +107,21 @@ raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
 2921-88-2,Chlorpyrifos,other_chronic,0.002
 84852-15-3,"4-Nonylphenol, branched",other_chronic,1
 106-46-7,"1,4-Dichlorobenzene",other_chronic,9.4
-75-25-2,Tribromomethane (bromoform),other_chronic,320',
+75-25-2,Bromoform,other_chronic,320',
 stringsAsFactors = FALSE)
 
 path_to_file <- file.path(system.file("extdata",
                                       package="toxEval"),
                           "OWC_data_fromSup.xlsx") 
+
 bench <- raw_benchmarks %>%
-  rename(Value = value,
-         Chemical = chm_nm) %>%
-  separate(source, c("groupCol", "endPoint"), sep = "_")
+  rename(Value = value) %>%
+  separate(source, c("groupCol", "endPoint"), sep = "_") %>% 
+  left_join(select(tox_chemicals, 
+                   CAS = Substance_CASRN,
+                   Chemical = Substance_Name), by = "CAS")
+
+bench$Chemical[is.na(bench$Chemical)] <- bench$chm_nm[is.na(bench$Chemical)]
 
 tox_list <- create_toxEval(path_to_file)
 
@@ -128,7 +133,7 @@ tox_list_wq_bench <- list(Data = tox_list$chem_data,
 library(openxlsx)
 
 write.xlsx(tox_list_wq_bench, 
-           file = "OWC_custom_bench.xlsx")
+           file = here::here("vignettes/OWC_custom_bench.xlsx"))
 
 
 ```
@@ -159,8 +164,7 @@ tox_list_bench <- create_toxEval("OWC_custom_bench.xlsx")
 ```
 
 ```{r getBenchstuffFoReal, echo=FALSE}
-library(here)
-tox_list_bench <- create_toxEval(here("vignettes/OWC_custom_bench.xlsx"))
+tox_list_bench <- create_toxEval(here::here("vignettes/OWC_custom_bench.xlsx"))
 
 ```
 
@@ -172,16 +176,20 @@ plot_tox_boxplots(summary_bench,
                   category = "Chemical", 
                   sum_logic = FALSE,
                   x_label = "Toxicity Quotient")
+```
 
+```{r plotBenchmarksStack, fig.height=4}
 plot_tox_stacks(summary_bench,
                 chem_site = tox_list_bench$chem_site,
                 category = "Chemical", sum_logic = FALSE,
                 y_label = "Toxicity Quotient",
                 include_legend = FALSE)
 
+```
+
+```{r otherPlot, fig.height=2}
 plot_tox_endpoints(summary_bench, 
                    x_label = "Toxicity Quotient")
-
 ```
 
 ## Compare with ToxCast
@@ -208,7 +216,7 @@ summary_tox <- get_chemical_summary(tox_list,
 
 We can use the `side_by_side_data` function to create a single data frame that the `toxEval` plotting functions can use.
 
-```{r sideBySide}
+```{r sideBySide, fig.height=9}
 
 gd_tox <- graph_chem_data(summary_tox)
 gd_bench <- graph_chem_data(summary_bench, 
@@ -230,7 +238,7 @@ plot_chemical_boxplots(combo, guide_side, plot_ND = TRUE,
 
 We can create a summary data frame that has concentrations instead of EARs as well.
 
-```{r concCompare}
+```{r concCompare, fig.height=9}
 summary_conc <- get_concentration_summary(tox_list)
 gd_conc <- graph_chem_data(summary_conc)
 
@@ -247,7 +255,7 @@ plot_chemical_boxplots(combo2, guide_side,
 
 ## All 3?
 
-```{r allThree}
+```{r allThree, fig.height=9}
 
 
 combo_all_3 <- combo2 %>% 
@@ -317,7 +325,7 @@ raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
 62-73-7,Dichlorvos,EPA_chronic,0.0058
 84852-15-3,"4-Nonylphenol, branched",EPA_chronic,6.6
 106-46-7,"1,4-Dichlorobenzene",EPA_chronic,15
-75-25-2,Tribromomethane (bromoform),EPA_chronic,320
+75-25-2,Bromoform,EPA_chronic,320
 80-05-7,Bisphenol A,other_acute,1518
 120-12-7,Anthracene,other_acute,13
 50-32-8,Benzo(a)pyrene,other_acute,0.24
@@ -331,7 +339,7 @@ raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
 63-25-2,Carbaryl,other_acute,3.3
 2921-88-2,Chlorpyrifos,other_acute,0.02
 106-46-7,"1,4-Dichlorobenzene",other_acute,180
-75-25-2,Tribromomethane (bromoform),other_acute,2300
+75-25-2,Bromoform,other_acute,2300
 80-05-7,Bisphenol A,other_chronic,0.86
 120-12-7,Anthracene,other_chronic,0.012
 50-32-8,Benzo(a)pyrene,other_chronic,0.015
@@ -351,7 +359,7 @@ raw_benchmarks <- read.csv(text='CAS,chm_nm,source,value
 2921-88-2,Chlorpyrifos,other_chronic,0.002
 84852-15-3,"4-Nonylphenol, branched",other_chronic,1
 106-46-7,"1,4-Dichlorobenzene",other_chronic,9.4
-75-25-2,Tribromomethane (bromoform),other_chronic,320',
+75-25-2,Bromoform,other_chronic,320',
 stringsAsFactors = FALSE)
 ```
 
@@ -363,9 +371,13 @@ Essentially, the work that must be done is to rename some columns, and figure ou
 library(tidyr)
 
 bench <- raw_benchmarks %>%
-  rename(Value = value,
-         Chemical = chm_nm) %>%
-  separate(source, c("groupCol", "endPoint"), sep = "_")
+  rename(Value = value) %>%
+  separate(source, c("groupCol", "endPoint"), sep = "_") %>% 
+  left_join(select(tox_chemicals, 
+                   CAS = Substance_CASRN,
+                   Chemical = Substance_Name), by = "CAS")
+
+bench$Chemical[is.na(bench$Chemical)] <- bench$chm_nm[is.na(bench$Chemical)]
 
 head(bench)
 
@@ -403,8 +415,6 @@ library(here)
 tox_list_bench <- create_toxEval(here("vignettes/OWC_custom_bench.xlsx"))
 
 ```
-
-
 
 
 # Exporting ToxCast Benchmarks

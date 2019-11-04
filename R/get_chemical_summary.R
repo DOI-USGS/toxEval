@@ -93,8 +93,8 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
   
   chemical_summary <- full_join(ACC, 
                                 select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
-    filter(!is.na(ACC_value)) %>%
-    filter(!is.na(Value)) %>%
+    filter(!is.na(ACC_value),
+           !is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%
     rename(site = SiteID,
            date = `Sample Date`) 
@@ -141,12 +141,14 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
 orderClass <- function(graphData){
   
-  chnm <- Class <- logEAR <- meanEAR <- median <- max_med <- ".dplyr"
+  chnm <- Class <- meanEAR <- median <- max_med <- ".dplyr"
+  
+  graphData$meanEAR[graphData$meanEAR == 0] <- NA
   
   orderClass_df <- graphData %>%
     mutate(logEAR = log(meanEAR)) %>% 
     group_by(chnm, Class) %>%
-    summarise(median = quantile(logEAR[logEAR != 0],0.5)) %>%
+    summarise(median = quantile(logEAR[logEAR != 0],0.5, na.rm = TRUE)) %>%
     group_by(Class) %>%
     summarise(max_med = max(median, na.rm = TRUE)) %>%
     arrange(desc(max_med))
@@ -159,14 +161,16 @@ orderChem <- function(graphData, orderClass_df){
   
   chnm <- Class <- logEAR <- meanEAR <- median <- ".dplyr"
   
+  graphData$meanEAR[graphData$meanEAR == 0] <- NA
+  
   orderChem_df <- graphData %>%
     mutate(logEAR = log(meanEAR)) %>% 
     group_by(chnm, Class) %>%
-    summarise(median = quantile(logEAR[logEAR != 0], 0.5)) %>%
+    summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
     ungroup() %>%
     mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
   
-  orderChem_df$median[is.na(orderChem_df$median)] <- 0
+  orderChem_df$median[is.na(orderChem_df$median)] <- min(orderChem_df$median, na.rm = TRUE) - 1
   
   orderChem_df <- arrange(orderChem_df, Class, median)
   
