@@ -213,18 +213,15 @@ run the following command:
 install.packages("toxEval")
 ```
 
-To get inter-CRAN release updates, use the command:
-
-``` r
-install.packages("toxEval",repos="https://owi.usgs.gov/R")
-```
-
 To get cutting-edge changes, install from GitHub using the `devtools`
 packages:
 
 ``` r
 library(devtools)
-install_github("USGS-R/toxEval")
+install_github("USGS-R/toxEval",
+               build_vignettes = TRUE, 
+               build_opts = c("--no-resave-data",
+                              "--no-manual"))
 ```
 
 Regularly, it is a good idea to update *ALL* your packages in R. If
