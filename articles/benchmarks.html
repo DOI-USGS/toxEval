@@ -141,96 +141,103 @@
 <div id="explore-benchmarks" class="section level1">
 <h1 class="hasAnchor">
 <a href="#explore-benchmarks" class="anchor"></a>Explore Benchmarks</h1>
-<p>In this section, we will assume there is a toxEval input file called “OWC_custom_bench.xlsx”, as descibed in <a href="#dataRequirements">Preparing Benchmarks</a>. The next section <a href="#setupExample">Create Example File</a> will walk through creating the “OWC_custom_bench.xlsx” file on the example data provided within the <code>toxEval</code> package.</p>
+<p>In this section, we will assume there is a toxEval input file named “OWC_custom_bench.xlsx”, as descibed in <a href="#dataRequirements">Preparing Benchmarks</a>. The next section <a href="#setupExample">Create Example File</a> will walk through creating the “OWC_custom_bench.xlsx” file on the example data provided within the <code>toxEval</code> package.</p>
 <div id="toxicity-quotient" class="section level2">
 <h2 class="hasAnchor">
 <a href="#toxicity-quotient" class="anchor"></a>Toxicity Quotient</h2>
+<p>This example uses water quality guidelines/benchmarks from EPA and other sources. The guidelines are classified into chronic and acute categories.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">tox_list_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(<span class="st">"OWC_custom_bench.xlsx"</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">summary_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list_bench)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(summary_bench, </a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">                  <span class="dt">category =</span> <span class="st">"Chemical"</span>, </a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">                  <span class="dt">sum_logic =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">                  <span class="dt">x_label =</span> <span class="st">"Toxicity Quotient"</span>)</a></code></pre></div>
-<p><img src="benchmarks_files/figure-html/plotBenchmarks-1.png" width="700"></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(summary_bench,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">                <span class="dt">chem_site =</span> tox_list_bench<span class="op">$</span>chem_site,</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">                <span class="dt">category =</span> <span class="st">"Chemical"</span>, <span class="dt">sum_logic =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">                <span class="dt">y_label =</span> <span class="st">"Toxicity Quotient"</span>,</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">                <span class="dt">include_legend =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>Using a “Benchmark” tab in the input file, you can skip the <code>ACC</code> and <code>filtered_ep</code> arguments:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">summary_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list_bench)</a></code></pre></div>
+<p>For ToxCast EARs, it makes sense in the boxplot visualization to sum the EARs of all endpoints for a single chemical. This is due to the specific nature of the ToxCast endpoint suite of tests.</p>
+<p>Some benchmarks such as these water quality guidelines already take into account the overall effects, and you do not want to sum those values. There is an argument in the <code>plot_tox_boxplots</code> function that allows you to specify: <code>sum_logic</code> (where TRUE sums the EARs for each chemical, and FALSE does not).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(summary_bench, </a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">                  <span class="dt">category =</span> <span class="st">"Chemical"</span>, </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">                  <span class="dt">sum_logic =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">                  <span class="dt">x_label =</span> <span class="st">"Toxicity Quotient"</span>)</a></code></pre></div>
+<p><img src="benchmarks_files/figure-html/plotBenchChems-1.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(summary_bench,</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">                <span class="dt">chem_site =</span> tox_list_bench<span class="op">$</span>chem_site,</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">                <span class="dt">category =</span> <span class="st">"Chemical"</span>, </a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">                <span class="dt">sum_logic =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">                <span class="dt">y_label =</span> <span class="st">"Toxicity Quotient"</span>,</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">                <span class="dt">include_legend =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><img src="benchmarks_files/figure-html/plotBenchmarksStack-1.png" width="700"></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(summary_bench, </a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">                   <span class="dt">x_label =</span> <span class="st">"Toxicity Quotient"</span>)</a></code></pre></div>
+<p>The <code>category</code> argument can be set to “Biological”, and which then shows the distributions of the acute and chronic groupings.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span>(summary_bench, </a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">                   <span class="dt">category =</span> <span class="st">"Biological"</span>,</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">                   <span class="dt">x_label =</span> <span class="st">"Toxicity Quotient"</span>)</a></code></pre></div>
 <p><img src="benchmarks_files/figure-html/otherPlot-1.png" width="700"></p>
 </div>
 <div id="compare-with-toxcast" class="section level2">
 <h2 class="hasAnchor">
 <a href="#compare-with-toxcast" class="anchor"></a>Compare with ToxCast</h2>
 <p>Let’s get the ToxCast example chemical summary as described in the <a href="basicWorkflow.html">Basic Workflow</a>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">                                      <span class="dt">package=</span><span class="st">"toxEval"</span>),</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                          <span class="st">"OWC_data_fromSup.xlsx"</span>) </a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(<span class="dt">ACC =</span> ACC)</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep)</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">summary_tox &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, </a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">                                    ACC, </a>
-<a class="sourceLine" id="cb5-14" data-line-number="14">                                    filtered_ep)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">                                      <span class="dt">package=</span><span class="st">"toxEval"</span>),</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                          <span class="st">"OWC_data_fromSup.xlsx"</span>) </a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(<span class="dt">ACC =</span> ACC)</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep)</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">summary_tox &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span>(tox_list, </a>
+<a class="sourceLine" id="cb6-13" data-line-number="13">                                    ACC, </a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">                                    filtered_ep)</a></code></pre></div>
 <p>We can use the <code>side_by_side_data</code> function to create a single data frame that the <code>toxEval</code> plotting functions can use.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">gd_tox &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span>(summary_tox)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">gd_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span>(summary_bench, </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                            <span class="dt">sum_logic =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">combo &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">side_by_side_data</a></span>(gd_tox, gd_bench, </a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">                           <span class="dt">left_title =</span> <span class="st">"ToxCast"</span>, </a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">                           <span class="dt">right_title =</span> <span class="st">"WQ Benchmarks"</span>)</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span>(combo, guide_side, <span class="dt">plot_ND =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">                       <span class="dt">x_label =</span> <span class="st">""</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span>(. <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
-<p><img src="benchmarks_files/figure-html/sideBySide-1.png" width="700"></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">gd_tox &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span>(summary_tox)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">gd_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span>(summary_bench, </a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                            <span class="dt">sum_logic =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">combo &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">side_by_side_data</a></span>(gd_tox, gd_bench, </a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">                           <span class="dt">left_title =</span> <span class="st">"ToxCast"</span>, </a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">                           <span class="dt">right_title =</span> <span class="st">"WQ Benchmarks"</span>)</a></code></pre></div>
+<p>The “combo” data frame has a new column “guide_side”, and is a factor containing the “left_title” and “right_title”. This will allow us to facet the output of the chemical boxplots. The ordering of the chemicals is primarily based on the “left” input (so in this case, the ToxCast EARs).</p>
+<p>The output of all the <code>toxEval</code> graphs are <code>ggplot2</code> objects. What this means is you can continue to customize the object using <code>ggplot2</code> functions. In this case, we can use <code>facet_grid</code> to separage the data by the column “guide_side”. The name of the facet column must be include without quotes, as shown here:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span>(combo, guide_side,</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">                       <span class="dt">x_label =</span> <span class="st">""</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span>(. <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
+<p><img src="benchmarks_files/figure-html/sideBySidePlot-1.png" width="700"></p>
 </div>
 <div id="compare-with-concentration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#compare-with-concentration" class="anchor"></a>Compare with Concentration</h2>
-<p>We can create a summary data frame that has concentrations instead of EARs as well.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">summary_conc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_concentration_summary.html">get_concentration_summary</a></span>(tox_list)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">gd_conc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span>(summary_conc)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">combo2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">side_by_side_data</a></span>(gd_conc, gd_bench, </a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">                           <span class="dt">left_title =</span> <span class="st">"Concentration"</span>, </a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">                           <span class="dt">right_title =</span> <span class="st">"WQ Benchmarks"</span>)</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span>(combo2, guide_side, </a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">                       <span class="dt">x_label =</span> <span class="st">""</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span>(. <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
+<p>We can create a summary data frame that has concentrations instead of EARs as well. We’ve included a function <code>get_concentration_summary</code> to make the chemical_summary data frame input directly from the tox_list.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">summary_conc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_concentration_summary.html">get_concentration_summary</a></span>(tox_list)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">gd_conc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span>(summary_conc)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">combo2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/graph_data_prep.html">side_by_side_data</a></span>(gd_conc, gd_bench, </a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">                           <span class="dt">left_title =</span> <span class="st">"Concentration"</span>, </a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">                           <span class="dt">right_title =</span> <span class="st">"WQ Benchmarks"</span>)</a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span>(combo2, guide_side, </a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">                       <span class="dt">x_label =</span> <span class="st">""</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span>(. <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
 <p><img src="benchmarks_files/figure-html/concCompare-1.png" width="700"></p>
 </div>
-<div id="all-3" class="section level2">
+<div id="concentrations-benchmarks-and-toxcast" class="section level2">
 <h2 class="hasAnchor">
-<a href="#all-3" class="anchor"></a>All 3?</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">combo_all_<span class="dv">3</span> &lt;-<span class="st"> </span>combo2 <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span><span class="kw">bind_rows</span>(combo <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">              </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(guide_side <span class="op">==</span><span class="st"> "ToxCast"</span>)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">            )</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">combo_all_<span class="dv">3</span><span class="op">$</span>Class &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(combo_all_<span class="dv">3</span><span class="op">$</span>Class, </a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(combo2<span class="op">$</span>Class))</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">combo_all_<span class="dv">3</span><span class="op">$</span>chnm &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(combo_all_<span class="dv">3</span><span class="op">$</span>chnm, </a>
-<a class="sourceLine" id="cb8-9" data-line-number="9">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(combo2<span class="op">$</span>chnm))</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">combo_all_<span class="dv">3</span><span class="op">$</span>guide_side &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(combo_all_<span class="dv">3</span><span class="op">$</span>guide_side, </a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ToxCast"</span>,</a>
-<a class="sourceLine" id="cb8-12" data-line-number="12">                                  <span class="st">"Concentration"</span>,</a>
-<a class="sourceLine" id="cb8-13" data-line-number="13">                                  <span class="st">"WQ Benchmarks"</span>))</a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span>(combo_all_<span class="dv">3</span>, guide_side, </a>
-<a class="sourceLine" id="cb8-16" data-line-number="16">                       <span class="dt">x_label =</span> <span class="st">""</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span>(. <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
+<a href="#concentrations-benchmarks-and-toxcast" class="anchor"></a>Concentrations, benchmarks, and ToxCast</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">combo_all_<span class="dv">3</span> &lt;-<span class="st"> </span>combo2 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="st">  </span><span class="kw">bind_rows</span>(combo <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="st">              </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(guide_side <span class="op">==</span><span class="st"> "ToxCast"</span>)</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">            )</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">combo_all_<span class="dv">3</span><span class="op">$</span>Class &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(combo_all_<span class="dv">3</span><span class="op">$</span>Class, </a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(combo2<span class="op">$</span>Class))</a>
+<a class="sourceLine" id="cb10-8" data-line-number="8">combo_all_<span class="dv">3</span><span class="op">$</span>chnm &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(combo_all_<span class="dv">3</span><span class="op">$</span>chnm, </a>
+<a class="sourceLine" id="cb10-9" data-line-number="9">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(combo2<span class="op">$</span>chnm))</a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">combo_all_<span class="dv">3</span><span class="op">$</span>guide_side &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(combo_all_<span class="dv">3</span><span class="op">$</span>guide_side, </a>
+<a class="sourceLine" id="cb10-11" data-line-number="11">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Concentration"</span>,</a>
+<a class="sourceLine" id="cb10-12" data-line-number="12">                                  <span class="st">"WQ Benchmarks"</span>,</a>
+<a class="sourceLine" id="cb10-13" data-line-number="13">                                  <span class="st">"ToxCast"</span>))</a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="kw"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span>(combo_all_<span class="dv">3</span>, guide_side, </a>
+<a class="sourceLine" id="cb10-16" data-line-number="16">                       <span class="dt">x_label =</span> <span class="st">""</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-17" data-line-number="17"><span class="st">  </span>ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span>(. <span class="op">~</span><span class="st"> </span>guide_side, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
 <p><img src="benchmarks_files/figure-html/allThree-1.png" width="700"></p>
 </div>
 </div>
@@ -243,92 +250,92 @@
 <h2 class="hasAnchor">
 <a href="#create-custom-benchmark-file" class="anchor"></a>Create custom benchmark file</h2>
 <p>You can make your own benchmark Microsoft ™ Excel file for the example data provided in the package. The benchmark data come from tab 3 of the supplemental table file in Baldwin, et al <a href="https://doi.org/10.1016/j.scitotenv.2016.02.137">2016</a>. It has been cleaned up to simple text to be copy/pasted into a csv file (the information between the single quotes), or run as R code as follows:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">raw_benchmarks &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="dt">text=</span><span class="st">'CAS,chm_nm,source,value</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="st">120-12-7,Anthracene,EPA_acute,86.1</span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="st">50-32-8,Benzo(a)pyrene,EPA_acute,3.98</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="st">206-44-0,Fluoranthene,EPA_acute,29.6</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">91-20-3,Naphthalene,EPA_acute,803</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="st">85-01-8,Phenanthrene,EPA_acute,79.7</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="st">129-00-0,Pyrene,EPA_acute,42</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="st">98-82-8,Cumene,EPA_acute,2140</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="st">1912-24-9,Atrazine,EPA_acute,360</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="st">57837-19-1,Metalaxyl,EPA_acute,14000</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="st">87-86-5,Pentachlorophenol,EPA_acute,19</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="st">1610-18-0,Prometon,EPA_acute,98</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="st">63-25-2,Carbaryl,EPA_acute,0.85</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="st">2921-88-2,Chlorpyrifos,EPA_acute,0.05</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="st">333-41-5,Diazinon,EPA_acute,0.17</span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="st">62-73-7,Dichlorvos,EPA_acute,0.035</span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="st">84852-15-3,"4-Nonylphenol, branched",EPA_acute,28</span></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="st">120-12-7,Anthracene,EPA_chronic,20.7</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="st">50-32-8,Benzo(a)pyrene,EPA_chronic,0.014</span></a>
-<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="st">206-44-0,Fluoranthene,EPA_chronic,7.11</span></a>
-<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="st">91-20-3,Naphthalene,EPA_chronic,24</span></a>
-<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="st">85-01-8,Phenanthrene,EPA_chronic,6.3</span></a>
-<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="st">129-00-0,Pyrene,EPA_chronic,10.1</span></a>
-<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="st">84-66-2,Diethyl phthalate,EPA_chronic,220</span></a>
-<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="st">90-12-0,1-Methylnaphthalene,EPA_chronic,2.1</span></a>
-<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="st">91-57-6,2-Methylnaphthalene,EPA_chronic,4.7</span></a>
-<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="st">98-82-8,Cumene,EPA_chronic,2.6</span></a>
-<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="st">1912-24-9,Atrazine,EPA_chronic,60</span></a>
-<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="st">57837-19-1,Metalaxyl,EPA_chronic,100</span></a>
-<a class="sourceLine" id="cb9-30" data-line-number="30"><span class="st">87-86-5,Pentachlorophenol,EPA_chronic,13</span></a>
-<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="st">63-25-2,Carbaryl,EPA_chronic,0.5</span></a>
-<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="st">2921-88-2,Chlorpyrifos,EPA_chronic,0.04</span></a>
-<a class="sourceLine" id="cb9-33" data-line-number="33"><span class="st">333-41-5,Diazinon,EPA_chronic,0.043</span></a>
-<a class="sourceLine" id="cb9-34" data-line-number="34"><span class="st">62-73-7,Dichlorvos,EPA_chronic,0.0058</span></a>
-<a class="sourceLine" id="cb9-35" data-line-number="35"><span class="st">84852-15-3,"4-Nonylphenol, branched",EPA_chronic,6.6</span></a>
-<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="st">106-46-7,"1,4-Dichlorobenzene",EPA_chronic,15</span></a>
-<a class="sourceLine" id="cb9-37" data-line-number="37"><span class="st">75-25-2,Bromoform,EPA_chronic,320</span></a>
-<a class="sourceLine" id="cb9-38" data-line-number="38"><span class="st">80-05-7,Bisphenol A,other_acute,1518</span></a>
-<a class="sourceLine" id="cb9-39" data-line-number="39"><span class="st">120-12-7,Anthracene,other_acute,13</span></a>
-<a class="sourceLine" id="cb9-40" data-line-number="40"><span class="st">50-32-8,Benzo(a)pyrene,other_acute,0.24</span></a>
-<a class="sourceLine" id="cb9-41" data-line-number="41"><span class="st">206-44-0,Fluoranthene,other_acute,3980</span></a>
-<a class="sourceLine" id="cb9-42" data-line-number="42"><span class="st">91-20-3,Naphthalene,other_acute,190</span></a>
-<a class="sourceLine" id="cb9-43" data-line-number="43"><span class="st">85-01-8,Phenanthrene,other_acute,30</span></a>
-<a class="sourceLine" id="cb9-44" data-line-number="44"><span class="st">84-66-2,Diethyl phthalate,other_acute,1800</span></a>
-<a class="sourceLine" id="cb9-45" data-line-number="45"><span class="st">90-12-0,1-Methylnaphthalene,other_acute,37</span></a>
-<a class="sourceLine" id="cb9-46" data-line-number="46"><span class="st">78-59-1,Isophorone,other_acute,117000</span></a>
-<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="st">127-18-4,Tetrachloroethene (PERC),other_acute,830</span></a>
-<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="st">63-25-2,Carbaryl,other_acute,3.3</span></a>
-<a class="sourceLine" id="cb9-49" data-line-number="49"><span class="st">2921-88-2,Chlorpyrifos,other_acute,0.02</span></a>
-<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="st">106-46-7,"1,4-Dichlorobenzene",other_acute,180</span></a>
-<a class="sourceLine" id="cb9-51" data-line-number="51"><span class="st">75-25-2,Bromoform,other_acute,2300</span></a>
-<a class="sourceLine" id="cb9-52" data-line-number="52"><span class="st">80-05-7,Bisphenol A,other_chronic,0.86</span></a>
-<a class="sourceLine" id="cb9-53" data-line-number="53"><span class="st">120-12-7,Anthracene,other_chronic,0.012</span></a>
-<a class="sourceLine" id="cb9-54" data-line-number="54"><span class="st">50-32-8,Benzo(a)pyrene,other_chronic,0.015</span></a>
-<a class="sourceLine" id="cb9-55" data-line-number="55"><span class="st">206-44-0,Fluoranthene,other_chronic,0.04</span></a>
-<a class="sourceLine" id="cb9-56" data-line-number="56"><span class="st">91-20-3,Naphthalene,other_chronic,1.1</span></a>
-<a class="sourceLine" id="cb9-57" data-line-number="57"><span class="st">85-01-8,Phenanthrene,other_chronic,0.4</span></a>
-<a class="sourceLine" id="cb9-58" data-line-number="58"><span class="st">129-00-0,Pyrene,other_chronic,0.025</span></a>
-<a class="sourceLine" id="cb9-59" data-line-number="59"><span class="st">84-66-2,Diethyl phthalate,other_chronic,110</span></a>
-<a class="sourceLine" id="cb9-60" data-line-number="60"><span class="st">90-12-0,1-Methylnaphthalene,other_chronic,2.1</span></a>
-<a class="sourceLine" id="cb9-61" data-line-number="61"><span class="st">91-57-6,2-Methylnaphthalene,other_chronic,330</span></a>
-<a class="sourceLine" id="cb9-62" data-line-number="62"><span class="st">78-59-1,Isophorone,other_chronic,920</span></a>
-<a class="sourceLine" id="cb9-63" data-line-number="63"><span class="st">127-18-4,Tetrachloroethene (PERC),other_chronic,45</span></a>
-<a class="sourceLine" id="cb9-64" data-line-number="64"><span class="st">1912-24-9,Atrazine,other_chronic,1.8</span></a>
-<a class="sourceLine" id="cb9-65" data-line-number="65"><span class="st">314-40-9,Bromacil,other_chronic,5</span></a>
-<a class="sourceLine" id="cb9-66" data-line-number="66"><span class="st">51218-45-2,Metolachlor,other_chronic,7.8</span></a>
-<a class="sourceLine" id="cb9-67" data-line-number="67"><span class="st">63-25-2,Carbaryl,other_chronic,0.2</span></a>
-<a class="sourceLine" id="cb9-68" data-line-number="68"><span class="st">2921-88-2,Chlorpyrifos,other_chronic,0.002</span></a>
-<a class="sourceLine" id="cb9-69" data-line-number="69"><span class="st">84852-15-3,"4-Nonylphenol, branched",other_chronic,1</span></a>
-<a class="sourceLine" id="cb9-70" data-line-number="70"><span class="st">106-46-7,"1,4-Dichlorobenzene",other_chronic,9.4</span></a>
-<a class="sourceLine" id="cb9-71" data-line-number="71"><span class="st">75-25-2,Bromoform,other_chronic,320'</span>,</a>
-<a class="sourceLine" id="cb9-72" data-line-number="72"><span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">raw_benchmarks &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="dt">text=</span><span class="st">'CAS,chm_nm,source,value</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">120-12-7,Anthracene,EPA_acute,86.1</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">50-32-8,Benzo(a)pyrene,EPA_acute,3.98</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="st">206-44-0,Fluoranthene,EPA_acute,29.6</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="st">91-20-3,Naphthalene,EPA_acute,803</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="st">85-01-8,Phenanthrene,EPA_acute,79.7</span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="st">129-00-0,Pyrene,EPA_acute,42</span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="st">98-82-8,Cumene,EPA_acute,2140</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="st">1912-24-9,Atrazine,EPA_acute,360</span></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="st">57837-19-1,Metalaxyl,EPA_acute,14000</span></a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="st">87-86-5,Pentachlorophenol,EPA_acute,19</span></a>
+<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="st">1610-18-0,Prometon,EPA_acute,98</span></a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="st">63-25-2,Carbaryl,EPA_acute,0.85</span></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="st">2921-88-2,Chlorpyrifos,EPA_acute,0.05</span></a>
+<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="st">333-41-5,Diazinon,EPA_acute,0.17</span></a>
+<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="st">62-73-7,Dichlorvos,EPA_acute,0.035</span></a>
+<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="st">84852-15-3,"4-Nonylphenol, branched",EPA_acute,28</span></a>
+<a class="sourceLine" id="cb11-18" data-line-number="18"><span class="st">120-12-7,Anthracene,EPA_chronic,20.7</span></a>
+<a class="sourceLine" id="cb11-19" data-line-number="19"><span class="st">50-32-8,Benzo(a)pyrene,EPA_chronic,0.014</span></a>
+<a class="sourceLine" id="cb11-20" data-line-number="20"><span class="st">206-44-0,Fluoranthene,EPA_chronic,7.11</span></a>
+<a class="sourceLine" id="cb11-21" data-line-number="21"><span class="st">91-20-3,Naphthalene,EPA_chronic,24</span></a>
+<a class="sourceLine" id="cb11-22" data-line-number="22"><span class="st">85-01-8,Phenanthrene,EPA_chronic,6.3</span></a>
+<a class="sourceLine" id="cb11-23" data-line-number="23"><span class="st">129-00-0,Pyrene,EPA_chronic,10.1</span></a>
+<a class="sourceLine" id="cb11-24" data-line-number="24"><span class="st">84-66-2,Diethyl phthalate,EPA_chronic,220</span></a>
+<a class="sourceLine" id="cb11-25" data-line-number="25"><span class="st">90-12-0,1-Methylnaphthalene,EPA_chronic,2.1</span></a>
+<a class="sourceLine" id="cb11-26" data-line-number="26"><span class="st">91-57-6,2-Methylnaphthalene,EPA_chronic,4.7</span></a>
+<a class="sourceLine" id="cb11-27" data-line-number="27"><span class="st">98-82-8,Cumene,EPA_chronic,2.6</span></a>
+<a class="sourceLine" id="cb11-28" data-line-number="28"><span class="st">1912-24-9,Atrazine,EPA_chronic,60</span></a>
+<a class="sourceLine" id="cb11-29" data-line-number="29"><span class="st">57837-19-1,Metalaxyl,EPA_chronic,100</span></a>
+<a class="sourceLine" id="cb11-30" data-line-number="30"><span class="st">87-86-5,Pentachlorophenol,EPA_chronic,13</span></a>
+<a class="sourceLine" id="cb11-31" data-line-number="31"><span class="st">63-25-2,Carbaryl,EPA_chronic,0.5</span></a>
+<a class="sourceLine" id="cb11-32" data-line-number="32"><span class="st">2921-88-2,Chlorpyrifos,EPA_chronic,0.04</span></a>
+<a class="sourceLine" id="cb11-33" data-line-number="33"><span class="st">333-41-5,Diazinon,EPA_chronic,0.043</span></a>
+<a class="sourceLine" id="cb11-34" data-line-number="34"><span class="st">62-73-7,Dichlorvos,EPA_chronic,0.0058</span></a>
+<a class="sourceLine" id="cb11-35" data-line-number="35"><span class="st">84852-15-3,"4-Nonylphenol, branched",EPA_chronic,6.6</span></a>
+<a class="sourceLine" id="cb11-36" data-line-number="36"><span class="st">106-46-7,"1,4-Dichlorobenzene",EPA_chronic,15</span></a>
+<a class="sourceLine" id="cb11-37" data-line-number="37"><span class="st">75-25-2,Bromoform,EPA_chronic,320</span></a>
+<a class="sourceLine" id="cb11-38" data-line-number="38"><span class="st">80-05-7,Bisphenol A,other_acute,1518</span></a>
+<a class="sourceLine" id="cb11-39" data-line-number="39"><span class="st">120-12-7,Anthracene,other_acute,13</span></a>
+<a class="sourceLine" id="cb11-40" data-line-number="40"><span class="st">50-32-8,Benzo(a)pyrene,other_acute,0.24</span></a>
+<a class="sourceLine" id="cb11-41" data-line-number="41"><span class="st">206-44-0,Fluoranthene,other_acute,3980</span></a>
+<a class="sourceLine" id="cb11-42" data-line-number="42"><span class="st">91-20-3,Naphthalene,other_acute,190</span></a>
+<a class="sourceLine" id="cb11-43" data-line-number="43"><span class="st">85-01-8,Phenanthrene,other_acute,30</span></a>
+<a class="sourceLine" id="cb11-44" data-line-number="44"><span class="st">84-66-2,Diethyl phthalate,other_acute,1800</span></a>
+<a class="sourceLine" id="cb11-45" data-line-number="45"><span class="st">90-12-0,1-Methylnaphthalene,other_acute,37</span></a>
+<a class="sourceLine" id="cb11-46" data-line-number="46"><span class="st">78-59-1,Isophorone,other_acute,117000</span></a>
+<a class="sourceLine" id="cb11-47" data-line-number="47"><span class="st">127-18-4,Tetrachloroethene (PERC),other_acute,830</span></a>
+<a class="sourceLine" id="cb11-48" data-line-number="48"><span class="st">63-25-2,Carbaryl,other_acute,3.3</span></a>
+<a class="sourceLine" id="cb11-49" data-line-number="49"><span class="st">2921-88-2,Chlorpyrifos,other_acute,0.02</span></a>
+<a class="sourceLine" id="cb11-50" data-line-number="50"><span class="st">106-46-7,"1,4-Dichlorobenzene",other_acute,180</span></a>
+<a class="sourceLine" id="cb11-51" data-line-number="51"><span class="st">75-25-2,Bromoform,other_acute,2300</span></a>
+<a class="sourceLine" id="cb11-52" data-line-number="52"><span class="st">80-05-7,Bisphenol A,other_chronic,0.86</span></a>
+<a class="sourceLine" id="cb11-53" data-line-number="53"><span class="st">120-12-7,Anthracene,other_chronic,0.012</span></a>
+<a class="sourceLine" id="cb11-54" data-line-number="54"><span class="st">50-32-8,Benzo(a)pyrene,other_chronic,0.015</span></a>
+<a class="sourceLine" id="cb11-55" data-line-number="55"><span class="st">206-44-0,Fluoranthene,other_chronic,0.04</span></a>
+<a class="sourceLine" id="cb11-56" data-line-number="56"><span class="st">91-20-3,Naphthalene,other_chronic,1.1</span></a>
+<a class="sourceLine" id="cb11-57" data-line-number="57"><span class="st">85-01-8,Phenanthrene,other_chronic,0.4</span></a>
+<a class="sourceLine" id="cb11-58" data-line-number="58"><span class="st">129-00-0,Pyrene,other_chronic,0.025</span></a>
+<a class="sourceLine" id="cb11-59" data-line-number="59"><span class="st">84-66-2,Diethyl phthalate,other_chronic,110</span></a>
+<a class="sourceLine" id="cb11-60" data-line-number="60"><span class="st">90-12-0,1-Methylnaphthalene,other_chronic,2.1</span></a>
+<a class="sourceLine" id="cb11-61" data-line-number="61"><span class="st">91-57-6,2-Methylnaphthalene,other_chronic,330</span></a>
+<a class="sourceLine" id="cb11-62" data-line-number="62"><span class="st">78-59-1,Isophorone,other_chronic,920</span></a>
+<a class="sourceLine" id="cb11-63" data-line-number="63"><span class="st">127-18-4,Tetrachloroethene (PERC),other_chronic,45</span></a>
+<a class="sourceLine" id="cb11-64" data-line-number="64"><span class="st">1912-24-9,Atrazine,other_chronic,1.8</span></a>
+<a class="sourceLine" id="cb11-65" data-line-number="65"><span class="st">314-40-9,Bromacil,other_chronic,5</span></a>
+<a class="sourceLine" id="cb11-66" data-line-number="66"><span class="st">51218-45-2,Metolachlor,other_chronic,7.8</span></a>
+<a class="sourceLine" id="cb11-67" data-line-number="67"><span class="st">63-25-2,Carbaryl,other_chronic,0.2</span></a>
+<a class="sourceLine" id="cb11-68" data-line-number="68"><span class="st">2921-88-2,Chlorpyrifos,other_chronic,0.002</span></a>
+<a class="sourceLine" id="cb11-69" data-line-number="69"><span class="st">84852-15-3,"4-Nonylphenol, branched",other_chronic,1</span></a>
+<a class="sourceLine" id="cb11-70" data-line-number="70"><span class="st">106-46-7,"1,4-Dichlorobenzene",other_chronic,9.4</span></a>
+<a class="sourceLine" id="cb11-71" data-line-number="71"><span class="st">75-25-2,Bromoform,other_chronic,320'</span>,</a>
+<a class="sourceLine" id="cb11-72" data-line-number="72"><span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Looking at the “source” column, there are 4 distinct values: EPA_acute, EPA_chronic, other_acute, other_chronic. We have a few choices, we can keep each of those as an “endPoint”, or make the choices only acute/chronic, or even have the endPoints be EPA/other with acute/chronic groupings. In this example, we’ll show how to use this data to make a water quality benchmark analysis just based on the acute/chronic distinction. The “value” in the data above is already in <span class="math inline">\(\mu\)</span>g/L, which matches up with our data. If the units were not aligned, the workflow would need to include converting the benchmark units to match whatever the data is reported in.</p>
 <p>Essentially, the work that must be done is to rename some columns, and figure out how to classify the benchmarks. The following code uses the <code>dplyr</code> and <code>tidyr</code> packages for this:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">bench &lt;-<span class="st"> </span>raw_benchmarks <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Value =</span> value) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span>(source, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"groupCol"</span>, <span class="st">"endPoint"</span>), <span class="dt">sep =</span> <span class="st">"_"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(tox_chemicals, </a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">                   <span class="dt">CAS =</span> Substance_CASRN,</a>
-<a class="sourceLine" id="cb10-8" data-line-number="8">                   <span class="dt">Chemical =</span> Substance_Name), <span class="dt">by =</span> <span class="st">"CAS"</span>)</a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10">bench<span class="op">$</span>Chemical[<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(bench<span class="op">$</span>Chemical)] &lt;-<span class="st"> </span>bench<span class="op">$</span>chm_nm[<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(bench<span class="op">$</span>Chemical)]</a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(bench)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">bench &lt;-<span class="st"> </span>raw_benchmarks <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Value =</span> value) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span>(source, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"groupCol"</span>, <span class="st">"endPoint"</span>), <span class="dt">sep =</span> <span class="st">"_"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(tox_chemicals, </a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">                   <span class="dt">CAS =</span> Substance_CASRN,</a>
+<a class="sourceLine" id="cb12-8" data-line-number="8">                   <span class="dt">Chemical =</span> Substance_Name), <span class="dt">by =</span> <span class="st">"CAS"</span>)</a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10">bench<span class="op">$</span>Chemical[<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(bench<span class="op">$</span>Chemical)] &lt;-<span class="st"> </span>bench<span class="op">$</span>chm_nm[<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(bench<span class="op">$</span>Chemical)]</a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(bench)</a></code></pre></div>
 <pre><code>##        CAS         chm_nm groupCol endPoint  Value       Chemical
 ## 1 120-12-7     Anthracene      EPA    acute  86.10     Anthracene
 ## 2  50-32-8 Benzo(a)pyrene      EPA    acute   3.98 Benzo(a)pyrene
@@ -337,22 +344,22 @@
 ## 5  85-01-8   Phenanthrene      EPA    acute  79.70   Phenanthrene
 ## 6 129-00-0         Pyrene      EPA    acute  42.00         Pyrene</code></pre>
 <p>Now we need to get that information into a “tox_list”. Here is how to create the Microsoft ™ Excel file using the <code>openxlsx</code> package:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">                                      <span class="dt">package=</span><span class="st">"toxEval"</span>),</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">                          <span class="st">"OWC_data_fromSup.xlsx"</span>) </a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">tox_list_wq_bench &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">Data =</span> tox_list<span class="op">$</span>chem_data,</a>
-<a class="sourceLine" id="cb12-7" data-line-number="7">                          <span class="dt">Chemicals =</span> tox_list<span class="op">$</span>chem_info,</a>
-<a class="sourceLine" id="cb12-8" data-line-number="8">                          <span class="dt">Sites =</span> tox_list<span class="op">$</span>chem_site,</a>
-<a class="sourceLine" id="cb12-9" data-line-number="9">                          <span class="dt">Benchmarks =</span> bench)</a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(openxlsx)</a>
-<a class="sourceLine" id="cb12-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html">write.xlsx</a></span>(tox_list_wq_bench, </a>
-<a class="sourceLine" id="cb12-14" data-line-number="14">           <span class="dt">file =</span> <span class="st">"OWC_custom_bench.xlsx"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>,</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">                                      <span class="dt">package=</span><span class="st">"toxEval"</span>),</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">                          <span class="st">"OWC_data_fromSup.xlsx"</span>) </a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">tox_list_wq_bench &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">Data =</span> tox_list<span class="op">$</span>chem_data,</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">                          <span class="dt">Chemicals =</span> tox_list<span class="op">$</span>chem_info,</a>
+<a class="sourceLine" id="cb14-8" data-line-number="8">                          <span class="dt">Sites =</span> tox_list<span class="op">$</span>chem_site,</a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">                          <span class="dt">Benchmarks =</span> bench)</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(openxlsx)</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html">write.xlsx</a></span>(tox_list_wq_bench, </a>
+<a class="sourceLine" id="cb14-14" data-line-number="14">           <span class="dt">file =</span> <span class="st">"OWC_custom_bench.xlsx"</span>)</a></code></pre></div>
 <p>Now, we can use this new benchmark tox_list to generate our custom benchmark figures and tables.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">tox_list_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(<span class="st">"OWC_custom_bench.xlsx"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">tox_list_bench &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(<span class="st">"OWC_custom_bench.xlsx"</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="exporting-toxcast-benchmarks" class="section level1">
@@ -360,25 +367,25 @@
 <a href="#exporting-toxcast-benchmarks" class="anchor"></a>Exporting ToxCast Benchmarks</h1>
 <p>It is also possible to export the equivalent “Benchmark” data from the ToxCast analysis. Within the Shiny app, there is a button labeled “Download Benchmarks”. If you are navigating the app and find a set of conditions that make sense for your analysis, it is probably a good idea to create a record of the ToxCast ACC values.</p>
 <p>Let’s use the data provided in the package to show an example of how to do this directly in R:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>),</a>
-<a class="sourceLine" id="cb14-5" data-line-number="5">                          <span class="st">"OWC_data_fromSup.xlsx"</span>) </a>
-<a class="sourceLine" id="cb14-6" data-line-number="6">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
-<a class="sourceLine" id="cb14-7" data-line-number="7">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)</a>
-<a class="sourceLine" id="cb14-8" data-line-number="8">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(<span class="dt">ACC =</span> ACC)</a>
-<a class="sourceLine" id="cb14-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb14-10" data-line-number="10">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)</a>
-<a class="sourceLine" id="cb14-11" data-line-number="11">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep)</a>
-<a class="sourceLine" id="cb14-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb14-13" data-line-number="13">benchmarks &lt;-<span class="st"> </span>ACC <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(endPoint <span class="op">%in%</span><span class="st"> </span>filtered_ep<span class="op">$</span>endPoint) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">Value =</span> ACC_value,</a>
-<a class="sourceLine" id="cb14-16" data-line-number="16">         <span class="dt">Chemical =</span> chnm) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(filtered_ep, <span class="dt">by =</span> <span class="st">"endPoint"</span>)</a>
-<a class="sourceLine" id="cb14-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb14-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span>(benchmarks)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">path_to_file &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="dt">package=</span><span class="st">"toxEval"</span>),</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">                          <span class="st">"OWC_data_fromSup.xlsx"</span>) </a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">tox_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/create_toxEval.html">create_toxEval</a></span>(path_to_file)</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ACC.html">get_ACC</a></span>(tox_list<span class="op">$</span>chem_info<span class="op">$</span>CAS)</a>
+<a class="sourceLine" id="cb16-8" data-line-number="8">ACC &lt;-<span class="st"> </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(<span class="dt">ACC =</span> ACC)</a>
+<a class="sourceLine" id="cb16-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10">cleaned_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(end_point_info)</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">filtered_ep &lt;-<span class="st"> </span><span class="kw"><a href="../reference/filter_groups.html">filter_groups</a></span>(cleaned_ep)</a>
+<a class="sourceLine" id="cb16-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb16-13" data-line-number="13">benchmarks &lt;-<span class="st"> </span>ACC <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(endPoint <span class="op">%in%</span><span class="st"> </span>filtered_ep<span class="op">$</span>endPoint) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="dt">Value =</span> ACC_value,</a>
+<a class="sourceLine" id="cb16-16" data-line-number="16">         <span class="dt">Chemical =</span> chnm) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-17" data-line-number="17"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(filtered_ep, <span class="dt">by =</span> <span class="st">"endPoint"</span>)</a>
+<a class="sourceLine" id="cb16-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span>(benchmarks)</a></code></pre></div>
 <pre><code>## [1] "CAS"        "flags"      "endPoint"   "ACC"        "MlWt"      
 ## [6] "Value"      "Chemical"   "groupCol"   "assaysFull"</code></pre>
 <p>The “benchmarks” data frame includes all the information you would need to reproduce the <code>toxEval</code> analysis in the future. This can be important if the ToxCast database is updated, yet you want to reproduce your original results.</p>
@@ -402,7 +409,7 @@
 <li><a href="#toxicity-quotient">Toxicity Quotient</a></li>
       <li><a href="#compare-with-toxcast">Compare with ToxCast</a></li>
       <li><a href="#compare-with-concentration">Compare with Concentration</a></li>
-      <li><a href="#all-3">All 3?</a></li>
+      <li><a href="#concentrations-benchmarks-and-toxcast">Concentrations, benchmarks, and ToxCast</a></li>
       </ul>
 </li>
       <li>
