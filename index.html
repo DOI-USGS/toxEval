@@ -235,11 +235,12 @@
 <a href="#installation-of-toxeval" class="anchor"></a>Installation of toxEval</h2>
 <p>To install the toxEval package, you must be using R 3.0 or greater and run the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>)</a></code></pre></div>
-<p>To get inter-CRAN release updates, use the command:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>,<span class="dt">repos=</span><span class="st">"https://owi.usgs.gov/R"</span>)</a></code></pre></div>
 <p>To get cutting-edge changes, install from GitHub using the <code>devtools</code> packages:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">install_github</span>(<span class="st">"USGS-R/toxEval"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">install_github</span>(<span class="st">"USGS-R/toxEval"</span>,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">               <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">               <span class="dt">build_opts =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"--no-resave-data"</span>,</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">                              <span class="st">"--no-manual"</span>))</a></code></pre></div>
 <p>Regularly, it is a good idea to update <em>ALL</em> your packages in R. If using RStudio, this is quite easy, there’s an Update button in the “Packages” tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.</p>
 <p><img src="articles/update.png" alt="update"></p>
 </div>
@@ -251,36 +252,36 @@
 <li>Open RStudio</li>
 <li>In the Console (lower-left window of RStudio) paste the following:</li>
 </ol>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw"><a href="reference/explore_endpoints.html">explore_endpoints</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(toxEval)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw"><a href="reference/explore_endpoints.html">explore_endpoints</a></span>()</a></code></pre></div>
 </div>
 <div id="citing-toxeval" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citing-toxeval" class="anchor"></a>Citing toxEval</h2>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="dt">package =</span> <span class="st">"toxEval"</span>)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; To cite toxEval in publications, please use:</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt;   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,</span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt;   Ankley, G.T., 2018, toxEval: Evaluation of measured</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;   concentration data using the ToxCast high-throughput screening</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;   database or a user-defined set of concentration benchmarks. R</span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt;   package version 1.0.0., https://code.usgs.gov/water/toxEval,</span></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;   doi:10.5066/P906UQ5I</span></a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></a>
-<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt;   @Manual{,</span></a>
-<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#&gt;     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},</span></a>
-<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt;     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},</span></a>
-<a class="sourceLine" id="cb10-17" data-line-number="17"><span class="co">#&gt;     publisher = {U.S. Geological Survey},</span></a>
-<a class="sourceLine" id="cb10-18" data-line-number="18"><span class="co">#&gt;     version = {1.0.0},</span></a>
-<a class="sourceLine" id="cb10-19" data-line-number="19"><span class="co">#&gt;     address = {Reston, VA},</span></a>
-<a class="sourceLine" id="cb10-20" data-line-number="20"><span class="co">#&gt;     institution = {U.S. Geological Survey},</span></a>
-<a class="sourceLine" id="cb10-21" data-line-number="21"><span class="co">#&gt;     year = {2018},</span></a>
-<a class="sourceLine" id="cb10-22" data-line-number="22"><span class="co">#&gt;     doi = {10.5066/P906UQ5I},</span></a>
-<a class="sourceLine" id="cb10-23" data-line-number="23"><span class="co">#&gt;     url = {https://code.usgs.gov/water/toxEval},</span></a>
-<a class="sourceLine" id="cb10-24" data-line-number="24"><span class="co">#&gt;   }</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="dt">package =</span> <span class="st">"toxEval"</span>)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; To cite toxEval in publications, please use:</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;   Ankley, G.T., 2018, toxEval: Evaluation of measured</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt;   concentration data using the ToxCast high-throughput screening</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;   database or a user-defined set of concentration benchmarks. R</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt;   package version 1.0.0., https://code.usgs.gov/water/toxEval,</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt;   doi:10.5066/P906UQ5I</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;   @Manual{,</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt;     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt;     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt;     publisher = {U.S. Geological Survey},</span></a>
+<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt;     version = {1.0.0},</span></a>
+<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt;     address = {Reston, VA},</span></a>
+<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#&gt;     institution = {U.S. Geological Survey},</span></a>
+<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#&gt;     year = {2018},</span></a>
+<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#&gt;     doi = {10.5066/P906UQ5I},</span></a>
+<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co">#&gt;     url = {https://code.usgs.gov/water/toxEval},</span></a>
+<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt;   }</span></a></code></pre></div>
 </div>
 <div id="disclaimer" class="section level2">
 <h2 class="hasAnchor">
