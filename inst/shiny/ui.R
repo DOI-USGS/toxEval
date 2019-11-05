@@ -36,7 +36,9 @@ flagsALL <- c("Borderline active",
               "Noisy data",                                 
               "Hit-call potentially confounded by overfitting",
               "Gain AC50 < lowest conc & loss AC50 < mean conc",
-              "Biochemical assay with < 50% efficacy")
+              "Biochemical assay with < 50% efficacy",
+              "Less than 50% efficacy",
+              "AC50 less than lowest concentration tested")
 
 shortFlags <- c("Borderline",
                 "OnlyHighest",
@@ -44,7 +46,9 @@ shortFlags <- c("Borderline",
                 "Noisy",
                 "HitCall",
                 "GainAC50",
-                "Biochemical")
+                "Biochemical",
+                "LessThan50",
+                "ACCLessThan")
 
 assay_names <- c("Apredica" = "APR",
                  "Attagene" = "ATG",

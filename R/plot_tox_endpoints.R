@@ -124,7 +124,8 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- chemical_summary %>%
-      mutate(logEAR = log(EAR),
+      mutate(EAR = ifelse(EAR == 0, NA, EAR),
+             logEAR = log(EAR),
              endPoint = as.character(endPoint)) %>% 
       group_by(endPoint) %>%
       summarise(median = median(logEAR, na.rm = TRUE)) %>%
@@ -192,7 +193,7 @@ plot_tox_endpoints <- function(chemical_summary,
         summarise(sumEAR=sum(EAR, na.rm = TRUE)) %>%
         ungroup() %>%
         group_by(site, category, endPoint) %>%
-        summarise(meanEAR=ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+        summarise(meanEAR=ifelse(mean_logic, mean(sumEAR, na.rm = TRUE), max(sumEAR, na.rm = TRUE))) %>%
         ungroup() %>%
         mutate(category = as.character(category))      
     }
@@ -210,7 +211,8 @@ plot_tox_endpoints <- function(chemical_summary,
     namesToPlotEP <- as.character(countNonZero$endPoint)
 
     orderColsBy <- graphData %>%
-      mutate(logEAR = log(meanEAR)) %>% 
+      mutate(meanEAR = ifelse(meanEAR == 0, NA, meanEAR),
+             logEAR = log(meanEAR)) %>% 
       group_by(endPoint) %>%
       summarise(median = quantile(logEAR[!is.na(logEAR)], 0.5), na.rm = TRUE) %>%
       ungroup() %>% 
@@ -223,7 +225,7 @@ plot_tox_endpoints <- function(chemical_summary,
                           orderColsBy$endPoint[!is.na(orderColsBy$median)])
     }
   
-    if(!is.na(top_num)){
+    if(!is.na(top_num) & top_num <= nrow(orderColsBy)){
       orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
       graphData <- graphData[graphData[["endPoint"]] %in% orderedLevelsEP,]
       countNonZero <- countNonZero[countNonZero[["endPoint"]] %in% orderedLevelsEP,]
@@ -232,8 +234,8 @@ plot_tox_endpoints <- function(chemical_summary,
     }
     
     graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
-    
-    stackedPlot <- ggplot(graphData) +
+
+    stackedPlot <- ggplot(graphData[graphData$meanEAR != 0,]) +
       theme_bw() +
       theme(axis.text = element_text(color = "black"),
             axis.title.y = element_blank(),
