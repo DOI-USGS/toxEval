@@ -41,6 +41,7 @@ reference:
       - clean_endPoint_info
       - get_ACC
       - get_chemical_summary
+      - get_concentration_summary
       - remove_flags
       - filter_groups
       - side_by_side_data
