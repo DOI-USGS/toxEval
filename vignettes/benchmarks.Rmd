@@ -154,10 +154,11 @@ The mandatory columns are: CAS, Value, groupCol, Chemical. Additional column can
 
 # Explore Benchmarks
 
-In this section, we will assume there is a toxEval input file called "OWC_custom_bench.xlsx", as descibed in [Preparing Benchmarks](#dataRequirements). The next section [Create Example File](#setupExample) will walk through creating the "OWC_custom_bench.xlsx" file on the example data provided within the `toxEval` package.
+In this section, we will assume there is a toxEval input file named "OWC_custom_bench.xlsx", as descibed in [Preparing Benchmarks](#dataRequirements). The next section [Create Example File](#setupExample) will walk through creating the "OWC_custom_bench.xlsx" file on the example data provided within the `toxEval` package.
 
 ## Toxicity Quotient
 
+This example uses water quality guidelines/benchmarks from EPA and other sources. The guidelines are classified into chronic and acute categories.
 
 ```{r get_bench, eval=FALSE}
 tox_list_bench <- create_toxEval("OWC_custom_bench.xlsx")
@@ -168,10 +169,16 @@ tox_list_bench <- create_toxEval(here::here("vignettes/OWC_custom_bench.xlsx"))
 
 ```
 
-
-```{r plotBenchmarks}
+Using a "Benchmark" tab in the input file, you can skip the `ACC` and `filtered_ep` arguments:
+```{r createBenchmarks}
 summary_bench <- get_chemical_summary(tox_list_bench)
+```
 
+For ToxCast EARs, it makes sense in the boxplot visualization to sum the EARs of all endpoints for a single chemical. This is due to the specific nature of the ToxCast endpoint suite of tests.
+
+Some benchmarks such as these water quality guidelines already take into account the overall effects, and you do not want to sum those values. There is an argument in the `plot_tox_boxplots` function that allows you to specify: `sum_logic` (where TRUE sums the EARs for each chemical, and FALSE does not).
+
+```{r plotBenchChems}
 plot_tox_boxplots(summary_bench, 
                   category = "Chemical", 
                   sum_logic = FALSE,
@@ -181,14 +188,18 @@ plot_tox_boxplots(summary_bench,
 ```{r plotBenchmarksStack, fig.height=4}
 plot_tox_stacks(summary_bench,
                 chem_site = tox_list_bench$chem_site,
-                category = "Chemical", sum_logic = FALSE,
+                category = "Chemical", 
+                sum_logic = FALSE,
                 y_label = "Toxicity Quotient",
                 include_legend = FALSE)
 
 ```
 
+The `category` argument can be set to  "Biological", and which then shows the distributions of the acute and chronic groupings. 
+
 ```{r otherPlot, fig.height=2}
 plot_tox_endpoints(summary_bench, 
+                   category = "Biological",
                    x_label = "Toxicity Quotient")
 ```
 
@@ -216,8 +227,7 @@ summary_tox <- get_chemical_summary(tox_list,
 
 We can use the `side_by_side_data` function to create a single data frame that the `toxEval` plotting functions can use.
 
-```{r sideBySide, fig.height=9}
-
+```{r sideBySide}
 gd_tox <- graph_chem_data(summary_tox)
 gd_bench <- graph_chem_data(summary_bench, 
                             sum_logic = FALSE)
@@ -225,8 +235,14 @@ gd_bench <- graph_chem_data(summary_bench,
 combo <- side_by_side_data(gd_tox, gd_bench, 
                            left_title = "ToxCast", 
                            right_title = "WQ Benchmarks")
+```
 
-plot_chemical_boxplots(combo, guide_side, plot_ND = TRUE,
+The "combo" data frame has a new column "guide_side", and is a factor containing the "left_title" and "right_title". This will allow us to facet the output of the chemical boxplots. The ordering of the chemicals is primarily based on the "left" input (so in this case, the ToxCast EARs). 
+
+The output of all the `toxEval` graphs are `ggplot2` objects. What this means is you can continue to customize the object using `ggplot2` functions. In this case, we can use `facet_grid` to separage the data by the column "guide_side". The name of the facet column must be include without quotes, as shown here:
+
+```{r sideBySidePlot, fig.height=9}
+plot_chemical_boxplots(combo, guide_side,
                        x_label = "") +
   ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
 
@@ -236,7 +252,7 @@ plot_chemical_boxplots(combo, guide_side, plot_ND = TRUE,
 
 ## Compare with Concentration
 
-We can create a summary data frame that has concentrations instead of EARs as well.
+We can create a summary data frame that has concentrations instead of EARs as well. We've included a function `get_concentration_summary` to make the chemical_summary data frame input directly from the tox_list.
 
 ```{r concCompare, fig.height=9}
 summary_conc <- get_concentration_summary(tox_list)
@@ -253,10 +269,9 @@ plot_chemical_boxplots(combo2, guide_side,
 
 ```
 
-## All 3?
+## Concentrations, benchmarks, and ToxCast
 
 ```{r allThree, fig.height=9}
-
 
 combo_all_3 <- combo2 %>% 
   bind_rows(combo %>% 
@@ -268,9 +283,9 @@ combo_all_3$Class <- factor(combo_all_3$Class,
 combo_all_3$chnm <- factor(combo_all_3$chnm, 
                        levels = levels(combo2$chnm))
 combo_all_3$guide_side <- factor(combo_all_3$guide_side, 
-                       levels = c("ToxCast",
-                                  "Concentration",
-                                  "WQ Benchmarks"))
+                       levels = c("Concentration",
+                                  "WQ Benchmarks",
+                                  "ToxCast"))
 
 plot_chemical_boxplots(combo_all_3, guide_side, 
                        x_label = "") +
