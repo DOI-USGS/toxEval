@@ -319,3 +319,30 @@ test_that("Calculating completness", {
   expect_equal(nrow(complete_df_cat), 1026)
   
 })
+
+test_that("Calculating concentrations", {
+  testthat::skip_on_cran()
+  
+  summary_conc <- get_concentration_summary(tox_list)
+  
+  expect_equal(nrow(tox_list$chem_data), nrow(summary_conc))
+  expect_equivalent(summary_conc$EAR, chem_data$Value)
+  
+})
+
+test_that("Side by side", {
+  testthat::skip_on_cran()
+
+  gd_conc <- graph_chem_data(summary_conc)
+  gd_tox <- graph_chem_data(chemical_summary)
+  
+  combo <- side_by_side_data(gd_conc, gd_tox, 
+                             left_title = "Concentration", 
+                             right_title = "ToxCast")
+  
+  expect_true("guide_side" %in% names(combo))
+  expect_equal(c("Concentration", "ToxCast"), 
+               levels(combo$guide_side) )
+
+  
+})
