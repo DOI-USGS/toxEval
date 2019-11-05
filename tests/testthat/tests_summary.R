@@ -328,11 +328,6 @@ test_that("Calculating concentrations", {
   expect_equal(nrow(tox_list$chem_data), nrow(summary_conc))
   expect_equivalent(summary_conc$EAR, chem_data$Value)
   
-})
-
-test_that("Side by side", {
-  testthat::skip_on_cran()
-
   gd_conc <- graph_chem_data(summary_conc)
   gd_tox <- graph_chem_data(chemical_summary)
   
@@ -343,6 +338,6 @@ test_that("Side by side", {
   expect_true("guide_side" %in% names(combo))
   expect_equal(c("Concentration", "ToxCast"), 
                levels(combo$guide_side) )
-
   
 })
+
