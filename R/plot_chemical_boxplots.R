@@ -22,6 +22,10 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
                 "#FFFF00","#78C15A","#79AEAE","#FF0000","#00FF00","#B1611D",
                 "#FFA500","#F4426e", "#800000", "#808000")
   
+  if(nrow(chemical_summary) == 0){
+    stop("No rows in the chemical_summary data frame")
+  }
+  
   if(!plot_ND){
     if("meanEAR" %in% names(chemical_summary)){
       chemical_summary <- chemical_summary[chemical_summary$meanEAR > 0,]

@@ -104,6 +104,10 @@ plot_tox_heatmap <- function(chemical_summary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
+  if(nrow(chemical_summary) == 0){
+    stop("No rows in the chemical_summary data frame")
+  }
+  
   SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
   site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
 
