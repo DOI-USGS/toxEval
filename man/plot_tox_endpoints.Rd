@@ -78,9 +78,6 @@ plot_tox_endpoints(chemical_summary,
                    filterBy = "Cell Cycle",
                    top_num = 10, 
                    x_label = "EAR")
-plot_tox_endpoints(chemical_summary, 
-                   category = "Chemical Class",
-                   top_num = 10, filterBy = "PAHs")
 plot_tox_endpoints(chemical_summary,
                    category = "Chemical Class", filterBy = "PAHs",
                    top_num = 10, hit_threshold = 0.001)
