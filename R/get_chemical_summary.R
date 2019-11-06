@@ -177,6 +177,26 @@ orderChem <- function(graphData, orderClass_df){
   return(orderChem_df)
 }
 
+
+orderEP <- function(graphData){
+  
+  chnm <- Class <- logEAR <- meanEAR <- median <- ".dplyr"
+  
+  graphData$meanEAR[graphData$meanEAR == 0] <- NA
+  
+  orderEP_df <- graphData %>%
+    mutate(logEAR = log(meanEAR)) %>% 
+    group_by(endPoint) %>%
+    summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    ungroup() 
+  
+  orderEP_df$median[is.na(orderEP_df$median)] <- min(orderEP_df$median, na.rm = TRUE) - 1
+  
+  orderEP_df <- arrange(orderEP_df, median)
+  
+  return(orderEP_df)
+}
+
 #' Remove endpoints with specific data quality flags from data
 #' 
 #' Through the ToxCast program quality assurance procedures, information 

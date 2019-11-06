@@ -79,6 +79,10 @@ plot_tox_stacks <- function(chemical_summary,
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
   
+  if(nrow(chemical_summary) == 0){
+    stop("No rows in the chemical_summary data frame")
+  }
+  
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- maxEAR <- ".dplyr"
   SiteID <- site_grouping <- n <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
   

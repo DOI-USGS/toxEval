@@ -106,6 +106,10 @@ plot_tox_boxplots <- function(chemical_summary,
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   x <- y <- CAS <- logEAR <- hits <- ".dplyr"
 
+  if(nrow(chemical_summary) == 0){
+    stop("No rows in the chemical_summary data frame")
+  }
+  
   if(category == "Chemical"){
 
     chemPlot <- plot_chemical_boxplots(chemical_summary, 
