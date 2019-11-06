@@ -58,9 +58,6 @@
 #'                    filterBy = "Cell Cycle",
 #'                    top_num = 10, 
 #'                    x_label = "EAR")
-#' plot_tox_endpoints(chemical_summary, 
-#'                    category = "Chemical Class",
-#'                    top_num = 10, filterBy = "PAHs")
 #' plot_tox_endpoints(chemical_summary,
 #'                    category = "Chemical Class", filterBy = "PAHs",
 #'                    top_num = 10, hit_threshold = 0.001)
@@ -202,7 +199,7 @@ plot_tox_endpoints <- function(chemical_summary,
     
     countNonZero <- graphData %>%
       group_by(endPoint) %>%
-      summarise(nonZero = as.character(sum(meanEAR>0, na.rm = TRUE)),
+      summarise(nonZero = as.character(sum(meanEAR > 0, na.rm = TRUE)),
                 hits = as.character(sum(meanEAR > hit_threshold, na.rm = TRUE))) %>% 
       ungroup()
 
@@ -214,7 +211,7 @@ plot_tox_endpoints <- function(chemical_summary,
       mutate(meanEAR = ifelse(meanEAR == 0, NA, meanEAR),
              logEAR = log(meanEAR)) %>% 
       group_by(endPoint) %>%
-      summarise(median = quantile(logEAR[!is.na(logEAR)], 0.5), na.rm = TRUE) %>%
+      summarise(median = quantile(logEAR[!is.na(logEAR)], 0.5, na.rm = TRUE)) %>%
       ungroup() %>% 
       arrange(median)
   
