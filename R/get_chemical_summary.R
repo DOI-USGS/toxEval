@@ -180,7 +180,7 @@ orderChem <- function(graphData, orderClass_df){
 
 orderEP <- function(graphData){
   
-  chnm <- Class <- logEAR <- meanEAR <- median <- ".dplyr"
+  endPoint <- logEAR <- meanEAR <- median <- ".dplyr"
   
   graphData$meanEAR[graphData$meanEAR == 0] <- NA
   

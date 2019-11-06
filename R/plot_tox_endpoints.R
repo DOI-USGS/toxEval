@@ -81,7 +81,7 @@ plot_tox_endpoints <- function(chemical_summary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
-  CAS <- nonZero <- hits <- logEAR <-  ".dplyr"
+  CAS <- nonZero <- hits <- ymin <- ymax <- logEAR <-  ".dplyr"
   
   if(nrow(chemical_summary) == 0){
     stop("No rows in the chemical_summary data frame")
