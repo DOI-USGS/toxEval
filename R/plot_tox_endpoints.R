@@ -226,12 +226,11 @@ plot_tox_endpoints <- function(chemical_summary,
       orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
       graphData <- graphData[graphData[["endPoint"]] %in% orderedLevelsEP,]
       countNonZero <- countNonZero[countNonZero[["endPoint"]] %in% orderedLevelsEP,]
-      countNonZero$endPoint <- factor(countNonZero$endPoint, levels = orderedLevelsEP)
-
     }
     
     graphData$endPoint <- factor(graphData$endPoint, levels = orderedLevelsEP)
-
+    countNonZero$endPoint <- factor(countNonZero$endPoint, levels = orderedLevelsEP)
+    
     stackedPlot <- ggplot(graphData[graphData$meanEAR != 0,]) +
       theme_bw() +
       theme(axis.text = element_text(color = "black"),
