@@ -33,7 +33,6 @@
 #' to specify specific color for specific categories. 
 #' @param top_num Integer number of endpoints to include in the graph. If NA, all 
 #' endpoints will be included.
-#' @param ... Additional group_by arguments. This can be handy for creating facet graphs.
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
@@ -77,8 +76,7 @@ plot_tox_endpoints <- function(chemical_summary,
                               title = NA,
                               x_label = NA,
                               palette = NA, 
-                              top_num = NA,
-                              ...){
+                              top_num = NA){
   
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
@@ -133,7 +131,7 @@ plot_tox_endpoints <- function(chemical_summary,
     countNonZero <- chemical_summary %>%
       mutate(ymin = min(EAR[!is.na(EAR)], na.rm = TRUE),
              ymax = max(EAR[!is.na(EAR)], na.rm = TRUE)) %>% 
-      group_by(endPoint, ymin, ymax, ...) %>%
+      group_by(endPoint, ymin, ymax) %>%
       summarise(nonZero = as.character(length(unique(CAS[!is.na(EAR)]))),
                 hits = as.character(sum(EAR > hit_threshold, na.rm = TRUE))) %>% 
       ungroup()
@@ -171,17 +169,17 @@ plot_tox_endpoints <- function(chemical_summary,
     
     if(!sum_logic){
       graphData <- chemical_summary %>%
-        group_by(site, category, endPoint, ...) %>%
+        group_by(site, category, endPoint) %>%
         summarise(meanEAR=ifelse(mean_logic, mean(EAR, na.rm = TRUE), max(EAR, na.rm = TRUE))) %>%
         ungroup() %>%
         mutate(category=as.character(category))      
     } else {
       
       graphData <- chemical_summary %>%
-        group_by(site, date, category, endPoint, ...) %>%
+        group_by(site, date, category, endPoint) %>%
         summarise(sumEAR = sum(EAR, na.rm = TRUE)) %>%
         ungroup() %>%
-        group_by(site, category, endPoint, ...) %>%
+        group_by(site, category, endPoint) %>%
         summarise(meanEAR = ifelse(mean_logic, mean(sumEAR, na.rm = TRUE), max(sumEAR, na.rm = TRUE))) %>%
         ungroup() %>%
         mutate(category = as.character(category))      
@@ -204,7 +202,7 @@ plot_tox_endpoints <- function(chemical_summary,
     countNonZero <- graphData %>%
       mutate(ymin = min(meanEAR[!is.na(meanEAR)], na.rm = TRUE),
              ymax = max(meanEAR[!is.na(meanEAR)], na.rm = TRUE)) %>% 
-      group_by(endPoint, ymin, ymax, ...) %>%
+      group_by(endPoint, ymin, ymax) %>%
       summarise(nonZero = as.character(length(unique(site[!is.na(meanEAR)]))),
                 hits = as.character(sum(meanEAR > hit_threshold, na.rm = TRUE))) %>%
       ungroup()
