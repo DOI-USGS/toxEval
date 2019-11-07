@@ -287,8 +287,10 @@ exclude_points <- function(chemical_summary, exclusion){
   
   CAS <- endPoint <- casrn <- ".dplyr"
   
-  exclude_chem <- exclusion$CAS[is.na(exclusion$endPoint)]
-  exclude_ep <- exclusion$endPoint[is.na(exclusion$CAS)]
+  exclude_chem <- exclusion$CAS[is.na(exclusion$endPoint) | 
+                                  exclusion$endPoint == ""]
+  exclude_ep <- exclusion$endPoint[is.na(exclusion$CAS) |
+                                     exclusion$CAS == ""]
   
   exclude_combo <- exclusion %>%
     filter(!is.na(CAS),
