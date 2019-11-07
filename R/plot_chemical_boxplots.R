@@ -2,7 +2,7 @@
 #' @export
 #' @param ... Additional group_by arguments. This can be handy for creating facet graphs.
 #' @rdname plot_tox_boxplots
-plot_chemical_boxplots <- function(chemical_summary, ..., 
+plot_chemical_boxplots <- function(chemical_summary, 
                                    manual_remove = NULL,
                                    mean_logic = FALSE,
                                    sum_logic = TRUE,
@@ -11,7 +11,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
                                    title = NA,
                                    x_label = NA,
                                    palette = NA,
-                                   hit_threshold = NA){
+                                   hit_threshold = NA, ...){
   
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- meanEAR <- x <- y <- max_med <- endPoint <- ".dplyr"

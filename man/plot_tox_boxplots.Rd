@@ -6,10 +6,10 @@
 \alias{plot_tox_boxplots}
 \title{Grouped Boxplots}
 \usage{
-plot_chemical_boxplots(chemical_summary, ..., manual_remove = NULL,
+plot_chemical_boxplots(chemical_summary, manual_remove = NULL,
   mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE,
   font_size = NA, title = NA, x_label = NA, palette = NA,
-  hit_threshold = NA)
+  hit_threshold = NA, ...)
 
 plot_tox_boxplots(chemical_summary, category = "Biological",
   manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
@@ -18,8 +18,6 @@ plot_tox_boxplots(chemical_summary, category = "Biological",
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
-
-\item{...}{Additional group_by arguments. This can be handy for creating facet graphs.}
 
 \item{manual_remove}{Vector of categories to remove.}
 
@@ -43,6 +41,8 @@ opposed to ToxCast benchmarks.}
 to specify specific colors for specific categories.}
 
 \item{hit_threshold}{Numeric threshold defining a "hit".}
+
+\item{...}{Additional group_by arguments. This can be handy for creating facet graphs.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 }
