@@ -287,7 +287,7 @@ plot_tox_endpoints <- function(chemical_summary,
                 size=ifelse(is.na(font_size),3,0.30*font_size), 
                 position = position_nudge(y = -0.05)) +
       geom_text(data = labels_df, 
-              aes(x = x,  y = ymax, label = label),
+              aes(x = x,  y = ymax, label = hit_label),
               size=ifelse(is.na(font_size), 3, 0.30*font_size), 
               position = position_nudge(y = -0.05)) 
   }
