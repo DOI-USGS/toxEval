@@ -81,7 +81,7 @@ plot_tox_endpoints <- function(chemical_summary,
   match.arg(category, c("Biological","Chemical Class","Chemical"))
 
   site <- endPoint <- EAR <- sumEAR <- meanEAR <- x <- y <- ".dplyr"
-  CAS <- nonZero <- hits <- ymin <- ymax <- logEAR <-  ".dplyr"
+  CAS <- hit_label <- nonZero <- hits <- ymin <- ymax <- logEAR <-  ".dplyr"
   
   if(nrow(chemical_summary) == 0){
     stop("No rows in the chemical_summary data frame")
@@ -113,8 +113,7 @@ plot_tox_endpoints <- function(chemical_summary,
   }
 
   if(single_site){
-    
-    
+  
     orderEP_df <- orderEP(rename(chemical_summary, meanEAR = EAR))
     orderedLevelsEP <- orderEP_df$endPoint
     
