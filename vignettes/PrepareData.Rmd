@@ -51,7 +51,7 @@ knitr::include_graphics("data.png")
 
 ## Chemicals
 
-The "Chemicals" sheet is used to define chemicals included in the "Data" sheet. Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names). If you need chemical names that do not match up wiht the "tox_chemical" list provided in the package, you will want to include a 3rd column "Chemical" which is the chemical name to use for plots and tables. 
+The "Chemicals" sheet is used to define the unique chemicals included in the "Data" sheet (so, 1 row per unique chemical). Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names). If you need chemical names that do not match up wiht the "tox_chemical" list provided in the package, you will want to include a 3rd column "Chemical" which is the chemical name to use for plots and tables. 
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
@@ -73,6 +73,8 @@ The "Sites" sheet is used to define site information for locations where samples
 
 * dec_lat: This numeric column is the decimal latitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most `toxEval` functions will not require this column.
 
+* site_grouping (optional): This character column is optional, and will group sites together for certain plots. For example, you may wish to group sites by watershed. The example data groups the sites together by which Great Lake they drain into. 
+
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
 ## Exclude
@@ -91,7 +93,7 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Benchmarks
 
-The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose.
+The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose. For more information, see [here](http://usgs-r.github.io/toxEval/articles/benchmarks.html).
 
 The "Benchmarks" sheet is optional, but if used, five columns are required: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of the sheet should be the header (column names).
 
