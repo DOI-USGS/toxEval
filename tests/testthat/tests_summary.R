@@ -341,3 +341,97 @@ test_that("Calculating concentrations", {
   
 })
 
+test_that("Testing levels", {
+  
+  chem_levels <- levels(chemical_summary$chnm)
+  class_levels <- levels(chemical_summary$Class)
+  
+  gd <- graph_chem_data(chemical_summary)
+  
+  expect_equal(levels(gd$chnm), chem_levels)
+  expect_equal(levels(gd$Class), class_levels)
+  
+  expect_equal(chem_levels, c("Anthraquinone",                         
+                              "Tetrachloroethylene",                    
+                              "Isophorone",                           
+                              "Bromoform",                            
+                              "1,4-Dichlorobenzene",                    
+                              "Methyl salicylate",                      
+                              "Anthracene",                             
+                              "Naphthalene",                            
+                              "Phenanthrene",                           
+                              "Pyrene",                                 
+                              "Fluoranthene",                           
+                              "Benzo(a)pyrene",                         
+                              "Isoquinoline",                           
+                              "6-Acetyl-1,1,2,4,4,7-hexamethyltetralin",
+                              "Indole",                                 
+                              "D-Limonene",                             
+                              "Benzophenone",                           
+                              "Tributyl phosphate",                     
+                              "Tris(2-butoxyethyl) phosphate",          
+                              "Tris(1,3-dichloro-2-propyl) phosphate",
+                              "Cotinine",                              
+                              "dl-Menthol",                             
+                              "Caffeine",                               
+                              "Tris(2-chloroethyl) phosphate",          
+                              "Triphenyl phosphate",                    
+                              "Diethyl phthalate",                      
+                              "p-Cresol",                               
+                              "Triclosan",                              
+                              "DEET",                                   
+                              "Carbazole",                              
+                              "Carbaryl",                               
+                              "Dichlorvos",                             
+                              "5-Methyl-1H-benzotriazole",              
+                              "2-tert-Butyl-4-methoxyphenol",           
+                              "Bisphenol A",                            
+                              "3,4-Dichlorophenyl isocyanate",          
+                              "Prometon",                               
+                              "Bromacil",                               
+                              "Metalaxyl",                              
+                              "Metolachlor",                            
+                              "Atrazine",                               
+                              "Pentachlorophenol",                      
+                              "4-Octylphenol",                          
+                              "4-Cumylphenol",                          
+                              "4-(1,1,3,3-Tetramethylbutyl)phenol",     
+                              "4-Nonylphenol, branched"))
+  expect_equal(class_levels, c("Detergent Metabolites", "Herbicides",                 
+                               "Antioxidants", "Insecticides",               
+                               "Antimicrobial Disinfectants", "Plasticizers",               
+                               "Nonprescription drugs", "Fire Retardants",            
+                               "Flavors and Fragrances", "PAHs",                       
+                               "Miscellaneous", "Solvents",                   
+                               "Dyes/Pigments"))
+  
+  plot_eps <- plot_tox_endpoints(chemical_summary, 
+                                 "Chemical", top_num = 5)
+  
+  expect_equal(tail(levels(plot_eps$data$endPoint),5),
+               c("ATG_TGFb_CIS_up", "ATG_Sox_CIS_up",      
+                 "NVS_NR_hPPARa", "NVS_NR_hER",          
+                 "OT_AR_ARELUC_AG_1440"))
+  
+  plot_stack <- plot_tox_stacks(chemical_summary,category = "Chemical",
+                                chem_site = tox_list$chem_site,
+                                 top_num = 5)
+  
+  expect_equal(levels(plot_stack$data$category),
+               c("4-Nonylphenol, branched", "Bisphenol A",            
+                 "Atrazine", "Metolachlor",            
+                 "Pentachlorophenol", "Others (41)" ))
+  
+  plot_heat <- plot_tox_heatmap(chemical_summary,category = "Chemical",
+                                chem_site = tox_list$chem_site)
+  
+  expect_equal(tail(levels(plot_heat$data$chnm), 5),
+               c("Pentachlorophenol",                 
+                 "4-Octylphenol",                     
+                 "4-Cumylphenol",                     
+                 "4-(1,1,3,3-Tetramethylbutyl)phenol",
+                 "4-Nonylphenol, branched"))
+  
+  
+  
+})
