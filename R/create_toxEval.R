@@ -76,14 +76,52 @@ create_toxEval <- function(excel_file_path, ...){
   
   if("Chemicals" %in% readxl::excel_sheets(excel_file_path)){
     chem_info <- readxl::read_excel(excel_file_path, sheet = "Chemicals")
+    
+    names(chem_info) <- names(chem_info) %>%
+      allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS")
+    
+    if("CAS" %in% names(chem_info)){
+      chem_info$CAS <- as.character(chem_info$CAS)
+    } else {
+      message("Chemical tab missing CAS column")
+    }
   }
   
   if("Data" %in% readxl::excel_sheets(excel_file_path)){
     chem_data <- readxl::read_excel(excel_file_path, sheet = "Data")
+    
+    names(chem_data) <- names(chem_data) %>%
+      allowed_names(c("site","Site","Station","station"), "SiteID") %>%
+      allowed_names(c("Date","date","sample","Sample"), "Sample Date") %>%
+      allowed_names(c("casrn", "casn","CASRN","CASN"), "CAS")
+    
+    if("CAS" %in% names(chem_data)){
+      chem_data$CAS <- as.character(chem_data$CAS)
+    } else {
+      message("Data tab missing CAS column")
+    }
+    
+    if("SiteID" %in% names(chem_data)){
+      chem_data$SiteID <- as.character(chem_data$SiteID)
+    } else {
+      message("Data tab missing SiteID column")
+    }
   }
   
   if("Sites" %in% readxl::excel_sheets(excel_file_path)){
     chem_site <- readxl::read_excel(excel_file_path, sheet = "Sites")
+    
+    names(chem_site) <- names(chem_site) %>%
+      allowed_names(c("site","Site","Station","station"),"SiteID") %>%
+      allowed_names(c("shortName", "map_name"),"Short Name") %>%
+      allowed_names(c("dec_long", "longitude", "long"),"dec_lon") %>%
+      allowed_names(c("lat", "latitude"),"dec_lat")
+    
+    if("SiteID" %in% names(chem_site)){
+      chem_site$SiteID <- as.character(chem_site$SiteID)
+    } else {
+      message("Sites tab missing SiteID column")
+    }
   }
   
   if("Exclude" %in% readxl::excel_sheets(excel_file_path)){
@@ -94,6 +132,9 @@ create_toxEval <- function(excel_file_path, ...){
   
   if("Benchmarks" %in% readxl::excel_sheets(excel_file_path)){
     benchmarks <- readxl::read_excel(excel_file_path, sheet = "Benchmarks")
+    if(nrow(benchmarks) == 0){
+      benchmarks <- NULL
+    }
   } else {
     benchmarks <- NULL
   }

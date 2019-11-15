@@ -134,8 +134,8 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
         rawData$chem_data <- rawData$chem_data[rawData$chem_data$SiteID == siteID,]
         
       }
-      
-      if(all(is.null(rawData$benchmarks))){
+
+      if(all(is.null(rawData$benchmarks)) || nrow(rawData$benchmarks) == 0){
 
         ACC <- get_ACC(rawData$chem_info$CAS)
         ACC <- remove_flags(ACC, flagsShort = removeFlags)
