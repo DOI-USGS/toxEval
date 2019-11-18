@@ -95,11 +95,11 @@ chems <- reactive({
   chemical_summary <- chemical_summary()
   
   chem_no_zero <- chemical_summary %>% 
-    filter(EAR > 0) %>% 
-    select(chnm) %>% 
-    mutate(chnm = as.character(chnm)) %>% 
-    distinct() %>% 
-    pull(chnm)
+    dplyr::filter(EAR > 0) %>% 
+    dplyr::select(chnm) %>% 
+    dplyr::mutate(chnm = as.character(chnm)) %>% 
+    dplyr::distinct() %>% 
+    dplyr::pull(chnm)
 
   chems <- ""
   if(nrow(chemical_summary) > 0){
