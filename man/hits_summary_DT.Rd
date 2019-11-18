@@ -5,11 +5,14 @@
 \alias{hits_summary}
 \title{Summary of hits per site/category}
 \usage{
-hits_summary_DT(chemical_summary, category = "Biological",
-  sum_logic = TRUE, hit_threshold = 0.1)
+hits_summary_DT(
+  chemical_summary,
+  category = "Biological",
+  sum_logic = TRUE,
+  hit_threshold = 0.1
+)
 
-hits_summary(chemical_summary, category, hit_threshold = 0.1,
-  sum_logic = TRUE)
+hits_summary(chemical_summary, category, hit_threshold = 0.1, sum_logic = TRUE)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
