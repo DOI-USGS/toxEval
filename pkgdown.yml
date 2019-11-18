@@ -8,5 +8,6 @@ articles:
   benchmarks: benchmarks.html
   bibliography: bibliography.html
   does_curves: does_curves.html
+  pivot: pivot.html
   shinyApp: shinyApp.html
 

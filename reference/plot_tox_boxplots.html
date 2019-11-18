@@ -127,6 +127,9 @@ for each group in the selected ToxCast annotation." />
       <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
     </li>
     <li>
+      <a href="../articles/pivot.html">Prepare Data in R</a>
+    </li>
+    <li>
       <a href="../articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
@@ -172,15 +175,33 @@ boxplots for each individual chemical, and "Biological" will generate boxplots
 for each group in the selected ToxCast annotation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_chemical_boxplots</span>(<span class='no'>chemical_summary</span>, <span class='no'>...</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>x_label</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+    <pre class="usage"><span class='fu'>plot_chemical_boxplots</span>(
+  <span class='no'>chemical_summary</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>x_label</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)
 
-<span class='fu'>plot_tox_boxplots</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>x_label</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+<span class='fu'>plot_tox_boxplots</span>(
+  <span class='no'>chemical_summary</span>,
+  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>x_label</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>palette</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>NA</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

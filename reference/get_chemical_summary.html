@@ -123,6 +123,9 @@ benchmark data can be provided to perform the same &quot;toxEval&quot; analysis.
       <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
     </li>
     <li>
+      <a href="../articles/pivot.html">Prepare Data in R</a>
+    </li>
+    <li>
       <a href="../articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
@@ -164,9 +167,15 @@ ToxCast.Data from ToxCast is included with this package, but alternative
 benchmark data can be provided to perform the same "toxEval" analysis.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_chemical_summary</span>(<span class='no'>tox_list</span>, <span class='kw'>ACC</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filtered_ep</span> <span class='kw'>=</span> <span class='st'>"All"</span>,
-  <span class='kw'>chem_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chem_site</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chem_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>exclusion</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_chemical_summary</span>(
+  <span class='no'>tox_list</span>,
+  <span class='kw'>ACC</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>filtered_ep</span> <span class='kw'>=</span> <span class='st'>"All"</span>,
+  <span class='kw'>chem_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>chem_site</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>chem_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>exclusion</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

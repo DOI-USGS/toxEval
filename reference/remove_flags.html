@@ -138,6 +138,9 @@ Asterisks indicate flags removed in the function as default." />
       <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
     </li>
     <li>
+      <a href="../articles/pivot.html">Prepare Data in R</a>
+    </li>
+    <li>
       <a href="../articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
@@ -194,8 +197,10 @@ flagsShort value (used in the remove_flags function) are as follows:</p><table c
 <p>Asterisks indicate flags removed in the function as default.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>remove_flags</span>(<span class='no'>ACC</span>, <span class='kw'>flagsShort</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Borderline"</span>, <span class='st'>"OnlyHighest"</span>, <span class='st'>"GainAC50"</span>,
-  <span class='st'>"Biochemical"</span>))</pre>
+    <pre class="usage"><span class='fu'>remove_flags</span>(
+  <span class='no'>ACC</span>,
+  <span class='kw'>flagsShort</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Borderline"</span>, <span class='st'>"OnlyHighest"</span>, <span class='st'>"GainAC50"</span>, <span class='st'>"Biochemical"</span>)
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

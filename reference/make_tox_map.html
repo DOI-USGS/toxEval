@@ -124,6 +124,9 @@ data frame specified for the chem_site argument." />
       <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
     </li>
     <li>
+      <a href="../articles/pivot.html">Prepare Data in R</a>
+    </li>
+    <li>
       <a href="../articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
@@ -166,11 +169,21 @@ samples in the data set (size). This is the only function that requires
 data frame specified for the chem_site argument.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>make_tox_map</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>make_tox_map</span>(
+  <span class='no'>chemical_summary</span>,
+  <span class='no'>chem_site</span>,
+  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
-<span class='fu'>map_tox_data</span>(<span class='no'>chemical_summary</span>, <span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>map_tox_data</span>(
+  <span class='no'>chemical_summary</span>,
+  <span class='no'>chem_site</span>,
+  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

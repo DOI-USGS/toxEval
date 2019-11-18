@@ -121,6 +121,9 @@ to allow custom graphs to be created." />
       <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
     </li>
     <li>
+      <a href="../articles/pivot.html">Prepare Data in R</a>
+    </li>
+    <li>
       <a href="../articles/does_curves.html">Dose Response Curves</a>
     </li>
   </ul>
@@ -160,14 +163,28 @@ functions are used within the plotting functions. They are exported however
 to allow custom graphs to be created.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>graph_chem_data</span>(<span class='no'>chemical_summary</span>, <span class='no'>...</span>, <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>graph_chem_data</span>(
+  <span class='no'>chemical_summary</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
-<span class='fu'>tox_boxplot_data</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>tox_boxplot_data</span>(
+  <span class='no'>chemical_summary</span>,
+  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
+  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
-<span class='fu'>side_by_side_data</span>(<span class='no'>gd_left</span>, <span class='no'>gd_right</span>, <span class='kw'>left_title</span> <span class='kw'>=</span> <span class='st'>"Left"</span>,
-  <span class='kw'>right_title</span> <span class='kw'>=</span> <span class='st'>"Right"</span>)</pre>
+<span class='fu'>side_by_side_data</span>(
+  <span class='no'>gd_left</span>,
+  <span class='no'>gd_right</span>,
+  <span class='kw'>left_title</span> <span class='kw'>=</span> <span class='st'>"Left"</span>,
+  <span class='kw'>right_title</span> <span class='kw'>=</span> <span class='st'>"Right"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
