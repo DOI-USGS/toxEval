@@ -6,15 +6,33 @@
 \alias{plot_tox_boxplots}
 \title{Grouped Boxplots}
 \usage{
-plot_chemical_boxplots(chemical_summary, ..., manual_remove = NULL,
-  mean_logic = FALSE, sum_logic = TRUE, plot_ND = TRUE,
-  font_size = NA, title = NA, x_label = NA, palette = NA,
-  hit_threshold = NA)
+plot_chemical_boxplots(
+  chemical_summary,
+  ...,
+  manual_remove = NULL,
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  plot_ND = TRUE,
+  font_size = NA,
+  title = NA,
+  x_label = NA,
+  palette = NA,
+  hit_threshold = NA
+)
 
-plot_tox_boxplots(chemical_summary, category = "Biological",
-  manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE,
-  plot_ND = TRUE, font_size = NA, title = NA, x_label = NA,
-  palette = NA, hit_threshold = NA)
+plot_tox_boxplots(
+  chemical_summary,
+  category = "Biological",
+  manual_remove = NULL,
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  plot_ND = TRUE,
+  font_size = NA,
+  title = NA,
+  x_label = NA,
+  palette = NA,
+  hit_threshold = NA
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}

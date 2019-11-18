@@ -4,10 +4,19 @@
 \alias{plot_tox_stacks}
 \title{Plot stacked bar charts}
 \usage{
-plot_tox_stacks(chemical_summary, chem_site, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE, manual_remove = NULL,
-  include_legend = TRUE, font_size = NA, title = NA, y_label = NA,
-  top_num = NA)
+plot_tox_stacks(
+  chemical_summary,
+  chem_site,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  manual_remove = NULL,
+  include_legend = TRUE,
+  font_size = NA,
+  title = NA,
+  y_label = NA,
+  top_num = NA
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
@@ -52,7 +61,7 @@ legend for "Chemical" if there are hundreds of chemicals.
 \details{
 The graph displays a slightly different result for a single site. Providing 
 data with only one site displays each individual sample as a stacked bar 
-rather than the mean or maximum for a site.
+rather than the mean or maximum for a site. 
 
 This is a function where it may be ideal to create a custom order to the sites 
 (for example, west-to-east). See the above section "Custom configuration"

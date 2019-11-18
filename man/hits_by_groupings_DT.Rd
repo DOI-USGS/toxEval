@@ -5,11 +5,21 @@
 \alias{hits_by_groupings}
 \title{Biological hits per category}
 \usage{
-hits_by_groupings_DT(chemical_summary, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE, hit_threshold = 0.1)
+hits_by_groupings_DT(
+  chemical_summary,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  hit_threshold = 0.1
+)
 
-hits_by_groupings(chemical_summary, category, mean_logic = FALSE,
-  sum_logic = TRUE, hit_threshold = 0.1)
+hits_by_groupings(
+  chemical_summary,
+  category,
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  hit_threshold = 0.1
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}

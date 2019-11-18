@@ -35,6 +35,7 @@ pkgdown/favicon/*
 vignettes/bibliography.Rmd
 vignettes/toxeval.bib
 vignettes/toxeval_orig.bib
+vignettes/pivot.Rmd
 updateV3.R
 get_data_ready.R
 LICENSE.md

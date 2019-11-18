@@ -4,10 +4,20 @@
 \alias{plot_tox_endpoints}
 \title{EndPoint boxplots}
 \usage{
-plot_tox_endpoints(chemical_summary, category = "Biological",
-  filterBy = "All", manual_remove = NULL, hit_threshold = NA,
-  mean_logic = FALSE, sum_logic = TRUE, font_size = NA, title = NA,
-  x_label = NA, palette = NA, top_num = NA)
+plot_tox_endpoints(
+  chemical_summary,
+  category = "Biological",
+  filterBy = "All",
+  manual_remove = NULL,
+  hit_threshold = NA,
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  font_size = NA,
+  title = NA,
+  x_label = NA,
+  palette = NA,
+  top_num = NA
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}

@@ -4,8 +4,13 @@
 \alias{get_concentration_summary}
 \title{Create concentration summary}
 \usage{
-get_concentration_summary(tox_list, chem_data = NULL, chem_site = NULL,
-  chem_info = NULL, tox_names = TRUE)
+get_concentration_summary(
+  tox_list,
+  chem_data = NULL,
+  chem_site = NULL,
+  chem_info = NULL,
+  tox_names = TRUE
+)
 }
 \arguments{
 \item{tox_list}{List with data frames for chem_data, chem_info, and chem_site.

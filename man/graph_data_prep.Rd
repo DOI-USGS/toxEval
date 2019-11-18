@@ -7,14 +7,28 @@
 \alias{side_by_side_data}
 \title{Prepare boxplot data}
 \usage{
-graph_chem_data(chemical_summary, ..., manual_remove = NULL,
-  mean_logic = FALSE, sum_logic = TRUE)
+graph_chem_data(
+  chemical_summary,
+  ...,
+  manual_remove = NULL,
+  mean_logic = FALSE,
+  sum_logic = TRUE
+)
 
-tox_boxplot_data(chemical_summary, category = "Biological",
-  manual_remove = NULL, mean_logic = FALSE, sum_logic = TRUE)
+tox_boxplot_data(
+  chemical_summary,
+  category = "Biological",
+  manual_remove = NULL,
+  mean_logic = FALSE,
+  sum_logic = TRUE
+)
 
-side_by_side_data(gd_left, gd_right, left_title = "Left",
-  right_title = "Right")
+side_by_side_data(
+  gd_left,
+  gd_right,
+  left_title = "Left",
+  right_title = "Right"
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}

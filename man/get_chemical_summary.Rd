@@ -4,9 +4,15 @@
 \alias{get_chemical_summary}
 \title{Compute EAR values}
 \usage{
-get_chemical_summary(tox_list, ACC = NULL, filtered_ep = "All",
-  chem_data = NULL, chem_site = NULL, chem_info = NULL,
-  exclusion = NULL)
+get_chemical_summary(
+  tox_list,
+  ACC = NULL,
+  filtered_ep = "All",
+  chem_data = NULL,
+  chem_site = NULL,
+  chem_info = NULL,
+  exclusion = NULL
+)
 }
 \arguments{
 \item{tox_list}{List with data frames for chem_data, chem_info, chem_site, 

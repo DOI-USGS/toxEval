@@ -4,8 +4,10 @@
 \alias{remove_flags}
 \title{Remove endpoints with specific data quality flags from data}
 \usage{
-remove_flags(ACC, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
-  "Biochemical"))
+remove_flags(
+  ACC,
+  flagsShort = c("Borderline", "OnlyHighest", "GainAC50", "Biochemical")
+)
 }
 \arguments{
 \item{ACC}{data frame with columns: casn, chnm, endPoint, and ACC_value}

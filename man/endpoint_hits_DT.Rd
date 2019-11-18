@@ -5,12 +5,22 @@
 \alias{endpoint_hits}
 \title{Rank endpoints by category}
 \usage{
-endpoint_hits_DT(chemical_summary, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE, hit_threshold = 0.1,
-  include_links = TRUE)
+endpoint_hits_DT(
+  chemical_summary,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  hit_threshold = 0.1,
+  include_links = TRUE
+)
 
-endpoint_hits(chemical_summary, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE, hit_threshold = 0.1)
+endpoint_hits(
+  chemical_summary,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  hit_threshold = 0.1
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{get_chemical_summary}}
