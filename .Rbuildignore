@@ -40,7 +40,10 @@ updateV3.R
 get_data_ready.R
 LICENSE.md
 sampleData.xlsx
-Wide data example.xlsx
-messyData.png
-
+vignettes/Wide data example.xlsx
+vignettes/messyData.png
+vignettes/allActive.png
+vignettes/startSearch.png
+vignettes/getCurve.png
+vignettes/atrazineDose.png
 
