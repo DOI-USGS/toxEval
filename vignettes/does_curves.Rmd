@@ -6,15 +6,18 @@ output:
     toc: true
     number_sections: false
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Dose Response}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
+library(tcpl)
 ```
 
 The ToxCast database does a good job flagging dose-response curves that may be unreliable or inconsistent. However, the flags should not be the only source for chemical-endpoint exclusions. If you've got a chemical with an extremely large EAR, it is a good idea to check the dose-response curve. There are two ways to get that information described here.
@@ -28,6 +31,72 @@ knitr::include_graphics("startSearch.png")
 ```
 
 
+After inputting the CAS, you will be taken to a page on the specific chemical. There is a TON of great information there.
+
+```{r getAtrazineAllActive, echo=FALSE}
+knitr::include_graphics("allActive.png")
+```
+
+1. Click the "Bioactivity" sidebar option, then the ToxCast/ToxCast21 option.
+2. Click the "Active" check box to see all of the dose response curves that would be included in `toxEval`.
+
+
+To get to a specific dose-response curves:
+
+```{r getAtrazineCurve, echo=FALSE}
+knitr::include_graphics("getCurve.png")
+```
+
+
+1. Click the "Bioactivity" sidebar option, then the ToxCast/ToxCast21 option. 
+2. Paste the specific endpoint that you are concerned about in the search box
+3. Click the endpoint's check box
+
+## R-package: tcpl
+
+There is another way to locally produce the dose-response curves using the [`tcpl` package](https://cran.r-project.org/web/packages/tcpl/index.html). The nice part of this approach is that you can customize the plots and order of plots. The drawback is you need to download a very large MySQL database and have it running locally. 
+
+If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single dose-response curve. Let's look at Atrazine with the "NVS_ENZ_hPDE4A1" endpoint:
+
+```{r exampleTCPL, eval=FALSE, echo=TRUE}
+library(tcpl)
+
+tcplConf(drvr = "MySQL", 
+         user = "my_awesome_username",
+         pass = "my_awesome_password",
+         host = "localhost", 
+         db = "database_name")
+
+ep <- "NVS_ENZ_hPDE4A1"
+cas <- "1912-24-9"
+
+chem_info <- tcplLoadChem(field = 'casn', val = cas)
+head(chem_info, n = 1)
+
+assay_info <- tcplLoadAcid(fld = "acnm", val = ep)
+head(assay_info)
+
+mc3 <- tcplLoadData(lvl = 3, type = "mc", 
+             fld = c("acid","spid"), 
+             val = list(assay_info$acid,
+                        chem_info$spid))
+
+## Load mc tables from levels of interest
+mc4 <- tcplLoadData(lvl = 4, type = "mc", 
+                    fld = c("spid", "aeid"), 
+                    val = list(chem_info$spid,
+                               unique(mc3$aeid)))
+
+tcplPlotM4ID(mc4, lvl = 5)
+
+```
+
+```{r plotAtrazineCurve, echo=FALSE}
+knitr::include_graphics("atrazineDose.png")
+```
+
+
+The values passed to the `tcplConf` function will depend on how you set up the MySQL database.
 
 
 
