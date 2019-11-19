@@ -1,8 +1,8 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
-    paste(strwrap('USGS Research Package: 
+    paste(strwrap('USGS Research Package:
 https://owi.usgs.gov/R/packages.html#research
-ToxCast database: version 3'),
+ToxCast database: version 3', width = 40),
       collapse='\n'))
 }
 
