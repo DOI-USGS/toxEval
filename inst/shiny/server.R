@@ -52,6 +52,7 @@ great_lakes <- c("Lake Superior",
                  "Lake Ontario")
 
 toxCast_val <<- TRUE
+latest_map <<- NULL
 
 shiny::shinyServer(function(input, output,session) {
   
