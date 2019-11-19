@@ -35,24 +35,27 @@ mapDataINFO <- reactive({
   chem_site <- rawData$chem_site
   chemical_summary <- chemical_summary()
   
+  catType = as.numeric(input$radioMaxGroup)
+  category <- c("Biological","Chemical","Chemical Class")[catType]
+  
+  meanEARlogic <- as.logical(input$meanEAR)
+  sum_logic <- as.logical(input$sumEAR)
+  
   siteToFind <- unique(chemical_summary$site)
   
-  if(length(siteToFind) == 1){
-    mapDataList <- latest_map
-  } else {
-    catType = as.numeric(input$radioMaxGroup)
-    category <- c("Biological","Chemical","Chemical Class")[catType]
-    
-    meanEARlogic <- as.logical(input$meanEAR)
-    sum_logic <- as.logical(input$sumEAR)
-    
-    mapDataList <- map_tox_data(chemical_summary, 
+  mapDataList <- map_tox_data(chemical_summary, 
                               chem_site = chem_site, 
                               category = category,
                               mean_logic = meanEARlogic,
                               sum_logic = sum_logic)
-    latest_map <<- mapDataList
+  
+  if(length(siteToFind) == 1){
+    if(!is.null(latest_map)){
+      mapDataList <- latest_map
+    } 
   }
+  
+  latest_map <<- mapDataList
   shinyAce::updateAceEditor(session, editorId = "mapCode_out", value = mapCode() )
   return(mapDataList)
   
