@@ -71,10 +71,8 @@ ep <- "NVS_ENZ_hPDE4A1"
 cas <- "1912-24-9"
 
 chem_info <- tcplLoadChem(field = 'casn', val = cas)
-head(chem_info, n = 1)
 
 assay_info <- tcplLoadAcid(fld = "acnm", val = ep)
-head(assay_info)
 
 mc3 <- tcplLoadData(lvl = 3, type = "mc", 
              fld = c("acid","spid"), 
