@@ -1,12 +1,12 @@
 ---
-title: "Dose Response Curves"
+title: "Concentration-Response Curves"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
 vignette: >
-  %\VignetteIndexEntry{Dose Response}
+  %\VignetteIndexEntry{Concentration Response}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -20,43 +20,43 @@ knitr::opts_chunk$set(echo = FALSE,
 library(tcpl)
 ```
 
-The ToxCast database does a good job flagging dose-response curves that may be unreliable or inconsistent. However, the flags should not be the only source for chemical-endpoint exclusions. If you've got a chemical with an extremely large EAR, it is a good idea to check the dose-response curve. There are two ways to get that information described here.
+The ToxCast database flags concentration-response curves that may be unreliable or inconsistent based on several criteria; however, it is still good practice for the toxEval user to examine the concentration-response curves pertinent their data to assure that results are understood and to gain confidence in the underlying data. At times, the user will find that concentration-response curves for particular  chemical-endpoints or for an entire endpoint will need to be excluded from analysis. For chemicals with an extremely large EAR value, concentration-response curves should be examined. Two ways to obtain concentration-response curves are described below (the Comptox Dashboard and the tcpl pipeline).
 
 ## Comptox Dashboard
 
-There is a tool, the [Comptox Dashboard](https://comptox.epa.gov/dashboard) that allows you to search for a chemical by systematic name, synonym, CAS number, DTXSID, or InChIKey. Since we focus on CAS in the `toxEval` inputs, let's explore Atrazine (CAS = 1912-24-9):
+There is a web-based tool, the [Comptox Dashboard](https://comptox.epa.gov/dashboard) that allows you to search for a chemical by systematic name, synonym, CAS number, DTXSID, or InChIKey. Since we focus on CAS in the `toxEval` inputs, let's explore Atrazine (CAS = 1912-24-9):
 
 ```{r getAtrazine, echo=FALSE}
 knitr::include_graphics("startSearch.png")
 ```
 
 
-After inputting the CAS, you will be taken to a page on the specific chemical. There is a TON of great information there.
+Enering the CAS will take you to a page describing properties of the specific chemical. There is a TON of great information there.
 
 ```{r getAtrazineAllActive, echo=FALSE}
 knitr::include_graphics("allActive.png")
 ```
 
-1. Click the "Bioactivity" sidebar option, then the ToxCast/ToxCast21 option.
-2. Click the "Active" check box to see all of the dose response curves that would be included in `toxEval`.
+1. Click the "Bioactivity" sidebar option, and then the ToxCast/ToxCast21 option.
+2. Click the "Active" check box to see all of the concentration-response curves that would be included in `toxEval`.
 
 
-To get to a specific dose-response curves:
+To get to a specific concentration-response curve:
 
 ```{r getAtrazineCurve, echo=FALSE}
 knitr::include_graphics("getCurve.png")
 ```
 
 
-1. Click the "Bioactivity" sidebar option, then the ToxCast/ToxCast21 option. 
-2. Paste the specific endpoint that you are concerned about in the search box
+1. Click the "Bioactivity" sidebar option, and then the ToxCast/ToxCast21 option. 
+2. Enter the specific endpoint of interest in the search box
 3. Click the endpoint's check box
 
 ## R-package: tcpl
 
-There is another way to locally produce the dose-response curves using the [`tcpl` package](https://cran.r-project.org/web/packages/tcpl/index.html). The nice part of this approach is that you can customize the plots and order of plots. The drawback is you need to download a very large MySQL database and have it running locally. 
+There is another way to locally produce the concentration-response curves using the [`tcpl` package](https://cran.r-project.org/web/packages/tcpl/index.html). The advantage to this approach is that you can customize the plots and order of plots. The drawback is that you need to download a very large MySQL database and have it running locally. 
 
-If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single dose-response curve. Let's look at Atrazine with the "NVS_ENZ_hPDE4A1" endpoint:
+If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single concentration-response curve. Let's look at Atrazine with the "NVS_ENZ_hPDE4A1" endpoint:
 
 ```{r exampleTCPL, eval=FALSE, echo=TRUE}
 library(tcpl)

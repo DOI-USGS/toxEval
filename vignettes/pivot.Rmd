@@ -25,13 +25,13 @@ library(tidyr)
 library(toxEval)
 ```
 
-This article will walk through prepping your data and exporting it to a Microsoft &trade; Excel file using R. This article will focus on using functions and techniques from the "tidyverse" (`dplyr` + `tidyr` + many others...). 
+This article will walk through prepping your data and exporting it to a Microsoft&trade; Excel file using R. This article will focus on using functions and techniques from the "tidyverse" collection of R packages (`dplyr` + `tidyr` + many others...). 
 
 ## Pivot from wide to long
 
-It is very common for data to come back from the laboratory in a "wide" format. Also common for water quality data is to have the data values be interspaced with data remarks. The remark column could indicate censored data (ie "below detection limit") or some information about the sampling conditions. We can use the `tidyr` package to "pivot" this data to the required long format used in `toxEval`.
+It is very common for environmental chemistry data to come back from the laboratory in a "wide" format. A wide format typically has a few "header" columns such as site and date with additional columns representing a sigle chemical per column and possibly a remark code for each chemical as a separate column. The remark column could indicate censored data (ie "below detection limit") or some information about the sampling conditions. We can use the `tidyr` package to "pivot" this data to the required long format used in `toxEval`.
 
-Let's make a small data set with 3 chemicals and 2 sampling sites. Each chemical has a value and remark.
+Let's make a small data set with 3 chemicals and 2 sampling sites. Each chemical has a value column and a remark column.
 
 ```{r setupData}
 data_example <- data.frame(
@@ -104,9 +104,9 @@ head(data_wide2)
 
 ## Opening the file
 
-To open an Excel file in R, use the `readxl` package. There are many...many
+To open an Excel file in R, use the `readxl` package. There are many different configurations of Excel files possible.
 
-For example, let's say the lab returned the data looking like this:
+As one example, let's say the lab returned the data looking like this:
 
 ```{r tabIMAGE, echo=FALSE}
 knitr::include_graphics("messyData.png")
@@ -151,7 +151,7 @@ headers <- headers[,-1:-2]
 headers[1,1:6]
 ```
 
-It would be nice to use that first row as the column names in "data_no_header", but then it would be very confusing what "Code" means (since it's repeated). So, let's remove the "Code", and just repeat the chemical names:
+It would be nice to use the first row as the column names in "data_no_header", but then it would be very confusing what "Code" means (since it's repeated). So, let's remove the "Code", and just repeat the chemical names:
 
 ```{r cleanupNames}
 headers <- headers[,which(as.character(headers[1,]) != "Code")]
@@ -172,7 +172,7 @@ names(data_no_header)[-1:-2] <- column_names
 
 ```
 
-Before we pivot this data to the required long format (as described above), let's get that "Sample Date" column in an R date time format:
+Before we pivot this data to the required long format (as described above), let's transform the "Sample Date" column to an R date time format:
 
 ```{r dateStuff}
 data_no_header$`Sample Date` <- as.POSIXct(data_no_header$`Sample Date`, 
@@ -190,7 +190,7 @@ cleaned_long <- data_no_header %>%
 
 ```
 
-But, since we're doing a `toxEval` analysis, we need to get a "CAS" column. We can use that original "headers" data frame and do a `left_join` (from the "dplyr" package):
+But, since we're doing a `toxEval` analysis, we need to get a "CAS" column. We can use the original "headers" data frame and do a `left_join` (from the "dplyr" package):
 
 ```{r joinCAS}
 
@@ -204,7 +204,7 @@ head(cleaned_long)
 
 ```
 
-The "cleaned_long" data frame is ready to be used by `toxEval` in the "Data" tab. The "cas_df" is nearly ready for the "Chemical" tab. There is a mandatory "Class" column that needs to be added. Finally, we need to get the "Sites" tab needs be be created.
+The "cleaned_long" data frame is ready to be used by `toxEval` in the "Data" tab. The "cas_df" is nearly ready for the "Chemical" tab. There is a mandatory "Class" column that needs to be added after exporting to Excel. Finally, we need to create the "Sites" tab.
 
 ```{r lastCleanup}
 chemical_tab <- cas_df %>% 
@@ -223,7 +223,7 @@ sites_tab <- cleaned_long %>%
 
 ## Save to Excel
 
-The package `openxlsx` is nice for saving Excel files. Create a named list in R, and each of those parts of the list become a Worksheet in Excel:
+The package `openxlsx` can be used to export Excel files. Create a named list in R, and each of those parts of the list become a Worksheet in Excel:
 
 ```{r finalForm, eval=FALSE}
 
