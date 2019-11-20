@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dose Response Curves • toxEval</title>
+<title>Concentration-Response Curves • toxEval</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Dose Response Curves">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Concentration-Response Curves">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
@@ -107,7 +107,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Dose Response Curves</h1>
+      <h1>Concentration-Response Curves</h1>
             
             <h4 class="date">20 November, 2019</h4>
       
@@ -118,31 +118,31 @@
 
     
     
-<p>The ToxCast database does a good job flagging dose-response curves that may be unreliable or inconsistent. However, the flags should not be the only source for chemical-endpoint exclusions. If you’ve got a chemical with an extremely large EAR, it is a good idea to check the dose-response curve. There are two ways to get that information described here.</p>
+<p>The ToxCast database flags concentration-response curves that may be unreliable or inconsistent based on several criteria; however, it is still good practice for the toxEval user to examine the concentration-response curves pertinent their data to assure that results are understood and to gain confidence in the underlying data. At times, the user will find that concentration-response curves for particular chemical-endpoints or for an entire endpoint will need to be excluded from analysis. For chemicals with an extremely large EAR value, concentration-response curves should be examined. Two ways to obtain concentration-response curves are described below (the Comptox Dashboard and the tcpl pipeline).</p>
 <div id="comptox-dashboard" class="section level2">
 <h2 class="hasAnchor">
 <a href="#comptox-dashboard" class="anchor"></a>Comptox Dashboard</h2>
-<p>There is a tool, the <a href="https://comptox.epa.gov/dashboard">Comptox Dashboard</a> that allows you to search for a chemical by systematic name, synonym, CAS number, DTXSID, or InChIKey. Since we focus on CAS in the <code>toxEval</code> inputs, let’s explore Atrazine (CAS = 1912-24-9):</p>
+<p>There is a web-based tool, the <a href="https://comptox.epa.gov/dashboard">Comptox Dashboard</a> that allows you to search for a chemical by systematic name, synonym, CAS number, DTXSID, or InChIKey. Since we focus on CAS in the <code>toxEval</code> inputs, let’s explore Atrazine (CAS = 1912-24-9):</p>
 <p><img src="startSearch.png" width="429"></p>
-<p>After inputting the CAS, you will be taken to a page on the specific chemical. There is a TON of great information there.</p>
+<p>Enering the CAS will take you to a page describing properties of the specific chemical. There is a TON of great information there.</p>
 <p><img src="allActive.png" width="689"></p>
 <ol style="list-style-type: decimal">
-<li>Click the “Bioactivity” sidebar option, then the ToxCast/ToxCast21 option.</li>
-<li>Click the “Active” check box to see all of the dose response curves that would be included in <code>toxEval</code>.</li>
+<li>Click the “Bioactivity” sidebar option, and then the ToxCast/ToxCast21 option.</li>
+<li>Click the “Active” check box to see all of the concentration-response curves that would be included in <code>toxEval</code>.</li>
 </ol>
-<p>To get to a specific dose-response curves:</p>
+<p>To get to a specific concentration-response curve:</p>
 <p><img src="getCurve.png" width="656"></p>
 <ol style="list-style-type: decimal">
-<li>Click the “Bioactivity” sidebar option, then the ToxCast/ToxCast21 option.</li>
-<li>Paste the specific endpoint that you are concerned about in the search box</li>
+<li>Click the “Bioactivity” sidebar option, and then the ToxCast/ToxCast21 option.</li>
+<li>Enter the specific endpoint of interest in the search box</li>
 <li>Click the endpoint’s check box</li>
 </ol>
 </div>
 <div id="r-package-tcpl" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r-package-tcpl" class="anchor"></a>R-package: tcpl</h2>
-<p>There is another way to locally produce the dose-response curves using the <a href="https://cran.r-project.org/web/packages/tcpl/index.html"><code>tcpl</code> package</a>. The nice part of this approach is that you can customize the plots and order of plots. The drawback is you need to download a very large MySQL database and have it running locally.</p>
-<p>If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single dose-response curve. Let’s look at Atrazine with the “NVS_ENZ_hPDE4A1” endpoint:</p>
+<p>There is another way to locally produce the concentration-response curves using the <a href="https://cran.r-project.org/web/packages/tcpl/index.html"><code>tcpl</code> package</a>. The advantage to this approach is that you can customize the plots and order of plots. The drawback is that you need to download a very large MySQL database and have it running locally.</p>
+<p>If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single concentration-response curve. Let’s look at Atrazine with the “NVS_ENZ_hPDE4A1” endpoint:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tcpl)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/config_funcs.html">tcplConf</a></span>(<span class="dt">drvr =</span> <span class="st">"MySQL"</span>, </a>
