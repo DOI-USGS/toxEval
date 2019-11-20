@@ -31,10 +31,40 @@ This article will walk through prepping your data and exporting it to a Microsof
 
 It is very common for environmental chemistry data to come back from the laboratory in a "wide" format. A wide format typically has a few "header" columns such as site and date with additional columns representing a sigle chemical per column and possibly a remark code for each chemical as a separate column. The remark column could indicate censored data (ie "below detection limit") or some information about the sampling conditions. We can use the `tidyr` package to "pivot" this data to the required long format used in `toxEval`.
 
-Let's make a small data set with 3 chemicals and 2 sampling sites. Each chemical has a value column and a remark column.
+Let's start with the most simple case, a wide data frame with no remark codes. In this simple example, column "a" represents the measured value of "a" and column "b" represents the measured value of "b":
+
+```{r easyPeasy}
+df_simple <- data.frame(
+  site = c("A","A","B","B"),
+  date = as.Date(Sys.Date():(Sys.Date()-3), 
+                 origin = "1970-01-01"),
+  a = c(1:4),
+  b = c(4:1),
+  stringsAsFactors = FALSE
+)
+df_simple
+
+```
+
+The "long" version of this data frame will still have the "site" and "date" columns, but instead of "a", "b" (and potentially many many more...), it will now have "Chemical" and "Value". To do this programatically, we can use the `pivot_longer` function in `tidyr`:
+
+```{r simplePivot}
+library(tidyr)
+library(dplyr)
+
+df_simple_long <- df_simple %>% 
+  pivot_longer(cols = c(-site, -date),
+               names_to = "Chemical",
+               values_to = "Value")
+head(df_simple_long)
+```
+
+The "names_to" argument is the name given to the column that is populated from the wide column names (so, the chemical names). The "values_to" is the column name for the values populated from the chemical columns.
+
+Let's make a more complicated wide data that now has the "a" and "b" measured values, but also has "a" and "b" remark codes:
 
 ```{r setupData}
-data_example <- data.frame(
+df_with_rmks <- data.frame(
   site = c("A","A","B","B"),
   date = as.Date(Sys.Date():(Sys.Date()-3), 
                  origin = "1970-01-01"),
@@ -42,28 +72,27 @@ data_example <- data.frame(
   a_rmk = c("<","","",""),
   b_value = c(4:1),
   b_rmk = c("","","","<"),
-  c_value = c(3:6),
-  c_rmk = rep("",4),
   stringsAsFactors = FALSE
-  
 )
-data_example
+df_with_rmks
 
 ```
 
 
-We will now use the "pivot_longer" function to make this wide data frame into a long data frame with the columns site, date, chemical, remark. The "names_to" can only be a vector if we can use the "names_pattern" to logically separate the column names.
+We can use the "pivot_longer" function again to make this into a long data frame with the columns: site, date, Chemical, value, remark: 
 
 ```{r pivot1}
 library(tidyr)
-data_wide <- data_example %>% 
+df_long_with_rmks <- df_with_rmks %>% 
   pivot_longer(cols = c(-site, -date), 
                names_to = c("Chemical", ".value"),
                names_pattern = "(.+)_(.+)")
 
-head(data_wide)
+head(df_long_with_rmks)
 
 ```
+
+This time, the "names_to" argument is a vector. Since it's going to produce more than a simple name/value combination, we need to tell it how to make the name/value/remark combinations. We do that using the "names_pattern" argument. In this case, `tidyr` is going to look at the column names (excluding site and date...since we negate those in the "cols" argument), and try to split the names by the "\_" separator. This is a very powerful tool...in this case we are saying anything in the first group (on the left of the "\_") is the "Chemical" and every matching group on the right of the "\_" creates new value columns. So with the columns are: a_value, a_rmk, b_value, b_rmk - we get a column of chemicals (a & b), a column of "rmk" values, and a column of "value" values.
 
 What if the column names didn't have the "_value" prepended? This is more common in our raw data:
 
@@ -84,7 +113,7 @@ data_example2
 
 ```
 
-The easiest way to do that would be to add that "_value". Keeping in the "tidyverse":
+The easiest way to do that would be to add that "_value". Keeping in the "tidyverse" (acknowledging there are other base-R ways that work well too for the column renames):
 
 ```{r change_names}
 library(dplyr)
