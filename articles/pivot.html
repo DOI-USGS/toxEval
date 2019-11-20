@@ -123,74 +123,106 @@
 <h2 class="hasAnchor">
 <a href="#pivot-from-wide-to-long" class="anchor"></a>Pivot from wide to long</h2>
 <p>It is very common for environmental chemistry data to come back from the laboratory in a “wide” format. A wide format typically has a few “header” columns such as site and date with additional columns representing a sigle chemical per column and possibly a remark code for each chemical as a separate column. The remark column could indicate censored data (ie “below detection limit”) or some information about the sampling conditions. We can use the <code>tidyr</code> package to “pivot” this data to the required long format used in <code>toxEval</code>.</p>
-<p>Let’s make a small data set with 3 chemicals and 2 sampling sites. Each chemical has a value column and a remark column.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">data_example &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<p>Let’s start with the most simple case, a wide data frame with no remark codes. In this simple example, column “a” represents the measured value of “a” and column “b” represents the measured value of “b”:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">df_simple &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="dt">site =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>),</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">  <span class="dt">date =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">:</span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">-</span><span class="dv">3</span>), </a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">                 <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>),</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">  <span class="dt">a_value =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">  <span class="dt">a_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>),</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">  <span class="dt">b_value =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">  <span class="dt">b_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span>),</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">  <span class="dt">c_value =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>),</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">  <span class="dt">c_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">""</span>,<span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">  </a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">)</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">data_example</a></code></pre></div>
-<pre><code>##   site       date a_value a_rmk b_value b_rmk c_value c_rmk
-## 1    A 2019-11-20       1     &lt;       4             3      
-## 2    A 2019-11-19       2             3             4      
-## 3    B 2019-11-18       3             2             5      
-## 4    B 2019-11-17       4             1     &lt;       6</code></pre>
-<p>We will now use the “pivot_longer” function to make this wide data frame into a long data frame with the columns site, date, chemical, remark. The “names_to” can only be a vector if we can use the “names_pattern” to logically separate the column names.</p>
+<a class="sourceLine" id="cb1-5" data-line-number="5">  <span class="dt">a =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">  <span class="dt">b =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">df_simple</a></code></pre></div>
+<pre><code>##   site       date a b
+## 1    A 2019-11-20 1 4
+## 2    A 2019-11-19 2 3
+## 3    B 2019-11-18 3 2
+## 4    B 2019-11-17 4 1</code></pre>
+<p>The “long” version of this data frame will still have the “site” and “date” columns, but instead of “a”, “b” (and potentially many many more…), it will now have “Chemical” and “Value”. To do this programatically, we can use the <code>pivot_longer</code> function in <code>tidyr</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">data_wide &lt;-<span class="st"> </span>data_example <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>site, <span class="op">-</span>date), </a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">               <span class="dt">names_to =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Chemical"</span>, <span class="st">".value"</span>),</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">               <span class="dt">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>)</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data_wide)</a></code></pre></div>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">df_simple_long &lt;-<span class="st"> </span>df_simple <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>site, <span class="op">-</span>date),</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">               <span class="dt">names_to =</span> <span class="st">"Chemical"</span>,</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">               <span class="dt">values_to =</span> <span class="st">"Value"</span>)</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(df_simple_long)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   site  date       Chemical Value
+##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt;
+## 1 A     2019-11-20 a            1
+## 2 A     2019-11-20 b            4
+## 3 A     2019-11-19 a            2
+## 4 A     2019-11-19 b            3
+## 5 B     2019-11-18 a            3
+## 6 B     2019-11-18 b            2</code></pre>
+<p>The “names_to” argument is the name given to the column that is populated from the wide column names (so, the chemical names). The “values_to” is the column name for the values populated from the chemical columns.</p>
+<p>Let’s make a more complicated wide data that now has the “a” and “b” measured values, but also has “a” and “b” remark codes:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">df_with_rmks &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">site =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>),</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  <span class="dt">date =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">:</span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">-</span><span class="dv">3</span>), </a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">                 <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>),</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="dt">a_value =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">  <span class="dt">a_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>),</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">  <span class="dt">b_value =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  <span class="dt">b_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span>),</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">df_with_rmks</a></code></pre></div>
+<pre><code>##   site       date a_value a_rmk b_value b_rmk
+## 1    A 2019-11-20       1     &lt;       4      
+## 2    A 2019-11-19       2             3      
+## 3    B 2019-11-18       3             2      
+## 4    B 2019-11-17       4             1     &lt;</code></pre>
+<p>We can use the “pivot_longer” function again to make this into a long data frame with the columns: site, date, Chemical, value, remark:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">df_long_with_rmks &lt;-<span class="st"> </span>df_with_rmks <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>site, <span class="op">-</span>date), </a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">               <span class="dt">names_to =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Chemical"</span>, <span class="st">".value"</span>),</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">               <span class="dt">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>)</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(df_long_with_rmks)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##   site  date       Chemical value rmk  
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
 ## 1 A     2019-11-20 a            1 &lt;    
 ## 2 A     2019-11-20 b            4 ""   
-## 3 A     2019-11-20 c            3 ""   
-## 4 A     2019-11-19 a            2 ""   
-## 5 A     2019-11-19 b            3 ""   
-## 6 A     2019-11-19 c            4 ""</code></pre>
+## 3 A     2019-11-19 a            2 ""   
+## 4 A     2019-11-19 b            3 ""   
+## 5 B     2019-11-18 a            3 ""   
+## 6 B     2019-11-18 b            2 ""</code></pre>
+<p>This time, the “names_to” argument is a vector. Since it’s going to produce more than a simple name/value combination, we need to tell it how to make the name/value/remark combinations. We do that using the “names_pattern” argument. In this case, <code>tidyr</code> is going to look at the column names (excluding site and date…since we negate those in the “cols” argument), and try to split the names by the “_” separator. This is a very powerful tool…in this case we are saying anything in the first group (on the left of the “_”) is the “Chemical” and every matching group on the right of the “_” creates new value columns. So with the columns are: a_value, a_rmk, b_value, b_rmk - we get a column of chemicals (a &amp; b), a column of “rmk” values, and a column of “value” values.</p>
 <p>What if the column names didn’t have the "_value" prepended? This is more common in our raw data:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">data_example2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">site =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>),</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">  <span class="dt">date =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">:</span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">-</span><span class="dv">3</span>), </a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                 <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>),</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="dt">a =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">  <span class="dt">a_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>),</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">  <span class="dt">b =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">  <span class="dt">b_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span>),</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">  <span class="dt">c =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>),</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">  <span class="dt">c_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">""</span>,<span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">)</a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">data_example2</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">data_example2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="dt">site =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>),</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">  <span class="dt">date =</span> <span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">:</span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span>()<span class="op">-</span><span class="dv">3</span>), </a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">                 <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>),</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">  <span class="dt">a =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">  <span class="dt">a_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>),</a>
+<a class="sourceLine" id="cb9-7" data-line-number="7">  <span class="dt">b =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">4</span><span class="op">:</span><span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">  <span class="dt">b_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span>),</a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">  <span class="dt">c =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>),</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">  <span class="dt">c_rmk =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">""</span>,<span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb9-11" data-line-number="11">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12">)</a>
+<a class="sourceLine" id="cb9-13" data-line-number="13">data_example2</a></code></pre></div>
 <pre><code>##   site       date a a_rmk b b_rmk c c_rmk
 ## 1    A 2019-11-20 1     &lt; 4       3      
 ## 2    A 2019-11-19 2       3       4      
 ## 3    B 2019-11-18 3       2       5      
 ## 4    B 2019-11-17 4       1     &lt; 6</code></pre>
-<p>The easiest way to do that would be to add that "_value“. Keeping in the”tidyverse":</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">data_wide2 &lt;-<span class="st"> </span>data_example2 <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select_all.html">rename_if</a></span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"_rmk"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(.)) <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">              </span><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(.) <span class="op">!=</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"site"</span>,<span class="st">"date"</span>), </a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">'%s_value'</span>, .))) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>site, <span class="op">-</span>date), </a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">               <span class="dt">names_to =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Chemical"</span>, <span class="st">".value"</span>),</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">               <span class="dt">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>)</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data_wide2)</a></code></pre></div>
+<p>The easiest way to do that would be to add that "_value“. Keeping in the”tidyverse" (acknowledging there are other base-R ways that work well too for the column renames):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">data_wide2 &lt;-<span class="st"> </span>data_example2 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select_all.html">rename_if</a></span>(<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"_rmk"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(.)) <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="st">              </span><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(.) <span class="op">!=</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"site"</span>,<span class="st">"date"</span>), </a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">'%s_value'</span>, .))) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>site, <span class="op">-</span>date), </a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">               <span class="dt">names_to =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Chemical"</span>, <span class="st">".value"</span>),</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">               <span class="dt">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>)</a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data_wide2)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ##   site  date       Chemical value rmk  
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
@@ -218,54 +250,54 @@
 </ul>
 <p>In this example, we’ll work through these spacing and header issues to get us to a wide data frame that we can then pivot to a long data frame as described in the next section.</p>
 <p>First, let’s just get the data with no column names:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(readxl)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">data_no_header &lt;-<span class="st"> </span><span class="kw"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span>(here<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span>(<span class="st">"vignettes/Wide data example.xlsx"</span>),</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">                            <span class="dt">sheet =</span> <span class="st">"data_from_lab"</span>, </a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">                            <span class="dt">skip =</span> <span class="dv">4</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(readxl)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">data_no_header &lt;-<span class="st"> </span><span class="kw"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span>(here<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span>(<span class="st">"vignettes/Wide data example.xlsx"</span>),</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">                            <span class="dt">sheet =</span> <span class="st">"data_from_lab"</span>, </a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">                            <span class="dt">skip =</span> <span class="dv">4</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p><code>data_no_header</code> is now a data frame with accurate types (except for dates…we’ll get that later!), but no column names. We know the first 2 columns are site and date, so we can name those easily:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data_no_header)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SiteID"</span>, <span class="st">"Sample Date"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data_no_header)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"SiteID"</span>, <span class="st">"Sample Date"</span>)</a></code></pre></div>
 <p>Now we need to get the CAS values for the column names:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">headers &lt;-<span class="st"> </span><span class="kw"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span>(here<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span>(<span class="st">"vignettes/Wide data example.xlsx"</span>),</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">                     <span class="dt">sheet =</span> <span class="st">"data_from_lab"</span>, </a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">                     <span class="dt">n_max =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co"># Get rid or first 2 columns:</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5">headers &lt;-<span class="st"> </span>headers[,<span class="op">-</span><span class="dv">1</span><span class="op">:-</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co"># Let's look at the first 6 columns:</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">headers[<span class="dv">1</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">headers &lt;-<span class="st"> </span><span class="kw"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span>(here<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span>(<span class="st">"vignettes/Wide data example.xlsx"</span>),</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">                     <span class="dt">sheet =</span> <span class="st">"data_from_lab"</span>, </a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">                     <span class="dt">n_max =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># Get rid or first 2 columns:</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">headers &lt;-<span class="st"> </span>headers[,<span class="op">-</span><span class="dv">1</span><span class="op">:-</span><span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="co"># Let's look at the first 6 columns:</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">headers[<span class="dv">1</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>]</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 6
 ##   ...3  `1912-24-9` ...5  `148-79-8`    ...7  `611-59-6`          
 ##   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;               
 ## 1 Code  Atrazine    Code  Thiabendazole Code  1,7-Dimethylxanthine</code></pre>
 <p>It would be nice to use the first row as the column names in “data_no_header”, but then it would be very confusing what “Code” means (since it’s repeated). So, let’s remove the “Code”, and just repeat the chemical names:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">headers &lt;-<span class="st"> </span>headers[,<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(headers[<span class="dv">1</span>,]) <span class="op">!=</span><span class="st"> "Code"</span>)]</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">chem_names &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(headers[<span class="dv">1</span>,])</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb13-5" data-line-number="5">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(chem_names, <span class="dt">each =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(column_names, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"_code"</span>,<span class="st">"_Value"</span>))</a>
-<a class="sourceLine" id="cb13-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(column_names)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">headers &lt;-<span class="st"> </span>headers[,<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(headers[<span class="dv">1</span>,]) <span class="op">!=</span><span class="st"> "Code"</span>)]</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">chem_names &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(headers[<span class="dv">1</span>,])</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(chem_names, <span class="dt">each =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(column_names, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"_code"</span>,<span class="st">"_Value"</span>))</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(column_names)</a></code></pre></div>
 <pre><code>## [1] "Atrazine_code"              "Atrazine_Value"            
 ## [3] "Thiabendazole_code"         "Thiabendazole_Value"       
 ## [5] "1,7-Dimethylxanthine_code"  "1,7-Dimethylxanthine_Value"</code></pre>
 <p>Now, we can assign the “column_names” to the “data_no_header”:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data_no_header)[<span class="op">-</span><span class="dv">1</span><span class="op">:-</span><span class="dv">2</span>] &lt;-<span class="st"> </span>column_names</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data_no_header)[<span class="op">-</span><span class="dv">1</span><span class="op">:-</span><span class="dv">2</span>] &lt;-<span class="st"> </span>column_names</a></code></pre></div>
 <p>Before we pivot this data to the required long format (as described above), let’s transform the “Sample Date” column to an R date time format:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">data_no_header<span class="op">$</span><span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(data_no_header<span class="op">$</span><span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>, </a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">                                <span class="dt">format =</span> <span class="st">"%Y%m%d%H%M"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">data_no_header<span class="op">$</span><span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(data_no_header<span class="op">$</span><span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>, </a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">                                <span class="dt">format =</span> <span class="st">"%Y%m%d%H%M"</span>)</a></code></pre></div>
 <p>Now let’s pivot this to the long format:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">cleaned_long &lt;-<span class="st"> </span>data_no_header <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>SiteID, <span class="op">-</span><span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>), </a>
-<a class="sourceLine" id="cb17-3" data-line-number="3">               <span class="dt">names_to =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Chemical"</span>, <span class="st">".value"</span>),</a>
-<a class="sourceLine" id="cb17-4" data-line-number="4">               <span class="dt">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>) </a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">cleaned_long &lt;-<span class="st"> </span>data_no_header <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span>SiteID, <span class="op">-</span><span class="st">`</span><span class="dt">Sample Date</span><span class="st">`</span>), </a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">               <span class="dt">names_to =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Chemical"</span>, <span class="st">".value"</span>),</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">               <span class="dt">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>) </a></code></pre></div>
 <p>But, since we’re doing a <code>toxEval</code> analysis, we need to get a “CAS” column. We can use the original “headers” data frame and do a <code>left_join</code> (from the “dplyr” package):</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">cas_df &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">Chemical =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(headers[<span class="dv">1</span>,]),</a>
-<a class="sourceLine" id="cb18-2" data-line-number="2">                     <span class="dt">CAS =</span> <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(headers), </a>
-<a class="sourceLine" id="cb18-3" data-line-number="3">                     <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb18-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb18-5" data-line-number="5">cleaned_long &lt;-<span class="st"> </span>cleaned_long <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(cas_df, <span class="dt">by =</span> <span class="st">"Chemical"</span>)</a>
-<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(cleaned_long)</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">cas_df &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">Chemical =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(headers[<span class="dv">1</span>,]),</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">                     <span class="dt">CAS =</span> <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(headers), </a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">                     <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">cleaned_long &lt;-<span class="st"> </span>cleaned_long <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(cas_df, <span class="dt">by =</span> <span class="st">"Chemical"</span>)</a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(cleaned_long)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 6
 ##   SiteID   `Sample Date`       Chemical                 code    Value CAS      
 ##   &lt;chr&gt;    &lt;dttm&gt;              &lt;chr&gt;                    &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    
@@ -276,28 +308,28 @@
 ## 5 Upstream 2017-09-07 10:00:00 Atrazine                 &lt;NA&gt;  0.0666  1912-24-9
 ## 6 Upstream 2017-09-07 10:00:00 Thiabendazole            &lt;     0.011   148-79-8</code></pre>
 <p>The “cleaned_long” data frame is ready to be used by <code>toxEval</code> in the “Data” tab. The “cas_df” is nearly ready for the “Chemical” tab. There is a mandatory “Class” column that needs to be added after exporting to Excel. Finally, we need to create the “Sites” tab.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">chemical_tab &lt;-<span class="st"> </span>cas_df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">Class =</span> <span class="st">"to_add"</span>)</a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4">sites_tab &lt;-<span class="st"> </span>cleaned_long <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(SiteID) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> =<span class="st"> "to_add"</span>,</a>
-<a class="sourceLine" id="cb20-8" data-line-number="8">         <span class="dt">dec_lat =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb20-9" data-line-number="9">         <span class="dt">dec_lon =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb20-10" data-line-number="10">         <span class="dt">site_grouping =</span> <span class="st">""</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">chemical_tab &lt;-<span class="st"> </span>cas_df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">Class =</span> <span class="st">"to_add"</span>)</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">sites_tab &lt;-<span class="st"> </span>cleaned_long <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb24-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(SiteID) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="st">`</span><span class="dt">Short Name</span><span class="st">`</span> =<span class="st"> "to_add"</span>,</a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">         <span class="dt">dec_lat =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb24-9" data-line-number="9">         <span class="dt">dec_lon =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb24-10" data-line-number="10">         <span class="dt">site_grouping =</span> <span class="st">""</span>)</a></code></pre></div>
 </div>
 <div id="save-to-excel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#save-to-excel" class="anchor"></a>Save to Excel</h2>
 <p>The package <code>openxlsx</code> can be used to export Excel files. Create a named list in R, and each of those parts of the list become a Worksheet in Excel:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">to_Excel &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">Data =</span> cleaned_long,</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">                 <span class="dt">Chemicals =</span> chemical_tab,</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">                 <span class="dt">Sites =</span> sites_tab)</a>
-<a class="sourceLine" id="cb21-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(openxlsx)</a>
-<a class="sourceLine" id="cb21-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html">write.xlsx</a></span>(to_Excel,</a>
-<a class="sourceLine" id="cb21-7" data-line-number="7">           <span class="dt">file =</span> <span class="st">"toxEval_Input.xlsx"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">to_Excel &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">Data =</span> cleaned_long,</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">                 <span class="dt">Chemicals =</span> chemical_tab,</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">                 <span class="dt">Sites =</span> sites_tab)</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb25-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(openxlsx)</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html">write.xlsx</a></span>(to_Excel,</a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">           <span class="dt">file =</span> <span class="st">"toxEval_Input.xlsx"</span>)</a></code></pre></div>
 </div>
 <div id="disclaimer" class="section level1">
 <h1 class="hasAnchor">
