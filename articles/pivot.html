@@ -109,7 +109,7 @@
     <div class="page-header toc-ignore">
       <h1>Using R to prepare your Excel file</h1>
             
-            <h4 class="date">19 November, 2019</h4>
+            <h4 class="date">20 November, 2019</h4>
       
       
       <div class="hidden name"><code>pivot.Rmd</code></div>
@@ -139,10 +139,10 @@
 <a class="sourceLine" id="cb1-13" data-line-number="13">)</a>
 <a class="sourceLine" id="cb1-14" data-line-number="14">data_example</a></code></pre></div>
 <pre><code>##   site       date a_value a_rmk b_value b_rmk c_value c_rmk
-## 1    A 2019-11-19       1     &lt;       4             3      
-## 2    A 2019-11-18       2             3             4      
-## 3    B 2019-11-17       3             2             5      
-## 4    B 2019-11-16       4             1     &lt;       6</code></pre>
+## 1    A 2019-11-20       1     &lt;       4             3      
+## 2    A 2019-11-19       2             3             4      
+## 3    B 2019-11-18       3             2             5      
+## 4    B 2019-11-17       4             1     &lt;       6</code></pre>
 <p>We will now use the “pivot_longer” function to make this wide data frame into a long data frame with the columns site, date, chemical, remark. The “names_to” can only be a vector if we can use the “names_pattern” to logically separate the column names.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">data_wide &lt;-<span class="st"> </span>data_example <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -154,12 +154,12 @@
 <pre><code>## # A tibble: 6 x 5
 ##   site  date       Chemical value rmk  
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
-## 1 A     2019-11-19 a            1 &lt;    
-## 2 A     2019-11-19 b            4 ""   
-## 3 A     2019-11-19 c            3 ""   
-## 4 A     2019-11-18 a            2 ""   
-## 5 A     2019-11-18 b            3 ""   
-## 6 A     2019-11-18 c            4 ""</code></pre>
+## 1 A     2019-11-20 a            1 &lt;    
+## 2 A     2019-11-20 b            4 ""   
+## 3 A     2019-11-20 c            3 ""   
+## 4 A     2019-11-19 a            2 ""   
+## 5 A     2019-11-19 b            3 ""   
+## 6 A     2019-11-19 c            4 ""</code></pre>
 <p>What if the column names didn’t have the "_value" prepended? This is more common in our raw data:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">data_example2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">site =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>),</a>
@@ -175,10 +175,10 @@
 <a class="sourceLine" id="cb5-12" data-line-number="12">)</a>
 <a class="sourceLine" id="cb5-13" data-line-number="13">data_example2</a></code></pre></div>
 <pre><code>##   site       date a a_rmk b b_rmk c c_rmk
-## 1    A 2019-11-19 1     &lt; 4       3      
-## 2    A 2019-11-18 2       3       4      
-## 3    B 2019-11-17 3       2       5      
-## 4    B 2019-11-16 4       1     &lt; 6</code></pre>
+## 1    A 2019-11-20 1     &lt; 4       3      
+## 2    A 2019-11-19 2       3       4      
+## 3    B 2019-11-18 3       2       5      
+## 4    B 2019-11-17 4       1     &lt; 6</code></pre>
 <p>The easiest way to do that would be to add that "_value“. Keeping in the”tidyverse":</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"></a>
@@ -194,12 +194,12 @@
 <pre><code>## # A tibble: 6 x 5
 ##   site  date       Chemical value rmk  
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
-## 1 A     2019-11-19 a            1 &lt;    
-## 2 A     2019-11-19 b            4 ""   
-## 3 A     2019-11-19 c            3 ""   
-## 4 A     2019-11-18 a            2 ""   
-## 5 A     2019-11-18 b            3 ""   
-## 6 A     2019-11-18 c            4 ""</code></pre>
+## 1 A     2019-11-20 a            1 &lt;    
+## 2 A     2019-11-20 b            4 ""   
+## 3 A     2019-11-20 c            3 ""   
+## 4 A     2019-11-19 a            2 ""   
+## 5 A     2019-11-19 b            3 ""   
+## 6 A     2019-11-19 c            4 ""</code></pre>
 </div>
 <div id="opening-the-file" class="section level2">
 <h2 class="hasAnchor">
@@ -266,15 +266,15 @@
 <a class="sourceLine" id="cb18-5" data-line-number="5">cleaned_long &lt;-<span class="st"> </span>cleaned_long <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb18-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(cas_df, <span class="dt">by =</span> <span class="st">"Chemical"</span>)</a>
 <a class="sourceLine" id="cb18-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(cleaned_long)</a></code></pre></div>
-<pre><code>## # A tibble: 6 x 7
-##   SiteID   `Sample Date`       Chemical             .copy code     Value CAS    
-##   &lt;chr&gt;    &lt;dttm&gt;              &lt;chr&gt;                &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;  
-## 1 Upstream 2016-08-01 10:00:00 Atrazine                 1 &lt;NA&gt;   0.0183  1912-2…
-## 2 Upstream 2016-08-01 10:00:00 Thiabendazole            1 &lt;      0.00410 148-79…
-## 3 Upstream 2016-08-01 10:00:00 1,7-Dimethylxanthine     1 &lt;      0.0877  611-59…
-## 4 Upstream 2016-08-01 10:00:00 10-Hydroxy-amitript…     1 &lt;      0.0083  1159-8…
-## 5 Upstream 2016-08-01 10:00:00 Atrazine                 2 &lt;NA&gt;  NA       1912-2…
-## 6 Upstream 2017-09-07 10:00:00 Atrazine                 1 &lt;NA&gt;   0.0666  1912-2…</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   SiteID   `Sample Date`       Chemical                 code    Value CAS      
+##   &lt;chr&gt;    &lt;dttm&gt;              &lt;chr&gt;                    &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    
+## 1 Upstream 2016-08-01 10:00:00 Atrazine                 &lt;NA&gt;  0.0183  1912-24-9
+## 2 Upstream 2016-08-01 10:00:00 Thiabendazole            &lt;     0.00410 148-79-8 
+## 3 Upstream 2016-08-01 10:00:00 1,7-Dimethylxanthine     &lt;     0.0877  611-59-6 
+## 4 Upstream 2016-08-01 10:00:00 10-Hydroxy-amitriptyline &lt;     0.0083  1159-82-6
+## 5 Upstream 2017-09-07 10:00:00 Atrazine                 &lt;NA&gt;  0.0666  1912-24-9
+## 6 Upstream 2017-09-07 10:00:00 Thiabendazole            &lt;     0.011   148-79-8</code></pre>
 <p>The “cleaned_long” data frame is ready to be used by <code>toxEval</code> in the “Data” tab. The “cas_df” is nearly ready for the “Chemical” tab. There is a mandatory “Class” column that needs to be added. Finally, we need to get the “Sites” tab needs be be created.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">chemical_tab &lt;-<span class="st"> </span>cas_df <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">Class =</span> <span class="st">"to_add"</span>)</a>

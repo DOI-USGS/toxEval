@@ -109,7 +109,7 @@
     <div class="page-header toc-ignore">
       <h1>Dose Response Curves</h1>
             
-            <h4 class="date">19 November, 2019</h4>
+            <h4 class="date">20 November, 2019</h4>
       
       
       <div class="hidden name"><code>does_curves.Rmd</code></div>
@@ -155,23 +155,21 @@
 <a class="sourceLine" id="cb1-10" data-line-number="10">cas &lt;-<span class="st"> "1912-24-9"</span></a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb1-12" data-line-number="12">chem_info &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadChem.html">tcplLoadChem</a></span>(<span class="dt">field =</span> <span class="st">'casn'</span>, <span class="dt">val =</span> cas)</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(chem_info, <span class="dt">n =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">assay_info &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/assay_funcs.html">tcplLoadAcid</a></span>(<span class="dt">fld =</span> <span class="st">"acnm"</span>, <span class="dt">val =</span> ep)</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(assay_info)</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">mc3 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span>(<span class="dt">lvl =</span> <span class="dv">3</span>, <span class="dt">type =</span> <span class="st">"mc"</span>, </a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">             <span class="dt">fld =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"acid"</span>,<span class="st">"spid"</span>), </a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">             <span class="dt">val =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(assay_info<span class="op">$</span>acid,</a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">                        chem_info<span class="op">$</span>spid))</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb1-23" data-line-number="23">## Load mc tables from levels of interest</a>
-<a class="sourceLine" id="cb1-24" data-line-number="24">mc4 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span>(<span class="dt">lvl =</span> <span class="dv">4</span>, <span class="dt">type =</span> <span class="st">"mc"</span>, </a>
-<a class="sourceLine" id="cb1-25" data-line-number="25">                    <span class="dt">fld =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"spid"</span>, <span class="st">"aeid"</span>), </a>
-<a class="sourceLine" id="cb1-26" data-line-number="26">                    <span class="dt">val =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(chem_info<span class="op">$</span>spid,</a>
-<a class="sourceLine" id="cb1-27" data-line-number="27">                               <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(mc3<span class="op">$</span>aeid)))</a>
-<a class="sourceLine" id="cb1-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplPlotM4ID.html">tcplPlotM4ID</a></span>(mc4, <span class="dt">lvl =</span> <span class="dv">5</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">assay_info &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/assay_funcs.html">tcplLoadAcid</a></span>(<span class="dt">fld =</span> <span class="st">"acnm"</span>, <span class="dt">val =</span> ep)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">mc3 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span>(<span class="dt">lvl =</span> <span class="dv">3</span>, <span class="dt">type =</span> <span class="st">"mc"</span>, </a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">             <span class="dt">fld =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"acid"</span>,<span class="st">"spid"</span>), </a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">             <span class="dt">val =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(assay_info<span class="op">$</span>acid,</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">                        chem_info<span class="op">$</span>spid))</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">## Load mc tables from levels of interest</a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">mc4 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span>(<span class="dt">lvl =</span> <span class="dv">4</span>, <span class="dt">type =</span> <span class="st">"mc"</span>, </a>
+<a class="sourceLine" id="cb1-23" data-line-number="23">                    <span class="dt">fld =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"spid"</span>, <span class="st">"aeid"</span>), </a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">                    <span class="dt">val =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(chem_info<span class="op">$</span>spid,</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">                               <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(mc3<span class="op">$</span>aeid)))</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="kw"><a href="https://rdrr.io/pkg/tcpl/man/tcplPlotM4ID.html">tcplPlotM4ID</a></span>(mc4, <span class="dt">lvl =</span> <span class="dv">5</span>)</a></code></pre></div>
 <p><img src="atrazineDose.png" width="375"></p>
 <p>The values passed to the <code>tcplConf</code> function will depend on how you set up the MySQL database.</p>
 </div>
