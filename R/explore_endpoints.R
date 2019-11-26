@@ -16,7 +16,7 @@
 #' @import shinydashboard
 #' @import ggplot2
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' explore_endpoints()
 #' }
 explore_endpoints <- function(browse=TRUE){
