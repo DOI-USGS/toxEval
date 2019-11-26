@@ -104,16 +104,7 @@ sitesOrdered <- c("StLouis","Nemadji","WhiteWI","Bad","Montreal",
 
 tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
               levels = sitesOrdered)
-              
-plot_tox_heatmap(chemical_summary, 
-                 tox_list$chem_site, 
-                 category = "Biological",
-                 manual_remove = "Undefined")
 plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical Class")
-plot_tox_heatmap(chemical_summary, tox_list$chem_site, 
-                 category = "Chemical Class",
-                 legend_lab = "EAR")
-plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical")
 plot_tox_heatmap(chemical_summary, tox_list$chem_site, 
                  category = "Chemical", legend_lab = "EAR")
 
