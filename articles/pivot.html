@@ -109,7 +109,7 @@
     <div class="page-header toc-ignore">
       <h1>Using R to prepare your Excel file</h1>
             
-            <h4 class="date">20 November, 2019</h4>
+            <h4 class="date">26 November, 2019</h4>
       
       
       <div class="hidden name"><code>pivot.Rmd</code></div>
@@ -134,10 +134,10 @@
 <a class="sourceLine" id="cb1-8" data-line-number="8">)</a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">df_simple</a></code></pre></div>
 <pre><code>##   site       date a b
-## 1    A 2019-11-20 1 4
-## 2    A 2019-11-19 2 3
-## 3    B 2019-11-18 3 2
-## 4    B 2019-11-17 4 1</code></pre>
+## 1    A 2019-11-26 1 4
+## 2    A 2019-11-25 2 3
+## 3    B 2019-11-24 3 2
+## 4    B 2019-11-23 4 1</code></pre>
 <p>The “long” version of this data frame will still have the “site” and “date” columns, but instead of “a”, “b” (and potentially many many more…), it will now have “Chemical” and “Value”. To do this programatically, we can use the <code>pivot_longer</code> function in <code>tidyr</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
@@ -150,12 +150,12 @@
 <pre><code>## # A tibble: 6 x 4
 ##   site  date       Chemical Value
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt;
-## 1 A     2019-11-20 a            1
-## 2 A     2019-11-20 b            4
-## 3 A     2019-11-19 a            2
-## 4 A     2019-11-19 b            3
-## 5 B     2019-11-18 a            3
-## 6 B     2019-11-18 b            2</code></pre>
+## 1 A     2019-11-26 a            1
+## 2 A     2019-11-26 b            4
+## 3 A     2019-11-25 a            2
+## 4 A     2019-11-25 b            3
+## 5 B     2019-11-24 a            3
+## 6 B     2019-11-24 b            2</code></pre>
 <p>The “names_to” argument is the name given to the column that is populated from the wide column names (so, the chemical names). The “values_to” is the column name for the values populated from the chemical columns.</p>
 <p>Let’s make a more complicated wide data that now has the “a” and “b” measured values, but also has “a” and “b” remark codes:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">df_with_rmks &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
@@ -170,10 +170,10 @@
 <a class="sourceLine" id="cb5-10" data-line-number="10">)</a>
 <a class="sourceLine" id="cb5-11" data-line-number="11">df_with_rmks</a></code></pre></div>
 <pre><code>##   site       date a_value a_rmk b_value b_rmk
-## 1    A 2019-11-20       1     &lt;       4      
-## 2    A 2019-11-19       2             3      
-## 3    B 2019-11-18       3             2      
-## 4    B 2019-11-17       4             1     &lt;</code></pre>
+## 1    A 2019-11-26       1     &lt;       4      
+## 2    A 2019-11-25       2             3      
+## 3    B 2019-11-24       3             2      
+## 4    B 2019-11-23       4             1     &lt;</code></pre>
 <p>We can use the “pivot_longer” function again to make this into a long data frame with the columns: site, date, Chemical, value, remark:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">df_long_with_rmks &lt;-<span class="st"> </span>df_with_rmks <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -185,12 +185,12 @@
 <pre><code>## # A tibble: 6 x 5
 ##   site  date       Chemical value rmk  
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
-## 1 A     2019-11-20 a            1 &lt;    
-## 2 A     2019-11-20 b            4 ""   
-## 3 A     2019-11-19 a            2 ""   
-## 4 A     2019-11-19 b            3 ""   
-## 5 B     2019-11-18 a            3 ""   
-## 6 B     2019-11-18 b            2 ""</code></pre>
+## 1 A     2019-11-26 a            1 &lt;    
+## 2 A     2019-11-26 b            4 ""   
+## 3 A     2019-11-25 a            2 ""   
+## 4 A     2019-11-25 b            3 ""   
+## 5 B     2019-11-24 a            3 ""   
+## 6 B     2019-11-24 b            2 ""</code></pre>
 <p>This time, the “names_to” argument is a vector. Since it’s going to produce more than a simple name/value combination, we need to tell it how to make the name/value/remark combinations. We do that using the “names_pattern” argument. In this case, <code>tidyr</code> is going to look at the column names (excluding site and date…since we negate those in the “cols” argument), and try to split the names by the “_” separator. This is a very powerful tool…in this case we are saying anything in the first group (on the left of the “_”) is the “Chemical” and every matching group on the right of the “_” creates new value columns. So with the columns are: a_value, a_rmk, b_value, b_rmk - we get a column of chemicals (a &amp; b), a column of “rmk” values, and a column of “value” values.</p>
 <p>What if the column names didn’t have the "_value" prepended? This is more common in our raw data:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">data_example2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(</a>
@@ -207,10 +207,10 @@
 <a class="sourceLine" id="cb9-12" data-line-number="12">)</a>
 <a class="sourceLine" id="cb9-13" data-line-number="13">data_example2</a></code></pre></div>
 <pre><code>##   site       date a a_rmk b b_rmk c c_rmk
-## 1    A 2019-11-20 1     &lt; 4       3      
-## 2    A 2019-11-19 2       3       4      
-## 3    B 2019-11-18 3       2       5      
-## 4    B 2019-11-17 4       1     &lt; 6</code></pre>
+## 1    A 2019-11-26 1     &lt; 4       3      
+## 2    A 2019-11-25 2       3       4      
+## 3    B 2019-11-24 3       2       5      
+## 4    B 2019-11-23 4       1     &lt; 6</code></pre>
 <p>The easiest way to do that would be to add that "_value“. Keeping in the”tidyverse" (acknowledging there are other base-R ways that work well too for the column renames):</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"></a>
@@ -226,12 +226,12 @@
 <pre><code>## # A tibble: 6 x 5
 ##   site  date       Chemical value rmk  
 ##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
-## 1 A     2019-11-20 a            1 &lt;    
-## 2 A     2019-11-20 b            4 ""   
-## 3 A     2019-11-20 c            3 ""   
-## 4 A     2019-11-19 a            2 ""   
-## 5 A     2019-11-19 b            3 ""   
-## 6 A     2019-11-19 c            4 ""</code></pre>
+## 1 A     2019-11-26 a            1 &lt;    
+## 2 A     2019-11-26 b            4 ""   
+## 3 A     2019-11-26 c            3 ""   
+## 4 A     2019-11-25 a            2 ""   
+## 5 A     2019-11-25 b            3 ""   
+## 6 A     2019-11-25 c            4 ""</code></pre>
 </div>
 <div id="opening-the-file" class="section level2">
 <h2 class="hasAnchor">
