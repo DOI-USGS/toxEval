@@ -46,4 +46,4 @@ vignettes/allActive.png
 vignettes/startSearch.png
 vignettes/getCurve.png
 vignettes/atrazineDose.png
-
+.gitlab-ci.yml
