@@ -24,9 +24,9 @@ get_ACC <- function(CAS){
   Structure_MolWt <- Substance_CASRN <- casn <- Substance_Name <- ".dplyr"
   chnm <- flags <- MlWt <- ACC_value <- casrn <- endPoint <- ".dplyr"
   
-  chem_list <- select(tox_chemicals,
-                             casrn = Substance_CASRN,
-                             MlWt = Structure_MolWt) 
+  chem_list <- dplyr::select(tox_chemicals,
+                            casrn = Substance_CASRN,
+                            MlWt = Structure_MolWt) 
   chem_list <- filter(chem_list, casrn %in% CAS) 
   
   ACC <- ToxCast_ACC 

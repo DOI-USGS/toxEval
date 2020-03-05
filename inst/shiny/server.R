@@ -1,4 +1,8 @@
-options(shiny.maxRequestSize=10*1024^2)
+
+library(leaflet)
+library(shiny)
+
+options(shiny.maxRequestSize=70*1024^2)
 
 cleaned_ep <- clean_endPoint_info(end_point_info) %>%
   dplyr::mutate(endPoint = assay_component_endpoint_name)
@@ -17,12 +21,14 @@ init_Groups <- init_Groups[!is.na(init_Groups)]
 init_Groups <- init_Groups[!(init_Groups %in% c("Background Measurement","Undefined"))]
 
 all_flags <- c("Borderline",
-                "OnlyHighest",
-                "OneAbove",
-                "Noisy",
-                "HitCall",
-                "GainAC50",
-                "Biochemical")
+               "OnlyHighest",
+               "OneAbove",
+               "Noisy",
+               "HitCall",
+               "GainAC50",
+               "Biochemical",
+               "ACCLessThan",
+               "GNLSmodel")
 
 initFlags <- c(#"Borderline",
                 #"OnlyHighest",
@@ -90,7 +96,7 @@ tox_list <- create_toxEval(path_to_file)")
         setupCode <- paste0(setupCode,"
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC = ACC,
-                        flagsShort = ",removeFlags,")
+                    flagsShort = ",removeFlags,")
 
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep, 
@@ -117,6 +123,10 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   
   chemical_summary <- reactive({
 
+    validate(
+      need(!is.null(rawData_data$data), "Please select a data set")
+    )
+    
     groupCol <- epDF[["groupColName"]]
     assays <- epDF[["assays"]]
     flags <- epDF[["flags"]]
@@ -189,7 +199,6 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   output$isTox <- reactive(toxCast())
   outputOptions(output, "isTox", suspendWhenHidden = FALSE)
 
-  
   output$title_text <- renderText({
     
     if(toxCast()){
@@ -218,6 +227,10 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   })
   
   output$meanText <- renderText({
+    validate(
+      need(!is.null(rawData_data$data), "")
+    )
+    
     catType = as.numeric(input$radioMaxGroup)
     category <- c("group","chemical","chemical class")[catType]
     
@@ -232,6 +245,11 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   })
   
   output$freqText <- renderText({
+    
+    validate(
+      need(!is.null(rawData_data$data), "Please select a data set")
+    )
+    
     catType = as.numeric(input$radioMaxGroup)
     category <- c("group","chemical","chemical class")[catType]
     
@@ -352,9 +370,13 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   source("heatMap.R",local=TRUE)$value
   source("endpointGraph.R",local=TRUE)$value
 ################################################################
-
+  output$mymap <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles("CartoDB.Positron") %>%
+      setView(lng = -83.5, lat = 44.5, zoom=6)
+  })
+  
 ###############################################################    
-# Map Stuff:
   source("mapStuff.R",local=TRUE)$value
 ############################################################## 
 
@@ -363,30 +385,6 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   source("benchmarks.R",local=TRUE)$value
 ############################################################## 
 
-  #This works, but a bit clunky since you always need
-  #to "Install and Restart" or you get an error and the 
-  #app won't work.
-  
-  # get_vignette_link <- function(...) {
-  #   x <- vignette(...)
-  #   if (nzchar(out <- x$PDF)) {
-  #     ext <- tools::file_ext(out)
-  #     port <- if (tolower(ext) == "html") 
-  #       tools::startDynamicHelp(NA)
-  #     else 0L
-  #     if (port > 0L) {
-  #       out <- sprintf("http://127.0.0.1:%d/library/%s/doc/%s", 
-  #                      port, basename(x$Dir), out)
-  #       return(out)
-  #     }
-  #   }
-  #   stop("no html help found")
-  # }
-  # 
-  # output$Introduction_vignette <- renderUI({
-  #   a("Introduction", 
-  #     href=get_vignette_link("Introduction", package="toxEval"))
-  # 
-  # })
 
+  session$onSessionEnded(stopApp)
 })
