@@ -16,7 +16,7 @@ tableSummData <- reactive({
 output$tableSumm <- DT::renderDataTable({
   
   validate(
-    need(!is.null(rawData_data$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "")
   )
   
   catType = as.numeric(input$radioMaxGroup)

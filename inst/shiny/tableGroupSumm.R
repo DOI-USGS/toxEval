@@ -1,7 +1,7 @@
 output$tableGroupSumm <- DT::renderDataTable({
   
   validate(
-    need(!is.null(rawData_data$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "")
   )
   
   catType = as.numeric(input$radioMaxGroup)
@@ -22,6 +22,10 @@ output$tableGroupSumm <- DT::renderDataTable({
 
 output$nGroup <- renderText({
 
+  validate(
+    need(!is.null(rawData_data$data), "Please select a data set")
+  )
+  
   sum_logic <- as.logical(input$sumEAR)
   hit_thres <- hitThresValue()
   catType = as.numeric(input$radioMaxGroup)

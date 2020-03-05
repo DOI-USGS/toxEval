@@ -117,7 +117,7 @@ plot_tox_endpoints <- function(chemical_summary,
     orderEP_df <- orderEP(rename(chemical_summary, meanEAR = EAR))
     orderedLevelsEP <- orderEP_df$endPoint
     
-    if(!is.na(top_num)){
+    if(!is.na(top_num) && top_num < length(orderedLevelsEP)){
       
       orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
       chemical_summary <- chemical_summary[chemical_summary[["endPoint"]] %in% orderedLevelsEP,]
@@ -189,7 +189,8 @@ plot_tox_endpoints <- function(chemical_summary,
     
     orderedLevelsEP <- orderEP_df$endPoint
     
-    if(!is.na(top_num)){
+    if(!is.na(top_num) &&
+       top_num < length(orderedLevelsEP)){
       orderedLevelsEP <- orderedLevelsEP[(length(orderedLevelsEP)-top_num+1):length(orderedLevelsEP)]
       graphData <- graphData[graphData[["endPoint"]] %in% orderedLevelsEP,]
     }

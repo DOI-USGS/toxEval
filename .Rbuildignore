@@ -37,6 +37,7 @@ vignettes/toxeval.bib
 vignettes/toxeval_orig.bib
 vignettes/pivot.Rmd
 updateV3.R
+updateV3_2.R
 get_data_ready.R
 LICENSE.md
 sampleData.xlsx
@@ -46,4 +47,4 @@ vignettes/allActive.png
 vignettes/startSearch.png
 vignettes/getCurve.png
 vignettes/atrazineDose.png
-
+.gitlab-ci.yml

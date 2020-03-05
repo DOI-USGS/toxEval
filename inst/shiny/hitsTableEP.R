@@ -1,7 +1,7 @@
 output$hitsTableEPs <- DT::renderDataTable({
   
   validate(
-    need(!is.null(rawData_data$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "")
   )
   
   chemical_summary <- chemical_summary()
@@ -73,6 +73,10 @@ output$downloadHitTable <- downloadHandler(
 )
 
 output$epHitTitle <- renderText({
+  
+  validate(
+    need(!is.null(rawData_data$data), "Please select a data set")
+  )
   
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)

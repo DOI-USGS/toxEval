@@ -1,5 +1,5 @@
 boxPlots_create <- reactive({
-  
+
   catType = as.numeric(input$radioMaxGroup)
   include_thresh <- as.logical(input$plot_thres_box)
   hitThres <- ifelse(include_thresh, hitThresValue(),NA)
