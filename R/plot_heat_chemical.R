@@ -80,7 +80,14 @@
 #' plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical Class")
 #' plot_tox_heatmap(chemical_summary, tox_list$chem_site, 
 #'                  category = "Chemical", legend_lab = "EAR")
-#' 
+#'
+#' single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
+#' plot_tox_heatmap(chemical_summary = single_site, 
+#'                  chem_site = dplyr::filter(tox_list$chem_site, SiteID == "USGS-04024000"), 
+#'                  category = "Chemical Class")
+#' plot_tox_heatmap(chemical_summary = single_site, 
+#'                  chem_site = dplyr::filter(tox_list$chem_site, SiteID == "USGS-04024000"), 
+#'                  category = "Chemical")
 plot_tox_heatmap <- function(chemical_summary, 
                              chem_site, 
                              category = "Biological",
@@ -144,7 +151,10 @@ plot_tox_heatmap <- function(chemical_summary,
       y_label <- fancyLabels(category, mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
       
       caption <- y_label[['caption']]
-      fill_label <- y_label[['y_label']]      
+      fill_label <- y_label[['y_label']]
+      if(is.null(caption)){
+        caption <- ""
+      }
     } else {
       fill_label <- legend_lab
       caption <- ""
@@ -250,7 +260,10 @@ plot_heat_chemicals <- function(chemical_summary,
     y_label <- fancyLabels(category = "Chemical", mean_logic, sum_logic, single_site, sep = TRUE, include_site = FALSE)
     
     caption <- y_label[['caption']]
-    fill_text <- y_label[['y_label']]    
+    fill_text <- y_label[['y_label']]
+    if(is.null(caption)){
+      caption <- ""
+    }
   } else {
     fill_text <- legend_lab
     caption <- ""
