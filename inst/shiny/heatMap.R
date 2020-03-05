@@ -17,6 +17,13 @@ heatMap_create <- reactive({
     chem_site$`Short Name` <- factor(chem_site$`Short Name`,
                                      levels=sitesOrdered[sitesOrdered %in% unique(chem_site$`Short Name`)])
   }
+  
+  sites <- epDF[["sites"]]
+  
+  if(sites != "All"){
+    chem_site <- chem_site[chem_site$`Short Name` == sites,]
+  }
+  
   category <-  c("Biological","Chemical","Chemical Class")[catType]
   
   heatMap <- plot_tox_heatmap(chemical_summary,

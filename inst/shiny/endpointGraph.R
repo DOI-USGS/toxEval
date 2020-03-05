@@ -10,6 +10,10 @@ endpointGraph_create <- reactive({
   sum_logic <- as.logical(input$sumEAR)
   category <- c("Biological","Chemical","Chemical Class")[catType]
 
+  validate(
+    need(top_num <= 50 , "Shiny app cannot display more than 50 endpoints")
+  )
+  
   endpointGraph <- plot_tox_endpoints(chemical_summary, 
                                       category = category,
                                       mean_logic = mean_logic,

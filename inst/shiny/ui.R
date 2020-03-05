@@ -264,7 +264,7 @@ body <- dashboardBody(
                                     multiple = FALSE,
                                     selected = "All")),
                column(2, checkboxInput("plot_thres_ep", "Consider Threshold?", FALSE)),
-               column(2,numericInput("topNum",label = "Number to Show",value = 10))
+               column(2,numericInput("topNum",label = "Number to Show",value = 10, max = 50, min = 2))
              ),
             uiOutput("endpointGraph.ui"),
             fluidRow(
