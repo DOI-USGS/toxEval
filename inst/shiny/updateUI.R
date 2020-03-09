@@ -52,6 +52,14 @@ observeEvent(input$epGroup, {
 
 observe({
   
+  if(!toxCast()){
+    updateSelectInput(session, "sumEAR", selected = FALSE)
+  }
+  
+})
+
+observe({
+  
   groupCol <- epDF[["groupColName"]]
 
   ep <- cleaned_ep
