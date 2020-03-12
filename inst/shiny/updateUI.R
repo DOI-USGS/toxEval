@@ -52,6 +52,14 @@ observeEvent(input$epGroup, {
 
 observe({
   
+  if(!toxCast()){
+    updateSelectInput(session, "sumEAR", selected = FALSE)
+  }
+  
+})
+
+observe({
+  
   groupCol <- epDF[["groupColName"]]
 
   ep <- cleaned_ep
@@ -93,9 +101,17 @@ observe({
 
 chems <- reactive({
   chemical_summary <- chemical_summary()
+  
+  chem_no_zero <- chemical_summary %>% 
+    dplyr::filter(EAR > 0) %>% 
+    dplyr::select(chnm) %>% 
+    dplyr::mutate(chnm = as.character(chnm)) %>% 
+    dplyr::distinct() %>% 
+    dplyr::pull(chnm)
+
   chems <- ""
   if(nrow(chemical_summary) > 0){
-    chems <- levels(chemical_summary$chnm)
+    chems <- levels(chemical_summary$chnm)[levels(chemical_summary$chnm) %in% chem_no_zero]
   }
   chems
 })
@@ -125,13 +141,13 @@ observe({
   valueText <- "All"
 
   if (input$radioMaxGroup == 2){
-    valueText <- rev(c(chems()))
+    valueText <- c("All", rev(c(chems())))
     first_pick <- rev(c(chems()))[1]
   } else if(input$radioMaxGroup == 3){
-    valueText <- c(classes())
+    valueText <- c("All", classes())
     first_pick <- classes()[1]
   } else if(input$radioMaxGroup == 1){
-    valueText <- c(Bio_category())
+    valueText <- c("All", Bio_category())
     first_pick <- Bio_category()[1]
   }
 

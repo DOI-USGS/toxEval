@@ -136,15 +136,15 @@ All resulting graphics, tables, and data can be downloaded for use outside of th
 
 | Tab   |  Function |
 |----------|------:|
-| Map | [`make_tox_map`](basicWorkFlow.html#make_tox_map) |
-| Box Plots | [`plot_tox_boxplots`](basicWorkFlow.html#plot_tox_boxplots) |
-| Bar Charts | [`plot_tox_stacks`](basicWorkFlow.html#plot_tox_stacks)|
-| Max EAR and Frequency | [`rank_sites_DT`](basicWorkFlow.html#rank_sites_DT)|
-| Hit Counts | [`hits_summary_DT`](basicWorkFlow.html#hits_summary_DT)|
-| Site Hits | [`hits_by_groupings_DT`](basicWorkFlow.html#hits_by_groupings_DT)|
-| Endpoint Hits | [`endpoint_hits_DT`](basicWorkFlow.html#endpoint_hits_DT)|
-| Endpoint | [`plot_tox_endpoints`](basicWorkFlow.html#plot_tox_endpoints)|
-| Heat Map | [`plot_tox_heatmap`](basicWorkFlow.html#plot_tox_heatmap)|
+| Map | [`make_tox_map`](basicWorkflow.html#make_tox_map) |
+| Box Plots | [`plot_tox_boxplots`](basicWorkflow.html#plot_tox_boxplots) |
+| Bar Charts | [`plot_tox_stacks`](basicWorkflow.html#plot_tox_stacks)|
+| Max EAR and Frequency | [`rank_sites_DT`](basicWorkflow.html#rank_sites_DT)|
+| Hit Counts | [`hits_summary_DT`](basicWorkflow.html#hits_summary_DT)|
+| Site Hits | [`hits_by_groupings_DT`](basicWorkflow.html#hits_by_groupings_DT)|
+| Endpoint Hits | [`endpoint_hits_DT`](basicWorkflow.html#endpoint_hits_DT)|
+| Endpoint | [`plot_tox_endpoints`](basicWorkflow.html#plot_tox_endpoints)|
+| Heat Map | [`plot_tox_heatmap`](basicWorkflow.html#plot_tox_heatmap)|
 
 </td></tr> </table>
 

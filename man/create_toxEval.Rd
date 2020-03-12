@@ -36,7 +36,7 @@ Required columns in the Data sheet include "CAS", "SiteID", "Value", and
 "Sample Date". The "Value" column includes concentration measurements in 
 units of \eqn{\mu}g/L. "Sample Date" can be either a date or date/time or an integer.
 Additional columns may be included for user purposes, but will not be used in
-toxEval.
+toxEval. 
 
 Required columns in the Chemical sheet include "CAS", "Class". "CAS" values in 
 this sheet must exactly match corresponding "CAS" values in the Data sheet. The 
@@ -44,19 +44,19 @@ this sheet must exactly match corresponding "CAS" values in the Data sheet. The
 example, in a data set of multiple pesticides, it may be valuable to explore 
 differences and similarities to of insecticides, herbicides and fungicides. 
 Additional columns may be included for user purposes, but will not be used in
-toxEval.
+toxEval. 
 
 Required columns in the Sites sheet includes "SiteID", "Short Name", and for 
 the Shiny application "dec_lat","dec_lon". Values in the "SiteID" column in 
 this sheet exactly match corresponding values in the "SiteID" column in the 
 Data sheet. Additional columns may be included for user purposes, but will not 
-be used in toxEval.
+be used in toxEval. 
 
 When using the optional sheet Exclude, columns required include "CAS" and 
 "endPoint". These are used to exclude particular chemicals (via CAS), 
 ToxCast endpoints (via endPoint), or a unique chemical/endpoint combination. 
 Additional columns may be included for user purposes, but will not be used 
-in toxEval.
+in toxEval. 
 
 When using the optional sheet Benchmarks, columns required include "CAS", 
 "endPoint","ACC_value" and "chnm". This sheet is used to over-ride the 
@@ -65,7 +65,8 @@ to import endpoint information from other sources. It could also be useful
 for reproducing results in the future (for example, if after ToxCast updates, 
 analysis with an older version of ToxCast may be reproduced by including the
 selected ToxCast endpoint database in this sheet. Additional columns may be included for user 
-purposes, but will not be used in toxEval.
+purposes, but will not be used in toxEval. 
+
 
 For more information, see the "Prepare Data" vignette: \href{../doc/PrepareData.html}{\code{vignette("PrepareData", package = "toxEval")}}.
 

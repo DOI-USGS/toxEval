@@ -51,11 +51,13 @@ knitr::include_graphics("data.png")
 
 ## Chemicals
 
-The "Chemicals" sheet is used to define chemicals included in the "Data" sheet. Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names).
+The "Chemicals" sheet is used to define the unique chemicals included in the "Data" sheet (so, 1 row per unique chemical). Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names). If you need chemical names that do not match up wiht the "tox_chemical" list provided in the package, you will want to include a 3rd column "Chemical" which is the chemical name to use for plots and tables. 
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
 * Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping. In the example data set provided with the package, the chemicals were organized in classes such as "Fuels", "Herbicides", "Insecticides", etc. The choice of classes is up to the researcher. Chemical class analysis can be ignored, and in that case, it is just important to put a single repeating entry in the "Class" column. 
+
+* Chemical (optional): A character column defining the name of the chemical. The chemical names can be automatically assigned from the supplied data frame "tox_chemicals". However, there may be chemicals that are in your data but not on that list. If you will be plotting those chemicals using either concentrations or custom benchmarks, you will need to supply a name for plotting and tables.
 
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
@@ -71,6 +73,8 @@ The "Sites" sheet is used to define site information for locations where samples
 
 * dec_lat: This numeric column is the decimal latitude of the sampling location. It is mainly used for plotting the sampling locations on a map in the Shiny app. Most `toxEval` functions will not require this column.
 
+* site_grouping (optional): This character column is optional, and will group sites together for certain plots. For example, you may wish to group sites by watershed. The example data groups the sites together by which Great Lake they drain into. 
+
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
 ## Exclude
@@ -79,7 +83,7 @@ At times, it may be appropriate to exclude endpoints, chemicals, or specific end
 
 The "Exclude" sheet is optional, but if used, two columns are required: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
 
-Why would you choose to exclude a chemical/endpoint value? There are times that the dose-response curves from ToxCast may not trigger any automated flags, but upon inspection, the curves seem suspect. The easiest way to view the dose response curves is from the [Actor](http://actor.epa.gov/dashboard) dashboard. The function `endpoint_hits_DT` includes an option to get a direct link to the dose-response curves on the dashboard if the category is "Chemical". This is handy to do quick checks on the endpoint/chemical combinations that produce the highest EARs. If the highest EAR values have dose-response curves that seem suspect, consider adding those to the "Exclude" tab, or at least trying to get more information on that endpoint/assay.
+Why would you choose to exclude a chemical/endpoint value? There are times that the dose-response curves from ToxCast may not trigger any automated flags, but upon inspection, the curves seem suspect. The easiest way to view the dose response curves is from the [Comptox](http://comptox.epa.gov/dashboard) dashboard. The function `endpoint_hits_DT` includes an option to get a direct link to find the dose-response curves if the category is "Chemical". This is handy to do quick checks on the endpoint/chemical combinations that produce the highest EARs. If the highest EAR values have dose-response curves that seem suspect, consider adding those to the "Exclude" tab, or at least trying to get more information on that endpoint/assay.
 
 * endPoint: A character column to define a specific endpoint to ignore in the analysis. If the "CAS" in the corresponding row is empty, the endPoint will be completely excluded from the `toxEval` analysis. For example, if it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider for a given analysis, it can be excluded by adding it to the Exclude sheet in the endPoint column. If the "CAS" in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis. 
 
@@ -89,7 +93,7 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Benchmarks
 
-The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose.
+The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose. For more information, see [here](http://usgs-r.github.io/toxEval/articles/benchmarks.html).
 
 The "Benchmarks" sheet is optional, but if used, five columns are required: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of the sheet should be the header (column names).
 

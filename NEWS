@@ -1,6 +1,13 @@
+toxEval 1.2.0
+===========
+* Switched to version 3.2 of the ToxCast database
+
 toxEval 1.1.0
 ===========
 * Switched to version 3 of the ToxCast database
+* Added custom x label arguments
+* Added more flexibility for potential facet graphs in 
+chemical boxplots.
 
 toxEval 1.0.0
 ===========

@@ -2,11 +2,17 @@
 % Please edit documentation in R/get_chemical_summary.R
 \name{get_chemical_summary}
 \alias{get_chemical_summary}
-\title{Compute EAR values from measured concentrations and ACC values.}
+\title{Compute EAR values}
 \usage{
-get_chemical_summary(tox_list, ACC = NULL, filtered_ep = "All",
-  chem_data = NULL, chem_site = NULL, chem_info = NULL,
-  exclusion = NULL)
+get_chemical_summary(
+  tox_list,
+  ACC = NULL,
+  filtered_ep = "All",
+  chem_data = NULL,
+  chem_site = NULL,
+  chem_info = NULL,
+  exclusion = NULL
+)
 }
 \arguments{
 \item{tox_list}{List with data frames for chem_data, chem_info, chem_site, 
@@ -65,5 +71,5 @@ cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
-                                 
+head(chemical_summary)                             
 }

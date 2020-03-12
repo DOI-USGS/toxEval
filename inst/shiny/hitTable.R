@@ -1,6 +1,6 @@
 output$hitsTable <- DT::renderDataTable({    
   validate(
-    need(!is.null(rawData_data$data), "Please select a data set")
+    need(!is.null(rawData_data$data), "")
   )
   
   catType = as.numeric(input$radioMaxGroup)
@@ -22,6 +22,10 @@ output$hitsTable <- DT::renderDataTable({
 })
 
 output$siteHitText <- renderText({
+  
+  validate(
+    need(!is.null(rawData_data$data), "Please select a data set")
+  )
   
   hitThres <- hitThresValue()
   mean_logic <- as.logical(input$meanEAR)

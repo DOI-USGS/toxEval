@@ -2,6 +2,7 @@ library(toxEval)
 library(shiny)
 library(shinydashboard)
 library(magrittr)
+library(leaflet)
 
 cleaned_ep <- clean_endPoint_info(end_point_info) %>%
   dplyr::rename(endPoint = assay_component_endpoint_name)
@@ -36,7 +37,10 @@ flagsALL <- c("Borderline active",
               "Noisy data",                                 
               "Hit-call potentially confounded by overfitting",
               "Gain AC50 < lowest conc & loss AC50 < mean conc",
-              "Biochemical assay with < 50% efficacy")
+              "Biochemical assay with < 50% efficacy",
+              "Less than 50% efficacy",
+              "AC50 less than lowest concentration tested",
+              "Cell viability assay fit with gnls winning model")
 
 shortFlags <- c("Borderline",
                 "OnlyHighest",
@@ -44,7 +48,10 @@ shortFlags <- c("Borderline",
                 "Noisy",
                 "HitCall",
                 "GainAC50",
-                "Biochemical")
+                "Biochemical",
+                "LessThan50",
+                "ACCLessThan",
+                "GNLSmodel")
 
 assay_names <- c("Apredica" = "APR",
                  "Attagene" = "ATG",
@@ -183,13 +190,14 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   h3(textOutput("siteText")),
+  # leafletOutput("mymap"),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
-             shinycssloaders::withSpinner(leaflet::leafletOutput("mymap",height = "500px")),
-            htmlOutput("mapFooter"),
-            h4("R Code:"),
-            shinyAce::aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
+             leafletOutput("mymap",height = "500px"),
+             htmlOutput("mapFooter"),
+             h4("R Code:"),
+             shinyAce::aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
     tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
              value="summary",
@@ -198,7 +206,6 @@ body <- dashboardBody(
                column(3, checkboxInput("plot_ND", "Plot non-detects's?", TRUE))
              ),
              uiOutput("graphGroup.ui", width = "100%"),
-             
              fluidRow(
                column(3, downloadButton('downloadBoxPlot', 'Download PNG')),
                column(3, downloadButton('downloadBoxPlot_csv', 'Download CSV'))
@@ -208,7 +215,7 @@ body <- dashboardBody(
     ),
     tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
              value="summaryBar",
-             shinycssloaders::withSpinner(plotOutput("stackBarGroup", width = "100%", height = "750px")),
+             plotOutput("stackBarGroup", width = "100%", height = "750px"),
              fluidRow(
                column(3, downloadButton('downloadStackPlot', 'Download PNG')),
                column(3, downloadButton('downloadStackPlot_csv', 'Download CSV'))
@@ -220,7 +227,7 @@ body <- dashboardBody(
              value="maxEAR",
             h3(textOutput("meanText")),
             h3(textOutput("freqText")),
-            shinycssloaders::withSpinner(DT::dataTableOutput('tableSumm')),
+            DT::dataTableOutput('tableSumm'),
             downloadButton('downloadTable', 'Download CSV'),
             h4("R Code:"),
             shinyAce::aceEditor(outputId = "tableSumm_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -228,7 +235,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Hit Counts", shiny::icon("bars")),
              value="maxHits",
              h3(textOutput("nGroup")),
-             shinycssloaders::withSpinner(DT::dataTableOutput('tableGroupSumm')),
+            DT::dataTableOutput('tableGroupSumm'),
             downloadButton('downloadGroupTable', 'Download CSV'),
             h4("R Code:"),
             shinyAce::aceEditor(outputId = "tableGroup_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -236,7 +243,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Site Hits", shiny::icon("barcode")),
             value="siteHits",
             h3(textOutput("siteHitText")),
-            div(shinycssloaders::withSpinner(DT::dataTableOutput("hitsTable")), style="font-size:90%"),
+            div(DT::dataTableOutput("hitsTable"), style="font-size:90%"),
             downloadButton('downloadSiteHitTable', 'Download CSV'),
             h4("R Code:"),
             shinyAce::aceEditor(outputId = "siteHit_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -244,7 +251,7 @@ body <- dashboardBody(
     tabPanel(title = tagList("Endpoints Hits", shiny::icon("barcode")),
              value="endHits",
              h3(textOutput("epHitTitle")),
-             div(shinycssloaders::withSpinner(DT::dataTableOutput("hitsTableEPs")), style="font-size:90%"),
+             div(DT::dataTableOutput("hitsTableEPs"), style="font-size:90%"),
              downloadButton('downloadHitTable', 'Download CSV'),
              h4("R Code:"),
              shinyAce::aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
@@ -257,7 +264,7 @@ body <- dashboardBody(
                                     multiple = FALSE,
                                     selected = "All")),
                column(2, checkboxInput("plot_thres_ep", "Consider Threshold?", FALSE)),
-               column(2,numericInput("topNum",label = "Number to Show",value = 10))
+               column(2,numericInput("topNum",label = "Number to Show",value = 10, max = 50, min = 2))
              ),
             uiOutput("endpointGraph.ui"),
             fluidRow(
@@ -290,8 +297,8 @@ body <- dashboardBody(
            h5("This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at https://www.usgs.gov/visual-id/credit_usgs.html#copyright
               Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
               This software is provided 'AS IS.'"))
-  
-  )  
+
+  )
   
 )
 

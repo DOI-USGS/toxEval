@@ -4,10 +4,13 @@
 \alias{filter_groups}
 \title{Filter endPoints based on groups and assays.}
 \usage{
-filter_groups(ep, groupCol = "intended_target_family",
-  assays = c("ATG", "NVS", "OT", "TOX21", "CEETOX", "APR", "CLD",
-  "TANGUAY", "NHEERL_PADILLA", "NCCT_SIMMONS", "ACEA"),
-  remove_groups = c("Background Measurement", "Undefined"))
+filter_groups(
+  ep,
+  groupCol = "intended_target_family",
+  assays = c("ATG", "NVS", "OT", "TOX21", "CEETOX", "APR", "CLD", "TANGUAY",
+    "NHEERL_PADILLA", "NCCT_SIMMONS", "ACEA"),
+  remove_groups = c("Background Measurement", "Undefined")
+)
 }
 \arguments{
 \item{ep}{Data frame containing Endpoint information from ToxCast}
@@ -42,4 +45,5 @@ objective target for the assay". Much more detail can be discovered in that docu
 end_point_info <- end_point_info
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
+head(filtered_ep)
 }

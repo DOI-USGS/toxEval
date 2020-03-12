@@ -10,6 +10,10 @@ stackBarGroup_create <- reactive({
 
   text_size <- input$text_size1
   
+  showNotification("Recalculating", 
+                   type = "message", id = "Stack")
+  
+  
   if("site_grouping" %in% names(chem_site) && all(unique(chem_site$site_grouping) %in% great_lakes)){
     chem_site$site_grouping <- factor(chem_site$site_grouping,
                                       levels=great_lakes)      
@@ -36,6 +40,7 @@ stackBarGroup_create <- reactive({
   
   shinyAce::updateAceEditor(session, editorId = "barCode_out", value = barCode() )
   
+  removeNotification(id = "Stack")
   return(upperPlot)
 })
 

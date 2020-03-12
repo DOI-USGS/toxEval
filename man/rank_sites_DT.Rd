@@ -5,11 +5,21 @@
 \alias{rank_sites}
 \title{Rank sites by EAR}
 \usage{
-rank_sites_DT(chemical_summary, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE, hit_threshold = 0.1)
+rank_sites_DT(
+  chemical_summary,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE,
+  hit_threshold = 0.1
+)
 
-rank_sites(chemical_summary, category, hit_threshold = 0.1,
-  mean_logic = FALSE, sum_logic = TRUE)
+rank_sites(
+  chemical_summary,
+  category,
+  hit_threshold = 0.1,
+  mean_logic = FALSE,
+  sum_logic = TRUE
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}

@@ -5,11 +5,21 @@
 \alias{map_tox_data}
 \title{Create an interactive map of the data}
 \usage{
-make_tox_map(chemical_summary, chem_site, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE)
+make_tox_map(
+  chemical_summary,
+  chem_site,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE
+)
 
-map_tox_data(chemical_summary, chem_site, category = "Biological",
-  mean_logic = FALSE, sum_logic = TRUE)
+map_tox_data(
+  chemical_summary,
+  chem_site,
+  category = "Biological",
+  mean_logic = FALSE,
+  sum_logic = TRUE
+)
 }
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}

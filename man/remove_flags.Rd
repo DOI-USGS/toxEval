@@ -4,15 +4,17 @@
 \alias{remove_flags}
 \title{Remove endpoints with specific data quality flags from data}
 \usage{
-remove_flags(ACC, flagsShort = c("Borderline", "OnlyHighest", "GainAC50",
-  "Biochemical"))
+remove_flags(
+  ACC,
+  flagsShort = c("Borderline", "OnlyHighest", "GainAC50", "Biochemical", "ACCLessThan")
+)
 }
 \arguments{
 \item{ACC}{data frame with columns: casn, chnm, endPoint, and ACC_value}
 
 \item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint 
 combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan".}
+"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".}
 }
 \description{
 Through the ToxCast program quality assurance procedures, information 
@@ -25,20 +27,23 @@ to them can be removed based on their designated flag with the
 flagsShort value (used in the remove_flags function) are as follows:
 \tabular{ll}{
 \strong{Flag} \tab \strong{flagsShort}\cr
-Borderline active* \tab Borderline \cr
-Only highest conc above baseline, active* \tab OnlyHighest \cr
+Borderline active* \tab Borderline* \cr
+Only highest conc above baseline, active* \tab OnlyHighest* \cr
 Only one conc above baseline, active \tab OneAbove \cr
 Noisy data \tab Noisy \cr
 Hit-call potentially confounded by overfitting \tab HitCall \cr
-Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
-Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
-Less than 50% efficacy \tab LessThan50 \cr
-AC50 less than lowest concentration tested \tab ACCLessThan \cr
+Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50* \cr
+Biochemical assay with < 50\% efficacy* \tab Biochemical* \cr
+Less than 50\% efficacy \tab LessThan50 \cr
+AC50 less than lowest concentration tested* \tab ACCLessThan* \cr
+GNLSmodel \tab GNLSmodel \cr
 }
 Asterisks indicate flags removed in the function as default.
 }
 \examples{
 CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
 ACC <- get_ACC(CAS)
+nrow(ACC)
 ACC <- remove_flags(ACC)
+nrow(ACC)
 }

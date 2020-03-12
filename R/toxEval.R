@@ -1,7 +1,8 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
-    paste(strwrap('USGS Research Package: 
-https://owi.usgs.gov/R/packages.html#research'),
+    paste(strwrap('USGS Research Package:
+https://owi.usgs.gov/R/packages.html#research
+ToxCast database: version 3.2', width = 40),
       collapse='\n'))
 }
 
@@ -61,7 +62,7 @@ NULL
 #'@export ToxCast_ACC
 #'@keywords datasets
 #'@examples
-#'ACCColumnNames <- names(ToxCast_ACC)
+#'head(ToxCast_ACC)
 NULL
 
 # If we need to update the ACC data frame, here is
@@ -158,12 +159,8 @@ NULL
 #'
 #'@aliases tox_chemicals
 #'@name tox_chemicals
-#'@return data frame with columns: "ToxCast_chid","DSSTox_Substance_Id",
-#'"DSSTox_Structure_Id","DSSTox_QC.Level",    
-#'"Substance_Name","Substance_CASRN",    
-#'"Substance_Type","Substance_Note",     
-#'"Structure_SMILES","Structure_InChI",    
-#'"Structure_InChIKey","Structure_Formula",  
+#'@return data frame with columns:    
+#'"Substance_Name","Substance_CASRN",
 #'"Structure_MolWt" 
 #'@docType data
 #'@keywords datasets

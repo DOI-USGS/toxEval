@@ -18,6 +18,8 @@ navbar:
         href: articles/shinyApp.html
       - text: Exploring Benchmarks
         href: articles/benchmarks.html
+      - text: Prepare Data in R
+        href: articles/pivot.html
       - text: Dose Response Curves
         href: articles/does_curves.html
   - text: Bibliograpy
@@ -41,8 +43,10 @@ reference:
       - clean_endPoint_info
       - get_ACC
       - get_chemical_summary
+      - get_concentration_summary
       - remove_flags
       - filter_groups
+      - side_by_side_data
   - title: Visualize Data
     desc: Functions to create graphs and tables of output.
     contents:

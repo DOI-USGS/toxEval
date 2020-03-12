@@ -84,6 +84,8 @@ Through the ToxCast program quality assurance procedures, information is examine
 | Hit-call potentially confounded by overfitting | HitCall |
 | Gain AC50 < lowest conc & loss AC50 < mean conc  | GainAC50 |
 | Biochemical assay with < 50% efficacy | Biochemical |
+| Less than 50% efficacy | LessThan50 |
+| AC50 less than lowest concentration tested | ACCLessThan |
 
 The function is written to exclude results with the flags "Borderline", "OnlyHighest", "GainAC50", "Biochemical" as a default. If the user prefers a different list, the full list must be specified (default values will be ignored).
 
@@ -262,7 +264,7 @@ The `plot_tox_endpoints` function creates a set of boxplots representing EAR val
 After the data is filtered, a boxplot is generated for each endPoint. The EAR values that are used to create the boxplots are the mean or maximum (as defined by `mean_logic`) for each site as described in ["Summarizing the data"](Introduction.html#summarize_data).
 
 ```{r endpoints, warning=FALSE}
-plot_tox_endpoints(chemical_summary, 
+plot_tox_endpoints(chemical_summary, top_num = 10,
                     category = "Biological", 
                     filterBy = "Cell Cycle")
 
@@ -481,7 +483,7 @@ hits_summary_DT(maumee, category = "Biological")
 
 ## endpoint_hits_DT {#endpoint_hits_DT}
 
-The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create tables with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are the number of sites where the EAR exceeded the `hit_threshold` in that endpoint/category combination. If the category "Chemical" is chosen, an "info" link is provided to the chemical/endpoint information available in the ["ToxCast Dashboard"](https://actor.epa.gov/dashboard).
+The `endpoint_hits_DT` (`DT` option) and `endpoint_hits` (data frame option) functions create tables with one row per endPoint, and one column per category("Biological", "Chemical", or "Chemical Class"). The values in the table are the number of sites where the EAR exceeded the `hit_threshold` in that endpoint/category combination. If the category "Chemical" is chosen, an "info" link is provided to the chemical/endpoint information available in the ["Comptox Dashboard"](https://comptox.epa.gov/dashboard).
 .
 ```{r endpoint_hits_DT, warning=FALSE, eval=runTables}
 
