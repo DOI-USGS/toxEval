@@ -209,15 +209,15 @@ orderEP <- function(graphData){
 #' flagsShort value (used in the remove_flags function) are as follows:
 #' \tabular{ll}{
 #' \strong{Flag} \tab \strong{flagsShort}\cr
-#' Borderline active* \tab Borderline \cr
-#' Only highest conc above baseline, active* \tab OnlyHighest \cr
+#' Borderline active* \tab Borderline* \cr
+#' Only highest conc above baseline, active* \tab OnlyHighest* \cr
 #' Only one conc above baseline, active \tab OneAbove \cr
 #' Noisy data \tab Noisy \cr
 #' Hit-call potentially confounded by overfitting \tab HitCall \cr
-#' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
-#' Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
+#' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50* \cr
+#' Biochemical assay with < 50\% efficacy* \tab Biochemical* \cr
 #' Less than 50\% efficacy \tab LessThan50 \cr
-#' AC50 less than lowest concentration tested \tab ACCLessThan* \cr
+#' AC50 less than lowest concentration tested* \tab ACCLessThan* \cr
 #' GNLSmodel \tab GNLSmodel \cr
 #' }
 #' Asterisks indicate flags removed in the function as default.
