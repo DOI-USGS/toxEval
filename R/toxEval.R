@@ -1,11 +1,16 @@
+
 .onAttach <- function(libname, pkgname) {
+
   packageStartupMessage(
-    paste(strwrap('USGS Research Package:
+    paste(strwrap(paste('USGS Research Package:
 https://owi.usgs.gov/R/packages.html#research
-ToxCast database: version 3.2', width = 40),
+ToxCast database: version', dbVersion()), width = 40),
       collapse='\n'))
 }
 
+dbVersion <- function(){
+  "3.2"
+}
 
 #' Analyze ToxCast data in relation to measured concentrations.
 #' 
