@@ -6,7 +6,7 @@
 \usage{
 remove_flags(
   ACC,
-  flagsShort = c("Borderline", "OnlyHighest", "GainAC50", "Biochemical")
+  flagsShort = c("Borderline", "OnlyHighest", "GainAC50", "Biochemical", "ACCLessThan")
 )
 }
 \arguments{
@@ -14,7 +14,7 @@ remove_flags(
 
 \item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint 
 combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan".}
+"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".}
 }
 \description{
 Through the ToxCast program quality assurance procedures, information 
@@ -35,7 +35,8 @@ Hit-call potentially confounded by overfitting \tab HitCall \cr
 Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50 \cr
 Biochemical assay with < 50\% efficacy \tab Biochemical* \cr
 Less than 50\% efficacy \tab LessThan50 \cr
-AC50 less than lowest concentration tested \tab ACCLessThan \cr
+AC50 less than lowest concentration tested \tab ACCLessThan* \cr
+GNLSmodel \tab GNLSmodel \cr
 }
 Asterisks indicate flags removed in the function as default.
 }

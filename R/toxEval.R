@@ -2,7 +2,7 @@
   packageStartupMessage(
     paste(strwrap('USGS Research Package:
 https://owi.usgs.gov/R/packages.html#research
-ToxCast database: version 3', width = 40),
+ToxCast database: version 3.2', width = 40),
       collapse='\n'))
 }
 
