@@ -43,7 +43,8 @@ test_that("Removing flags", {
                                              "GainAC50",
                                              "Biochemical",
                                              "ACCLessThan",
-                                             "LessThan50"))
+                                             "LessThan50",
+                                             "GNLSmodel"))
   expect_lt(nrow(ACC_noFlags), nrow(ACC))
   expect_true(all(is.na(ACC_noFlags$flags)))
   

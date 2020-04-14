@@ -149,14 +149,14 @@ test_that("Table functions", {
                     "DNA Binding freq","Nuclear Receptor maxEAR",
                     "Nuclear Receptor freq","Esterase maxEAR",
                     "Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
-  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),0.0271)
+  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),0.0262)
   expect_equal(round(statStuff[["DNA Binding freq"]][which(statStuff[["site"]] == "Raisin")],4),0)
   
   groupStuff <- hits_summary(chemical_summary, "Biological", hit_threshold = 1)
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
   expect_true(all(c("site","category","Samples with hits","Number of Samples") %in% names(groupStuff)))
   expect_equal(groupStuff[["Samples with hits"]][which(groupStuff[["site"]] == "Raisin" &
-                                                           groupStuff[["category"]] == "Nuclear Receptor")],17)
+                                                           groupStuff[["category"]] == "Nuclear Receptor")],14)
   expect_equal(groupStuff[["Number of Samples"]][which(groupStuff[["site"]] == "Raisin" &
                                                        groupStuff[["category"]] == "DNA Binding")],44)
   
@@ -168,11 +168,11 @@ test_that("Chem plotting functions", {
   graphData <- graph_chem_data(chemical_summary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","meanEAR")))
   expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
-  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Dyes/Pigments")
+  expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
                                        graphData[["chnm"]] == "Naphthalene"],4), 5.729e-05)
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
-                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),1.199)
+                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.8578)
   
   
 })
@@ -186,7 +186,7 @@ test_that("Map stuff functions", {
   expect_type(mapDataList, "list")
   expect_equal(length(mapDataList), 2)
   map_df <- mapDataList[["mapData"]]
-  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4), 1.472)
+  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4), 1.111)
   expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],31)
   expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],7.2)
   
@@ -241,7 +241,7 @@ test_that("hits_by_groupings_DT", {
   expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Cell Cycle", "Esterase",        
                                       "Steroid Hormone","Zebrafish", "CYP")))
   expect_true(all(c("Detergent Metabolites","Antioxidants","Herbicides") %in% rownames(bt_df)))
-  expect_equal(bt_df[["Nuclear Receptor"]], c(10, 7, 12, rep(0,10)))
+  expect_equal(bt_df[["Nuclear Receptor"]], c(10, 7, 12, rep(0,10), NA))
   
   expect_error(hits_by_groupings_DT(chemical_summary, category = "Class"))
   
@@ -351,76 +351,78 @@ test_that("Testing levels", {
   expect_equal(levels(gd$chnm), chem_levels)
   expect_equal(levels(gd$Class), class_levels)
   
-  expect_equal(chem_levels, c("Anthraquinone",                         
-                              "Tetrachloroethylene",                    
-                              "Isophorone",                           
-                              "Bromoform",                            
-                              "1,4-Dichlorobenzene",                    
+  expect_equal(chem_levels, c("Cumene",                         
+                              "1-Methylnaphthalene",            
+                              "Anthraquinone",                
+                              "Tetrachloroethylene",             
+                              "Isophorone",              
+                              "Isoquinoline",             
+                              "7-Acetyl-1,1,3,4,4,6-hexamethyltetraline",
+                              "Indole",                                  
+                              "D-Limonene",                              
+                              "Benzophenone",                            
+                              "1,4-Dichlorobenzene",                     
+                              "Bromoform",                               
                               "Methyl salicylate",                      
-                              "Anthracene",                             
-                              "Naphthalene",                            
-                              "Phenanthrene",                           
-                              "Pyrene",                                 
-                              "Fluoranthene",                           
-                              "Benzo(a)pyrene",                         
-                              "Isoquinoline",                           
-                              "6-Acetyl-1,1,2,4,4,7-hexamethyltetralin",
-                              "Indole",                                 
-                              "D-Limonene",                             
-                              "Benzophenone",                           
-                              "Tributyl phosphate",                     
-                              "Tris(2-butoxyethyl) phosphate",          
-                              "Tris(1,3-dichloro-2-propyl) phosphate",
-                              "Cotinine",                              
-                              "dl-Menthol",                             
-                              "Caffeine",                               
-                              "Tris(2-chloroethyl) phosphate",          
-                              "Triphenyl phosphate",                    
-                              "Diethyl phthalate",                      
-                              "p-Cresol",                               
-                              "Triclosan",                              
-                              "DEET",                                   
-                              "Carbazole",                              
-                              "Carbaryl",                               
-                              "Dichlorvos",                             
-                              "5-Methyl-1H-benzotriazole",              
-                              "2-tert-Butyl-4-methoxyphenol",           
-                              "Bisphenol A",                            
-                              "3,4-Dichlorophenyl isocyanate",          
-                              "Prometon",                               
-                              "Bromacil",                               
-                              "Metalaxyl",                              
+                              "Anthracene",                              
+                              "Naphthalene",                             
+                              "Phenanthrene",                            
+                              "Pyrene",                                  
+                              "Fluoranthene",                            
+                              "Benzo(a)pyrene",                          
+                              "DEET",                                    
+                              "Carbazole",                               
+                              "Dichlorvos",                              
+                              "Carbaryl",                                
+                              "Tributyl phosphate",                      
+                              "Tris(2-butoxyethyl) phosphate",           
+                              "Tris(1,3-dichloro-2-propyl) phosphate",   
+                              "Cotinine",                                
+                              "dl-Menthol",                              
+                              "Caffeine",                                
+                              "Tris(2-chloroethyl) phosphate",           
+                              "Triphenyl phosphate",                     
+                              "Diethyl phthalate",                       
+                              "p-Cresol",                                
+                              "Triclosan",                               
+                              "5-Methyl-1H-benzotriazole",               
+                              "2-tert-Butyl-4-methoxyphenol",            
+                              "Bisphenol A",                             
+                              "3,4-Dichlorophenyl isocyanate",           
+                              "Prometon",                                
+                              "Bromacil",                                
+                              "Metalaxyl",                               
                               "Metolachlor",                            
-                              "Atrazine",                               
-                              "Pentachlorophenol",                      
-                              "4-Octylphenol",                          
-                              "4-Cumylphenol",                          
-                              "4-(1,1,3,3-Tetramethylbutyl)phenol",     
+                              "Atrazine",                                
+                              "Pentachlorophenol",                       
+                              "4-Octylphenol",                           
+                              "4-Cumylphenol",                           
+                              "4-(1,1,3,3-Tetramethylbutyl)phenol",      
                               "4-Nonylphenol, branched"))
   expect_equal(class_levels, c("Detergent Metabolites", "Herbicides",                 
-                               "Antioxidants", "Insecticides",               
+                               "Antioxidants",           
                                "Antimicrobial Disinfectants", "Plasticizers",               
                                "Nonprescription drugs", "Fire Retardants",            
-                               "Flavors and Fragrances", "PAHs",                       
-                               "Miscellaneous", "Solvents",                   
-                               "Dyes/Pigments"))
+                               "Insecticides", "PAHs",                       
+                               "Miscellaneous", 
+                               "Flavors and Fragrances","Solvents",                   
+                               "Dyes/Pigments", "Fuels"))
   
   plot_eps <- plot_tox_endpoints(chemical_summary, 
                                  "Chemical", top_num = 5)
   
   expect_equal(tail(levels(plot_eps$data$endPoint),5),
-               c("ATG_TGFb_CIS_up", "ATG_Sox_CIS_up",      
-                 "NVS_NR_hPPARa", "NVS_NR_hER",          
-                 "OT_AR_ARELUC_AG_1440"))
+               c("ATG_NF_kB_CIS_up","ATG_TGFb_CIS_up","ATG_Sox_CIS_up",  
+                 "NVS_NR_hPPARa","NVS_NR_hER"))
   
   plot_stack <- plot_tox_stacks(chemical_summary,category = "Chemical",
                                 chem_site = tox_list$chem_site,
                                  top_num = 5)
   
   expect_equal(levels(plot_stack$data$category),
-               c("4-Nonylphenol, branched", "Bisphenol A",            
+               c("Bisphenol A", "4-Nonylphenol, branched",             
                  "Atrazine", "Metolachlor",            
-                 "Pentachlorophenol", "Others (41)" ))
+                 "Pentachlorophenol", "Others (43)" ))
   
   plot_heat <- plot_tox_heatmap(chemical_summary,category = "Chemical",
                                 chem_site = tox_list$chem_site)
