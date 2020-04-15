@@ -65,6 +65,7 @@ data provided in the package):
 library(toxEval)
 #> USGS Research Package:
 #> https://owi.usgs.gov/R/packages.html#research
+#> ToxCast database: version 3.2
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -253,11 +254,10 @@ citation(package = "toxEval")
 #> To cite toxEval in publications, please use:
 #> 
 #>   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
-#>   Ankley, G.T., 2018, toxEval: Evaluation of measured
-#>   concentration data using the ToxCast high-throughput screening
-#>   database or a user-defined set of concentration benchmarks. R
-#>   package version 1.0.0., https://code.usgs.gov/water/toxEval,
-#>   doi:10.5066/P906UQ5I
+#>   Ankley, G.T., 2018, toxEval: Evaluation of measured concentration
+#>   data using the ToxCast high-throughput screening database or a
+#>   user-defined set of concentration benchmarks. R package version
+#>   1.1.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -265,10 +265,10 @@ citation(package = "toxEval")
 #>     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
 #>     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
 #>     publisher = {U.S. Geological Survey},
-#>     version = {1.0.0},
+#>     version = {1.1.0},
 #>     address = {Reston, VA},
 #>     institution = {U.S. Geological Survey},
-#>     year = {2018},
+#>     year = {2019},
 #>     doi = {10.5066/P906UQ5I},
 #>     url = {https://code.usgs.gov/water/toxEval},
 #>   }
