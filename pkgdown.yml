@@ -1,6 +1,6 @@
-pandoc: '2.2'
-pkgdown: 1.5.1
-pkgdown_sha: ~
+pandoc: 2.7.3
+pkgdown: 1.5.1.9000
+pkgdown_sha: c181e5c9ac09b28974a97f5e32deddc36690fcf2
 articles:
   Introduction: Introduction.html
   PrepareData: PrepareData.html
@@ -10,5 +10,5 @@ articles:
   does_curves: does_curves.html
   pivot: pivot.html
   shinyApp: shinyApp.html
-last_built: 2020-04-15T14:34Z
+last_built: 2020-04-28T13:50Z
 
