@@ -54,7 +54,8 @@ Suggests:
     knitr,
     here,
     tcpl,
-    openxlsx
+    openxlsx,
+    covr
 BugReports: https://github.com/USGS-R/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true
