@@ -29,6 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          options(pkgType = "binary")
           install.packages(c("remotes","rmarkdown"))
           remotes::install_deps(dependencies = TRUE)
           remotes::install_dev("pkgdown")
