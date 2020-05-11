@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages("remotes")
+          install.packages(c("remotes","rmarkdown"))
           remotes::install_deps(dependencies = TRUE)
           remotes::install_dev("pkgdown")
         shell: Rscript {0}
@@ -38,5 +38,13 @@ jobs:
         run: R CMD INSTALL .
 
       - name: Deploy package
-        run: pkgdown::deploy_to_branch(new_process = FALSE)
+        run: |
+          rmarkdown::render("README.Rmd", output_format = "md_document")
+          pkgdown::deploy_to_branch(new_process = FALSE)
         shell: Rscript {0}
+        
+      - name: commit rendered README
+        run: |
+          git add README.md man/figures/README-*
+          git commit -m "Re-build README.md" || echo "No changes to commit"
+          git push origin master || echo "No changes to commit"
