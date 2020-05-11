@@ -86,7 +86,7 @@ chem_class_plot <- plot_tox_boxplots(chemicalSummary,
 chem_class_plot
 ```
 
-![](man/figures/unnamed-chunk-4-1.png)
+![](man/figures/README-unnamed-chunk-4-1.png)
 
 ``` r
 
@@ -97,7 +97,7 @@ plot_stacks <- plot_tox_stacks(chemicalSummary,
 plot_stacks
 ```
 
-![](man/figures/unnamed-chunk-4-2.png)
+![](man/figures/README-unnamed-chunk-4-2.png)
 
 ``` r
 ######################################
@@ -108,7 +108,7 @@ plot_heat <- plot_tox_heatmap(chemicalSummary,
 plot_heat
 ```
 
-![](man/figures/unnamed-chunk-4-3.png)
+![](man/figures/README-unnamed-chunk-4-3.png)
 
 This code opens up the example file, loads it into a `toxEval` object,
 grabs the pertinent ToxCast information, and creates a “chemicalSummary”
