@@ -62,9 +62,13 @@ assay_names <- c("Apredica" = "APR",
                  "CEETOX" = "CEETOX",
                  "CLD" = "CLD",
                  "TANGUAY" = "TANGUAY",
-                 "NHEERL_PADILLA"="NHEERL_PADILLA",
-                 "NCCT_SIMMONS"="NCCT_SIMMONS",
-                 "ACEA Biosciences" = "ACEA")
+                 "NHEERL_PADILLA" = "NHEERL_PADILLA",
+                 "NCCT" = "NCCT",
+                 "ACEA Biosciences" = "ACEA",
+                 "NHEERL_HUNTER" = "NHEERL_HUNTER", 
+                 "NHEERL_NIS" = "NHEERL_NIS" , 
+                 "NHEERL_MED" = "NHEERL_MED", 
+                 "UPITT" = "UPITT")
 
 init_text <- "######################################
 # Setup:
