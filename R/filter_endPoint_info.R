@@ -18,8 +18,9 @@
 #' 
 #' @param ep Data frame containing Endpoint information from ToxCast
 #' @param groupCol Character name of ToxCast annotation column to use as a group catetory
-#' @param assays Vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
-#' "CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
+#' @param assays Vector of assays to use in the data analysis. Possible values are "ACEA", "APR", "ATG", "BSK", "NVS", "OT",            
+#' "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
+#' "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT". By default, the 
 #' "BSK" (BioSeek) assay is removed.
 #' @param remove_groups Vector of groups within the selected 'groupCol' to remove.
 #' @export
@@ -30,15 +31,17 @@
 #' head(filtered_ep)
 filter_groups <- function(ep, 
                           groupCol = "intended_target_family",
-                          assays = c("ATG","NVS","OT","TOX21","CEETOX","APR", 
-                                     "CLD","TANGUAY","NHEERL_PADILLA",
-                                     "NCCT_SIMMONS","ACEA"),
+                          assays = c("ACEA", "APR", "ATG", 
+                                     "NVS", "OT",            
+                                     "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
+                                     "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT"),
                           remove_groups = c("Background Measurement","Undefined")){
   
-  match.arg(assays, c("ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
-                      "CLD","TANGUAY","NHEERL_PADILLA",
-                      "NCCT_SIMMONS","ACEA"), several.ok = TRUE)
-  
+  match.arg(assays, 
+            c("ACEA", "APR", "ATG", "BSK", "NVS", "OT",            
+              "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
+              "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT"), several.ok = TRUE)
+
   # Getting rid of NSE warnings:
   assay_source_name <- assay_component_endpoint_name <- ".dplyr"
   
