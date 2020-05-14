@@ -97,7 +97,7 @@ reconsidered based on individual study objectives." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
       </span>
     </div>
 
@@ -179,8 +179,8 @@ reconsidered based on individual study objectives.</p>
     <pre class="usage"><span class='fu'>filter_groups</span>(
   <span class='no'>ep</span>,
   <span class='kw'>groupCol</span> <span class='kw'>=</span> <span class='st'>"intended_target_family"</span>,
-  <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ATG"</span>, <span class='st'>"NVS"</span>, <span class='st'>"OT"</span>, <span class='st'>"TOX21"</span>, <span class='st'>"CEETOX"</span>, <span class='st'>"APR"</span>, <span class='st'>"CLD"</span>, <span class='st'>"TANGUAY"</span>,
-    <span class='st'>"NHEERL_PADILLA"</span>, <span class='st'>"NCCT_SIMMONS"</span>, <span class='st'>"ACEA"</span>),
+  <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ACEA"</span>, <span class='st'>"APR"</span>, <span class='st'>"ATG"</span>, <span class='st'>"NVS"</span>, <span class='st'>"OT"</span>, <span class='st'>"TOX21"</span>, <span class='st'>"CEETOX"</span>, <span class='st'>"CLD"</span>, <span class='st'>"TANGUAY"</span>,
+    <span class='st'>"NHEERL_PADILLA"</span>, <span class='st'>"NCCT"</span>, <span class='st'>"NHEERL_HUNTER"</span>, <span class='st'>"NHEERL_NIS"</span>, <span class='st'>"NHEERL_MED"</span>, <span class='st'>"UPITT"</span>),
   <span class='kw'>remove_groups</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Background Measurement"</span>, <span class='st'>"Undefined"</span>)
 )</pre>
 
@@ -197,8 +197,9 @@ reconsidered based on individual study objectives.</p>
     </tr>
     <tr>
       <th>assays</th>
-      <td><p>Vector of assays to use in the data analysis. Possible values are "ATG","NVS","OT","TOX21","CEETOX", "APR", "BSK",
-"CLD","TANGUAY","NHEERL_PADILLA","NCCT_SIMMONS","ACEA". By default, the 
+      <td><p>Vector of assays to use in the data analysis. Possible values are "ACEA", "APR", "ATG", "BSK", "NVS", "OT",
+"TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
+"NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT". By default, the 
 "BSK" (BioSeek) assay is removed.</p></td>
     </tr>
     <tr>
