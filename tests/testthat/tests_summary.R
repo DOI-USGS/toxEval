@@ -172,7 +172,7 @@ test_that("Chem plotting functions", {
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
                                        graphData[["chnm"]] == "Naphthalene"],4), 5.729e-05)
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
-                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.8578)
+                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.8635)
   
   
 })
@@ -316,7 +316,7 @@ test_that("Calculating completness", {
   graphData2 <- tox_boxplot_data(chemical_summary, "Biological")
   complete_df_cat <- toxEval:::get_complete_set_category(chemical_summary, graphData2, tox_list$chem_site, category = "Biological")
   
-  expect_equal(nrow(complete_df_cat), 1026)
+  expect_equal(nrow(complete_df_cat), 1083)
   
 })
 
@@ -358,28 +358,28 @@ test_that("Testing levels", {
                               "Isophorone",              
                               "Isoquinoline",             
                               "7-Acetyl-1,1,3,4,4,6-hexamethyltetraline",
-                              "Indole",                                  
-                              "D-Limonene",                              
-                              "Benzophenone",                            
+                              "D-Limonene",
+                              "Indole",               
+                              "Benzophenone",
                               "1,4-Dichlorobenzene",                     
                               "Bromoform",                               
-                              "Methyl salicylate",                      
-                              "Anthracene",                              
-                              "Naphthalene",                             
-                              "Phenanthrene",                            
+                              "Methyl salicylate", 
+                              "Naphthalene", 
+                              "Phenanthrene",  
+                              "Anthracene",             
                               "Pyrene",                                  
                               "Fluoranthene",                            
-                              "Benzo(a)pyrene",                          
-                              "DEET",                                    
-                              "Carbazole",                               
-                              "Dichlorvos",                              
-                              "Carbaryl",                                
+                              "Benzo(a)pyrene",                             
                               "Tributyl phosphate",                      
                               "Tris(2-butoxyethyl) phosphate",           
                               "Tris(1,3-dichloro-2-propyl) phosphate",   
                               "Cotinine",                                
                               "dl-Menthol",                              
-                              "Caffeine",                                
+                              "Caffeine", 
+                              "DEET",
+                              "Carbazole",
+                              "Carbaryl",
+                              "Dichlorvos",
                               "Tris(2-chloroethyl) phosphate",           
                               "Triphenyl phosphate",                     
                               "Diethyl phthalate",                       
@@ -399,11 +399,11 @@ test_that("Testing levels", {
                               "4-Cumylphenol",                           
                               "4-(1,1,3,3-Tetramethylbutyl)phenol",      
                               "4-Nonylphenol, branched"))
-  expect_equal(class_levels, c("Detergent Metabolites", "Herbicides",                 
-                               "Antioxidants",           
-                               "Antimicrobial Disinfectants", "Plasticizers",               
+  expect_equal(class_levels, c("Detergent Metabolites", "Herbicides","Antioxidants", 
+                               "Antimicrobial Disinfectants", "Plasticizers",  
+                               "Insecticides",
                                "Nonprescription drugs", "Fire Retardants",            
-                               "Insecticides", "PAHs",                       
+                                "PAHs",                       
                                "Miscellaneous", 
                                "Flavors and Fragrances","Solvents",                   
                                "Dyes/Pigments", "Fuels"))
