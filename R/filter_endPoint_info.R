@@ -37,10 +37,9 @@ filter_groups <- function(ep,
                                      "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT"),
                           remove_groups = c("Background Measurement","Undefined")){
   
-  match.arg(assays, 
-            c("ACEA", "APR", "ATG", "BSK", "NVS", "OT",            
-              "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
-              "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT"), several.ok = TRUE)
+  
+  possible_assays <- unique(end_point_info$assay_source_name)
+  match.arg(assays, possible_assays, several.ok = TRUE)
 
   # Getting rid of NSE warnings:
   assay_source_name <- assay_component_endpoint_name <- ".dplyr"
