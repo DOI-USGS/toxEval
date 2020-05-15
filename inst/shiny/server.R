@@ -27,16 +27,21 @@ all_flags <- c("Borderline",
                "HitCall",
                "GainAC50",
                "Biochemical",
+               "LessThan50",
                "ACCLessThan",
                "GNLSmodel")
 
-initFlags <- c(#"Borderline",
-                #"OnlyHighest",
-                "OneAbove",
-                "Noisy",
-                "HitCall")
-                #"GainAC50",
-                #"Biochemical")
+initFlags <- c("Borderline",
+              "OnlyHighest",
+              #"OneAbove",
+              #"Noisy",
+              #"HitCall",
+              "GainAC50",
+              "Biochemical",
+              #"LessThan50",
+              "ACCLessThan"
+              #"GNLSmodel"
+              )
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
