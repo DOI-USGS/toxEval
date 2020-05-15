@@ -12,9 +12,10 @@ choicesPerGroup <- choicesPerGroup[which(as.numeric(choicesPerGroup) > 6)]
 choicesPerGroup <- apply(cleaned_ep[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-initAssay <- c("ATG","NVS","OT","TOX21","CEETOX", "APR", #"BSK"
-               "CLD","TANGUAY","NHEERL_PADILLA",
-               "NCCT_SIMMONS","ACEA")
+initAssay <- c("ACEA", "APR", "ATG", 
+               "NVS", "OT",            
+               "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
+               "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT")
 
 init_Groups <- unique(cleaned_ep$intended_target_family)
 init_Groups <- init_Groups[!is.na(init_Groups)]
@@ -27,16 +28,21 @@ all_flags <- c("Borderline",
                "HitCall",
                "GainAC50",
                "Biochemical",
+               "LessThan50",
                "ACCLessThan",
                "GNLSmodel")
 
-initFlags <- c(#"Borderline",
-                #"OnlyHighest",
-                "OneAbove",
-                "Noisy",
-                "HitCall")
-                #"GainAC50",
-                #"Biochemical")
+initFlags <- c("Borderline",
+              "OnlyHighest",
+              #"OneAbove",
+              #"Noisy",
+              #"HitCall",
+              "GainAC50",
+              "Biochemical",
+              #"LessThan50",
+              "ACCLessThan"
+              #"GNLSmodel"
+              )
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
