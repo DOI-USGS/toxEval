@@ -47,7 +47,7 @@ NULL
 
 #' ACC values included with toxEval. 
 #' 
-#' Downloaded on October 2018 from ToxCast. The data were
+#' Downloaded on January 2020 from ToxCast. The data were
 #' combined from files in the "INVITRODB_V3_LEVEL5" folder. 
 #' At the time of toxEval package release, this information was found:
 #' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
