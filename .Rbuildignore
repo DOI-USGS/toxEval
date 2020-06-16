@@ -50,3 +50,4 @@ vignettes/atrazineDose.png
 .gitlab-ci.yml
 ^codecov\.yml$
 ^\.github$
+ci/*
