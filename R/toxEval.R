@@ -76,7 +76,7 @@ NULL
 # however....that is why it is an internal only function.
 # This is staying commented out because it adds 
 # extraneous notes:
-# path_to_files <- "../toxCast_Data/INVITRODB_V3_1_LEVEL5"
+# path_to_files <- "../toxCast_Data/INVITRODB_V3_2_LEVEL5"
 # update_ACC <- function(path_to_files){
 #   # Data originally from:
 #   # ftp://newftp.epa.gov/Computational_Toxicology_Data/High_Throughput_Screening_Data/InVitroDB_V3.1/ToxCast_Data_March_2019/INVITRODB_V3_1_LEVEL5.zip
