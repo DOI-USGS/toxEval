@@ -14,7 +14,7 @@ Downloaded on October 2015 from ToxCast. The file name of the
 raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx", 
 from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
 of toxEval package release, this information was found:
-\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+\url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 in the section marked "Download ToxCast Chemical Information". This 
 was in the "ToxCast & Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
 data set.

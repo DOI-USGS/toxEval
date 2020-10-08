@@ -16,7 +16,7 @@ Downloaded on October 2018 from ToxCast. The file name of the
 raw data was "Assay_Summary_190226.csv" from the zip file 
 "INVITRODB_V3_1_SUMMARY" folder. At the time
 of the toxEval package release, these data were found at:
-\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+\url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 in the section marked "Download Assay Information", in the 
 ToxCast & Tox21 high-throughput assay information data set.
 }
