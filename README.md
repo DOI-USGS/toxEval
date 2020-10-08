@@ -1,4 +1,15 @@
-toxEval 
+toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
+=====================================================================================
+
+[![R build
+status](https://github.com/USGS-R/toxEval/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/toxEval/actions)
+[![Coverage
+Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master)
+[![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
+[![CRAN
+version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)
+[![](http://cranlogs.r-pkg.org/badges/toxEval)](https://cran.r-project.org/package=toxEval)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/toxEval)](https://cran.r-project.org/package=toxEval)
 
 The `toxEval` R-package includes a set of functions to analyze,
 visualize, and organize measured concentration data as it relates to
@@ -244,10 +255,10 @@ citation(package = "toxEval")
 #> To cite toxEval in publications, please use:
 #> 
 #>   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
-#>   Ankley, G.T., 2018, toxEval: Evaluation of measured concentration
+#>   Ankley, G.T., 2020, toxEval: Evaluation of measured concentration
 #>   data using the ToxCast high-throughput screening database or a
 #>   user-defined set of concentration benchmarks. R package version
-#>   1.1.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
+#>   1.2.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -255,10 +266,10 @@ citation(package = "toxEval")
 #>     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
 #>     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
 #>     publisher = {U.S. Geological Survey},
-#>     version = {1.1.0},
+#>     version = {1.2.0},
 #>     address = {Reston, VA},
 #>     institution = {U.S. Geological Survey},
-#>     year = {2019},
+#>     year = {2020},
 #>     doi = {10.5066/P906UQ5I},
 #>     url = {https://code.usgs.gov/water/toxEval},
 #>   }
