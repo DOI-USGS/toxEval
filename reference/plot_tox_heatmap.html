@@ -102,7 +102,7 @@ the character vector sites to a factor with ordered levels." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -186,19 +186,19 @@ This is a function where it may be ideal to create a custom order to the sites
 the character vector sites to a factor with ordered levels.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_tox_heatmap</span>(
-  <span class='no'>chemical_summary</span>,
-  <span class='no'>chem_site</span>,
-  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1e-05</span>, <span class='fl'>1e-04</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>, <span class='fl'>10</span>),
-  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>plot_ND</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>font_size</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>title</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>legend_lab</span> <span class='kw'>=</span> <span class='fl'>NA</span>
-)</pre>
+    <pre class="usage"><span class='fu'>plot_tox_heatmap</span><span class='op'>(</span>
+  <span class='va'>chemical_summary</span>,
+  <span class='va'>chem_site</span>,
+  category <span class='op'>=</span> <span class='st'>"Biological"</span>,
+  breaks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1e-05</span>, <span class='fl'>1e-04</span>, <span class='fl'>0.001</span>, <span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>1</span>, <span class='fl'>10</span><span class='op'>)</span>,
+  manual_remove <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mean_logic <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sum_logic <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  plot_ND <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  font_size <span class='op'>=</span> <span class='cn'>NA</span>,
+  title <span class='op'>=</span> <span class='cn'>NA</span>,
+  legend_lab <span class='op'>=</span> <span class='cn'>NA</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -260,30 +260,30 @@ don't have data, those areas are represented by an "X". If there are 0 values,
 they are considered "non-detects", and represented with a distinct color.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
-<span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
-<span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
+    <pre class="examples"><div class='input'><span class='va'>path_to_tox</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, package<span class='op'>=</span><span class='st'>"toxEval"</span><span class='op'>)</span>
+<span class='va'>file_name</span> <span class='op'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
+<span class='va'>full_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>path_to_tox</span>, <span class='va'>file_name</span><span class='op'>)</span>
 
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+<span class='va'>tox_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span><span class='op'>(</span><span class='va'>full_path</span><span class='op'>)</span>
 
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACC</span>)
+<span class='va'>ACC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_info</span><span class='op'>$</span><span class='va'>CAS</span><span class='op'>)</span>
+<span class='va'>ACC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span><span class='op'>(</span><span class='va'>ACC</span><span class='op'>)</span>
 
-<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
-<span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
+<span class='va'>cleaned_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span>
+<span class='va'>filtered_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span><span class='op'>(</span><span class='va'>cleaned_ep</span><span class='op'>)</span>
 
-<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
-
+<span class='va'>chemical_summary</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span><span class='op'>(</span><span class='va'>tox_list</span>, <span class='va'>ACC</span>, <span class='va'>filtered_ep</span><span class='op'>)</span>
+                                        
 <span class='co'>#Order the site_groupings:</span>
-<span class='no'>tox_list</span>$<span class='no'>chem_site</span>$<span class='no'>site_grouping</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_site</span>$<span class='no'>site_grouping</span>,
-              <span class='kw'>levels</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Lake Superior"</span>,
+<span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span><span class='op'>$</span><span class='va'>site_grouping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span><span class='op'>$</span><span class='va'>site_grouping</span>,
+              levels<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Lake Superior"</span>,
               <span class='st'>"Lake Michigan"</span>,
               <span class='st'>"Lake Huron"</span>,
               <span class='st'>"Lake Erie"</span>,
-              <span class='st'>"Lake Ontario"</span>))
+              <span class='st'>"Lake Ontario"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'>#Order sites:</span>
-<span class='no'>sitesOrdered</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"StLouis"</span>,<span class='st'>"Nemadji"</span>,<span class='st'>"WhiteWI"</span>,<span class='st'>"Bad"</span>,<span class='st'>"Montreal"</span>,
+<span class='va'>sitesOrdered</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"StLouis"</span>,<span class='st'>"Nemadji"</span>,<span class='st'>"WhiteWI"</span>,<span class='st'>"Bad"</span>,<span class='st'>"Montreal"</span>,
 <span class='st'>"PresqueIsle"</span>,<span class='st'>"Ontonagon"</span>,<span class='st'>"Sturgeon"</span>,<span class='st'>"Tahquamenon"</span>,<span class='st'>"Burns"</span>,
 <span class='st'>"IndianaHC"</span>,<span class='st'>"StJoseph"</span>,<span class='st'>"PawPaw"</span>,<span class='st'>"Kalamazoo"</span>,<span class='st'>"GrandMI"</span>,
 <span class='st'>"Milwaukee"</span>,<span class='st'>"Muskegon"</span>,<span class='st'>"WhiteMI"</span>,<span class='st'>"PereMarquette"</span>,<span class='st'>"Manitowoc"</span>,
@@ -294,18 +294,22 @@ they are considered "non-detects", and represented with a distinct color.</p>
 <span class='st'>"Portage"</span>,<span class='st'>"Sandusky"</span>,<span class='st'>"HuronOH"</span>,<span class='st'>"Vermilion"</span>,<span class='st'>"BlackOH"</span>,
 <span class='st'>"Rocky"</span>,<span class='st'>"Cuyahoga"</span>,<span class='st'>"GrandOH"</span>,<span class='st'>"Cattaraugus"</span>,<span class='st'>"Tonawanda"</span>,
 <span class='st'>"Genesee"</span>,<span class='st'>"Oswego"</span>,<span class='st'>"BlackNY"</span>,<span class='st'>"Oswegatchie"</span>,<span class='st'>"Grass"</span>,
-<span class='st'>"Raquette"</span>,<span class='st'>"StRegis"</span>)
+<span class='st'>"Raquette"</span>,<span class='st'>"StRegis"</span><span class='op'>)</span>
 
-<span class='no'>tox_list</span>$<span class='no'>chem_site</span>$<span class='no'>`Short Name`</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_site</span>$<span class='no'>`Short Name`</span>,
-              <span class='kw'>levels</span> <span class='kw'>=</span> <span class='no'>sitesOrdered</span>)
-<span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)</div><div class='img'><img src='plot_tox_heatmap-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='no'>chemical_summary</span>, <span class='no'>tox_list</span>$<span class='no'>chem_site</span>,
-                 <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>, <span class='kw'>legend_lab</span> <span class='kw'>=</span> <span class='st'>"EAR"</span>)</div><div class='img'><img src='plot_tox_heatmap-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='no'>single_site</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>chemical_summary</span>, <span class='no'>site</span> <span class='kw'>==</span> <span class='st'>"USGS-04024000"</span>)
-<span class='fu'>plot_tox_heatmap</span>(<span class='kw'>chemical_summary</span> <span class='kw'>=</span> <span class='no'>single_site</span>,
-                 <span class='kw'>chem_site</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='no'>SiteID</span> <span class='kw'>==</span> <span class='st'>"USGS-04024000"</span>),
-                 <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)</div><div class='img'><img src='plot_tox_heatmap-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span>(<span class='kw'>chemical_summary</span> <span class='kw'>=</span> <span class='no'>single_site</span>,
-                 <span class='kw'>chem_site</span> <span class='kw'>=</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_site</span>, <span class='no'>SiteID</span> <span class='kw'>==</span> <span class='st'>"USGS-04024000"</span>),
-                 <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)</div><div class='img'><img src='plot_tox_heatmap-4.png' alt='' width='700' height='433' /></div></pre>
+<span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span><span class='op'>$</span><span class='va'>`Short Name`</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span><span class='op'>$</span><span class='va'>`Short Name`</span>,
+              levels <span class='op'>=</span> <span class='va'>sitesOrdered</span><span class='op'>)</span>
+<span class='fu'>plot_tox_heatmap</span><span class='op'>(</span><span class='va'>chemical_summary</span>, <span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span>, category <span class='op'>=</span> <span class='st'>"Chemical Class"</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_tox_heatmap-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span><span class='op'>(</span><span class='va'>chemical_summary</span>, <span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span>, 
+                 category <span class='op'>=</span> <span class='st'>"Chemical"</span>, legend_lab <span class='op'>=</span> <span class='st'>"EAR"</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_tox_heatmap-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>single_site</span> <span class='op'>&lt;-</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>chemical_summary</span>, <span class='va'>site</span> <span class='op'>==</span> <span class='st'>"USGS-04024000"</span><span class='op'>)</span>
+<span class='fu'>plot_tox_heatmap</span><span class='op'>(</span>chemical_summary <span class='op'>=</span> <span class='va'>single_site</span>, 
+                 chem_site <span class='op'>=</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span>, <span class='va'>SiteID</span> <span class='op'>==</span> <span class='st'>"USGS-04024000"</span><span class='op'>)</span>, 
+                 category <span class='op'>=</span> <span class='st'>"Chemical Class"</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_tox_heatmap-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_tox_heatmap</span><span class='op'>(</span>chemical_summary <span class='op'>=</span> <span class='va'>single_site</span>, 
+                 chem_site <span class='op'>=</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_site</span>, <span class='va'>SiteID</span> <span class='op'>==</span> <span class='st'>"USGS-04024000"</span><span class='op'>)</span>, 
+                 category <span class='op'>=</span> <span class='st'>"Chemical"</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_tox_heatmap-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -321,7 +325,7 @@ they are considered "non-detects", and represented with a distinct color.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

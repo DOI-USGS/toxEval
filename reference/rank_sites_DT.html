@@ -94,7 +94,7 @@ exceeding a user specified hit_threshold." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -170,21 +170,21 @@ create tables with one row per site. Columns represent the maximum or mean EAR
 exceeding a user specified hit_threshold.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rank_sites_DT</span>(
-  <span class='no'>chemical_summary</span>,
-  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>0.1</span>
-)
+    <pre class="usage"><span class='fu'>rank_sites_DT</span><span class='op'>(</span>
+  <span class='va'>chemical_summary</span>,
+  category <span class='op'>=</span> <span class='st'>"Biological"</span>,
+  mean_logic <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sum_logic <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  hit_threshold <span class='op'>=</span> <span class='fl'>0.1</span>
+<span class='op'>)</span>
 
-<span class='fu'>rank_sites</span>(
-  <span class='no'>chemical_summary</span>,
-  <span class='no'>category</span>,
-  <span class='kw'>hit_threshold</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+<span class='fu'>rank_sites</span><span class='op'>(</span>
+  <span class='va'>chemical_summary</span>,
+  <span class='va'>category</span>,
+  hit_threshold <span class='op'>=</span> <span class='fl'>0.1</span>,
+  mean_logic <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sum_logic <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -225,25 +225,27 @@ columns for categories, there is now 1 row per category (since the site is known
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># This is the example workflow:</span>
-<span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
-<span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
+<span class='va'>path_to_tox</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, package<span class='op'>=</span><span class='st'>"toxEval"</span><span class='op'>)</span>
+<span class='va'>file_name</span> <span class='op'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
 
-<span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
+<span class='va'>full_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>path_to_tox</span>, <span class='va'>file_name</span><span class='op'>)</span>
 
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+<span class='va'>tox_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span><span class='op'>(</span><span class='va'>full_path</span><span class='op'>)</span>
 
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACC</span>)
+<span class='va'>ACC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_info</span><span class='op'>$</span><span class='va'>CAS</span><span class='op'>)</span>
+<span class='va'>ACC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span><span class='op'>(</span><span class='va'>ACC</span><span class='op'>)</span>
 
-<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
-<span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
-<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
+<span class='va'>cleaned_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span>
+<span class='va'>filtered_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span><span class='op'>(</span><span class='va'>cleaned_ep</span><span class='op'>)</span>
+<span class='va'>chemical_summary</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span><span class='op'>(</span><span class='va'>tox_list</span>, <span class='va'>ACC</span>, <span class='va'>filtered_ep</span><span class='op'>)</span>
 
-<span class='no'>stats_df</span> <span class='kw'>&lt;-</span> <span class='fu'>rank_sites</span>(<span class='no'>chemical_summary</span>, <span class='st'>"Biological"</span>)
+<span class='va'>stats_df</span> <span class='op'>&lt;-</span> <span class='fu'>rank_sites</span><span class='op'>(</span><span class='va'>chemical_summary</span>, <span class='st'>"Biological"</span><span class='op'>)</span>
 
-<span class='fu'>rank_sites_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>)
-<span class='fu'>rank_sites_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical Class"</span>)
-<span class='fu'>rank_sites_DT</span>(<span class='no'>chemical_summary</span>, <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Chemical"</span>)</div></pre>
+<span class='fu'>rank_sites_DT</span><span class='op'>(</span><span class='va'>chemical_summary</span>, category <span class='op'>=</span> <span class='st'>"Biological"</span><span class='op'>)</span>
+<span class='fu'>rank_sites_DT</span><span class='op'>(</span><span class='va'>chemical_summary</span>, category <span class='op'>=</span> <span class='st'>"Chemical Class"</span><span class='op'>)</span>
+<span class='fu'>rank_sites_DT</span><span class='op'>(</span><span class='va'>chemical_summary</span>, category <span class='op'>=</span> <span class='st'>"Chemical"</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -259,7 +261,7 @@ columns for categories, there is now 1 row per category (since the site is known
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

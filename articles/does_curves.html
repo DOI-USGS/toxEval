@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -104,12 +104,12 @@
 
       
 
-      </header><div class="row">
+      </header><script src="does_curves_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Concentration-Response Curves</h1>
             
-            <h4 class="date">15 May, 2020</h4>
+            <h4 class="date">08 October, 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/does_curves.Rmd"><code>vignettes/does_curves.Rmd</code></a></small>
       <div class="hidden name"><code>does_curves.Rmd</code></div>
@@ -143,33 +143,34 @@
 <a href="#r-package-tcpl" class="anchor"></a>R-package: tcpl</h2>
 <p>There is another way to locally produce the concentration-response curves using the <a href="https://cran.r-project.org/web/packages/tcpl/index.html"><code>tcpl</code> package</a>. The advantage to this approach is that you can customize the plots and order of plots. The drawback is that you need to download a very large MySQL database and have it running locally.</p>
 <p>If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single concentration-response curve. Let’s look at Atrazine with the “NVS_ENZ_hPDE4A1” endpoint:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tcpl</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USEPA/CompTox-ToxCast-tcpl">tcpl</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/config_funcs.html">tcplConf</a></span>(<span class="kw">drvr</span> <span class="kw">=</span> <span class="st">"MySQL"</span>,
-         <span class="kw">user</span> <span class="kw">=</span> <span class="st">"my_awesome_username"</span>,
-         <span class="kw">pass</span> <span class="kw">=</span> <span class="st">"my_awesome_password"</span>,
-         <span class="kw">host</span> <span class="kw">=</span> <span class="st">"localhost"</span>,
-         <span class="kw">db</span> <span class="kw">=</span> <span class="st">"database_name"</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/config_funcs.html">tcplConf</a></span><span class="op">(</span>drvr <span class="op">=</span> <span class="st">"MySQL"</span>, 
+         user <span class="op">=</span> <span class="st">"my_awesome_username"</span>,
+         pass <span class="op">=</span> <span class="st">"my_awesome_password"</span>,
+         host <span class="op">=</span> <span class="st">"localhost"</span>, 
+         db <span class="op">=</span> <span class="st">"database_name"</span><span class="op">)</span>
 
-<span class="no">ep</span> <span class="kw">&lt;-</span> <span class="st">"NVS_ENZ_hPDE4A1"</span>
-<span class="no">cas</span> <span class="kw">&lt;-</span> <span class="st">"1912-24-9"</span>
+<span class="va">ep</span> <span class="op">&lt;-</span> <span class="st">"NVS_ENZ_hPDE4A1"</span>
+<span class="va">cas</span> <span class="op">&lt;-</span> <span class="st">"1912-24-9"</span>
 
-<span class="no">chem_info</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadChem.html">tcplLoadChem</a></span>(<span class="kw">field</span> <span class="kw">=</span> <span class="st">'casn'</span>, <span class="kw">val</span> <span class="kw">=</span> <span class="no">cas</span>)
+<span class="va">chem_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadChem.html">tcplLoadChem</a></span><span class="op">(</span>field <span class="op">=</span> <span class="st">'casn'</span>, val <span class="op">=</span> <span class="va">cas</span><span class="op">)</span>
 
-<span class="no">assay_info</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/assay_funcs.html">tcplLoadAcid</a></span>(<span class="kw">fld</span> <span class="kw">=</span> <span class="st">"acnm"</span>, <span class="kw">val</span> <span class="kw">=</span> <span class="no">ep</span>)
+<span class="va">assay_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/assay_funcs.html">tcplLoadAcid</a></span><span class="op">(</span>fld <span class="op">=</span> <span class="st">"acnm"</span>, val <span class="op">=</span> <span class="va">ep</span><span class="op">)</span>
 
-<span class="no">mc3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span>(<span class="kw">lvl</span> <span class="kw">=</span> <span class="fl">3</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"mc"</span>,
-             <span class="kw">fld</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"acid"</span>,<span class="st">"spid"</span>),
-             <span class="kw">val</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">assay_info</span>$<span class="no">acid</span>,
-                        <span class="no">chem_info</span>$<span class="no">spid</span>))
+<span class="va">mc3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span><span class="op">(</span>lvl <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">"mc"</span>, 
+             fld <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"acid"</span>,<span class="st">"spid"</span><span class="op">)</span>, 
+             val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">assay_info</span><span class="op">$</span><span class="va">acid</span>,
+                        <span class="va">chem_info</span><span class="op">$</span><span class="va">spid</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co">## Load mc tables from levels of interest</span>
-<span class="no">mc4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span>(<span class="kw">lvl</span> <span class="kw">=</span> <span class="fl">4</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"mc"</span>,
-                    <span class="kw">fld</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"spid"</span>, <span class="st">"aeid"</span>),
-                    <span class="kw">val</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">chem_info</span>$<span class="no">spid</span>,
-                               <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">mc3</span>$<span class="no">aeid</span>)))
+<span class="va">mc4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span><span class="op">(</span>lvl <span class="op">=</span> <span class="fl">4</span>, type <span class="op">=</span> <span class="st">"mc"</span>, 
+                    fld <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"spid"</span>, <span class="st">"aeid"</span><span class="op">)</span>, 
+                    val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">chem_info</span><span class="op">$</span><span class="va">spid</span>,
+                               <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">mc3</span><span class="op">$</span><span class="va">aeid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplPlotM4ID.html">tcplPlotM4ID</a></span>(<span class="no">mc4</span>, <span class="kw">lvl</span> <span class="kw">=</span> <span class="fl">5</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplPlotM4ID.html">tcplPlotM4ID</a></span><span class="op">(</span><span class="va">mc4</span>, lvl <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></pre></div>
 <p><img src="atrazineDose.png" width="375"></p>
 <p>The values passed to the <code>tcplConf</code> function will depend on how you set up the MySQL database.</p>
 </div>
@@ -190,7 +191,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

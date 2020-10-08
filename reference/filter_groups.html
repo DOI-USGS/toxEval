@@ -97,7 +97,7 @@ reconsidered based on individual study objectives." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -176,13 +176,13 @@ remove specific group(s) from the category. The default is to remove
 reconsidered based on individual study objectives.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filter_groups</span>(
-  <span class='no'>ep</span>,
-  <span class='kw'>groupCol</span> <span class='kw'>=</span> <span class='st'>"intended_target_family"</span>,
-  <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ACEA"</span>, <span class='st'>"APR"</span>, <span class='st'>"ATG"</span>, <span class='st'>"NVS"</span>, <span class='st'>"OT"</span>, <span class='st'>"TOX21"</span>, <span class='st'>"CEETOX"</span>, <span class='st'>"CLD"</span>, <span class='st'>"TANGUAY"</span>,
-    <span class='st'>"NHEERL_PADILLA"</span>, <span class='st'>"NCCT"</span>, <span class='st'>"NHEERL_HUNTER"</span>, <span class='st'>"NHEERL_NIS"</span>, <span class='st'>"NHEERL_MED"</span>, <span class='st'>"UPITT"</span>),
-  <span class='kw'>remove_groups</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Background Measurement"</span>, <span class='st'>"Undefined"</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>filter_groups</span><span class='op'>(</span>
+  <span class='va'>ep</span>,
+  groupCol <span class='op'>=</span> <span class='st'>"intended_target_family"</span>,
+  assays <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ACEA"</span>, <span class='st'>"APR"</span>, <span class='st'>"ATG"</span>, <span class='st'>"NVS"</span>, <span class='st'>"OT"</span>, <span class='st'>"TOX21"</span>, <span class='st'>"CEETOX"</span>, <span class='st'>"CLD"</span>, <span class='st'>"TANGUAY"</span>,
+    <span class='st'>"NHEERL_PADILLA"</span>, <span class='st'>"NCCT"</span>, <span class='st'>"NHEERL_HUNTER"</span>, <span class='st'>"NHEERL_NIS"</span>, <span class='st'>"NHEERL_MED"</span>, <span class='st'>"UPITT"</span><span class='op'>)</span>,
+  remove_groups <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Background Measurement"</span>, <span class='st'>"Undefined"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -218,10 +218,11 @@ Following that link, it defines "intended_target_family" as "the target family o
 objective target for the assay". Much more detail can be discovered in that documentation.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>end_point_info</span> <span class='kw'>&lt;-</span> <span class='no'>end_point_info</span>
-<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
-<span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'>filter_groups</span>(<span class='no'>cleaned_ep</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>filtered_ep</span>)</div><div class='output co'>#&gt;                          endPoint         groupCol assaysFull
+    <pre class="examples"><div class='input'><span class='va'>end_point_info</span> <span class='op'>&lt;-</span> <span class='va'>end_point_info</span>
+<span class='va'>cleaned_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span>
+<span class='va'>filtered_ep</span> <span class='op'>&lt;-</span> <span class='fu'>filter_groups</span><span class='op'>(</span><span class='va'>cleaned_ep</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>filtered_ep</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                          endPoint         groupCol assaysFull
 #&gt; 1                    ACEA_ER_80hr Nuclear Receptor       ACEA
 #&gt; 2           ACEA_ER_AUC_viability       Cell Cycle       ACEA
 #&gt; 3 APR_HepG2_CellCycleArrest_1h_dn       Cell Cycle        APR
@@ -243,7 +244,7 @@ objective target for the assay". Much more detail can be discovered in that docu
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

@@ -90,7 +90,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -162,7 +162,7 @@
     <p>A small collection of helper functions for toxEval</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as.toxEval</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>as.toxEval</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,17 +179,18 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
-<span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
-<span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+    <pre class="examples"><div class='input'><span class='va'>path_to_tox</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, package<span class='op'>=</span><span class='st'>"toxEval"</span><span class='op'>)</span>
+<span class='va'>file_name</span> <span class='op'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
+<span class='va'>full_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>path_to_tox</span>, <span class='va'>file_name</span><span class='op'>)</span>
+<span class='va'>tox_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span><span class='op'>(</span><span class='va'>full_path</span><span class='op'>)</span>
 
 <span class='co'># To over-ride one of the data frames:</span>
-<span class='no'>chem_data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>CAS</span> <span class='kw'>=</span> <span class='st'>"21145-77-7"</span>,
-                   <span class='kw'>Value</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-                   <span class='st'>"Sample Date"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2012-01-01"</span>),
-                   <span class='kw'>SiteID</span> <span class='kw'>=</span> <span class='st'>"USGS-04249000"</span>)
-<span class='no'>tox_list_new</span> <span class='kw'>&lt;-</span> <span class='fu'>as.toxEval</span>(<span class='no'>tox_list</span>, <span class='no'>chem_data</span>)</div><div class='output co'>#&gt; <span class='message'>Replacing chem_data from list with supplied data frame.</span></div><div class='input'>
+<span class='va'>chem_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>CAS <span class='op'>=</span> <span class='st'>"21145-77-7"</span>,
+                   Value <span class='op'>=</span> <span class='fl'>1</span>,
+                   <span class='st'>"Sample Date"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2012-01-01"</span><span class='op'>)</span>,
+                   SiteID <span class='op'>=</span> <span class='st'>"USGS-04249000"</span><span class='op'>)</span>
+<span class='va'>tox_list_new</span> <span class='op'>&lt;-</span> <span class='fu'>as.toxEval</span><span class='op'>(</span><span class='va'>tox_list</span>, <span class='va'>chem_data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Replacing chem_data from list with supplied data frame.</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -206,7 +207,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

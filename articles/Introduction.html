@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -104,12 +104,12 @@
 
       
 
-      </header><div class="row">
+      </header><script src="Introduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to toxEval</h1>
             
-            <h4 class="date">15 May, 2020</h4>
+            <h4 class="date">08 October, 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd"><code>vignettes/Introduction.Rmd</code></a></small>
       <div class="hidden name"><code>Introduction.Rmd</code></div>
@@ -148,18 +148,20 @@
 <h2 class="hasAnchor">
 <a href="#what-is-a-group" class="anchor"></a>What is a “group”?</h2>
 <p>Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>end_point_info</code> data:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">toxEval</span>)
-<span class="no">end_point_info</span> <span class="kw">&lt;-</span> <span class="no">end_point_info</span></pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span>
+<span class="va">end_point_info</span> <span class="op">&lt;-</span> <span class="va">end_point_info</span></pre></div>
 <p>See the help file <code><a href="../reference/end_point_info.html">?end_point_info</a></code> for specifics on how the table was downloaded.</p>
 <p>Throughout the <code>toxEval</code> analysis, there are graphing and table functions that will summarize EARs based on either “Biological” groupings (as defined by a group of endPoints) or “Chemical Class” groupings (as defined by a group of chemicals).</p>
 <p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">filtered_ep</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span>(<span class="no">end_point_info</span>,
-              <span class="kw">groupCol</span> <span class="kw">=</span> <span class="st">"intended_target_family"</span>,
-              <span class="kw">assays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>,
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">end_point_info</span>,
+              groupCol <span class="op">=</span> <span class="st">"intended_target_family"</span>,
+              assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, 
                          <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,
-                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span>),
-              <span class="kw">remove_groups</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Background Measurement"</span>,
-                                <span class="st">"Undefined"</span>))</pre></body></html></div>
+                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span><span class="op">)</span>,
+              remove_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Background Measurement"</span>,
+                                <span class="st">"Undefined"</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>What is happening here is that the supplied data frame <code>end_point_info</code> is filtered to just the “intended_target_family” group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
 </div>
 <div id="summarize_data" class="section level2">
@@ -177,7 +179,8 @@
 <h2 class="hasAnchor">
 <a href="#installation-of-toxeval" class="anchor"></a>Installation of toxEval</h2>
 <p><code>toxEval</code> is available on any CRAN mirror.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"toxEval"</span><span class="op">)</span></pre></div>
 </div>
 <div id="update-toxeval" class="section level2">
 <h2 class="hasAnchor">
@@ -185,7 +188,8 @@
 <p><code>toxEval</code> does require a fair number of additional packages to run properly. These dependencies offer many benefits, such as a smooth running intuitive Shiny app. The drawbacks however are that there becomes more risk that those dependencies could change their output/workflow over time. <code>toxEval</code> developers will try to stay on top of those changes, but it is a challenge. It is important to always update <em>all</em> of your packages therefore…..not just <code>toxEval</code>. <code>toxEval</code> may push out a new version to keep up with a critical change in a dependent package, and if you only update <code>toxEval</code>, the update could cause bugs (we will attempt to mandate the package version of each package, but it still is best to stay on top of new package versions).</p>
 <p><img src="update.png" width="144"></p>
 <p>Regularly, it is a good idea to update <em>ALL</em> of installed packages in R. If using RStudio, this is done by using the Update button in the “Packages” tab in RStudio. Selecting this option checks CRAN for updates. Within the R-console, packages can be updated with the command:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 </div>
 <div id="reporting-bugs" class="section level2">
 <h2 class="hasAnchor">
@@ -196,15 +200,16 @@
 <h2 class="hasAnchor">
 <a href="#citing-toxeval" class="anchor"></a>Citing toxEval</h2>
 <p>This package has not been reviewed and approved as a USGS-product. The implication is that <code>toxEval</code> cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="kw">package</span> <span class="kw">=</span> <span class="st">"toxEval"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"toxEval"</span><span class="op">)</span></pre></div>
 <pre><code>## 
 ## To cite toxEval in publications, please use:
 ## 
 ##   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
-##   Ankley, G.T., 2018, toxEval: Evaluation of measured concentration
+##   Ankley, G.T., 2020, toxEval: Evaluation of measured concentration
 ##   data using the ToxCast high-throughput screening database or a
 ##   user-defined set of concentration benchmarks. R package version
-##   1.1.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
+##   1.2.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
 ## 
 ## A BibTeX entry for LaTeX users is
 ## 
@@ -212,10 +217,10 @@
 ##     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
 ##     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
 ##     publisher = {U.S. Geological Survey},
-##     version = {1.1.0},
+##     version = {1.2.0},
 ##     address = {Reston, VA},
 ##     institution = {U.S. Geological Survey},
-##     year = {2019},
+##     year = {2020},
 ##     doi = {10.5066/P906UQ5I},
 ##     url = {https://code.usgs.gov/water/toxEval},
 ##   }</code></pre>
@@ -243,7 +248,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

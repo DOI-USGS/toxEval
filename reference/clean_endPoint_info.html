@@ -97,7 +97,7 @@ described in the paper linked above." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -176,7 +176,7 @@ categories to intended_target_family and intended_target_family_sub as
 described in the paper linked above.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>clean_endPoint_info</span>(<span class='no'>end_point_info</span>)</pre>
+    <pre class="usage"><span class='fu'>clean_endPoint_info</span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -195,9 +195,11 @@ intended_target_family_sub. The names in intended_target_family
 are revised to look more appealing in graphs and tables.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>end_point_info</span> <span class='kw'>&lt;-</span> <span class='no'>end_point_info</span>
-<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>end_point_info</span>)</div><div class='output co'>#&gt; [1] 1473</div><div class='input'><span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'>clean_endPoint_info</span>(<span class='no'>end_point_info</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>cleaned_ep</span>)</div><div class='output co'>#&gt; [1] 1195</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>end_point_info</span> <span class='op'>&lt;-</span> <span class='va'>end_point_info</span>
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1473</div><div class='input'><span class='va'>cleaned_ep</span> <span class='op'>&lt;-</span> <span class='fu'>clean_endPoint_info</span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>cleaned_ep</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1195</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -213,7 +215,7 @@ are revised to look more appealing in graphs and tables.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

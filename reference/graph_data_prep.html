@@ -92,7 +92,7 @@ to allow custom graphs to be created." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -166,28 +166,28 @@ functions are used within the plotting functions. They are exported however
 to allow custom graphs to be created.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>graph_chem_data</span>(
-  <span class='no'>chemical_summary</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+    <pre class="usage"><span class='fu'>graph_chem_data</span><span class='op'>(</span>
+  <span class='va'>chemical_summary</span>,
+  <span class='va'>...</span>,
+  manual_remove <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mean_logic <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sum_logic <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
-<span class='fu'>tox_boxplot_data</span>(
-  <span class='no'>chemical_summary</span>,
-  <span class='kw'>category</span> <span class='kw'>=</span> <span class='st'>"Biological"</span>,
-  <span class='kw'>manual_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mean_logic</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sum_logic</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+<span class='fu'>tox_boxplot_data</span><span class='op'>(</span>
+  <span class='va'>chemical_summary</span>,
+  category <span class='op'>=</span> <span class='st'>"Biological"</span>,
+  manual_remove <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mean_logic <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  sum_logic <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
-<span class='fu'>side_by_side_data</span>(
-  <span class='no'>gd_left</span>,
-  <span class='no'>gd_right</span>,
-  <span class='kw'>left_title</span> <span class='kw'>=</span> <span class='st'>"Left"</span>,
-  <span class='kw'>right_title</span> <span class='kw'>=</span> <span class='st'>"Right"</span>
-)</pre>
+<span class='fu'>side_by_side_data</span><span class='op'>(</span>
+  <span class='va'>gd_left</span>,
+  <span class='va'>gd_right</span>,
+  left_title <span class='op'>=</span> <span class='st'>"Left"</span>,
+  right_title <span class='op'>=</span> <span class='st'>"Right"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -248,33 +248,34 @@ and classes factor levels are ordered primarily based on "gd_left", but
 include "gd_right" when the contents are mismatched.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>path_to_tox</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"toxEval"</span>)
-<span class='no'>file_name</span> <span class='kw'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
-<span class='no'>full_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>path_to_tox</span>, <span class='no'>file_name</span>)
+    <pre class="examples"><div class='input'><span class='va'>path_to_tox</span> <span class='op'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, package<span class='op'>=</span><span class='st'>"toxEval"</span><span class='op'>)</span>
+<span class='va'>file_name</span> <span class='op'>&lt;-</span> <span class='st'>"OWC_data_fromSup.xlsx"</span>
+<span class='va'>full_path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>path_to_tox</span>, <span class='va'>file_name</span><span class='op'>)</span>
 
-<span class='no'>tox_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span>(<span class='no'>full_path</span>)
+<span class='va'>tox_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_toxEval.html'>create_toxEval</a></span><span class='op'>(</span><span class='va'>full_path</span><span class='op'>)</span>
 
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span>(<span class='no'>tox_list</span>$<span class='no'>chem_info</span>$<span class='no'>CAS</span>)
-<span class='no'>ACC</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span>(<span class='no'>ACC</span>)
+<span class='va'>ACC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_ACC.html'>get_ACC</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>$</span><span class='va'>chem_info</span><span class='op'>$</span><span class='va'>CAS</span><span class='op'>)</span>
+<span class='va'>ACC</span> <span class='op'>&lt;-</span> <span class='fu'><a href='remove_flags.html'>remove_flags</a></span><span class='op'>(</span><span class='va'>ACC</span><span class='op'>)</span>
 
-<span class='no'>cleaned_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span>(<span class='no'>end_point_info</span>)
-<span class='no'>filtered_ep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span>(<span class='no'>cleaned_ep</span>)
+<span class='va'>cleaned_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clean_endPoint_info.html'>clean_endPoint_info</a></span><span class='op'>(</span><span class='va'>end_point_info</span><span class='op'>)</span>
+<span class='va'>filtered_ep</span> <span class='op'>&lt;-</span> <span class='fu'><a href='filter_groups.html'>filter_groups</a></span><span class='op'>(</span><span class='va'>cleaned_ep</span><span class='op'>)</span>
 
-<span class='no'>chemical_summary</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span>(<span class='no'>tox_list</span>, <span class='no'>ACC</span>, <span class='no'>filtered_ep</span>)
+<span class='va'>chemical_summary</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_chemical_summary.html'>get_chemical_summary</a></span><span class='op'>(</span><span class='va'>tox_list</span>, <span class='va'>ACC</span>, <span class='va'>filtered_ep</span><span class='op'>)</span>
 <span class='co'># Let's say we want to compare 2 chemical summaries</span>
 <span class='co'># We'll look at one summing EARs, and with concentrations</span>
 <span class='co'># First, we need a chemical summary for concentrations:</span>
-<span class='no'>chemical_summary_conc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_concentration_summary.html'>get_concentration_summary</a></span>(<span class='no'>tox_list</span>)
+<span class='va'>chemical_summary_conc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_concentration_summary.html'>get_concentration_summary</a></span><span class='op'>(</span><span class='va'>tox_list</span><span class='op'>)</span>
 
-<span class='no'>gd_tox</span> <span class='kw'>&lt;-</span> <span class='fu'>graph_chem_data</span>(<span class='no'>chemical_summary</span>)
-<span class='no'>gd_conc</span> <span class='kw'>&lt;-</span> <span class='fu'>graph_chem_data</span>(<span class='no'>chemical_summary_conc</span>)
+<span class='va'>gd_tox</span> <span class='op'>&lt;-</span> <span class='fu'>graph_chem_data</span><span class='op'>(</span><span class='va'>chemical_summary</span><span class='op'>)</span>
+<span class='va'>gd_conc</span> <span class='op'>&lt;-</span> <span class='fu'>graph_chem_data</span><span class='op'>(</span><span class='va'>chemical_summary_conc</span><span class='op'>)</span>
 
-<span class='no'>ch_combo</span> <span class='kw'>&lt;-</span> <span class='fu'>side_by_side_data</span>(<span class='no'>gd_tox</span>, <span class='no'>gd_conc</span>,
-                              <span class='kw'>left_title</span> <span class='kw'>=</span> <span class='st'>"ToxCast"</span>,
-                              <span class='kw'>right_title</span> <span class='kw'>=</span> <span class='st'>"Concentrations"</span>)
-<span class='fu'><a href='plot_tox_boxplots.html'>plot_chemical_boxplots</a></span>(<span class='no'>ch_combo</span>, <span class='no'>guide_side</span>,
-                       <span class='kw'>x_label</span> <span class='kw'>=</span> <span class='st'>""</span>) +
-  <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/facet_grid.html'>facet_grid</a></span>(<span class='no'>.</span> ~ <span class='no'>guide_side</span>, <span class='kw'>scales</span> <span class='kw'>=</span> <span class='st'>"free_x"</span>)</div><div class='img'><img src='graph_data_prep-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='va'>ch_combo</span> <span class='op'>&lt;-</span> <span class='fu'>side_by_side_data</span><span class='op'>(</span><span class='va'>gd_tox</span>, <span class='va'>gd_conc</span>, 
+                              left_title <span class='op'>=</span> <span class='st'>"ToxCast"</span>, 
+                              right_title <span class='op'>=</span> <span class='st'>"Concentrations"</span><span class='op'>)</span>
+<span class='fu'><a href='plot_chemical_boxplots.html'>plot_chemical_boxplots</a></span><span class='op'>(</span><span class='va'>ch_combo</span>, <span class='va'>guide_side</span>, 
+                       x_label <span class='op'>=</span> <span class='st'>""</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/facet_grid.html'>facet_grid</a></span><span class='op'>(</span><span class='va'>.</span> <span class='op'>~</span> <span class='va'>guide_side</span>, scales <span class='op'>=</span> <span class='st'>"free_x"</span><span class='op'>)</span>
+</div><div class='img'><img src='graph_data_prep-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -290,7 +291,7 @@ include "gd_right" when the contents are mismatched.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

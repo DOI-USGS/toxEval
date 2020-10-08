@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -119,47 +119,52 @@
 <p align="center">
 <img src="https://code.usgs.gov/water/toxEval/raw/master/man/figures/app.gif" alt="app_demo"></p>
 <p>Installation instructions are below. To quickly get going in <code>toxEval</code>, run:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">toxEval</span>)
-<span class="fu"><a href="reference/explore_endpoints.html">explore_endpoints</a></span>()</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span>
+<span class="fu"><a href="reference/explore_endpoints.html">explore_endpoints</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <p>Then click on the “Load Example Data” in the upper right corner. This loads the example data that is found here:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>, <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span></pre></div>
 <p>Once the data is loaded in the app, sample R code is shown below each tab. This can be copied into the R console (once the app is stopped…) to use as a base for exploring the package directly in R.</p>
 <p>Alternatively, an example workflow is shown here (also using example data provided in the package):</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">toxEval</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span>
 <span class="co">#&gt; USGS Research Package:</span>
 <span class="co">#&gt; https://owi.usgs.gov/R/packages.html#research</span>
 <span class="co">#&gt; ToxCast database: version 3.2</span>
-<span class="no">path_to_file</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="kw">package</span><span class="kw">=</span><span class="st">"toxEval"</span>), <span class="st">"OWC_data_fromSup.xlsx"</span>)
-<span class="no">tox_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/create_toxEval.html">create_toxEval</a></span>(<span class="no">path_to_file</span>)
-<span class="no">ACClong</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/get_ACC.html">get_ACC</a></span>(<span class="no">tox_list</span>$<span class="no">chem_info</span>$<span class="no">CAS</span>)
-<span class="no">ACClong</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/remove_flags.html">remove_flags</a></span>(<span class="no">ACClong</span>)
+<span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>, <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span>
+<span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span>
+<span class="va">ACClong</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_ACC.html">get_ACC</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span><span class="op">$</span><span class="va">CAS</span><span class="op">)</span>
+<span class="va">ACClong</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/remove_flags.html">remove_flags</a></span><span class="op">(</span><span class="va">ACClong</span><span class="op">)</span>
 
-<span class="no">cleaned_ep</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/clean_endPoint_info.html">clean_endPoint_info</a></span>(<span class="no">end_point_info</span>)
-<span class="no">filtered_ep</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/filter_groups.html">filter_groups</a></span>(<span class="no">cleaned_ep</span>,
-                  <span class="kw">groupCol</span> <span class="kw">=</span> <span class="st">'intended_target_family'</span>,
-                  <span class="kw">remove_groups</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'Background Measurement'</span>,<span class="st">'Undefined'</span>))
+<span class="va">cleaned_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_endPoint_info.html">clean_endPoint_info</a></span><span class="op">(</span><span class="va">end_point_info</span><span class="op">)</span>
+<span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">cleaned_ep</span>, 
+                  groupCol <span class="op">=</span> <span class="st">'intended_target_family'</span>,
+                  remove_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Background Measurement'</span>,<span class="st">'Undefined'</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">chemicalSummary</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/get_chemical_summary.html">get_chemical_summary</a></span>(<span class="no">tox_list</span>,
-                                        <span class="no">ACClong</span>,
-                                        <span class="no">filtered_ep</span>)
+<span class="va">chemicalSummary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_chemical_summary.html">get_chemical_summary</a></span><span class="op">(</span><span class="va">tox_list</span>, 
+                                        <span class="va">ACClong</span>, 
+                                        <span class="va">filtered_ep</span><span class="op">)</span>
 <span class="co">######################################</span>
-<span class="no">chem_class_plot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span>(<span class="no">chemicalSummary</span>,
-                                     <span class="kw">category</span> <span class="kw">=</span> <span class="st">'Chemical Class'</span>)
-<span class="no">chem_class_plot</span></pre></div>
+<span class="va">chem_class_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_chemical_boxplots.html">plot_tox_boxplots</a></span><span class="op">(</span><span class="va">chemicalSummary</span>,
+                                     category <span class="op">=</span> <span class="st">'Chemical Class'</span><span class="op">)</span>
+<span class="va">chem_class_plot</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png"></p>
-<div class="sourceCode" id="cb4"><pre class="r">
+<div class="sourceCode" id="cb4"><pre class="downlit">
+
 <span class="co">######################################</span>
-<span class="no">plot_stacks</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/plot_tox_stacks.html">plot_tox_stacks</a></span>(<span class="no">chemicalSummary</span>,
-                               <span class="no">tox_list</span>$<span class="no">chem_site</span>,
-                               <span class="kw">category</span> <span class="kw">=</span> <span class="st">"Chemical Class"</span>)
-<span class="no">plot_stacks</span></pre></div>
+<span class="va">plot_stacks</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_tox_stacks.html">plot_tox_stacks</a></span><span class="op">(</span><span class="va">chemicalSummary</span>, 
+                               <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_site</span>, 
+                               category <span class="op">=</span> <span class="st">"Chemical Class"</span><span class="op">)</span>
+<span class="va">plot_stacks</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-2.png"></p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="co">######################################</span>
-<span class="no">plot_heat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span>(<span class="no">chemicalSummary</span>,
-                              <span class="no">tox_list</span>$<span class="no">chem_site</span>,
-                              <span class="kw">category</span> <span class="kw">=</span> <span class="st">"Chemical Class"</span>,
-                              <span class="kw">font_size</span> <span class="kw">=</span> <span class="fl">7</span>)
-<span class="no">plot_heat</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="co">######################################</span>
+<span class="va">plot_heat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_tox_heatmap.html">plot_tox_heatmap</a></span><span class="op">(</span><span class="va">chemicalSummary</span>, 
+                              <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_site</span>, 
+                              category <span class="op">=</span> <span class="st">"Chemical Class"</span>,
+                              font_size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
+<span class="va">plot_heat</span></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-3.png"></p>
 <p>This code opens up the example file, loads it into a <code>toxEval</code> object, grabs the pertinent ToxCast information, and creates a “chemicalSummary” data frame that is used in many of the plot and table functions.</p>
 <p>There are 4 vignettes to help introduce and navigate the <code>toxEval</code> package:</p>
@@ -268,13 +273,15 @@ Guide to the toxEval shiny application
 <h2 class="hasAnchor">
 <a href="#installation-of-toxeval" class="anchor"></a>Installation of toxEval</h2>
 <p>To install the toxEval package, you must be using R 3.0 or greater and run the following command:</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"toxEval"</span>)</pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"toxEval"</span><span class="op">)</span></pre></div>
 <p>To get cutting-edge changes, install from GitHub using the <code>devtools</code> packages:</p>
-<div class="sourceCode" id="cb7"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
-<span class="fu">install_github</span>(<span class="st">"USGS-R/toxEval"</span>,
-               <span class="kw">build_vignettes</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-               <span class="kw">build_opts</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"--no-resave-data"</span>,
-                              <span class="st">"--no-manual"</span>))</pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devtools</span><span class="op">)</span>
+<span class="fu">install_github</span><span class="op">(</span><span class="st">"USGS-R/toxEval"</span>,
+               build_vignettes <span class="op">=</span> <span class="cn">TRUE</span>, 
+               build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>,
+                              <span class="st">"--no-manual"</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>Regularly, it is a good idea to update <em>ALL</em> your packages in R. If using RStudio, this is quite easy, there’s an Update button in the “Packages” tab. This checks CRAN and GRAN for updates. It is a good idea to click this update regularly.</p>
 <p><img src="articles/update.png" alt="update"></p>
 </div>
@@ -286,21 +293,23 @@ Guide to the toxEval shiny application
 <li>Open RStudio</li>
 <li>In the Console (lower-left window of RStudio) paste the following:</li>
 </ol>
-<div class="sourceCode" id="cb8"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">toxEval</span>)
-<span class="fu"><a href="reference/explore_endpoints.html">explore_endpoints</a></span>()</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span>
+<span class="fu"><a href="reference/explore_endpoints.html">explore_endpoints</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 </div>
 <div id="citing-toxeval" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citing-toxeval" class="anchor"></a>Citing toxEval</h2>
-<div class="sourceCode" id="cb9"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="kw">package</span> <span class="kw">=</span> <span class="st">"toxEval"</span>)
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"toxEval"</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; To cite toxEval in publications, please use:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,</span>
-<span class="co">#&gt;   Ankley, G.T., 2018, toxEval: Evaluation of measured concentration</span>
+<span class="co">#&gt;   Ankley, G.T., 2020, toxEval: Evaluation of measured concentration</span>
 <span class="co">#&gt;   data using the ToxCast high-throughput screening database or a</span>
 <span class="co">#&gt;   user-defined set of concentration benchmarks. R package version</span>
-<span class="co">#&gt;   1.1.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I</span>
+<span class="co">#&gt;   1.2.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; A BibTeX entry for LaTeX users is</span>
 <span class="co">#&gt; </span>
@@ -308,10 +317,10 @@ Guide to the toxEval shiny application
 <span class="co">#&gt;     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},</span>
 <span class="co">#&gt;     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},</span>
 <span class="co">#&gt;     publisher = {U.S. Geological Survey},</span>
-<span class="co">#&gt;     version = {1.1.0},</span>
+<span class="co">#&gt;     version = {1.2.0},</span>
 <span class="co">#&gt;     address = {Reston, VA},</span>
 <span class="co">#&gt;     institution = {U.S. Geological Survey},</span>
-<span class="co">#&gt;     year = {2019},</span>
+<span class="co">#&gt;     year = {2020},</span>
 <span class="co">#&gt;     doi = {10.5066/P906UQ5I},</span>
 <span class="co">#&gt;     url = {https://code.usgs.gov/water/toxEval},</span>
 <span class="co">#&gt;   }</span></pre></div>
@@ -381,7 +390,7 @@ Guide to the toxEval shiny application
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
