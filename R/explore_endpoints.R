@@ -15,10 +15,6 @@
 #' @importFrom shinycssloaders withSpinner
 #' @import shinydashboard
 #' @import ggplot2
-#' @examples 
-#' \dontrun{
-#' explore_endpoints()
-#' }
 explore_endpoints <- function(browse=TRUE){
   shiny::runApp(system.file('shiny', package='toxEval'), launch.browser = browse)
 }

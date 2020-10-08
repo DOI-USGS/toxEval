@@ -17,8 +17,3 @@ to explore data. For more customization, the R-code to
 produce each graph and table is displayed in the app. That is 
 a good starting-point for a custom analysis.
 }
-\examples{
-\dontrun{
-explore_endpoints()
-}
-}

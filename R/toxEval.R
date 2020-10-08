@@ -47,10 +47,10 @@ NULL
 
 #' ACC values included with toxEval. 
 #' 
-#' Downloaded on October 2018 from ToxCast. The data were
+#' Downloaded on January 2020 from ToxCast. The data were
 #' combined from files in the "INVITRODB_V3_LEVEL5" folder. 
 #' At the time of toxEval package release, this information was found:
-#' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set. 
 #' ACC values are the in the "ACC" column (winning model) and units are 
 #' log micro-Molarity (log \eqn{\mu}M).
@@ -58,7 +58,7 @@ NULL
 #' @references Toxicology, EPA's National Center for Computational (2018): ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
 #'  https://doi.org/10.23645/epacomptox.6062503.v3
 #'  
-#' @source \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' @source \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 #'
 #'@aliases ToxCast_ACC
 #'@return data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
@@ -76,7 +76,7 @@ NULL
 # however....that is why it is an internal only function.
 # This is staying commented out because it adds 
 # extraneous notes:
-# path_to_files <- "../toxCast_Data/INVITRODB_V3_1_LEVEL5"
+# path_to_files <- "../toxCast_Data/INVITRODB_V3_2_LEVEL5"
 # update_ACC <- function(path_to_files){
 #   # Data originally from:
 #   # ftp://newftp.epa.gov/Computational_Toxicology_Data/High_Throughput_Screening_Data/InVitroDB_V3.1/ToxCast_Data_March_2019/INVITRODB_V3_1_LEVEL5.zip
@@ -130,7 +130,7 @@ NULL
 #' raw data was "Assay_Summary_190226.csv" from the zip file 
 #' "INVITRODB_V3_1_SUMMARY" folder. At the time
 #' of the toxEval package release, these data were found at:
-#' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 #' in the section marked "Download Assay Information", in the 
 #' ToxCast & Tox21 high-throughput assay information data set.
 #'
@@ -157,7 +157,7 @@ NULL
 #' raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx", 
 #' from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
 #' of toxEval package release, this information was found:
-#' \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 #' in the section marked "Download ToxCast Chemical Information". This 
 #' was in the "ToxCast & Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
 #' data set.

@@ -5,16 +5,16 @@
 \alias{ToxCast_ACC}
 \title{ACC values included with toxEval.}
 \source{
-\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+\url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 }
 \value{
 data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
 }
 \description{
-Downloaded on October 2018 from ToxCast. The data were
+Downloaded on January 2020 from ToxCast. The data were
 combined from files in the "INVITRODB_V3_LEVEL5" folder. 
 At the time of toxEval package release, this information was found:
-\url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+\url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 in the "ToxCast & Tox21 Data Spreadsheet" data set. 
 ACC values are the in the "ACC" column (winning model) and units are 
 log micro-Molarity (log \eqn{\mu}M).
