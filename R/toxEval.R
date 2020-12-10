@@ -70,10 +70,7 @@ NULL
 #'head(ToxCast_ACC)
 NULL
 
-# If we need to update the ACC data frame, here is
-# is a function that *should* do it, assuming
-# the format is the same. I might not count on that
-# however....that is why it is an internal only function.
+
 # This is staying commented out because it adds 
 # extraneous notes:
 # path_to_files <- "../toxCast_Data/INVITRODB_V3_3_LEVEL5"
@@ -110,92 +107,66 @@ NULL
 # 
 # saveRDS(ACC, "ACC_v3.rds")
 # ToxCast_ACCv3 <- readRDS("ACC_v3.rds")
-
-
-
-# Start Loken edits
-
-end_point_info_v3_assay <- readxl::read_xlsx("../toxcast_files/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx", sheet = "assay")
-
-end_point_info_v3_assay.component <- readxl::read_xlsx("../toxcast_files/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx",
-                                                       sheet = "assay.component")
-end_point_info_v3_assay.component.endpoint <- readxl::read_xlsx("../toxcast_files/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx",
-                                                                sheet = "assay.component.endpoint")
-
-library(dplyr)
-end_point_info_v3 <- end_point_info_v3_assay %>%
-  left_join(end_point_info_v3_assay.component, by = "aid") %>%
-  left_join(end_point_info_v3_assay.component.endpoint, by = "acid")
-
-gene_stuff <- readxl::read_xlsx("../toxcast_files/INVITRODB_V3_3_SUMMARY/gene_target_information_invitrodb_v3_3.xlsx")
-
+# 
+# 
+# end_point_info_v3_assay <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx", sheet = "assay")
+# 
+# end_point_info_v3_assay.component <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx",
+#                                                        sheet = "assay.component")
+# end_point_info_v3_assay.component.endpoint <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx",
+#                                                                 sheet = "assay.component.endpoint")
+# 
+# library(dplyr)
+# 
+# end_point_info_v3 <- end_point_info_v3_assay %>%
+#   left_join(end_point_info_v3_assay.component, by = "aid") %>%
+#   left_join(end_point_info_v3_assay.component.endpoint, by = "acid")
+# 
+# gene_stuff <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/gene_target_information_invitrodb_v3_3.xlsx")
+# 
 #Generate table for EPA review. Look at endpoint-gene linkages and assess validity
-gene_stuff_out <- gene_stuff %>%
-  select(gene_symbol, gene_name,
-         aeid, aenm) %>%
-  distinct() %>%
-  arrange(gene_symbol, aenm) %>%
-  left_join(end_point_info_v3, by = c("aeid", "aenm" = "assay_component_endpoint_name")) %>%
-  select(gene_symbol, gene_name,
-         aeid, aenm, signal_direction, analysis_direction, assay_component_endpoint_desc)
-
-write.csv(gene_stuff_out, "genes_endpoints_for_review.csv", row.names = FALSE)
+# gene_stuff_out <- gene_stuff %>%
+#   select(gene_symbol, gene_name,
+#          aeid, aenm) %>%
+#   distinct() %>%
+#   arrange(gene_symbol, aenm) %>%
+#   left_join(end_point_info_v3, by = c("aeid", "aenm" = "assay_component_endpoint_name")) %>%
+#   select(gene_symbol, gene_name,
+#          aeid, aenm, signal_direction, analysis_direction, assay_component_endpoint_desc)
+# 
+# write.csv(gene_stuff_out, "genes_endpoints_for_review.csv", row.names = FALSE)
 # After reviewing the gene-endpoint combos, some additional changes will need to happen to the gene table
-# removing some gene-endpoint linkages. Add additional columns to note agonism/antagomism. Etc. 
+# removing some gene-endpoint linkages. Add additional columns to note agonism/antagomism. Etc.
 
 # Merge gene with rest of endpoint table,
 # Collapse gene table to "one row = one endpoint"
-# endpoints with multiple genes will have |'s in gene columns. 
-
-gene_stuff2 <- gene_stuff %>%
-  select(-organism_id) %>%
-  group_by(aeid, aenm) %>%
-  summarize(across(everything(), function(x) paste(unique(x[which(x != "" & x != "NA" & !is.na(x) )]), 
-                                                   collapse = "|")), .groups = "drop") %>%
-  rename(intended_target_gene_id = gene_id, 
-         intended_target_gene_name = gene_name,  
-          intended_target_gene_symbol = gene_symbol)
-           
-end_point_info_v3 <- end_point_info_v3 %>%
-  left_join(gene_stuff2, by = c("aeid", "assay_component_endpoint_name" = "aenm"))
-
-# Compare old and new data.tables
-# dim(end_point_info_v3)
+# endpoints with multiple genes will have |'s in gene columns.
 # 
-# library(toxEval)
-# dim(end_point_info)  
+# gene_stuff2 <- gene_stuff %>%
+#   select(-organism_id) %>%
+#   group_by(aeid, aenm) %>%
+#   summarize(across(everything(), function(x) paste(unique(x[which(x != "" & x != "NA" & !is.na(x) )]),
+#                                                    collapse = "|")), .groups = "drop") %>%
+#   rename(intended_target_gene_id = gene_id,
+#          intended_target_gene_name = gene_name,
+#          intended_target_gene_symbol = gene_symbol)
 # 
-# setdiff(names(end_point_info), names(end_point_info_v3))
-# setdiff(names(end_point_info_v3), names(end_point_info))
-#
+# end_point_info_v3 <- end_point_info_v3 %>%
+#   left_join(gene_stuff2, by = c("aeid", "assay_component_endpoint_name" = "aenm"))
+# 
 # assay_table <- unique(end_point_info[c("assay_source_name", "assay_source_long_name")])
 # 
 # end_point_info_v3$assay_source_name <- gsub("\\_.*" , "", end_point_info_v3$assay_name)
-# end_point_info_v3$assay_source_name[grepl("NHEERL", end_point_info_v3$assay_source_name)] <- 
-#   paste0("NHEERL_", (gsub("\\_.*" , "", 
+# 
+# end_point_info_v3$assay_source_name[grepl("NHEERL", end_point_info_v3$assay_source_name)] <-
+#   paste0("NHEERL_", (gsub("\\_.*" , "",
 #        gsub("NHEERL_", "", end_point_info_v3$assay_name[grepl("NHEERL", end_point_info_v3$assay_source_name)]))))
 # 
-
-
-#Do any of these variable names matter? ToxMixtures will have different names for gene columns
-# We could simplify this table now. 
-
 # end_point_info <- end_point_info_v3
-
-
-# End Loken edits
-
-# end_point_info_v3 <- data.table::fread("D:/LADData/toxCast_Data/INVITRODB_V3_1_SUMMARY/Assay_Summary_190226.csv", data.table = FALSE)
+# rm(end_point_info_v3, end_point_info_v3_assay, end_point_info_v3_assay.component,
+#    end_point_info_v3_assay.component.endpoint, gene_stuff, gene_stuff2)
 #   
-#   # Something we considered but decided not to do was:
-#   
-#   # ACCgain2 <- filter(filtered, hitc == 1) %>%
-#   #   filter(gsid_rep == 1) %>%
-#   #   select(casn, chnm, aenm, modl_acc, flags, logc_min) %>%
-#   #   mutate(newFlag = modl_acc < logc_min) %>%
-#   #   mutate(value = ifelse(newFlag, log10((10^modl_acc)/10), modl_acc)) 
-#   
-#
+
 
 #' Endpoint information from ToxCast
 #' 

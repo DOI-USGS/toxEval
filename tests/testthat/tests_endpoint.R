@@ -70,7 +70,7 @@ test_that("Cleaning up endpoints", {
                     "Lyase","Methyltransferase",
                     "Ion Channel","Transporter",
                     "Steroid Hormone","Transferase",
-                    "Zebrafish","Undefined")
+                    "Zebrafish")
 
     expect_true(all(cleanedNames %in% cleaned_ep$intended_target_family))
     expect_false(all(cleanedNames %in% end_point_info$intended_target_family))
