@@ -42,7 +42,6 @@
 #' selected ToxCast endpoint database in this sheet. Additional columns may be included for user 
 #' purposes, but will not be used in toxEval. 
 #' 
-#' 
 #' For more information, see the "Prepare Data" vignette: \href{../doc/PrepareData.html}{\code{vignette("PrepareData", package = "toxEval")}}.
 #' 
 #' All remaining toxEval functions use data from via the list that is returned 
@@ -64,6 +63,7 @@
 #' 
 #' @export
 #' @examples 
+#' 
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
 #' excel_file_path <- file.path(path_to_tox, file_name)
