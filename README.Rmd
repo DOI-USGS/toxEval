@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 # toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
 
 [![R build status](https://github.com/USGS-R/toxEval/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/toxEval/actions)
-[![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=main)](https://coveralls.io/github/USGS-R/toxEval?branch=main)
 [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 [![CRAN version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)
 [![](http://cranlogs.r-pkg.org/badges/toxEval)](https://cran.r-project.org/package=toxEval)
@@ -33,7 +33,7 @@ The functions within this package allow great flexibly for exploring the potenti
 ## Quickstart
 
 <p align="center">
-  <img src="https://code.usgs.gov/water/toxEval/raw/master/man/figures/app.gif" alt="app_demo">
+  <img src="https://code.usgs.gov/water/toxEval/raw/main/man/figures/app.gif" alt="app_demo">
 </p>
 
 Installation instructions are below. To quickly get going in `toxEval`, run:
@@ -106,7 +106,7 @@ Follow `@USGS_R` on Twitter for updates on USGS R packages:
 
 ### Code of Conduct
 
-We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/toxEval/blob/master/CONDUCT.md) for more information.
+We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/toxEval/blob/main/CONDUCT.md) for more information.
 
 ### Package Support
 
