@@ -4,7 +4,7 @@ toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="righ
 [![R build
 status](https://github.com/USGS-R/toxEval/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/toxEval/actions)
 [![Coverage
-Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master)
+Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=main)](https://coveralls.io/github/USGS-R/toxEval?branch=main)
 [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 [![CRAN
 version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)
