@@ -1,4 +1,4 @@
-image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/geospatial:latest
+image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/shiny-verse:latest
 
 stages:
   - check
@@ -34,6 +34,10 @@ getready:
   stage: .pre
   script:
     - mkdir -p $R_LIBS_USER
+    - mkdir -p $APT_CACHE
+    - apt-get update
+    - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends ${APT_PKGS}  
+    - apt-get install libmagickwand-dev
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
     - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
     - Rscript -e "renv::restore()"
