@@ -17,8 +17,6 @@ variables:
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
   NOT_CRAN: "true"
-  RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
-  RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
   PKG_PATH: "$CI_PROJECT_DIR/docs"
   CONNECT_API_KEY: $CONNECT_API_KEY
   CONNECT_SERVER: $CONNECT_SERVER
@@ -27,22 +25,16 @@ cache:
   key: ${CI_JOB_NAME}
   paths:
     - $R_LIBS_USER
-    - $RENV_PATHS_CACHE
-    - $RENV_PATHS_LIBRARY
     
 getready:
   stage: .pre
   script:
     - mkdir -p $R_LIBS_USER
     - mkdir -p $APT_CACHE
-    - apt-get update
-    - apt-get install -y software-properties-common
-    - add-apt-repository -y ppa:cran/imagemagick
-    - apt-get install -y libmagick++-dev
-    - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends ${APT_PKGS}  
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
-    - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
-    - Rscript -e "renv::restore()"
+    - Rscript -e "install.packages('devtools')"
+    - Rscript -e "devtools::install_deps()"
+    - Rscript -e "devtools::install_github('rstudio/connectapi')"
   cache:
     paths:
      - $R_LIBS_USER
