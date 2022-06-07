@@ -3,7 +3,7 @@ image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/shiny-verse:la
 stages:
   - check
   - test
-  - deploy
+  - end
 
 variables:
   _R_CHECK_CRAN_INCOMING_: "false"
