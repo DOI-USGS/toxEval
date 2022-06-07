@@ -18,7 +18,7 @@ output$hitsTableEPs <- DT::renderDataTable({
                                include_links = toxCast())
   shinyAce::updateAceEditor(session, editorId = "hitsTable_out", value = hitsTableEPCode() )
   tableEPs
-})
+}, server = FALSE)
 
 hitsTableEPCode <- reactive({
   

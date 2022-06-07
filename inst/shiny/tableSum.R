@@ -36,7 +36,7 @@ output$tableSumm <- DT::renderDataTable({
   
   tableGroup
   
-})
+}, server = FALSE)
 
 tableSummCode <- reactive({
   
