@@ -35,8 +35,9 @@ getready:
   script:
     - mkdir -p $R_LIBS_USER
     - mkdir -p $APT_CACHE
-    - add-apt-repository -y ppa:cran/imagemagick
     - apt-get update
+    - apt-get install -y software-properties-common
+    - add-apt-repository -y ppa:cran/imagemagick
     - apt-get install -y libmagick++-dev
     - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends ${APT_PKGS}  
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
