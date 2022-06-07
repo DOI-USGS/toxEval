@@ -76,3 +76,4 @@ vignettes/git_login.png
 vignettes/login.png
 vignettes/git_repository.png
 vignettes/https_clone.png
+deploy_simple.R
