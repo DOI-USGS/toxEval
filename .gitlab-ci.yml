@@ -14,21 +14,26 @@ variables:
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
+  RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
+  RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
   NOT_CRAN: "true"
   RSCONNECT_URL: "$RSCONNECT_URL"
   RSCONNECT_APIKEY: "$RSCONNECT_APIKEY"
 
 cache:
+  key: ${CI_JOB_NAME}
   paths:
     - $R_LIBS_USER
+    - $RENV_PATHS_CACHE
+    - $RENV_PATHS_LIBRARY
     
 getready:
   stage: .pre
   script:
     - mkdir -p $R_LIBS_USER
-    - R -e 'install.packages(c("pkgdown", "DT", "leaflet", "shiny", "shinydashboard", "RColorBrewer", "shinyAce", "shinycssloaders", "here", "tcpl", "openxlsx"), repos = Sys.getenv("CRAN_MIRROR"), lib = Sys.getenv("R_LIBS_USER"))'
-    - R -e 'remotes::install_github("rstudio/connectapi")'
+    - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
+    - Rscript -e "renv::restore()"
   cache:
     paths:
      - $R_LIBS_USER

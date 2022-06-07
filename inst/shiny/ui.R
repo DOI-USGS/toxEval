@@ -95,7 +95,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/Introduction.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html", 
                             target="_blank",
                             "Introduction"
                           )),
@@ -107,7 +107,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/basicWorkflow.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html", 
                             target="_blank",
                             "Workflow"
                           )),
@@ -117,7 +117,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/PrepareData.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html", 
                             target="_blank",
                             "Prepare Data"
                           )),
@@ -127,7 +127,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/shinyApp.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html", 
                             target="_blank",
                             "Using the Shiny App"
                           )),
