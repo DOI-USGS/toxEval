@@ -37,7 +37,7 @@ getready:
     - mkdir -p $APT_CACHE
     - apt-get update
     - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends ${APT_PKGS}  
-    - apt-get install libmagickwand-dev
+    - apt-get -yq install libmagickwand-dev
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
     - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
     - Rscript -e "renv::restore()"
