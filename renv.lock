@@ -627,7 +627,6 @@
         "ggplot2",
         "ggplotify",
         "jsonlite",
-        "magick",
         "scales",
         "tibble"
       ]
@@ -1018,18 +1017,6 @@
       "Requirements": [
         "cpp11",
         "generics"
-      ]
-    },
-    "magick": {
-      "Package": "magick",
-      "Version": "2.7.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "56fbad418aa50939ed8c3028126af8d7",
-      "Requirements": [
-        "Rcpp",
-        "curl",
-        "magrittr"
       ]
     },
     "magrittr": {
