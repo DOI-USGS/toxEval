@@ -1,6 +1,7 @@
 image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/shiny-verse:latest
 
 stages:
+  - getready
   - check
   - test
   - end
@@ -28,7 +29,7 @@ cache:
     - $R_LIBS_USER
     
 getready:
-  stage: .pre
+  stage: getready
   script:
     - mkdir -p $R_LIBS_USER
     - mkdir -p $APT_CACHE
