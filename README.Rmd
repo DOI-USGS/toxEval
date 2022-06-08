@@ -15,8 +15,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-"
 )
 ```
-
-# toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
+# toxEval <img src="man/figures/toxEval.png" alt="toxEval" class="logo" style="width:90px;height:auto;" align="right" />
 
 [![R build status](https://github.com/USGS-R/toxEval/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/toxEval/actions)
 [![Coverage Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=main)](https://coveralls.io/github/USGS-R/toxEval?branch=main)

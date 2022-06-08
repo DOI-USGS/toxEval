@@ -8,3 +8,6 @@ Meta
 updateV3.R
 get_data_ready.R
 sampleData.xlsx
+vignettes/*.R
+vignettes/*.html
+docs/*

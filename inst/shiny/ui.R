@@ -95,7 +95,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/Introduction.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html", 
                             target="_blank",
                             "Introduction"
                           )),
@@ -107,7 +107,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/basicWorkflow.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html", 
                             target="_blank",
                             "Workflow"
                           )),
@@ -117,7 +117,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/PrepareData.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html", 
                             target="_blank",
                             "Prepare Data"
                           )),
@@ -127,7 +127,7 @@ header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
                             font-size: 16px;
                             font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
                             margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "http://usgs-r.github.io/toxEval/articles/shinyApp.html", 
+                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html", 
                             target="_blank",
                             "Using the Shiny App"
                           )),
@@ -199,7 +199,6 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   h3(textOutput("siteText")),
-  # leafletOutput("mymap"),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
              value="map",
@@ -208,7 +207,7 @@ body <- dashboardBody(
              h4("R Code:"),
              shinyAce::aceEditor(outputId = "mapCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
-    tabPanel(title = tagList("Box Plots", shiny::icon("bar-chart")),
+    tabPanel(title = tagList("Box Plots", shiny::icon("chart-bar")),
              value="summary",
              fluidRow(
                column(3, checkboxInput("plot_thres_box", "Consider Threshold?", FALSE)),
@@ -222,7 +221,7 @@ body <- dashboardBody(
              h4("R Code:"),
              shinyAce::aceEditor(outputId = "boxCode_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
-    tabPanel(title = tagList("Bar Charts", shiny::icon("bar-chart")),
+    tabPanel(title = tagList("Bar Charts", shiny::icon("chart-bar")),
              value="summaryBar",
              plotOutput("stackBarGroup", width = "100%", height = "750px"),
              fluidRow(
@@ -265,7 +264,7 @@ body <- dashboardBody(
              h4("R Code:"),
              shinyAce::aceEditor(outputId = "hitsTable_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
-    tabPanel(title = tagList("Endpoint", shiny::icon("bar-chart")),
+    tabPanel(title = tagList("Endpoint", shiny::icon("chart-bar")),
              value="endpoint",
              fluidRow(
                column(3,selectInput("epGroup", label = "Choose Chemical",
@@ -283,7 +282,7 @@ body <- dashboardBody(
             h4("R Code:"),
             shinyAce::aceEditor(outputId = "epGraph_out", value = init_text, mode = "r", theme = "chrome", readOnly = TRUE)
     ),
-    tabPanel(title = tagList("Heat Map", shiny::icon("bar-chart")),
+    tabPanel(title = tagList("Heat Map", shiny::icon("chart-bar")),
                    value="heat",
              checkboxInput("plot_ND_heat", "Plot non-detects's?", TRUE),
              uiOutput("graphHeat.ui"),
