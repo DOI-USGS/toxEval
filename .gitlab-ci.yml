@@ -1,4 +1,4 @@
-image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/shiny-verse:latest
+image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/geospatial:latest
 
 stages:
   - getready
