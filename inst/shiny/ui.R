@@ -77,69 +77,6 @@ library(toxEval)
 path_to_file <- 'Choose File'"
 
 names(shortFlags) <- flagsALL
-header <- dashboardHeader(title = paste("toxEval",packageVersion("toxEval")),
-                          tags$li(class = "dropdown", 
-                                  div(style="text-align:left;
-                                      font-size: 15px;
-                                      height: 50px;
-                                      font-weight: 300;
-                                      margin-right:25px;
-                                      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-                                      line-height: 50px;
-                                      color: #fff;",
-                                      textOutput("title_text", inline = TRUE))),
-                          tags$li(class = "dropdown", tags$a(
-                            type = "button",
-                            style="color: #fff; 
-                            font-weight: 300;
-                            font-size: 16px;
-                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-                            margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html", 
-                            target="_blank",
-                            "Introduction"
-                          )),
-                          tags$li(class = "dropdown", tags$a(
-                            type = "button",
-                            # class = "btn action-button",
-                            style="color: #fff; 
-                            font-weight: 300;
-                            font-size: 16px;
-                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-                            margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html", 
-                            target="_blank",
-                            "Workflow"
-                          )),
-                          tags$li(class = "dropdown", tags$a(
-                            style="color: #fff; 
-                            font-weight: 300;
-                            font-size: 16px;
-                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-                            margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html", 
-                            target="_blank",
-                            "Prepare Data"
-                          )),
-                          tags$li(class = "dropdown", tags$a(
-                            style="color: #fff; 
-                            font-weight: 300;
-                            font-size: 16px;
-                            font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-                            margin-right:13px;margin-top:7px;margin-bottom:7px",
-                            href = "https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html", 
-                            target="_blank",
-                            "Using the Shiny App"
-                          )),
-                          tags$li(class = "dropdown", tags$button(
-                            id = 'close',
-                            type = "button",
-                            class = "btn action-button",
-                            style='color: #000000; 
-                            margin-right:13px;margin-top:7px;margin-bottom:7px',
-                            onclick = "setTimeout(function(){window.close();},500);",  # close browser
-                            "Stop ToxEval"
-                          )))
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -192,12 +129,14 @@ sidebar <- dashboardSidebar(
             numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),
             actionButton("changeHit", label="Change Hit Threshold")
    ),
-   menuItem("Source code", icon = icon("file-code-o"), 
+   menuItem("Source code", icon = icon("fa-file-code-o"), 
             href = "https://github.com/USGS-R/toxEval/tree/main/inst/shiny")
   )
 )
 
 body <- dashboardBody(
+  includeCSS("www/custom.css"),
+  h4(textOutput("title_text", inline = TRUE)),
   h3(textOutput("siteText")),
   tabBox(width = 12, id="mainOut",
     tabPanel(title = tagList("Map", shiny::icon("map-marker")),
@@ -307,8 +246,75 @@ body <- dashboardBody(
               This software is provided 'AS IS.'"))
 
   )
-  
 )
 
-dashboardPage(header, sidebar, body)
-
+ui <- tagList(
+  tags$header(class = "navbar",
+              tags$a(href = 'https://www.usgs.gov/', type = "button",
+                        img(src = 'logo.png', target="_blank",
+                            title = "USGS", height = "60px"),
+                     style = "float: left; 
+                              padding: 10px 50px 10px 50px;"),
+              tags$a(
+                type = "button",
+                style="color: #fff; 
+                      font-weight: 300;
+                      font-size: 16px;
+                      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                      float: left; 
+                      padding: 30px 30px 30px 10px;",
+                href = "https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html", 
+                target="_blank",
+                "Introduction"
+              ),
+              tags$a(
+                type = "button",
+                # class = "btn action-button",
+                style="color: #fff;
+                      font-weight: 300;
+                      font-size: 16px;
+                      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                      float: left; 
+                      padding: 30px 30px 20px 10px;",
+                href = "https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html",
+                target="_blank",
+                "Workflow"
+              ),
+              tags$a(
+                style="color: #fff;
+                      font-weight: 300;
+                      font-size: 16px;
+                      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                      float: left; 
+                      padding: 30px 30px 20px 10px;",
+                href = "https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html",
+                target="_blank",
+                "Prepare Data"
+              ),
+              tags$a(
+                style="color: #fff;
+                      font-weight: 300;
+                      font-size: 16px;
+                      vertical-align: middle;
+                      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+                      float: left; 
+                      padding: 30px 30px 20px 10px;",
+                href = "https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html",
+                target="_blank",
+                "Using the Shiny App"
+              ),
+              tags$button(
+                id = 'close',
+                type = "button",
+                class = "btn action-button",
+                style='color: #000000;
+                       float: right;
+                       margin-right:13px;margin-top:20px;margin-bottom:7px',
+                onclick = "setTimeout(function(){window.close();},500);",  # close browser
+                "Stop ToxEval"
+              )),
+  dashboardPage(header = dashboardHeader(disable = TRUE),
+                sidebar = sidebar,
+                body = body),
+  tags$footer(htmltools::includeHTML("www/footer.html") )
+)
