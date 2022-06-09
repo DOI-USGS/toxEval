@@ -13,5 +13,5 @@ rsconnect::writeManifest(appDir = "./inst/shiny")
 bundle <- bundle_dir("./inst/shiny")
 
 content <- client %>% 
-  deploy(bundle, name = "toxEval") %>% 
+  deploy(bundle, name = "toxEval_docs") %>% 
   poll_task()
