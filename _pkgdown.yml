@@ -17,7 +17,6 @@ template:
     text-muted: "white"
     pkgdown-nav-height: 125px
 navbar:
-  type: default
   left:
   - text: Background
     href: articles/Introduction.html
