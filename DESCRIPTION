@@ -61,4 +61,4 @@ VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
 LazyData: yes
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
