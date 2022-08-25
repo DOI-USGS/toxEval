@@ -2,14 +2,14 @@
 .onAttach <- function(libname, pkgname) {
 
   packageStartupMessage(
-    paste(strwrap(paste('USGS Research Package:
-https://owi.usgs.gov/R/packages.html#research
+    paste(strwrap(paste('For more information:
+https://rconnect.usgs.gov/toxEval_docs/
 ToxCast database: version', dbVersion()), width = 40),
       collapse='\n'))
 }
 
 dbVersion <- function(){
-  "3.2"
+  "3.5"
 }
 
 #' Analyze ToxCast data in relation to measured concentrations.
@@ -69,60 +69,19 @@ NULL
 #'@examples
 #'head(ToxCast_ACC)
 NULL
-
-# If we need to update the ACC data frame, here is
-# is a function that *should* do it, assuming
-# the format is the same. I might not count on that
-# however....that is why it is an internal only function.
-# This is staying commented out because it adds 
-# extraneous notes:
-# path_to_files <- "../toxCast_Data/INVITRODB_V3_2_LEVEL5"
-# update_ACC <- function(path_to_files){
-#   # Data originally from:
-#   # ftp://newftp.epa.gov/Computational_Toxicology_Data/High_Throughput_Screening_Data/InVitroDB_V3.1/ToxCast_Data_March_2019/INVITRODB_V3_1_LEVEL5.zip
-#   
-# files <- list.files(path = path_to_files)
 # 
-# x <- data.table::fread(file.path(path_to_files, files[1]), data.table = FALSE)
+# ToxCast_ACC <- readRDS("ACC_v3_5.rds")
+# end_point_info <- readRDS("endpoint_info_v_35.rds")
+# end_point_info$intended_target_family_sub[1968] <- "receptor tyrosine phosphatase"
 # 
-# filtered <- select(x, chnm, casn, aenm, logc_min, logc_max, modl_acc,
-#                           modl, actp, modl_ga, flags, hitc,gsid_rep)
-# filtered <- filter(x, hitc == 1)
+# tox_chemicals <- readRDS("chemicals3_5.rds")
 # 
-# for(i in files[-1]){
-#   subX <- data.table::fread(file.path(path_to_files,i), data.table = FALSE)
-#   
-#   subFiltered <- select(subX, chnm, casn, aenm, logc_min, logc_max, modl_acc,
-#                                modl, actp, modl_ga, flags, hitc,gsid_rep)
-#   subFiltered <- filter(subFiltered, hitc == 1)
-#   
-#   filtered <- bind_rows(filtered, subFiltered)
-# }
+# tox_chemicals <- tox_chemicals |>
+#   arrange(Structure_MolWt) |>
+#   filter(!duplicated(Substance_CASRN))
 # 
-# ACCgain <- filter(filtered, hitc == 1)
-# ACCgain <- filter(ACCgain, gsid_rep == 1)
-# ACCgain <- select(ACCgain, casn, chnm, aenm, modl_acc, flags)
-# ACCgain <- tidyr::spread(ACCgain, key = aenm, value = modl_acc)
-# 
-# ACC <- ACCgain
-# ACC <- tidyr::gather(ACC, endPoint, ACC, -casn, -chnm, -flags)
-# ACC <- filter(ACC, !is.na(ACC))
-# ACC <- rename(ACC, CAS = casn)
-# ACC <- select(ACC, -chnm)
-# 
-# saveRDS(ACC, "ACC_v3.rds")
-# ToxCast_ACCv3 <- readRDS("ACC_v3.rds")
-# end_point_info_v3 <- data.table::fread("D:/LADData/toxCast_Data/INVITRODB_V3_1_SUMMARY/Assay_Summary_190226.csv", data.table = FALSE)
-#   
-#   # Something we considered but decided not to do was:
-#   
-#   # ACCgain2 <- filter(filtered, hitc == 1) %>%
-#   #   filter(gsid_rep == 1) %>%
-#   #   select(casn, chnm, aenm, modl_acc, flags, logc_min) %>%
-#   #   mutate(newFlag = modl_acc < logc_min) %>%
-#   #   mutate(value = ifelse(newFlag, log10((10^modl_acc)/10), modl_acc)) 
-#   
-# }
+# save(ToxCast_ACC, end_point_info, tox_chemicals,
+#      file = "R/sysdata.rda", compress = "xz")
 
 #' Endpoint information from ToxCast
 #' 

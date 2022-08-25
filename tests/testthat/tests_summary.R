@@ -149,14 +149,14 @@ test_that("Table functions", {
                     "DNA Binding freq","Nuclear Receptor maxEAR",
                     "Nuclear Receptor freq","Esterase maxEAR",
                     "Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
-  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),0.0262)
+  expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),0.0278)
   expect_equal(round(statStuff[["DNA Binding freq"]][which(statStuff[["site"]] == "Raisin")],4),0)
   
   groupStuff <- hits_summary(chemical_summary, "Biological", hit_threshold = 1)
   expect_true(all(unique(groupStuff$site) %in% chem_site$`Short Name`))
   expect_true(all(c("site","category","Samples with hits","Number of Samples") %in% names(groupStuff)))
   expect_equal(groupStuff[["Samples with hits"]][which(groupStuff[["site"]] == "Raisin" &
-                                                           groupStuff[["category"]] == "Nuclear Receptor")],14)
+                                                           groupStuff[["category"]] == "Nuclear Receptor")],27)
   expect_equal(groupStuff[["Number of Samples"]][which(groupStuff[["site"]] == "Raisin" &
                                                        groupStuff[["category"]] == "DNA Binding")],44)
   
@@ -167,12 +167,12 @@ test_that("Chem plotting functions", {
   
   graphData <- graph_chem_data(chemical_summary)
   expect_true(all(names(graphData) %in% c("site","chnm","Class","meanEAR")))
-  expect_equal(levels(graphData$Class)[1], "Detergent Metabolites")
+  expect_equal(levels(graphData$Class)[1], "Herbicides")
   expect_equal(levels(graphData$Class)[length(levels(graphData$Class))], "Fuels")
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
-                                       graphData[["chnm"]] == "Naphthalene"],4), 5.729e-05)
+                                       graphData[["chnm"]] == "Naphthalene"],4), 0.002537)
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
-                                              graphData[["chnm"]] == "4-Nonylphenol, branched"],4),0.8635)
+                                              graphData[["chnm"]] == "Cumene"],4),6.665e-06)
   
   
 })
@@ -186,7 +186,7 @@ test_that("Map stuff functions", {
   expect_type(mapDataList, "list")
   expect_equal(length(mapDataList), 2)
   map_df <- mapDataList[["mapData"]]
-  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4), 1.111)
+  expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4), 2.207)
   expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],31)
   expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],7.2)
   
@@ -202,12 +202,12 @@ test_that("Table endpoint hits", {
 
   bt <- endpoint_hits_DT(chemical_summary, category = "Biological")
   expect_type(bt, "list")
-  expect_true(all(names(bt$x$data) %in% c("endPoint","Nuclear Receptor","DNA Binding",
+  expect_true(all(names(bt$x$data) %in% c("endPoint","Nuclear Receptor","CYP",
                                           "Cell Cycle","Steroid Hormone","Esterase")))
   expect_true(all(class(bt) %in% c("datatables","htmlwidget")))
   
   bt_df <- endpoint_hits(chemical_summary, category = "Biological")
-  expect_true(all(names(bt_df) %in% c("endPoint","Nuclear Receptor","DNA Binding",     
+  expect_true(all(names(bt_df) %in% c("endPoint","Nuclear Receptor","CYP",     
                                       "Cell Cycle", "Esterase", "Steroid Hormone")))
   expect_equal(bt_df[["Nuclear Receptor"]][bt_df[["endPoint"]] == "OT_ERa_EREGFP_0120"],10)
   expect_true(is.na(bt_df[["Esterase"]][bt_df[["endPoint"]] == "OT_ERa_EREGFP_0120"]))
@@ -225,7 +225,7 @@ test_that("Table endpoint hits", {
   expect_type(cht, "list")
   
   expect_true(all(names(cht$x$data) %in% c("endPoint","Bisphenol A","Metolachlor",
-                                           "4-Nonylphenol, branched","Triphenyl phosphate",
+                                           "4-Nonylphenol, branched","Pyrene",
                                            "Phenanthrene","Atrazine")))
 })
 
@@ -239,9 +239,9 @@ test_that("hits_by_groupings_DT", {
   
   bt_df <- hits_by_groupings(chemical_summary, category = "Chemical Class")
   expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Cell Cycle", "Esterase",        
-                                      "Steroid Hormone","Zebrafish", "CYP")))
+                                      "Steroid Hormone","Channel 2", "CYP", "Transporter")))
   expect_true(all(c("Detergent Metabolites","Antioxidants","Herbicides") %in% rownames(bt_df)))
-  expect_equal(bt_df[["Nuclear Receptor"]], c(10, 7, 12, rep(0,10), NA))
+  expect_equal(bt_df[["Nuclear Receptor"]], c(8, 10, 16, 2, rep(0,10)))
   
   expect_error(hits_by_groupings_DT(chemical_summary, category = "Class"))
   
@@ -250,14 +250,14 @@ test_that("hits_by_groupings_DT", {
   expect_true(all(class(ct) %in% c("datatables","htmlwidget")))
   expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding","Cell Cycle",
                                           "Esterase", "CYP", "Steroid Hormone",
-                                          "Zebrafish")))
+                                          "Transporter", "Channel 2")))
   
   cht <- hits_by_groupings_DT(chemical_summary, category = "Chemical")
   expect_type(cht, "list")
   
   expect_true(all(names(cht$x$data) %in% c(" ","Nuclear Receptor","DNA Binding", "Cell Cycle",
                                            "CYP", "Esterase","Steroid Hormone",
-                                           "Zebrafish")))
+                                           "Channel 2", "Transporter")))
 })
 
 
@@ -316,7 +316,7 @@ test_that("Calculating completness", {
   graphData2 <- tox_boxplot_data(chemical_summary, "Biological")
   complete_df_cat <- toxEval:::get_complete_set_category(chemical_summary, graphData2, tox_list$chem_site, category = "Biological")
   
-  expect_equal(nrow(complete_df_cat), 1083)
+  expect_equal(nrow(complete_df_cat), 2394)
   
 })
 
@@ -351,69 +351,24 @@ test_that("Testing levels", {
   expect_equal(levels(gd$chnm), chem_levels)
   expect_equal(levels(gd$Class), class_levels)
   
-  expect_equal(chem_levels, c("Cumene",                         
+  expect_equal(chem_levels[1:5], c("Cumene",                         
                               "1-Methylnaphthalene",            
                               "Anthraquinone",                
                               "Tetrachloroethylene",             
-                              "Isophorone",              
-                              "Isoquinoline",             
-                              "7-Acetyl-1,1,3,4,4,6-hexamethyltetraline",
-                              "D-Limonene",
-                              "Indole",               
-                              "Benzophenone",
-                              "1,4-Dichlorobenzene",                     
-                              "Bromoform",                               
-                              "Methyl salicylate", 
-                              "Naphthalene", 
-                              "Phenanthrene",  
-                              "Anthracene",             
-                              "Pyrene",                                  
-                              "Fluoranthene",                            
-                              "Benzo(a)pyrene",                             
-                              "Tributyl phosphate",                      
-                              "Tris(2-butoxyethyl) phosphate",           
-                              "Tris(1,3-dichloro-2-propyl) phosphate",   
-                              "Cotinine",                                
-                              "dl-Menthol",                              
-                              "Caffeine", 
-                              "DEET",
-                              "Carbazole",
-                              "Carbaryl",
-                              "Dichlorvos",
-                              "Tris(2-chloroethyl) phosphate",           
-                              "Triphenyl phosphate",                     
-                              "Diethyl phthalate",                       
-                              "p-Cresol",                                
-                              "Triclosan",                               
-                              "5-Methyl-1H-benzotriazole",               
-                              "2-tert-Butyl-4-methoxyphenol",            
-                              "Bisphenol A",                             
-                              "3,4-Dichlorophenyl isocyanate",           
-                              "Prometon",                                
-                              "Bromacil",                                
-                              "Metalaxyl",                               
-                              "Metolachlor",                            
-                              "Atrazine",                                
-                              "Pentachlorophenol",                       
-                              "4-Octylphenol",                           
-                              "4-Cumylphenol",                           
-                              "4-(1,1,3,3-Tetramethylbutyl)phenol",      
-                              "4-Nonylphenol, branched"))
-  expect_equal(class_levels, c("Detergent Metabolites", "Herbicides","Antioxidants", 
-                               "Antimicrobial Disinfectants", "Plasticizers",  
-                               "Insecticides",
-                               "Nonprescription drugs", "Fire Retardants",            
-                                "PAHs",                       
-                               "Miscellaneous", 
-                               "Flavors and Fragrances","Solvents",                   
-                               "Dyes/Pigments", "Fuels"))
+                              "Isophorone"))
+  expect_equal(class_levels[1:5], c("Herbicides", "Detergent Metabolites",      
+                                    "Antioxidants", "PAHs",       
+                                    "Antimicrobial Disinfectants"))
   
   plot_eps <- plot_tox_endpoints(chemical_summary, 
                                  "Chemical", top_num = 5)
   
   expect_equal(tail(levels(plot_eps$data$endPoint),5),
-               c("ATG_NF_kB_CIS_up","ATG_TGFb_CIS_up","ATG_Sox_CIS_up",  
-                 "NVS_NR_hPPARa","NVS_NR_hER"))
+               c("LTEA_HepaRG_GCLC_dn",                   
+                 "LTEA_HepaRG_NFE2L2_dn",                 
+                 "LTEA_HepaRG_GSTA2_dn", 
+                 "TOX21_PPARg_BLA_Antagonist_ch2",
+                 "TOX21_RT_HEPG2_FLO_00hr_ctrl_viability"))
   
   plot_stack <- plot_tox_stacks(chemical_summary,category = "Chemical",
                                 chem_site = tox_list$chem_site,
@@ -421,18 +376,15 @@ test_that("Testing levels", {
   
   expect_equal(levels(plot_stack$data$category),
                c("Bisphenol A", "4-Nonylphenol, branched",             
-                 "Atrazine", "Metolachlor",            
-                 "Pentachlorophenol", "Others (43)" ))
+                 "Phenanthrene" , "Atrazine",             
+                 "Pentachlorophenol", "Others (44)" ))
   
   plot_heat <- plot_tox_heatmap(chemical_summary,category = "Chemical",
                                 chem_site = tox_list$chem_site)
   
   expect_equal(tail(levels(plot_heat$data$chnm), 5),
-               c("Pentachlorophenol",                 
-                 "4-Octylphenol",                     
-                 "4-Cumylphenol",                     
-                 "4-(1,1,3,3-Tetramethylbutyl)phenol",
-                 "4-Nonylphenol, branched"))
+               c("Bromacil", "Metolachlor", "Atrazine",         
+                 "Prometon", "Pentachlorophenol"))
   
   
   

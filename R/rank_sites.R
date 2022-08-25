@@ -130,7 +130,7 @@ rank_sites <- function(chemical_summary,
                        mean_logic = FALSE,
                        sum_logic = TRUE){
   
-  sumEAR <- nHits <- n <- calc <- value <- choice_calc <- ".dplyr"
+  sumEAR <- nHits <- n <- calc <- value <- choice_calc <- name <- ".dplyr"
   chnm <- Class <- Bio_category <- site <- EAR <- maxEAR <- ".dplyr"
 
   siteToFind <- unique(chemical_summary$shortName)
@@ -143,7 +143,7 @@ rank_sites <- function(chemical_summary,
     chemical_summary <- mutate(chemical_summary, category = Bio_category)
   }
   
-  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
+  chemical_summary <- dplyr::select(chemical_summary, -Class, -Bio_category, -chnm)
   
   if(length(siteToFind) == 1){
     chemical_summary$site <- chemical_summary$category
@@ -172,42 +172,48 @@ rank_sites <- function(chemical_summary,
   }
 
   if(!(length(siteToFind) == 1)){
+
     statsOfColumn <- statsOfColumn %>%
-      tidyr::gather(calc, value, -site, -category) %>%
+      tidyr::pivot_longer(cols = c(-site, -category),
+                          names_to = "calc",
+                          values_to = "value") %>%
       tidyr::unite(choice_calc, category, calc, sep=" ") %>%
-      tidyr::spread(choice_calc, value)        
+      tidyr::pivot_wider(names_from = choice_calc, 
+                         values_from = value)
+    
+    maxEARS_names <- statsOfColumn %>%
+      tidyr::pivot_longer(-site) %>%
+      dplyr::filter(grepl("maxEAR",name)) %>%
+      dplyr::group_by(name) %>%
+      dplyr::summarise(maxEAR = max(value, na.rm = TRUE)) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(dplyr::desc(maxEAR)) %>%
+      dplyr::pull(name)
+    
+  } else {
+    
+    maxEARS_names <- "maxEAR"
   }
-  colToSort <- 2
-  if("nSamples" %in% names(statsOfColumn)){
-    colToSort <- 3
-  }
-  
-  freqCol <- grep("freq",names(statsOfColumn))
-  maxEARS <- grep("maxEAR",names(statsOfColumn))
-  
+
   ignoreIndex <- which(names(statsOfColumn) %in% c("site","nSamples"))
+
+  maxEARS <- match(maxEARS_names, names(statsOfColumn))
   
-  statsOfColumn <- statsOfColumn[,c(ignoreIndex,c(maxEARS,freqCol)[order(c(maxEARS,freqCol))])]
-  
-  maxEARS <- grep("maxEAR",names(statsOfColumn))
-  
-  MaxEARSordered <- order(apply(statsOfColumn[,maxEARS, drop = FALSE], 2, max),decreasing = TRUE)
-  
+  MaxEARSordered <- c(ignoreIndex, interl(maxEARS, (maxEARS)+1))
+
   if(length(maxEARS) != 1){
-    statsOfColumn <- statsOfColumn[,c(ignoreIndex,interl(maxEARS[MaxEARSordered],(maxEARS[MaxEARSordered]-1)))]
+    statsOfColumn <- statsOfColumn[,MaxEARSordered]
   }
   
-  freqCol <- grep("freq",names(statsOfColumn))
-  maxEARS <- grep("maxEAR",names(statsOfColumn))
   
   if(isTRUE(mean_logic)){
     names(statsOfColumn)[maxEARS] <- gsub("max","mean",names(statsOfColumn)[maxEARS])
   } 
   
-  statsOfColumn <- statsOfColumn[order(statsOfColumn[[colToSort]], decreasing = TRUE),]
+  statsOfColumn <- statsOfColumn[order(statsOfColumn[[maxEARS_names[1]]], decreasing = TRUE),]
   
   if(length(siteToFind) == 1){
-    names(statsOfColumn)[which(names(statsOfColumn) == "site")] <- "category"
+    statsOfColumn <- statsOfColumn[, names(statsOfColumn)[names(statsOfColumn) != "site"]]
   }
   return(statsOfColumn)
 }

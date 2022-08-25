@@ -58,19 +58,23 @@ test_that("Cleaning up endpoints", {
   expect_equal(names(cleaned_ep), names(end_point_info))
   expect_lt(nrow(cleaned_ep), nrow(end_point_info))
   
-  cleanedNames <- c("Cell Cycle","Nuclear Receptor",
-                    "Cell Morphology","DNA Binding",
-                    "Background Measurement","Growth Factor",
-                    "Cell Adhesion Molecules","Cytokine",
-                    "GPCR","Kinase",
-                    "Protease","Misc Protein",
-                    "Protease Inhibitor","CYP",
-                    "Esterase","Phosphatase",
-                    "Hydrolase","Oxidoreductase",
-                    "Lyase","Methyltransferase",
-                    "Ion Channel","Transporter",
-                    "Steroid Hormone","Transferase",
-                    "Zebrafish","Undefined")
+  cleanedNames <- c("Nuclear Receptor", "Cell Cycle", "Cell Morphology",        
+                    "DNA Binding", "Background Measurement", "Growth Factor",        
+                    "Cell Adhesion Molecules", "Cytokine", "GPCR",                   
+                    "Kinase", "Protease", "Misc Protein",
+                    "Protease Inhibitor", "CYP", "Esterase",               
+                    "Phosphatase", "Hydrolase", "Oxidoreductase",
+                    "Lyase", "Methyltransferase", "Ion Channel",
+                    "Transporter", "Channel 1", "Channel 2",              
+                    "Steroid Hormone", "Oxidase", "Apolipoprotein",         
+                    "Catalase", "Membrane Protein", "Cytokine Receptor",
+                    "Mutagenicity Response", "Ligase", "Transferase",
+                    "Filaments", "Microrna", "Zebrafish",
+                    "Malformation", "Metabolite", "Immunoglobulin",
+                    "Neurodevelopment", "Enzyme", "Deiodinase",
+                    "Apoptosis", "Growth Factor Receptor", "Mitochondria",
+                    "Stress Response", "Epigenetic Enzyme", "Cardiomyocyte Function", 
+                    "Dehalogenase", "Transcription Factor", "Neuroactivity"  )
 
     expect_true(all(cleanedNames %in% cleaned_ep$intended_target_family))
     expect_false(all(cleanedNames %in% end_point_info$intended_target_family))
