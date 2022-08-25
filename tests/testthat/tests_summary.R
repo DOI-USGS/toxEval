@@ -149,7 +149,9 @@ test_that("Table functions", {
                     "DNA Binding freq","Nuclear Receptor maxEAR",
                     "Nuclear Receptor freq","Esterase maxEAR",
                     "Cell Cycle freq", "Cell Cycle maxEAR") %in% names(statStuff)))
+
   expect_equal(round(statStuff[["DNA Binding maxEAR"]][which(statStuff[["site"]] == "Raisin")],4),0.0278)
+
   expect_equal(round(statStuff[["DNA Binding freq"]][which(statStuff[["site"]] == "Raisin")],4),0)
   
   groupStuff <- hits_summary(chemical_summary, "Biological", hit_threshold = 1)
@@ -157,6 +159,7 @@ test_that("Table functions", {
   expect_true(all(c("site","category","Samples with hits","Number of Samples") %in% names(groupStuff)))
   expect_equal(groupStuff[["Samples with hits"]][which(groupStuff[["site"]] == "Raisin" &
                                                            groupStuff[["category"]] == "Nuclear Receptor")],27)
+
   expect_equal(groupStuff[["Number of Samples"]][which(groupStuff[["site"]] == "Raisin" &
                                                        groupStuff[["category"]] == "DNA Binding")],44)
   
@@ -173,8 +176,7 @@ test_that("Chem plotting functions", {
                                        graphData[["chnm"]] == "Naphthalene"],4), 0.002537)
   expect_equal(signif(graphData[["meanEAR"]][graphData[["site"]] == "USGS-04024000" &
                                               graphData[["chnm"]] == "Cumene"],4),6.665e-06)
-  
-  
+
 })
 
 test_that("Map stuff functions", {
@@ -187,6 +189,7 @@ test_that("Map stuff functions", {
   expect_equal(length(mapDataList), 2)
   map_df <- mapDataList[["mapData"]]
   expect_equal(signif(map_df[["meanMax"]][map_df[["Short Name"]] == "StLouis"],4), 2.207)
+
   expect_equal(map_df[["count"]][map_df[["Short Name"]] == "StLouis"],31)
   expect_equal(map_df[["sizes"]][map_df[["Short Name"]] == "StLouis"],7.2)
   
@@ -240,6 +243,7 @@ test_that("hits_by_groupings_DT", {
   bt_df <- hits_by_groupings(chemical_summary, category = "Chemical Class")
   expect_true(all(names(bt_df) %in% c("Nuclear Receptor","DNA Binding","Cell Cycle", "Esterase",        
                                       "Steroid Hormone","Channel 2", "CYP", "Transporter")))
+
   expect_true(all(c("Detergent Metabolites","Antioxidants","Herbicides") %in% rownames(bt_df)))
   expect_equal(bt_df[["Nuclear Receptor"]], c(8, 10, 16, 2, rep(0,10)))
   
@@ -251,6 +255,7 @@ test_that("hits_by_groupings_DT", {
   expect_true(all(names(ct$x$data) %in% c(" ","Nuclear Receptor","DNA Binding","Cell Cycle",
                                           "Esterase", "CYP", "Steroid Hormone",
                                           "Transporter", "Channel 2")))
+
   
   cht <- hits_by_groupings_DT(chemical_summary, category = "Chemical")
   expect_type(cht, "list")
@@ -258,6 +263,7 @@ test_that("hits_by_groupings_DT", {
   expect_true(all(names(cht$x$data) %in% c(" ","Nuclear Receptor","DNA Binding", "Cell Cycle",
                                            "CYP", "Esterase","Steroid Hormone",
                                            "Channel 2", "Transporter")))
+
 })
 
 
@@ -317,7 +323,7 @@ test_that("Calculating completness", {
   complete_df_cat <- toxEval:::get_complete_set_category(chemical_summary, graphData2, tox_list$chem_site, category = "Biological")
   
   expect_equal(nrow(complete_df_cat), 2394)
-  
+
 })
 
 test_that("Calculating concentrations", {
@@ -351,6 +357,7 @@ test_that("Testing levels", {
   expect_equal(levels(gd$chnm), chem_levels)
   expect_equal(levels(gd$Class), class_levels)
   
+
   expect_equal(chem_levels[1:5], c("Cumene",                         
                               "1-Methylnaphthalene",            
                               "Anthraquinone",                
@@ -359,7 +366,7 @@ test_that("Testing levels", {
   expect_equal(class_levels[1:5], c("Herbicides", "Detergent Metabolites",      
                                     "Antioxidants", "PAHs",       
                                     "Antimicrobial Disinfectants"))
-  
+
   plot_eps <- plot_tox_endpoints(chemical_summary, 
                                  "Chemical", top_num = 5)
   
@@ -369,7 +376,7 @@ test_that("Testing levels", {
                  "LTEA_HepaRG_GSTA2_dn", 
                  "TOX21_PPARg_BLA_Antagonist_ch2",
                  "TOX21_RT_HEPG2_FLO_00hr_ctrl_viability"))
-  
+
   plot_stack <- plot_tox_stacks(chemical_summary,category = "Chemical",
                                 chem_site = tox_list$chem_site,
                                  top_num = 5)

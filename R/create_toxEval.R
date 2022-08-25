@@ -42,7 +42,6 @@
 #' selected ToxCast endpoint database in this sheet. Additional columns may be included for user 
 #' purposes, but will not be used in toxEval. 
 #' 
-#' 
 #' For more information, see the "Prepare Data" vignette: \href{../doc/PrepareData.html}{\code{vignette("PrepareData", package = "toxEval")}}.
 #' 
 #' All remaining toxEval functions use data from via the list that is returned 
@@ -64,6 +63,7 @@
 #' 
 #' @export
 #' @examples 
+#' 
 #' path_to_tox <-  system.file("extdata", package="toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
 #' excel_file_path <- file.path(path_to_tox, file_name)
@@ -75,7 +75,9 @@ create_toxEval <- function(excel_file_path, ...){
   } 
   
   if("Chemicals" %in% readxl::excel_sheets(excel_file_path)){
-    chem_info <- readxl::read_excel(excel_file_path, sheet = "Chemicals")
+    chem_info <- readxl::read_excel(excel_file_path, 
+                                    sheet = "Chemicals", 
+                                    guess_max = 10000)
     
     names(chem_info) <- names(chem_info) %>%
       allowed_names(c("casrn", "casn","CASRN","CASN"),"CAS")
@@ -88,7 +90,8 @@ create_toxEval <- function(excel_file_path, ...){
   }
   
   if("Data" %in% readxl::excel_sheets(excel_file_path)){
-    chem_data <- readxl::read_excel(excel_file_path, sheet = "Data")
+    chem_data <- readxl::read_excel(excel_file_path, sheet = "Data", 
+                                    guess_max = 100000)
     
     names(chem_data) <- names(chem_data) %>%
       allowed_names(c("site","Site","Station","station"), "SiteID") %>%
@@ -109,7 +112,9 @@ create_toxEval <- function(excel_file_path, ...){
   }
   
   if("Sites" %in% readxl::excel_sheets(excel_file_path)){
-    chem_site <- readxl::read_excel(excel_file_path, sheet = "Sites")
+    chem_site <- readxl::read_excel(excel_file_path,
+                                    sheet = "Sites", 
+                                    guess_max = 5000)
     
     names(chem_site) <- names(chem_site) %>%
       allowed_names(c("site","Site","Station","station"),"SiteID") %>%
@@ -125,13 +130,17 @@ create_toxEval <- function(excel_file_path, ...){
   }
   
   if("Exclude" %in% readxl::excel_sheets(excel_file_path)){
-    exclusions <- readxl::read_excel(excel_file_path, sheet = "Exclude")
+    exclusions <- readxl::read_excel(excel_file_path, 
+                                     sheet = "Exclude", 
+                                     guess_max = 1000)
   } else {
     exclusions <- NULL
   }
   
   if("Benchmarks" %in% readxl::excel_sheets(excel_file_path)){
-    benchmarks <- readxl::read_excel(excel_file_path, sheet = "Benchmarks")
+    benchmarks <- readxl::read_excel(excel_file_path, 
+                                     sheet = "Benchmarks", 
+                                     guess_max = 10000)
     if(nrow(benchmarks) == 0){
       benchmarks <- NULL
     }
