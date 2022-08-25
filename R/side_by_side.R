@@ -164,7 +164,7 @@ get_concentration_summary <- function(tox_list,
     chem_info <- rm_em_dash(chem_info)
   }
   
-  if(class(chem_data$Value) == "character"){
+  if(is.character(chem_data$Value)){
     chem_data$Value <- as.numeric(chem_data$Value)
   }
   
