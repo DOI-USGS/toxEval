@@ -2,14 +2,14 @@
 .onAttach <- function(libname, pkgname) {
 
   packageStartupMessage(
-    paste(strwrap(paste('USGS Research Package:
-https://owi.usgs.gov/R/packages.html#research
+    paste(strwrap(paste('For more information:
+https://rconnect.usgs.gov/toxEval_docs/
 ToxCast database: version', dbVersion()), width = 40),
       collapse='\n'))
 }
 
 dbVersion <- function(){
-  "3.3"
+  "3.5"
 }
 
 #' Analyze ToxCast data in relation to measured concentrations.
@@ -71,101 +71,20 @@ NULL
 NULL
 
 
-# This is staying commented out because it adds 
-# extraneous notes:
-# path_to_files <- "../toxCast_Data/INVITRODB_V3_3_LEVEL5"
 
-# files <- list.files(path = path_to_files)
 # 
-# x <- data.table::fread(file.path(path_to_files, files[1]), data.table = FALSE)
-# 
-# filtered <- dplyr::select(x, chnm, casn, aenm, logc_min, logc_max, modl_acc,
-#                           modl, actp, modl_ga, flags, hitc,gsid_rep)
-# filtered <- dplyr::filter(x, hitc == 1)
-# 
-# for(i in files[-1]){
-#   subX <- data.table::fread(file.path(path_to_files,i), data.table = FALSE)
-# 
-#   subFiltered <- dplyr::select(subX, chnm, casn, aenm, logc_min, logc_max, modl_acc,
-#                                modl, actp, modl_ga, flags, hitc,gsid_rep)
-#   subFiltered <- dplyr::filter(subFiltered, hitc == 1)
-# 
-#   filtered <- dplyr::bind_rows(filtered, subFiltered)
-# }
-# 
-# ACCgain <- dplyr::filter(filtered, hitc == 1)
-# ACCgain <- dplyr::filter(ACCgain, gsid_rep == 1)
-# ACCgain <- dplyr::select(ACCgain, casn, chnm, aenm, modl_acc, flags)
-# ACCgain <- tidyr::spread(ACCgain, key = aenm, value = modl_acc)
-# 
-# ACC <- ACCgain
-# ACC <- tidyr::gather(ACC, endPoint, ACC, -casn, -chnm, -flags)
+# ToxCast_ACC <- readRDS("ACC_v3_5.rds")
+# end_point_info <- readRDS("endpoint_info_v_35.rds")
+# end_point_info$intended_target_family_sub[1968] <- "receptor tyrosine phosphatase"
 
-# ACC <- filter(ACC, !is.na(ACC))
-# ACC <- rename(ACC, CAS = casn)
-# ACC <- select(ACC, -chnm)
+# tox_chemicals <- readRDS("chemicals3_5.rds")
 # 
-# saveRDS(ACC, "ACC_v3.rds")
-# ToxCast_ACCv3 <- readRDS("ACC_v3.rds")
+# tox_chemicals <- tox_chemicals |>
+#   arrange(Structure_MolWt) |>
+#   filter(!duplicated(Substance_CASRN))
 # 
-# 
-# end_point_info_v3_assay <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx", sheet = "assay")
-# 
-# end_point_info_v3_assay.component <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx",
-#                                                        sheet = "assay.component")
-# end_point_info_v3_assay.component.endpoint <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/assay_annotation_information_invitrodb_v3_3.xlsx",
-#                                                                 sheet = "assay.component.endpoint")
-# 
-# library(dplyr)
-# 
-# end_point_info_v3 <- end_point_info_v3_assay %>%
-#   left_join(end_point_info_v3_assay.component, by = "aid") %>%
-#   left_join(end_point_info_v3_assay.component.endpoint, by = "acid")
-# 
-# gene_stuff <- readxl::read_xlsx("../toxCast_Data/INVITRODB_V3_3_SUMMARY/gene_target_information_invitrodb_v3_3.xlsx")
-# 
-#Generate table for EPA review. Look at endpoint-gene linkages and assess validity
-# gene_stuff_out <- gene_stuff %>%
-#   select(gene_symbol, gene_name,
-#          aeid, aenm) %>%
-#   distinct() %>%
-#   arrange(gene_symbol, aenm) %>%
-#   left_join(end_point_info_v3, by = c("aeid", "aenm" = "assay_component_endpoint_name")) %>%
-#   select(gene_symbol, gene_name,
-#          aeid, aenm, signal_direction, analysis_direction, assay_component_endpoint_desc)
-# 
-# write.csv(gene_stuff_out, "genes_endpoints_for_review.csv", row.names = FALSE)
-# After reviewing the gene-endpoint combos, some additional changes will need to happen to the gene table
-# removing some gene-endpoint linkages. Add additional columns to note agonism/antagomism. Etc.
-
-# Merge gene with rest of endpoint table,
-# Collapse gene table to "one row = one endpoint"
-# endpoints with multiple genes will have |'s in gene columns.
-# 
-# gene_stuff2 <- gene_stuff %>%
-#   select(-organism_id) %>%
-#   group_by(aeid, aenm) %>%
-#   summarize(across(everything(), function(x) paste(unique(x[which(x != "" & x != "NA" & !is.na(x) )]),
-#                                                    collapse = "|")), .groups = "drop") %>%
-#   rename(intended_target_gene_id = gene_id,
-#          intended_target_gene_name = gene_name,
-#          intended_target_gene_symbol = gene_symbol)
-# 
-# end_point_info_v3 <- end_point_info_v3 %>%
-#   left_join(gene_stuff2, by = c("aeid", "assay_component_endpoint_name" = "aenm"))
-# 
-# assay_table <- unique(end_point_info[c("assay_source_name", "assay_source_long_name")])
-# 
-# end_point_info_v3$assay_source_name <- gsub("\\_.*" , "", end_point_info_v3$assay_name)
-# 
-# end_point_info_v3$assay_source_name[grepl("NHEERL", end_point_info_v3$assay_source_name)] <-
-#   paste0("NHEERL_", (gsub("\\_.*" , "",
-#        gsub("NHEERL_", "", end_point_info_v3$assay_name[grepl("NHEERL", end_point_info_v3$assay_source_name)]))))
-# 
-# end_point_info <- end_point_info_v3
-# rm(end_point_info_v3, end_point_info_v3_assay, end_point_info_v3_assay.component,
-#    end_point_info_v3_assay.component.endpoint, gene_stuff, gene_stuff2)
-#   
+# save(ToxCast_ACC, end_point_info, tox_chemicals,
+#      file = "R/sysdata.rda", compress = "xz")
 
 
 #' Endpoint information from ToxCast

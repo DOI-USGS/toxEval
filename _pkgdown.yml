@@ -1,8 +1,22 @@
 template:
   params:
     ganalytics: UA-53797708-7
+  includes:
+    before_title: '<a href="https://www.usgs.gov/"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>'
+  bootstrap: 5
+  theme: atom-one-light
+  bslib:
+    bg: "white"
+    fg: "#283140"
+    navbar-brand-color: "white"
+    navbar-light-color: "white"
+    nav-link-color: "white"
+    nav-link-hover-color: "#a9a9a9"
+    navbar-light-brand-hover-color: "white"
+    navbar-light-hover-color: "white"
+    text-muted: "white"
+    pkgdown-nav-height: 125px
 navbar:
-  type: default
   left:
   - text: Background
     href: articles/Introduction.html
@@ -22,11 +36,13 @@ navbar:
         href: articles/pivot.html
       - text: Dose Response Curves
         href: articles/does_curves.html
+      - text: How to Contribute
+        href: articles/Contributing.html
   - text: Bibliograpy
     href: articles/bibliography.html
   right:
-  - icon: fa-github fa-lg
-    href: https://github.com/USGS-R/toxEval
+  - icon: fa-gitlab fa-lg
+    href: https://code.usgs.gov/water/toxEval
 reference:
   - title: Import Data
     contents:
@@ -60,3 +76,11 @@ reference:
       - endpoint_hits
       - make_tox_map
       - explore_endpoints
+      - plot_tox_endpoints2
+  - title: Utility Functions
+    desc: Functions to help
+    contents:
+      - toxEval-package 
+      - summary.toxEval
+      - as.toxEval 
+      

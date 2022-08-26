@@ -1,10 +1,9 @@
-toxEval <img src="man/figures/logo.png" alt="toxEval" height="150px" align="right" />
-=====================================================================================
+# toxEval <img src="man/figures/toxEval.png" alt="toxEval" class="logo" style="width:90px;height:auto;" align="right" />
 
 [![R build
 status](https://github.com/USGS-R/toxEval/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/toxEval/actions)
 [![Coverage
-Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/toxEval?branch=master)
+Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=main)](https://coveralls.io/github/USGS-R/toxEval?branch=main)
 [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 [![CRAN
 version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)
@@ -33,11 +32,10 @@ flexibility within the functions beyond what the app offers and provides
 options for the user to interact more directly with the data. The
 overview in this document focuses on the R-package.
 
-Quickstart
-----------
+## Quickstart
 
 <p align="center">
-<img src="https://code.usgs.gov/water/toxEval/raw/master/man/figures/app.gif" alt="app_demo">
+<img src="https://code.usgs.gov/water/toxEval/raw/main/man/figures/app.gif" alt="app_demo">
 </p>
 
 Installation instructions are below. To quickly get going in `toxEval`,
@@ -64,9 +62,9 @@ data provided in the package):
 
 ``` r
 library(toxEval)
-#> USGS Research Package:
-#> https://owi.usgs.gov/R/packages.html#research
-#> ToxCast database: version 3.2
+#> For more information:
+#> https://rconnect.usgs.gov/toxEval_docs/
+#> ToxCast database: version 3.5
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -117,42 +115,12 @@ data frame that is used in many of the plot and table functions.
 There are 4 vignettes to help introduce and navigate the `toxEval`
 package:
 
-<table>
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 19%" />
-<col style="width: 65%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>R command</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="http://usgs-r.github.io/toxEval/articles/Introduction.html">Introduction</a></td>
-<td><code>vignette("Introduction", package="toxEval")</code></td>
-<td>Introduction to the toxEval</td>
-</tr>
-<tr class="even">
-<td><a href="http://usgs-r.github.io/toxEval/articles/basicWorkflow.html">Basic Workflow</a></td>
-<td><code>vignette("basicWorkflow", package="toxEval")</code></td>
-<td>Quickstart guide to get overview of available functions</td>
-</tr>
-<tr class="odd">
-<td><a href="http://usgs-r.github.io/toxEval/articles/PrepareData.html">Prepare Data</a></td>
-<td><code>vignette("PrepareData", package="toxEval")</code></td>
-<td>Guide to preparing your data for toxEval analysis</td>
-</tr>
-<tr class="even">
-<td><a href="http://usgs-r.github.io/toxEval/articles/shinyApp.html">Shiny App Guide</a></td>
-<td><code>vignette("shinyApp", package="toxEval")</code></td>
-<td>Guide to the toxEval shiny application</td>
-</tr>
-</tbody>
-</table>
+| Name                                                                          | R command                                      | Description                                             |
+|------------|--------------|----------------------------------------------|
+| [Introduction](http://usgs-r.github.io/toxEval/articles/Introduction.html)    | `vignette("Introduction", package="toxEval")`  | Introduction to the toxEval                             |
+| [Basic Workflow](http://usgs-r.github.io/toxEval/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
+| [Prepare Data](http://usgs-r.github.io/toxEval/articles/PrepareData.html)     | `vignette("PrepareData", package="toxEval")`   | Guide to preparing your data for toxEval analysis       |
+| [Shiny App Guide](http://usgs-r.github.io/toxEval/articles/shinyApp.html)     | `vignette("shinyApp", package="toxEval")`      | Guide to the toxEval shiny application                  |
 
 ### Reporting bugs
 
@@ -168,7 +136,7 @@ Follow](https://img.shields.io/twitter/follow/USGS_R.svg?style=social&label=Foll
 
 We want to encourage a warm, welcoming, and safe environment for
 contributing to this project. See the [code of
-conduct](https://github.com/USGS-R/toxEval/blob/master/CONDUCT.md) for
+conduct](https://github.com/USGS-R/toxEval/blob/main/CONDUCT.md) for
 more information.
 
 ### Package Support
@@ -188,8 +156,7 @@ team.
 Funding for `toxEval` is secured through summer 2021, after which bug
 fixes & new features will be minimal.
 
-Installation of R and RStudio
------------------------------
+## Installation of R and RStudio
 
 This section should only need to be done once per computer.
 
@@ -205,8 +172,7 @@ Useful links:
 -   [Download
     RStudio](https://www.rstudio.com/products/rstudio/download/)
 
-Installation of toxEval
------------------------
+## Installation of toxEval
 
 To install the toxEval package, you must be using R 3.0 or greater and
 run the following command:
@@ -233,8 +199,7 @@ to click this update regularly.
 
 ![update](vignettes/update.png)
 
-Run toxEval
------------
+## Run toxEval
 
 To run the toxEval app:
 
@@ -246,8 +211,7 @@ library(toxEval)
 explore_endpoints()
 ```
 
-Citing toxEval
---------------
+## Citing toxEval
 
 ``` r
 citation(package = "toxEval")
@@ -275,8 +239,7 @@ citation(package = "toxEval")
 #>   }
 ```
 
-Disclaimer
-----------
+## Disclaimer
 
 This software has been approved for release by the U.S. Geological
 Survey (USGS). Although the software has been subjected to rigorous

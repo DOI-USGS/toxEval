@@ -84,15 +84,16 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
   if(is.null(ACC)){
     ACC <- tox_list[["benchmarks"]]
   } else {
-    ACC <- select(ACC, CAS, chnm, endPoint, ACC_value)
+    ACC <- dplyr::select(ACC, CAS, chnm, endPoint, ACC_value)
   }
   
-  if(class(chem_data$Value) == "character"){
+  if(is.character(chem_data$Value)){
     chem_data$Value <- as.numeric(chem_data$Value)
   }
   
   chemical_summary <- full_join(ACC, 
-                                select(chem_data, CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
+                                dplyr::select(chem_data,
+                                              CAS, SiteID, Value, `Sample Date`), by="CAS") %>%
     filter(!is.na(ACC_value),
            !is.na(Value)) %>%
     mutate(EAR = Value/ACC_value) %>%

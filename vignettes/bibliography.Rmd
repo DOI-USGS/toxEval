@@ -1,11 +1,12 @@
 ---
+title: "toxEval Bibliography"
 output: 
   rmarkdown::html_vignette
 bibliography: toxeval.bib
 nocite: '@*'
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{toxEval bibliography}
+  %\VignetteIndexEntry{toxEval Bibliography}
   \usepackage[utf8]{inputenc}
 ---
 

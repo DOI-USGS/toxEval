@@ -1,30 +1,43 @@
-image: rocker/tidyverse
+image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/geospatial:latest
 
 stages:
+  - getready
   - check
   - test
+  - end
 
 variables:
   _R_CHECK_CRAN_INCOMING_: "false"
   _R_CHECK_SUGGESTS_ONLY: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
-  APT_PKGS: "libgeos-dev"
+  _R_CHECK_DONTTEST_EXAMPLES_: "false"
+  R_PROFILE: "$R_HOME/etc/Rprofile.site"
   APT_CACHE: "$CI_PROJECT_DIR/ci/lib/apt-cache"
-  CRAN_MIRROR: "https://cloud.r-project.org"
+  CRAN: "https://rpkg.chs.usgs.gov/prod-cran/latest"
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
+  NOT_CRAN: "true"
+  PKG_PATH: "$CI_PROJECT_DIR/docs"
+  CONNECT_API_KEY: $CONNECT_API_KEY
+  CONNECT_SERVER: $CONNECT_SERVER
 
-before_script:
-    - mkdir -p $APT_CACHE
-    - apt-get update
-    - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends ${APT_PKGS}  
-
+cache:
+  key: ${CI_JOB_NAME}
+  paths:
+    - $R_LIBS_USER
+    
 getready:
-  stage: .pre
+  stage: getready
   script:
     - mkdir -p $R_LIBS_USER
-    - R -e 'install.packages(c("lintr", "DT", "leaflet", "shiny", "shinydashboard", "RColorBrewer", "shinyAce", "shinycssloaders", "here", "tcpl", "openxlsx"), repos = Sys.getenv("CRAN_MIRROR"), lib = Sys.getenv("R_LIBS_USER"))'
+    - mkdir -p $APT_CACHE
+    - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
+    - Rscript -e "install.packages(c('devtools', 'connectapi'))"
+    - Rscript -e "devtools::install_deps()"
+  cache:
+    paths:
+     - $R_LIBS_USER
   artifacts:
     paths:
      - $R_LIBS_USER
@@ -61,3 +74,14 @@ covertests:
       - cover.rds
   coverage: '/Coverage: \d+.\d+\%/'
 
+deploy:
+  stage: end
+  only: 
+    - main
+  script:
+    - Rscript -e 'pkgdown::build_site()'
+    - Rscript -e 'source("deploy_simple.R")'
+  artifacts:
+    paths:
+      - $PKG_PATH
+    expire_in: 1 week

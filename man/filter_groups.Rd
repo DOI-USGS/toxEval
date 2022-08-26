@@ -7,19 +7,21 @@
 filter_groups(
   ep,
   groupCol = "intended_target_family",
-  assays = c("ACEA", "APR", "ATG", "NVS", "OT", "TOX21", "CEETOX", "CLD", "TANGUAY",
-    "NHEERL_PADILLA", "NCCT", "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT"),
+  assays = c("ACEA", "APR", "ATG", "NVS", "OT", "TOX21", "CEETOX", "LTEA", "CLD",
+    "TANGUAY", "CCTE_PADILLA", "CCTE", "STM", "ARUNA", "CCTE_SHAFER", "CPHEA_STOKER",
+    "CCTE_GLTED", "UPITT", "UKN", "ERF", "TAMU", "IUF", "CCTE_MUNDY", "UTOR", "VALA"),
   remove_groups = c("Background Measurement", "Undefined")
 )
 }
 \arguments{
 \item{ep}{Data frame containing Endpoint information from ToxCast}
 
-\item{groupCol}{Character name of ToxCast annotation column to use as a group catetory}
+\item{groupCol}{Character name of ToxCast annotation column to use as a group category}
 
-\item{assays}{Vector of assays to use in the data analysis. Possible values are "ACEA", "APR", "ATG", "BSK", "NVS", "OT",
-"TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
-"NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT". By default, the 
+\item{assays}{Vector of assays to use in the data analysis. Possible values are "ACEA", "APR", "ATG",
+"NVS", "OT", "TOX21", "CEETOX", "LTEA", "CLD", "TANGUAY", "CCTE_PADILLA", "BSK" ,
+"CCTE", "STM", "ARUNA", "CCTE_SHAFER", "CPHEA_STOKER", "CCTE_GLTED", "UPITT", "UKN",    
+"ERF", "TAMU", "IUF", "CCTE_MUNDY", "UTOR", "VALA". By default, the 
 "BSK" (BioSeek) assay is removed.}
 
 \item{remove_groups}{Vector of groups within the selected 'groupCol' to remove.}

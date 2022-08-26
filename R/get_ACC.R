@@ -27,11 +27,11 @@ get_ACC <- function(CAS){
   chem_list <- dplyr::select(tox_chemicals,
                             casrn = Substance_CASRN,
                             MlWt = Structure_MolWt) 
-  chem_list <- filter(chem_list, casrn %in% CAS) 
+  chem_list <- dplyr::filter(chem_list, casrn %in% CAS) 
   
   ACC <- ToxCast_ACC 
-  ACC <- filter(ACC, CAS %in% CAS)
-  ACC <- right_join(ACC, chem_list,
+  ACC <- dplyr::filter(ACC, CAS %in% CAS)
+  ACC <- dplyr::right_join(ACC, chem_list,
                by= c("CAS"="casrn")) 
   
   ACC <- mutate(ACC, ACC_value = 10^ACC,

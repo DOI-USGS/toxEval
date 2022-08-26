@@ -19,7 +19,7 @@ output$hitsTable <- DT::renderDataTable({
   shinyAce::updateAceEditor(session, editorId = "siteHit_out", value = siteHitCode() )
   tableGroup
   
-})
+}, server = FALSE)
 
 output$siteHitText <- renderText({
   
