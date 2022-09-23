@@ -18,7 +18,7 @@ output$tableGroupSumm <- DT::renderDataTable({
   shinyAce::updateAceEditor(session, editorId = "tableGroup_out", value = tableGroupCode() )
   tableGroup
   
-})
+}, server = FALSE)
 
 output$nGroup <- renderText({
 

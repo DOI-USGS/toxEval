@@ -8,7 +8,7 @@ output:
     fig_width: 7
     fig_height: 7
 vignette: >
-  %\VignetteIndexEntry{Using R}
+  %\VignetteIndexEntry{Using R to prepare your Excel file}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
