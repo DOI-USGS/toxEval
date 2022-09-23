@@ -51,3 +51,4 @@ vignettes/atrazineDose.png
 ^codecov\.yml$
 ^\.github$
 ci/*
+cobertura.xml

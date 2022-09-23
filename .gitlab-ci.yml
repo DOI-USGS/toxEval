@@ -55,9 +55,13 @@ covertests:
     - getready
     - buildcheck
   script:
-    - R -e 'x <- covr::package_coverage();x;saveRDS(x, file = "cover.rds")'
+    - R -e 'x <- covr::package_coverage(); covr::to_cobertura(x); x; saveRDS(x, file = "cover.rds")'
   artifacts:
     paths: 
       - cover.rds
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml
   coverage: '/Coverage: \d+.\d+\%/'
 
