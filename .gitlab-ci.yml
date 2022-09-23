@@ -74,8 +74,9 @@ covertests:
     - R -e 'x <- covr::package_coverage(); covr::to_cobertura(x); x; '
   artifacts:
     reports:
-      coverage_format: cobertura
-      path: cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml
   coverage: '/Coverage: \d+.\d+\%/'
 
 deploy:
