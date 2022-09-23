@@ -82,3 +82,4 @@ vignettes/https_clone.png
 deploy_simple.R
 renv/*
 renv.lock
+test-out.xml
