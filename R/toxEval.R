@@ -9,7 +9,7 @@ ToxCast database: version', dbVersion()), width = 40),
 }
 
 dbVersion <- function(){
-  "3.3"
+  "3.5"
 }
 
 #' Analyze ToxCast data in relation to measured concentrations.
