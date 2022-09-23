@@ -62,6 +62,9 @@ unittests:
   script:
     - R -e 'library(testthat); options(testthat.output_file = "test-out.xml"); devtools::test(reporter = "junit") '
   artifacts:
+    when: always
+    paths: 
+      - test-out.xml
     reports:
       junit: test-out.xml
         
