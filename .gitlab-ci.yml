@@ -17,7 +17,6 @@ variables:
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
-  UNIT_REPORT: "$CI_PROJECT_DIR/ci/test-out.xml"
   NOT_CRAN: "true"
   PKG_PATH: "$CI_PROJECT_DIR/docs"
   CONNECT_API_KEY: $CONNECT_API_KEY
@@ -65,9 +64,9 @@ unittests:
   artifacts:
     when: always
     paths: 
-      - $UNIT_REPORT
+      - test-out.xml
     reports:
-      junit: $UNIT_REPORT
+      junit: test-out.xml
         
 covertests:
   stage: test
