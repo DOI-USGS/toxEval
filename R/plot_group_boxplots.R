@@ -406,10 +406,19 @@ fancyNumbers2 <- function(n){
 
 fancyNumbers <- function(n){
   nNoNA <- n[!is.na(n)]
-  x <-gsub(pattern = "1e",replacement = "10^",x = format(nNoNA, scientific = TRUE))
-  exponents <- as.numeric(sapply(strsplit(x, "\\^"), function(j) j[2]))
-
-  base <- ifelse(exponents == 0, "1", ifelse(exponents == 1, "10","10^"))
+  x <- gsub(pattern = "1e",replacement = "10^",x = format(nNoNA, scientific = TRUE))
+  non_one <-  gsub(pattern = "e+",replacement = "",x = format(x, scientific = TRUE))
+  non_one <- sapply(strsplit(non_one, "+"), function(x)x[1])
+  non_one <- ifelse(non_one == "1", NA, non_one)
+  x <- gsub(pattern = "e+",replacement = " x 10^",x = format(x, scientific = TRUE))
+  
+  exponents <- as.numeric(sapply(strsplit(x, "\\^"),
+                                 function(j) j[2]))
+  
+  base <- ifelse(exponents == 0, "1", 
+                 ifelse(exponents == 1,
+                        "10","10^"))
+  base[!is.na(non_one)] <- paste0(non_one[!is.na(non_one)], "%*%", base[!is.na(non_one)])
   exponents[base == "1" | base == "10"] <- ""
   textNums <- rep(NA, length(n))  
   textNums[!is.na(n)] <- paste0(base,exponents)
