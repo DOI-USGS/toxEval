@@ -60,7 +60,7 @@ unittests:
     - getready
     - buildcheck
   script:
-    - R -e 'library(testthat); options(testthat.output_file = "test-out.xml"); devtools::test(reporter = "junit"); getwd(); list.files("ci") '
+    - R -e 'library(testthat); options(testthat.output_file = "test-out.xml"); devtools::test(reporter = "junit")'
   artifacts:
     when: always
     paths: 
