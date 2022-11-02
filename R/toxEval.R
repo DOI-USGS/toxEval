@@ -48,8 +48,8 @@ NULL
 
 #' ACC values included with toxEval.
 #'
-#' Downloaded on October 2020 from ToxCast. The data were
-#' combined from files in the "INVITRODB_V3_3_LEVEL5" folder.
+#' Downloaded on October 2022 from ToxCast. The data were
+#' combined from files in the "INVITRODB_V3_5_LEVEL5" folder.
 #' At the time of toxEval package release, this information was found:
 #' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set.
@@ -90,9 +90,9 @@ NULL
 
 #' Endpoint information from ToxCast
 #'
-#' Downloaded on October 2020 from ToxCast. The file name of the
-#' raw data was "assay_annotation_information_invitrodb_v3_3.xlsx" from the zip file
-#' "INVITRODB_V3_3_SUMMARY" folder. At the time
+#' Downloaded on October 2022 from ToxCast. The file name of the
+#' raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
+#' "INVITRODB_V3_5_SUMMARY" folder. At the time
 #' of the toxEval package release, these data were found at:
 #' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 #' in the section marked "Download Assay Information", in the

@@ -14,6 +14,24 @@ test_that("Check included data", {
   expect_true(is.character(ToxCast_ACC$flags))
   expect_true(is.character(ToxCast_ACC$endPoint))
   
+  CAS <- unique(ToxCast_ACC$CAS)
+  ACC <- get_ACC(CAS)
+  
+  all_flags <- c(
+    "Borderline",
+    "OnlyHighest",
+    "OneAbove",
+    "Noisy",
+    "HitCall",
+    "GainAC50",
+    "Biochemical",
+    "LessThan50",
+    "ACCLessThan",
+    "GNLSmodel"
+  )
+  
+  all_gone <- remove_flags(ACC, all_flags)
+  expect_true(all(is.na(all_gone$flags)))
   
   end_point_info <- end_point_info
   

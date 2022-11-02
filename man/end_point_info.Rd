@@ -12,9 +12,9 @@ data frame with 86 columns. The columns and definitions
 are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
 }
 \description{
-Downloaded on October 2020 from ToxCast. The file name of the
-raw data was "assay_annotation_information_invitrodb_v3_3.xlsx" from the zip file
-"INVITRODB_V3_3_SUMMARY" folder. At the time
+Downloaded on October 2022 from ToxCast. The file name of the
+raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
+"INVITRODB_V3_5_SUMMARY" folder. At the time
 of the toxEval package release, these data were found at:
 \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
 in the section marked "Download Assay Information", in the
