@@ -1,0 +1,39 @@
+context("Data")
+
+
+test_that("Check included data", {
+  
+  ToxCast_ACC <- ToxCast_ACC
+  expect_true(all(names(ToxCast_ACC) %in% c("CAS",
+                                            "flags",
+                                            "endPoint",
+                                            "ACC")))
+  
+  expect_true(is.numeric(ToxCast_ACC$ACC))
+  expect_true(is.character(ToxCast_ACC$CAS))
+  expect_true(is.character(ToxCast_ACC$flags))
+  expect_true(is.character(ToxCast_ACC$endPoint))
+  
+  
+  end_point_info <- end_point_info
+  
+  expect_true(all(c("assay_source_name",
+                    "assay_component_endpoint_name",
+                    "intended_target_family") %in% names(end_point_info)))
+  
+  default_eps <- c("ACEA", "APR", "ATG",
+                   "NVS", "OT", "TOX21", "CEETOX",
+                   "LTEA", "CLD", "TANGUAY", "CCTE_PADILLA",
+                   "CCTE", "STM", "ARUNA", "CCTE_SHAFER",
+                   "CPHEA_STOKER", "CCTE_GLTED", "UPITT", "UKN",
+                   "ERF", "TAMU", "IUF", "CCTE_MUNDY", "UTOR", "VALA")
+  
+  expect_true(all(unique(end_point_info$assay_source_name) %in%
+                    c(default_eps, "BSK"))) 
+  
+  tox_chemicals <- tox_chemicals
+  expect_true(all(c("Substance_CASRN",
+                    "Structure_MolWt",
+                    "Substance_Name") %in% names(tox_chemicals)))
+  
+})

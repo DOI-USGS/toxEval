@@ -13,19 +13,19 @@ are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)
 }
 \description{
 Downloaded on October 2020 from ToxCast. The file name of the
-raw data was "assay_annotation_information_invitrodb_v3_3.xlsx" from the zip file 
+raw data was "assay_annotation_information_invitrodb_v3_3.xlsx" from the zip file
 "INVITRODB_V3_3_SUMMARY" folder. At the time
 of the toxEval package release, these data were found at:
 \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
-in the section marked "Download Assay Information", in the 
+in the section marked "Download Assay Information", in the
 ToxCast & Tox21 high-throughput assay information data set.
 }
 \examples{
 end_point_info <- end_point_info
-head(end_point_info[,1:5])
+head(end_point_info[, 1:5])
 }
 \references{
-U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide. 
+U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide.
 \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
 }
 \keyword{datasets}

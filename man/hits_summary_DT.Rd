@@ -33,29 +33,29 @@ data frame with columns "Hits per Sample", "Individual Hits",
 "nSample", "site", and "category"
 }
 \description{
-The \code{hits_summary_DT} (DT option) and \code{hits_summary} (data frame 
-option) functions create tables information on the number of 
-\code{hit_threshold} exceedances per site for each individual grouping. The 
-table has one row per group per site that has \code{hit_threshold} 
-exceedances. For example, if "Biological" is the category, and a 
-site has EAR levels above the specified \code{hit_threshold} for "DNA 
-Binding" and "Nuclear Receptors", that site will have 2 rows of data in this 
+The \code{hits_summary_DT} (DT option) and \code{hits_summary} (data frame
+option) functions create tables information on the number of
+\code{hit_threshold} exceedances per site for each individual grouping. The
+table has one row per group per site that has \code{hit_threshold}
+exceedances. For example, if "Biological" is the category, and a
+site has EAR levels above the specified \code{hit_threshold} for "DNA
+Binding" and "Nuclear Receptors", that site will have 2 rows of data in this
 table.
 }
 \details{
-For each row, there are 4 columns. Site and category (as defined by the category 
-argument) define the row. "Samples with hits" are how many samples exceeded the 
-hit_threshold for the specified category at the specified site. "Number of 
-Samples" indicates how many samples were collected at an individual site 
+For each row, there are 4 columns. Site and category (as defined by the category
+argument) define the row. "Samples with hits" are how many samples exceeded the
+hit_threshold for the specified category at the specified site. "Number of
+Samples" indicates how many samples were collected at an individual site
 based on unique date.
 
-The tables contain slightly different results for evaluation of a single site. 
-There are three columns (the Site column is dropped), and rather than one row 
+The tables contain slightly different results for evaluation of a single site.
+There are three columns (the Site column is dropped), and rather than one row
 per site/category, there is one row per category.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)

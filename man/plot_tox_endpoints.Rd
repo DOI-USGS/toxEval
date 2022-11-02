@@ -46,29 +46,29 @@ opposed to ToxCast benchmarks.}
 \item{palette}{Vector of color palette for fill. Can be a named vector
 to specify specific color for specific categories.}
 
-\item{top_num}{Integer number of endpoints to include in the graph. If NA, all 
+\item{top_num}{Integer number of endpoints to include in the graph. If NA, all
 endpoints will be included.}
 }
 \description{
-The \code{plot_tox_endpoints} function creates a set of boxplots representing EAR 
+The \code{plot_tox_endpoints} function creates a set of boxplots representing EAR
 values for each endPoint based on the selected data. A subset of data is first
-chosen by specifying a group in the filterBy argument. The 
-filterBy argument must match one of the unique options in the category. 
-For example, if the category is "Chemical Class", then the filterBy argument 
+chosen by specifying a group in the filterBy argument. The
+filterBy argument must match one of the unique options in the category.
+For example, if the category is "Chemical Class", then the filterBy argument
 must be one of the defined "Chemical Class" options such as "Herbicide".
-A boxplot is generated for each endPoint. The EAR values that are used to 
-create the boxplots are the mean or maximum (as defined by mean_logic) for each 
-site as described in "Summarizing the data"in the Introduction vignette: 
+A boxplot is generated for each endPoint. The EAR values that are used to
+create the boxplots are the mean or maximum (as defined by mean_logic) for each
+site as described in "Summarizing the data"in the Introduction vignette:
 \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
 }
 \details{
-Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette: 
+Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette:
 \href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
 for more information.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
@@ -81,16 +81,19 @@ cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-plot_tox_endpoints(chemical_summary, 
-                   filterBy = "Cell Cycle",
-                   top_num = 10)
-plot_tox_endpoints(chemical_summary, 
-                   filterBy = "Cell Cycle",
-                   top_num = 10, 
-                   x_label = "EAR")
 plot_tox_endpoints(chemical_summary,
-                   category = "Chemical Class", filterBy = "PAHs",
-                   top_num = 10, hit_threshold = 0.001)
+  filterBy = "Cell Cycle",
+  top_num = 10
+)
+plot_tox_endpoints(chemical_summary,
+  filterBy = "Cell Cycle",
+  top_num = 10,
+  x_label = "EAR"
+)
+plot_tox_endpoints(chemical_summary,
+  category = "Chemical Class", filterBy = "PAHs",
+  top_num = 10, hit_threshold = 0.001
+)
 plot_tox_endpoints(chemical_summary, category = "Chemical", filterBy = "Atrazine")
 plot_tox_endpoints(chemical_summary, category = "Chemical", top_num = 10)
 single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
