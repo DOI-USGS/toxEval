@@ -50,10 +50,10 @@ opposed to ToxCast benchmarks.}
 
 \item{gd_right}{Data frame that must include the columns chnm, Class, and either EAR or meanEAR.}
 
-\item{left_title}{Character that will be associated with the "gd_left" data 
+\item{left_title}{Character that will be associated with the "gd_left" data
 frame in a column named "guide_side".}
 
-\item{right_title}{Character that will be associated with the "gd_right" data 
+\item{right_title}{Character that will be associated with the "gd_right" data
 frame in a column named "guide_side".}
 }
 \description{
@@ -69,7 +69,7 @@ and classes factor levels are ordered primarily based on "gd_left", but
 include "gd_right" when the contents are mismatched.
 }
 \examples{
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
@@ -90,10 +90,12 @@ chemical_summary_conc <- get_concentration_summary(tox_list)
 gd_tox <- graph_chem_data(chemical_summary)
 gd_conc <- graph_chem_data(chemical_summary_conc)
 
-ch_combo <- side_by_side_data(gd_tox, gd_conc, 
-                              left_title = "ToxCast", 
-                              right_title = "Concentrations")
-plot_chemical_boxplots(ch_combo, guide_side, 
-                       x_label = "") +
+ch_combo <- side_by_side_data(gd_tox, gd_conc,
+  left_title = "ToxCast",
+  right_title = "Concentrations"
+)
+plot_chemical_boxplots(ch_combo, guide_side,
+  x_label = ""
+) +
   ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
 }

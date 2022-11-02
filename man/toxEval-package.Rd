@@ -5,15 +5,15 @@
 \alias{toxEval-package}
 \title{Analyze ToxCast data in relation to measured concentrations.}
 \description{
-\code{toxEval} includes a set of functions to analyze, visualize, and 
-organize measured concentration data as it relates to ToxCast data 
-(default) or other user-selected chemical-biological interaction 
-benchmark data such as water quality criteria. The intent of 
-these analyses is to develop a better understanding of the potential 
-biological relevance of environmental chemistry data. Results can 
-be used to prioritize which chemicals at which sites may be of 
-greatest concern. These methods are meant to be used as a screening 
-technique to predict potential for biological influence from chemicals 
+\code{toxEval} includes a set of functions to analyze, visualize, and
+organize measured concentration data as it relates to ToxCast data
+(default) or other user-selected chemical-biological interaction
+benchmark data such as water quality criteria. The intent of
+these analyses is to develop a better understanding of the potential
+biological relevance of environmental chemistry data. Results can
+be used to prioritize which chemicals at which sites may be of
+greatest concern. These methods are meant to be used as a screening
+technique to predict potential for biological influence from chemicals
 that ultimately need to be validated with direct biological assays.
 }
 \details{

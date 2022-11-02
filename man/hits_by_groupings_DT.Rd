@@ -39,22 +39,22 @@ opposed to ToxCast benchmarks.}
 data frame with one row per category, and one column per Biological grouping.
 }
 \description{
-The \code{hits_by_groupings_DT} (DT option) and 
-\code{hits_by_groupings} (data frame option) functions create tables 
-with one row per category("Biological", "Chemical", or "Chemical Class"). 
-The columns indicate the "Biological" groupings. The values in the table 
-signify how many sites have samples with EARs that exceeded the hit_threshold 
-for that particular "Biological"/category combination. If the user chooses 
-"Biological" as the category, it is a simple 2-column table of "Biological" 
+The \code{hits_by_groupings_DT} (DT option) and
+\code{hits_by_groupings} (data frame option) functions create tables
+with one row per category("Biological", "Chemical", or "Chemical Class").
+The columns indicate the "Biological" groupings. The values in the table
+signify how many sites have samples with EARs that exceeded the hit_threshold
+for that particular "Biological"/category combination. If the user chooses
+"Biological" as the category, it is a simple 2-column table of "Biological"
 groupings and number of sites (nSites).
 }
 \details{
-The tables result in slightly different results for a single site, displaying 
+The tables result in slightly different results for a single site, displaying
 the number of samples with hits rather than the number of sites.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)

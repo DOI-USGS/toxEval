@@ -12,18 +12,18 @@ remove_flags(
 \arguments{
 \item{ACC}{data frame with columns: casn, chnm, endPoint, and ACC_value}
 
-\item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint 
+\item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint
 combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
 "Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".}
 }
 \description{
-Through the ToxCast program quality assurance procedures, information 
-is examined and at times, it is necessary to assign a data quality flag 
-to a specific chemical/assay result. A toxEval user may want to include 
-or exclude assay results with certain flags depending on the objectives 
-of a given study. Assay results with specific data quality flags assigned 
-to them can be removed based on their designated flag with the 
-\code{remove_flags} function. The flags included in ToxCast, and the associated 
+Through the ToxCast program quality assurance procedures, information
+is examined and at times, it is necessary to assign a data quality flag
+to a specific chemical/assay result. A toxEval user may want to include
+or exclude assay results with certain flags depending on the objectives
+of a given study. Assay results with specific data quality flags assigned
+to them can be removed based on their designated flag with the
+\code{remove_flags} function. The flags included in ToxCast, and the associated
 flagsShort value (used in the remove_flags function) are as follows:
 \tabular{ll}{
 \strong{Flag} \tab \strong{flagsShort}\cr
@@ -41,7 +41,7 @@ GNLSmodel \tab GNLSmodel \cr
 Asterisks indicate flags removed in the function as default.
 }
 \examples{
-CAS <- c("121-00-6","136-85-6","80-05-7","84-65-1","5436-43-1","126-73-8")
+CAS <- c("121-00-6", "136-85-6", "80-05-7", "84-65-1", "5436-43-1", "126-73-8")
 ACC <- get_ACC(CAS)
 nrow(ACC)
 ACC <- remove_flags(ACC)
