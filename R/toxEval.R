@@ -72,22 +72,6 @@ NULL
 NULL
 
 
-
-#
-# ToxCast_ACC <- readRDS("ACC_v3_5.rds")
-# end_point_info <- readRDS("endpoint_info_v_35.rds")
-# end_point_info$intended_target_family_sub[1968] <- "receptor tyrosine phosphatase"
-
-# tox_chemicals <- readRDS("chemicals3_5.rds")
-#
-# tox_chemicals <- tox_chemicals |>
-#   arrange(Structure_MolWt) |>
-#   filter(!duplicated(Substance_CASRN))
-#
-# save(ToxCast_ACC, end_point_info, tox_chemicals,
-#      file = "R/sysdata.rda", compress = "xz")
-
-
 #' Endpoint information from ToxCast
 #'
 #' Downloaded on October 2022 from ToxCast. The file name of the
@@ -117,14 +101,8 @@ NULL
 
 #' ToxCast Chemical Information
 #'
-#' Downloaded on October 2015 from ToxCast. The file name of the
-#' raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx",
-#' from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
-#' of toxEval package release, this information was found:
-#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
-#' in the section marked "Download ToxCast Chemical Information". This
-#' was in the "ToxCast & Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
-#' data set.
+#' Downloaded from the CompTox database on October 2022. :
+#' \url{https://comptox.epa.gov/dashboard/}.
 #'
 #' @aliases tox_chemicals
 #' @name tox_chemicals

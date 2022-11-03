@@ -242,8 +242,8 @@ test_that("Table endpoint hits", {
     "endPoint", "Nuclear Receptor", "CYP",
     "Cell Cycle", "Esterase", "Steroid Hormone"
   )))
-  expect_equal(bt_df[["Nuclear Receptor"]][bt_df[["endPoint"]] == "OT_ERa_EREGFP_0120"], 10)
-  expect_true(is.na(bt_df[["Esterase"]][bt_df[["endPoint"]] == "OT_ERa_EREGFP_0120"]))
+  expect_equal(bt_df[["Nuclear Receptor"]][bt_df[["endPoint"]] == "OT_ER_ERaERb_1440"], 3)
+  expect_true(is.na(bt_df[["Esterase"]][bt_df[["endPoint"]] == "OT_ER_ERbERb_0480"]))
 
   expect_error(endpoint_hits_DT(chemical_summary, category = "Class"))
 

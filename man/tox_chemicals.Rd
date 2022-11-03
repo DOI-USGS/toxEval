@@ -10,14 +10,8 @@ data frame with columns:
 "Structure_MolWt"
 }
 \description{
-Downloaded on October 2015 from ToxCast. The file name of the
-raw data was "TOX21IDs_v4b_23Oct2014_QCdetails.xlsx",
-from the US EPA DSSTox DATA RELEASE OCTOBER 2015. At the time
-of toxEval package release, this information was found:
-\url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
-in the section marked "Download ToxCast Chemical Information". This
-was in the "ToxCast & Tox21 Chemicals Distributed Structure-Searchable Toxicity Database (DSSTox files)"
-data set.
+Downloaded from the CompTox database on October 2022. :
+\url{https://comptox.epa.gov/dashboard/}.
 }
 \examples{
 head(tox_chemicals)
