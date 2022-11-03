@@ -52,6 +52,10 @@ test_that("Check included data", {
   tox_chemicals <- tox_chemicals
   expect_true(all(c("Substance_CASRN",
                     "Structure_MolWt",
-                    "Substance_Name") %in% names(tox_chemicals)))
+                    "Substance_Name",
+                    "Total_tested",
+                    "Active",
+                    "min_concentration",
+                    "max_concentration") %in% names(tox_chemicals)))
   
 })

@@ -5,13 +5,30 @@
 \alias{tox_chemicals}
 \title{ToxCast Chemical Information}
 \value{
+data frame with the following columns:
+\tabular{ll}{
+Column \tab Description \cr
+DSSTox_Substance_Id \tab DSSTox_Substance_Id\cr
+Substance_Name \tab Commen chemical name \cr
+Structure_MolWt \tab Molecular weight \cr
+DTXCID \tab DTXCID\cr
+Substance_CASRN \tab CASRN \cr
+INCHIKEY \tab INCHIKEY\cr
+SMILES \tab SMILES\cr
+Total_tested \tab Total number of ToxCast assays tested\cr
+Active \tab Number of ToxCast assays flagged as active \cr
+min_concentration \tab Minimum concentration tested in ToxCast (ug/L) \cr
+max_concentration \tab Maximum concentration tested in ToxCast (ug/L) \cr
+}
+
 data frame with columns:
 "Substance_Name","Substance_CASRN",
 "Structure_MolWt"
 }
 \description{
-Downloaded from the CompTox database on October 2022. :
-\url{https://comptox.epa.gov/dashboard/}.
+Downloaded from the CompTox database on October 2022.
+\url{https://comptox.epa.gov/dashboard/}. Additional columns were
+added based on the information from the "INVITRODB_V3_5_LEVEL5" data.
 }
 \examples{
 head(tox_chemicals)
