@@ -25,6 +25,7 @@ Once the data is prepared as described in the  [Prepare Data vignette](PrepareDa
 ```{r setup1, include=FALSE}
 library(knitr)
 library(rmarkdown)
+library(dplyr)
 options(continue=" ")
 options(width=60)
 #Set this to TRUE when creating pkgdown site:
@@ -86,6 +87,7 @@ Through the ToxCast program quality assurance procedures, information is examine
 | Biochemical assay with < 50% efficacy | Biochemical |
 | Less than 50% efficacy | LessThan50 |
 | AC50 less than lowest concentration tested | ACCLessThan |
+| Cell viability assay fit with gnls winning model | GNLSmodel |
 
 The function is written to exclude results with the flags "Borderline", "OnlyHighest", "GainAC50", "Biochemical" as a default. If the user prefers a different list, the full list must be specified (default values will be ignored).
 
@@ -115,20 +117,20 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 
 </td><td>
 
-| Assay Name | Short Name |
-|----------|------:|
-|Apredica|APR|
-|Attagene|ATG|
-|BioSeek|BSK|
-|NovaScreen|NVS|
-|Odyssey Thera|OT|
-|Toxicity Testing|TOX21|
-|CEETOX|CEETOX|
-|CLD|CLD|
-|TANGUAY|TANGUAY|
-|NHEERL_PADILLA|NHEERL_PADILLA|
-|NCCT_SIMMONS|NCCT_SIMMONS|
-|ACEA Biosciences|ACEA|
+```{r echo=FALSE}
+
+end_point_info <- end_point_info
+
+df <- end_point_info %>% 
+  select(`Assay Name` = assay_source_long_name,
+         `Short Name` = assay_source_name) %>%
+  distinct()
+
+knitr::kable(df)
+
+```
+
+
 
 </td></tr> </table>
 

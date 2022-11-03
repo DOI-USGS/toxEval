@@ -62,9 +62,9 @@ data provided in the package):
 
 ``` r
 library(toxEval)
-#> USGS Research Package:
-#> https://owi.usgs.gov/R/packages.html#research
-#> ToxCast database: version 3.2
+#> For more information:
+#> https://rconnect.usgs.gov/toxEval_docs/
+#> ToxCast database: version 3.5
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -87,6 +87,7 @@ chem_class_plot
 ![](man/figures/README-unnamed-chunk-4-1.png)
 
 ``` r
+
 ######################################
 plot_stacks <- plot_tox_stacks(chemicalSummary, 
                                tox_list$chem_site, 

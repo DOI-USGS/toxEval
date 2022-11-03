@@ -21,7 +21,6 @@ variables:
   PKG_PATH: "$CI_PROJECT_DIR/docs"
   CONNECT_API_KEY: $CONNECT_API_KEY
   CONNECT_SERVER: $CONNECT_SERVER
-  GITHUB_PAT: $GITHUB_PAT
 
 cache:
   key: ${CI_JOB_NAME}
@@ -34,9 +33,8 @@ getready:
     - mkdir -p $R_LIBS_USER
     - mkdir -p $APT_CACHE
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
-    - Rscript -e "install.packages('devtools')"
+    - Rscript -e "install.packages(c('devtools', 'connectapi'))"
     - Rscript -e "devtools::install_deps()"
-    - Rscript -e "devtools::install_github('rstudio/connectapi')"
   cache:
     paths:
      - $R_LIBS_USER
@@ -62,18 +60,26 @@ unittests:
     - getready
     - buildcheck
   script:
-    - R -e 'if (any(as.data.frame(devtools::test())[["failed"]] > 0)) stop("Some tests failed.")'
-
+    - R -e 'library(testthat); options(testthat.output_file = file.path(Sys.getenv("CI_PROJECT_DIR"), "test-out.xml")); devtools::test(reporter = "junit")'
+  artifacts:
+    when: always
+    paths: 
+      - test-out.xml
+    reports:
+      junit: test-out.xml
+        
 covertests:
   stage: test
   dependencies:
     - getready
     - buildcheck
   script:
-    - R -e 'x <- covr::package_coverage();x;saveRDS(x, file = "cover.rds")'
+    - R -e 'x <- covr::package_coverage(); covr::to_cobertura(x); x; '
   artifacts:
-    paths: 
-      - cover.rds
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml
   coverage: '/Coverage: \d+.\d+\%/'
 
 deploy:

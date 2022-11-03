@@ -31,13 +31,13 @@ endpoint_hits(
 FALSE displays the maximum sample from each site.}
 
 \item{sum_logic}{Logical. \code{TRUE} sums the EARs in a specified grouping,
-\code{FALSE} does not. \code{FALSE} indicates that EAR values are not considered to be 
-additive and often will be a more appropriate choice for traditional 
+\code{FALSE} does not. \code{FALSE} indicates that EAR values are not considered to be
+additive and often will be a more appropriate choice for traditional
 benchmarks as opposed to ToxCast benchmarks.}
 
 \item{hit_threshold}{Numeric. EAR threshold defining a "hit".}
 
-\item{include_links}{Logical. whether or not to include a link to the ToxCast 
+\item{include_links}{Logical. whether or not to include a link to the ToxCast
 dashboard. Only needed for the "Chemical" category.}
 }
 \value{
@@ -45,24 +45,24 @@ data frame with one row per endpoint that had a hit (based on the
 hit_threshold). The columns are based on the category.
 }
 \description{
-The \code{endpoint_hits_DT} (data.table (DT) option) and \code{endpoint_hits} 
-(data frame option) functions create tables with one row per endPoint, and 
-one column per category("Biological", "Chemical", or "Chemical Class"). The 
-values in the table are the number of sites where the EAR exceeded the 
-user-defined EAR hit_threshold in that endpoint/category combination. If the 
-category "Chemical" is chosen, an "info" link is provided to the 
-chemical information available in the "Comptox Dashboard" 
+The \code{endpoint_hits_DT} (data.table (DT) option) and \code{endpoint_hits}
+(data frame option) functions create tables with one row per endPoint, and
+one column per category("Biological", "Chemical", or "Chemical Class"). The
+values in the table are the number of sites where the EAR exceeded the
+user-defined EAR hit_threshold in that endpoint/category combination. If the
+category "Chemical" is chosen, an "info" link is provided to the
+chemical information available in the "Comptox Dashboard"
 \url{https://comptox.epa.gov/dashboard/}.
 }
 \details{
 The tables show slightly different results when choosing to explore data
-from a single site rather than all sites. The value displayed in this 
+from a single site rather than all sites. The value displayed in this
 instance is the number of samples with hits rather than the number of sites
 with hits.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
@@ -76,7 +76,7 @@ cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-hits_df <- endpoint_hits(chemical_summary, category = "Biological")                        
+hits_df <- endpoint_hits(chemical_summary, category = "Biological")
 endpoint_hits_DT(chemical_summary, category = "Biological")
 endpoint_hits_DT(chemical_summary, category = "Chemical Class")
 endpoint_hits_DT(chemical_summary, category = "Chemical")

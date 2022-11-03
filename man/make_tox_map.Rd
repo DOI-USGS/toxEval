@@ -24,7 +24,7 @@ map_tox_data(
 \arguments{
 \item{chemical_summary}{Data frame from \code{\link{get_chemical_summary}}.}
 
-\item{chem_site}{Data frame containing the columns SiteID, site_grouping, 
+\item{chem_site}{Data frame containing the columns SiteID, site_grouping,
 Short Name, dec_lon, and dec_lat.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
@@ -37,11 +37,11 @@ Short Name, dec_lon, and dec_lat.}
 opposed to ToxCast benchmarks.}
 }
 \description{
-The function \code{make_tox_map} creates a \code{\link[leaflet]{leaflet}} map 
-of the sites. This function places symbols at the location of each site in the data 
-file that represent the magnitude of EAR (color) and the number of 
-samples in the data set (size). This is the only function that requires 
-"dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the 
+The function \code{make_tox_map} creates a \code{\link[leaflet]{leaflet}} map
+of the sites. This function places symbols at the location of each site in the data
+file that represent the magnitude of EAR (color) and the number of
+samples in the data set (size). This is the only function that requires
+"dec_lon" and "dec_lat" (decimal longitude and decimal latitude) in the
 data frame specified for the chem_site argument.
 }
 \details{
@@ -50,7 +50,7 @@ my be useful on it's own.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
@@ -63,8 +63,8 @@ cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 
-make_tox_map(chemical_summary, tox_list$chem_site, "Biological")   
+make_tox_map(chemical_summary, tox_list$chem_site, "Biological")
 make_tox_map(chemical_summary, tox_list$chem_site, "Chemical Class")
-make_tox_map(chemical_summary, tox_list$chem_site, "Chemical") 
+make_tox_map(chemical_summary, tox_list$chem_site, "Chemical")
 
 }
