@@ -39,6 +39,20 @@ test_that("Check included data", {
                     "assay_component_endpoint_name",
                     "intended_target_family") %in% names(end_point_info)))
   
+  # Columns needed for ToxMixtures:
+  tm_cols <- c("assay_source_name",
+               "assay_name",
+               "assay_component_name",
+               "assay_component_endpoint_name",
+               "intended_target_gene_id",
+               "intended_target_gene_name",
+               "intended_target_gene_symbol",
+               "signal_direction",
+               "analysis_direction",
+               "biological_process_target")
+  
+  expect_true(all(tm_cols %in% names(end_point_info)))
+  
   default_eps <- c("ACEA", "APR", "ATG",
                    "NVS", "OT", "TOX21", "CEETOX",
                    "LTEA", "CLD", "TANGUAY", "CCTE_PADILLA",

@@ -60,5 +60,4 @@ BugReports: https://code.usgs.gov/water/toxEval/-/issues
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
-LazyData: yes
 RoxygenNote: 7.2.1
