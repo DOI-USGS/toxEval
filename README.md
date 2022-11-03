@@ -41,9 +41,9 @@ To get cutting-edge changes, install from GitHub using the `remotes`
 packages:
 
 ``` r
-library(devtools)
+library(remotes)
 install_gitlab("water/toxEval",
-               host = "code.usgs.gov"
+               host = "code.usgs.gov",
                build_vignettes = TRUE, 
                build_opts = c("--no-resave-data",
                               "--no-manual"))
