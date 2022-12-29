@@ -49,25 +49,25 @@ opposed to ToxCast benchmarks.}
 \item{palette}{Vector of color palette for fill. Can be a named vector
 to specify specific color for specific categories.}
 
-\item{top_num}{Integer number of endpoints to include in the graph. If NA, all 
+\item{top_num}{Integer number of endpoints to include in the graph. If NA, all
 endpoints will be included.}
 }
 \description{
-The \code{plot_tox_endpoints2} function creates a set of boxplots representing EAR 
+The \code{plot_tox_endpoints2} function creates a set of boxplots representing EAR
 values for each endPoint based on the selected data. A subset of data is first
-chosen by specifying a group in the \code{filterBy} argument. The 
-\code{filterBy} argument must match one of the unique options in the category. 
-For example, if the category is "Chemical Class", then the \code{filterBy} argument 
+chosen by specifying a group in the \code{filterBy} argument. The
+\code{filterBy} argument must match one of the unique options in the category.
+For example, if the category is "Chemical Class", then the \code{filterBy} argument
 must be one of the defined "Chemical Class" options such as "Herbicide".
 }
 \details{
-The difference between this function and the 
+The difference between this function and the
 \code{\link[toxEval]{plot_tox_endpoints}} is that
 the \dots arguments allow for customized faceting. To include this in
 the original toxEval function, backward compatibility would be broken.
 }
 \examples{
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
@@ -87,6 +87,7 @@ cs2$guide_side <- "B"
 cs_double <- rbind(cs, cs2)
 
 plot_tox_endpoints2(cs_double, guide_side,
-                   top_num = 10) +
-           ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
+  top_num = 10
+) +
+  ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
 }

@@ -17,7 +17,6 @@ template:
     text-muted: "white"
     pkgdown-nav-height: 125px
 navbar:
-  type: default
   left:
   - text: Background
     href: articles/Introduction.html
@@ -77,3 +76,11 @@ reference:
       - endpoint_hits
       - make_tox_map
       - explore_endpoints
+      - plot_tox_endpoints2
+  - title: Utility Functions
+    desc: Functions to help
+    contents:
+      - toxEval-package 
+      - summary.toxEval
+      - as.toxEval 
+      

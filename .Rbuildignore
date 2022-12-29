@@ -54,6 +54,7 @@ vignettes/atrazineDose.png
 ^codecov\.yml$
 ^\.github$
 ci/*
+cobertura.xml
 vignettes/back_to_main.png
 vignettes/delete_branch.png
 vignettes/pipeline.png
@@ -81,4 +82,4 @@ vignettes/https_clone.png
 deploy_simple.R
 renv/*
 renv.lock
-
+test-out.xml

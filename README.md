@@ -1,9 +1,5 @@
 # toxEval <img src="man/figures/toxEval.png" alt="toxEval" class="logo" style="width:90px;height:auto;" align="right" />
 
-[![R build
-status](https://github.com/USGS-R/toxEval/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/toxEval/actions)
-[![Coverage
-Status](https://coveralls.io/repos/github/USGS-R/toxEval/badge.svg?branch=main)](https://coveralls.io/github/USGS-R/toxEval?branch=main)
 [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 [![CRAN
 version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)
@@ -31,6 +27,27 @@ choose. Use of the functions within the R-package allows for additional
 flexibility within the functions beyond what the app offers and provides
 options for the user to interact more directly with the data. The
 overview in this document focuses on the R-package.
+
+## Installation of toxEval
+
+To install the toxEval package, you must be using R 3.0 or greater and
+run the following command:
+
+``` r
+install.packages("toxEval")
+```
+
+To get cutting-edge changes, install from GitHub using the `remotes`
+packages:
+
+``` r
+library(remotes)
+install_gitlab("water/toxEval",
+               host = "code.usgs.gov",
+               build_vignettes = TRUE, 
+               build_opts = c("--no-resave-data",
+                              "--no-manual"))
+```
 
 ## Quickstart
 
@@ -62,9 +79,9 @@ data provided in the package):
 
 ``` r
 library(toxEval)
-#> USGS Research Package:
-#> https://owi.usgs.gov/R/packages.html#research
-#> ToxCast database: version 3.2
+#> For more information:
+#> https://rconnect.usgs.gov/toxEval_docs/
+#> ToxCast database: version 3.5
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -84,9 +101,10 @@ chem_class_plot <- plot_tox_boxplots(chemicalSummary,
 chem_class_plot
 ```
 
-![](man/figures/README-unnamed-chunk-4-1.png)
+![](man/figures/README-unnamed-chunk-6-1.png)
 
 ``` r
+
 ######################################
 plot_stacks <- plot_tox_stacks(chemicalSummary, 
                                tox_list$chem_site, 
@@ -94,7 +112,7 @@ plot_stacks <- plot_tox_stacks(chemicalSummary,
 plot_stacks
 ```
 
-![](man/figures/README-unnamed-chunk-4-2.png)
+![](man/figures/README-unnamed-chunk-6-2.png)
 
 ``` r
 ######################################
@@ -105,7 +123,7 @@ plot_heat <- plot_tox_heatmap(chemicalSummary,
 plot_heat
 ```
 
-![](man/figures/README-unnamed-chunk-4-3.png)
+![](man/figures/README-unnamed-chunk-6-3.png)
 
 This code opens up the example file, loads it into a `toxEval` object,
 grabs the pertinent ToxCast information, and creates a “chemicalSummary”
@@ -126,11 +144,6 @@ package:
 Please consider reporting bugs and asking questions on the Issues page:
 <https://github.com/USGS-R/toxEval/issues>
 
-Follow `@USGS_R` on Twitter for updates on USGS R packages:
-
-[![Twitter
-Follow](https://img.shields.io/twitter/follow/USGS_R.svg?style=social&label=Follow%20USGS_R)](https://twitter.com/USGS_R)
-
 ### Code of Conduct
 
 We want to encourage a warm, welcoming, and safe environment for
@@ -143,7 +156,7 @@ more information.
 The Water and Environmental Health Mission Areas of the USGS, as well as
 the Great Lakes Restoration Initiative (GLRI) has supported the
 development of the `toxEval` R-package. Further maintenance is expected
-to be stable through September 2019. Resources are available primarily
+to be stable through September 2023. Resources are available primarily
 for maintenance and responding to user questions. Priorities on the
 development of new features are determined by the `toxEval` development
 team.
@@ -152,7 +165,7 @@ team.
 
 ### Sunset date
 
-Funding for `toxEval` is secured through summer 2021, after which bug
+Funding for `toxEval` is secured through summer 2023, after which bug
 fixes & new features will be minimal.
 
 ## Installation of R and RStudio
@@ -170,26 +183,6 @@ Useful links:
 -   [Download R Mac](https://cran.r-project.org/bin/macosx/)
 -   [Download
     RStudio](https://www.rstudio.com/products/rstudio/download/)
-
-## Installation of toxEval
-
-To install the toxEval package, you must be using R 3.0 or greater and
-run the following command:
-
-``` r
-install.packages("toxEval")
-```
-
-To get cutting-edge changes, install from GitHub using the `devtools`
-packages:
-
-``` r
-library(devtools)
-install_github("USGS-R/toxEval",
-               build_vignettes = TRUE, 
-               build_opts = c("--no-resave-data",
-                              "--no-manual"))
-```
 
 Regularly, it is a good idea to update *ALL* your packages in R. If
 using RStudio, this is quite easy, there’s an Update button in the

@@ -42,35 +42,35 @@ opposed to ToxCast benchmarks.}
 
 \item{y_label}{Character for x label. Default is NA which produces an automatic label.}
 
-\item{top_num}{Integer number to include in the graph. If NA, all 
+\item{top_num}{Integer number to include in the graph. If NA, all
 data will be included.}
 }
 \description{
-The \code{plot_tox_stacks} function creates a set of boxplots representing EAR 
-values computed with the \code{\link{get_chemical_summary}} function, and 
-dependent on the choice of several input options. See "Summarizing the data" 
+The \code{plot_tox_stacks} function creates a set of boxplots representing EAR
+values computed with the \code{\link{get_chemical_summary}} function, and
+dependent on the choice of several input options. See "Summarizing the data"
 in the Introduction vignette: \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}
-for a description on how the EAR values are computed, aggregated, and summarized. 
-Choosing "Chemical Class" in the category argument will generate separate stacked 
-bars for each unique class. "Chemical" will generate stacked bars for each individual 
-chemical, and "Biological" will generate stacked bars for each group in the selected 
+for a description on how the EAR values are computed, aggregated, and summarized.
+Choosing "Chemical Class" in the category argument will generate separate stacked
+bars for each unique class. "Chemical" will generate stacked bars for each individual
+chemical, and "Biological" will generate stacked bars for each group in the selected
 ToxCast annotation. The legend can optionally be turned on or off using the
-include_legend argument. It may be impractical for instance to show the 
+include_legend argument. It may be impractical for instance to show the
 legend for "Chemical" if there are hundreds of chemicals.
 }
 \details{
-The graph displays a slightly different result for a single site. Providing 
-data with only one site displays each individual sample as a stacked bar 
-rather than the mean or maximum for a site. 
+The graph displays a slightly different result for a single site. Providing
+data with only one site displays each individual sample as a stacked bar
+rather than the mean or maximum for a site.
 
-This is a function where it may be ideal to create a custom order to the sites 
+This is a function where it may be ideal to create a custom order to the sites
 (for example, west-to-east). See the above section "Custom configuration"
-\href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert 
+\href{../doc/Introduction.html#custom_config}{\code{vignette("Introduction", package = "toxEval")}} for instructions on how to convert
 the character vector sites to a factor with ordered levels.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
@@ -83,14 +83,16 @@ ACC <- remove_flags(ACC)
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
-                                       
-plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")   
+
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
-plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE) 
+plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE)
 plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5, y_label = "EAR")
 
 single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
 plot_tox_stacks(single_site, tox_list$chem_site, "Chemical", top_num = 5)
-plot_tox_stacks(single_site, chem_site = tox_list$chem_site, 
-               category = "Chemical", top_num = 5, y_label = "EAR")
+plot_tox_stacks(single_site,
+  chem_site = tox_list$chem_site,
+  category = "Chemical", top_num = 5, y_label = "EAR"
+)
 }

@@ -11,19 +11,19 @@
 data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
 }
 \description{
-Downloaded on January 2020 from ToxCast. The data were
-combined from files in the "INVITRODB_V3_LEVEL5" folder. 
+Downloaded on October 2022 from ToxCast. The data were
+combined from files in the "INVITRODB_V3_5_LEVEL5" folder.
 At the time of toxEval package release, this information was found:
 \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
-in the "ToxCast & Tox21 Data Spreadsheet" data set. 
-ACC values are the in the "ACC" column (winning model) and units are 
+in the "ToxCast & Tox21 Data Spreadsheet" data set.
+ACC values are the in the "ACC" column (winning model) and units are
 log micro-Molarity (log \eqn{\mu}M).
 }
 \examples{
 head(ToxCast_ACC)
 }
 \references{
-Toxicology, EPA's National Center for Computational (2018): ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
+Toxicology, EPA's National Center for Computational (2020): ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
  https://doi.org/10.23645/epacomptox.6062503.v3
 }
 \keyword{datasets}

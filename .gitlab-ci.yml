@@ -1,6 +1,7 @@
-image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/shiny-verse:latest
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/rocker/geospatial:latest
 
 stages:
+  - getready
   - check
   - test
   - end
@@ -17,8 +18,6 @@ variables:
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
   NOT_CRAN: "true"
-  RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
-  RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
   PKG_PATH: "$CI_PROJECT_DIR/docs"
   CONNECT_API_KEY: $CONNECT_API_KEY
   CONNECT_SERVER: $CONNECT_SERVER
@@ -27,22 +26,15 @@ cache:
   key: ${CI_JOB_NAME}
   paths:
     - $R_LIBS_USER
-    - $RENV_PATHS_CACHE
-    - $RENV_PATHS_LIBRARY
     
 getready:
-  stage: .pre
+  stage: getready
   script:
     - mkdir -p $R_LIBS_USER
     - mkdir -p $APT_CACHE
-    - apt-get update
-    - apt-get install -y software-properties-common
-    - add-apt-repository -y ppa:cran/imagemagick
-    - apt-get install -y libmagick++-dev
-    - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends ${APT_PKGS}  
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
-    - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
-    - Rscript -e "renv::restore()"
+    - Rscript -e "install.packages(c('devtools', 'connectapi'))"
+    - Rscript -e "devtools::install_deps()"
   cache:
     paths:
      - $R_LIBS_USER
@@ -68,18 +60,26 @@ unittests:
     - getready
     - buildcheck
   script:
-    - R -e 'if (any(as.data.frame(devtools::test())[["failed"]] > 0)) stop("Some tests failed.")'
-
+    - R -e 'library(testthat); options(testthat.output_file = file.path(Sys.getenv("CI_PROJECT_DIR"), "test-out.xml")); devtools::test(reporter = "junit")'
+  artifacts:
+    when: always
+    paths: 
+      - test-out.xml
+    reports:
+      junit: test-out.xml
+        
 covertests:
   stage: test
   dependencies:
     - getready
     - buildcheck
   script:
-    - R -e 'x <- covr::package_coverage();x;saveRDS(x, file = "cover.rds")'
+    - R -e 'x <- covr::package_coverage(); covr::to_cobertura(x); x; '
   artifacts:
-    paths: 
-      - cover.rds
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml
   coverage: '/Coverage: \d+.\d+\%/'
 
 deploy:
@@ -93,3 +93,15 @@ deploy:
     paths:
       - $PKG_PATH
     expire_in: 1 week
+    
+Validate Inventory:
+    stage: end
+    image: ${INTERNAL_REGISTRY}software/software-management:latest
+    script:
+      - software-management review
+        --project "${CI_PROJECT_PATH}"
+        --ref "${CI_COMMIT_BRANCH}"
+        --type "provisional"
+        --token "${GIT_TOKEN_CUSTOM}"
+    tags:
+        - chs-shared

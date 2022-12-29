@@ -65,38 +65,38 @@ to specify specific colors for specific categories.}
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 }
 \description{
-The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR 
-values computed with the \code{\link{get_chemical_summary}} function, and 
-dependent on the choice of several input options. See "Summarizing the data" 
-in the Introduction vignette: \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}. 
+The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR
+values computed with the \code{\link{get_chemical_summary}} function, and
+dependent on the choice of several input options. See "Summarizing the data"
+in the Introduction vignette: \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
 for a description of how the EAR values are computed, aggregated,
-and summarized. Choosing "Chemical Class" in the category argument 
-will generate separate boxplots for each unique class. "Chemical" will generate 
-boxplots for each individual chemical, and "Biological" will generate boxplots 
+and summarized. Choosing "Chemical Class" in the category argument
+will generate separate boxplots for each unique class. "Chemical" will generate
+boxplots for each individual chemical, and "Biological" will generate boxplots
 for each group in the selected ToxCast annotation.
 }
 \details{
-It is also possible to display a threshold line using the hit_threshold argument. 
-The graph will then include the number of sites with detections, the threshold 
-line, and the number of "hits" indicating how many sites that have EAR values 
+It is also possible to display a threshold line using the hit_threshold argument.
+The graph will then include the number of sites with detections, the threshold
+line, and the number of "hits" indicating how many sites that have EAR values
 exceeding the hit_threshold.
 
-The graph shows a slightly different result for a single site. For a single 
-site graph, the number of chemicals that were detected and have associated endpoint 
+The graph shows a slightly different result for a single site. For a single
+site graph, the number of chemicals that were detected and have associated endpoint
 ACCs represented are displayed.
 
 The functions \code{plot_tox_boxplots} and \code{graph_chem_data} are functions that perform
 the statistical calculations to create the plot. \code{graph_chem_data} is specific
-to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and 
+to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and
 "Chemical Class".
 
-Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette: 
+Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette:
 \href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
 for more information.
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)
@@ -108,30 +108,38 @@ ACC <- remove_flags(ACC)
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
-plot_tox_boxplots(chemical_summary, "Biological")   
+plot_tox_boxplots(chemical_summary, "Biological")
 plot_tox_boxplots(chemical_summary, "Chemical Class")
 plot_tox_boxplots(chemical_summary, "Chemical")
 
 
-cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
-               "#0072B2", "#D55E00", "#CC79A7")
-graphData <- tox_boxplot_data(chemical_summary = chemical_summary,
-                              category = "Biological") 
+cbPalette <- c(
+  "#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
+  "#0072B2", "#D55E00", "#CC79A7"
+)
+graphData <- tox_boxplot_data(
+  chemical_summary = chemical_summary,
+  category = "Biological"
+)
 cbValues <- colorRampPalette(cbPalette)(length(levels(graphData$category)))
 names(cbValues) <- levels(graphData$category)
 
-plot_tox_boxplots(chemical_summary, 
-                  hit_threshold = 0.1,
-                  category = "Biological",
-                  palette = cbValues,
-                  title = 'Maximum EAR per site, grouped by biological activity groupings') 
+plot_tox_boxplots(chemical_summary,
+  hit_threshold = 0.1,
+  category = "Biological",
+  palette = cbValues,
+  title = "Maximum EAR per site, grouped by biological activity groupings"
+)
 \donttest{
 plot_tox_boxplots(chemical_summary,
-                  category = "Chemical", x_label = "EAR")
+  category = "Chemical", x_label = "EAR"
+)
 single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
-plot_tox_boxplots(single_site, 
-                  category = "Biological") 
-plot_tox_boxplots(single_site, 
-                  category = "Chemical", hit_threshold = 0.001) 
+plot_tox_boxplots(single_site,
+  category = "Biological"
+)
+plot_tox_boxplots(single_site,
+  category = "Chemical", hit_threshold = 0.001
+)
 }
 }

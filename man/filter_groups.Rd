@@ -7,39 +7,41 @@
 filter_groups(
   ep,
   groupCol = "intended_target_family",
-  assays = c("ACEA", "APR", "ATG", "NVS", "OT", "TOX21", "CEETOX", "CLD", "TANGUAY",
-    "NHEERL_PADILLA", "NCCT", "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT"),
+  assays = c("ACEA", "APR", "ATG", "NVS", "OT", "TOX21", "CEETOX", "LTEA", "CLD",
+    "TANGUAY", "CCTE_PADILLA", "CCTE", "STM", "ARUNA", "CCTE_SHAFER", "CPHEA_STOKER",
+    "CCTE_GLTED", "UPITT", "UKN", "ERF", "TAMU", "IUF", "CCTE_MUNDY", "UTOR", "VALA"),
   remove_groups = c("Background Measurement", "Undefined")
 )
 }
 \arguments{
 \item{ep}{Data frame containing Endpoint information from ToxCast}
 
-\item{groupCol}{Character name of ToxCast annotation column to use as a group catetory}
+\item{groupCol}{Character name of ToxCast annotation column to use as a group category}
 
-\item{assays}{Vector of assays to use in the data analysis. Possible values are "ACEA", "APR", "ATG", "BSK", "NVS", "OT",
-"TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
-"NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT". By default, the 
+\item{assays}{Vector of assays to use in the data analysis. Possible values are "ACEA", "APR", "ATG",
+"NVS", "OT", "TOX21", "CEETOX", "LTEA", "CLD", "TANGUAY", "CCTE_PADILLA", "BSK" ,
+"CCTE", "STM", "ARUNA", "CCTE_SHAFER", "CPHEA_STOKER", "CCTE_GLTED", "UPITT", "UKN",
+"ERF", "TAMU", "IUF", "CCTE_MUNDY", "UTOR", "VALA". By default, the
 "BSK" (BioSeek) assay is removed.}
 
 \item{remove_groups}{Vector of groups within the selected 'groupCol' to remove.}
 }
 \description{
-This function provides a mechanism to specify 3 levels of information in the 
-supplied data frame \code{\link{end_point_info}} to be used in subsequent analysis steps. 
-First, the user specifies the ToxCast assay annotation using the 'groupCol' 
-argument, which is a column header in 'end_point_info'. Second, the user 
-specifies the families of assays to use. Finally, the user can choose to 
-remove specific group(s) from the category. The default is to remove 
-'Background Measurement' and 'Undefined'. Choices for this should be 
+This function provides a mechanism to specify 3 levels of information in the
+supplied data frame \code{\link{end_point_info}} to be used in subsequent analysis steps.
+First, the user specifies the ToxCast assay annotation using the 'groupCol'
+argument, which is a column header in 'end_point_info'. Second, the user
+specifies the families of assays to use. Finally, the user can choose to
+remove specific group(s) from the category. The default is to remove
+'Background Measurement' and 'Undefined'. Choices for this should be
 reconsidered based on individual study objectives.
 }
 \details{
-The default category ('groupCol') is 'intended_target_family'. Depending 
-on the study, other categories may be more relevant. The best resource on these 
-groupings is the "ToxCast Assay Annotation Data User Guide" directly from 
-EPA \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}. 
-Following that link, it defines "intended_target_family" as "the target family of the 
+The default category ('groupCol') is 'intended_target_family'. Depending
+on the study, other categories may be more relevant. The best resource on these
+groupings is the "ToxCast Assay Annotation Data User Guide" directly from
+EPA \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
+Following that link, it defines "intended_target_family" as "the target family of the
 objective target for the assay". Much more detail can be discovered in that documentation.
 }
 \examples{

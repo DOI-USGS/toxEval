@@ -36,23 +36,23 @@ opposed to ToxCast benchmarks.}
 \item{hit_threshold}{Numeric threshold defining a "hit".}
 }
 \value{
-data frame with one row per site, and the mas or mean EAR and frequency of 
+data frame with one row per site, and the mas or mean EAR and frequency of
 hits based on the category.
 }
 \description{
-The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions 
-create tables with one row per site. Columns represent the maximum or mean EAR 
-(depending on the mean_logic argument) for each category ("Chemical Class", 
-"Chemical", or "Biological") and the frequency of the maximum or mean EAR 
+The \code{rank_sites_DT} (DT option) and \code{rank_sites} (data frame option) functions
+create tables with one row per site. Columns represent the maximum or mean EAR
+(depending on the mean_logic argument) for each category ("Chemical Class",
+"Chemical", or "Biological") and the frequency of the maximum or mean EAR
 exceeding a user specified hit_threshold.
 }
 \details{
-The tables show slightly different results for a single site. Rather than multiple 
+The tables show slightly different results for a single site. Rather than multiple
 columns for categories, there is now 1 row per category (since the site is known).
 }
 \examples{
 # This is the example workflow:
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
 full_path <- file.path(path_to_tox, file_name)

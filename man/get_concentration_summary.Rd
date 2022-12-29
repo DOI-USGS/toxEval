@@ -16,41 +16,42 @@ get_concentration_summary(
 \item{tox_list}{List with data frames for chem_data, chem_info, and chem_site.
 Created with \code{\link{create_toxEval}}.}
 
-\item{chem_data}{\emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}. 
+\item{chem_data}{\emph{Optional} data frame with (at least) columns: CAS, SiteID, and Value. Default is \code{NULL}.
 The argument will over-ride what is in tox_list.}
 
-\item{chem_site}{\emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}. 
+\item{chem_site}{\emph{Optional} data frame with (at least) columns: SiteID, and Short Name. Default is \code{NULL}.
 The argument will over-ride what is in tox_list.}
 
-\item{chem_info}{\emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}. 
+\item{chem_info}{\emph{Optional} data frame with (at least) columns: CAS, and class. Default is \code{NULL}.
 The argument will over-ride what is in tox_list.}
 
-\item{tox_names}{Logical whether to use the provided chemical names from the ToxCast or not. If 
+\item{tox_names}{Logical whether to use the provided chemical names from the ToxCast or not. If
 there is not a match by CAS, the function will look for a column "Chemical" in the "Chemical"
 tab. If that column doesn't exist, it will create a (not good!) name.}
 }
 \value{
 a data frame with the columns: CAS, chnm (chemical name
-as a factor), site, date, EAR (which is just concentration), Bio_category, shortName (of site), Class. The output of this 
+as a factor), site, date, EAR (which is just concentration), Bio_category, shortName (of site), Class. The output of this
 function is where you find EAR values for every chemical/endpoint combination.
 }
 \description{
 Use this function to create a chemical_summary, but instead
 of using any benchmarks, the EAR column is simply
 the concentration. The output of this function can be used
-in any of the plotting or table functions in the same way 
+in any of the plotting or table functions in the same way
 that the output of \code{\link{get_chemical_summary}}.
 }
 \examples{
-path_to_tox <-  system.file("extdata", package="toxEval")
+path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 full_path <- file.path(path_to_tox, file_name)
 
 tox_list <- create_toxEval(full_path)
 
 chemical_summary_conc <- get_concentration_summary(tox_list)
-head(chemical_summary_conc)  
-plot_tox_boxplots(chemical_summary_conc, 
-                  category = "Chemical",
-                  x_label = "Concentration [ug/L]")                        
+head(chemical_summary_conc)
+plot_tox_boxplots(chemical_summary_conc,
+  category = "Chemical",
+  x_label = "Concentration [ug/L]"
+)
 }
