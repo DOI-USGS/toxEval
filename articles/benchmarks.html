@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="toxEval">
 <title>Using Benchmarks • toxEval</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,12 +13,12 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using Benchmarks">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Using Benchmarks">
 <meta property="og:description" content="toxEval">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -31,338 +32,529 @@
   gtag('config', 'UA-53797708-7');
 </script>
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/Introduction.html">Background</a>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <a href="https://www.usgs.gov/" class="external-link"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>
+    <a class="navbar-brand me-2" href="../index.html">toxEval</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../articles/Introduction.html">Background</a>
 </li>
-<li>
-  <a href="../articles/basicWorkflow.html">Basic Workflow</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/basicWorkflow.html">Basic Workflow</a>
 </li>
-<li>
-  <a href="../reference/index.html">Function Help</a>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Function Help</a>
 </li>
-<li>
-  <a href="../articles/PrepareData.html">Data Preparation</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/PrepareData.html">Data Preparation</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/shinyApp.html">Shiny App</a>
-    </li>
-    <li>
-      <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
-    </li>
-    <li>
-      <a href="../articles/pivot.html">Prepare Data in R</a>
-    </li>
-    <li>
-      <a href="../articles/does_curves.html">Dose Response Curves</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/bibliography.html">Bibliograpy</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/USGS-R/toxEval">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/shinyApp.html">Shiny App</a>
+    <a class="dropdown-item" href="../articles/benchmarks.html">Exploring Benchmarks</a>
+    <a class="dropdown-item" href="../articles/pivot.html">Prepare Data in R</a>
+    <a class="dropdown-item" href="../articles/does_curves.html">Dose Response Curves</a>
+    <a class="dropdown-item" href="../articles/Contributing.html">How to Contribute</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/bibliography.html">Bibliograpy</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://code.usgs.gov/water/toxEval">
+    <span class="fa fa-gitlab fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-article">
 
-      </header><script src="benchmarks_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Using Benchmarks</h1>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Using Benchmarks</h1>
             
-            <h4 class="date">08 October, 2020</h4>
+            <h4 data-toc-skip class="date">29 December, 2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/benchmarks.Rmd"><code>vignettes/benchmarks.Rmd</code></a></small>
-      <div class="hidden name"><code>benchmarks.Rmd</code></div>
-
+      
+      <div class="d-none name"><code>benchmarks.Rmd</code></div>
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>The majority of the examples in this documentation create EAR values from concentration “benchmarks” set by the ToxCast database. Here we describe a way to provide your own custom benchmarks data.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The majority of the examples in this documentation create EAR values
+from concentration “benchmarks” set by the ToxCast database. Here we
+describe a way to provide your own custom benchmarks data.</p>
 </div>
-<div id="dataRequirements" class="section level1">
-<h1 class="hasAnchor">
-<a href="#dataRequirements" class="anchor"></a>Preparing Benchmarks</h1>
-<p>Input data for a custom toxEval input file should be prepared in a Microsoft ™ Excel file using specifically named sheets (also known as tabs). There are 4 mandatory sheets (Data, Chemical, Sites, Benchmarks). The sheets should appear as follows (although the order is not important):</p>
+<div class="section level2">
+<h2 id="dataRequirements">Preparing Benchmarks<a class="anchor" aria-label="anchor" href="#dataRequirements"></a>
+</h2>
+<p>Input data for a custom toxEval input file should be prepared in a
+Microsoft ™ Excel file using specifically named sheets (also known as
+tabs). There are 4 mandatory sheets (Data, Chemical, Sites, Benchmarks).
+The sheets should appear as follows (although the order is not
+important):</p>
 <p><img src="bench_tab.png" width="262"></p>
-<div id="mandatory-information" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mandatory-information" class="anchor"></a>Mandatory Information</h2>
-<p>The mandatory columns are: CAS, Value, groupCol, Chemical. Additional column can be included, but will be ignored by <code>toxEval</code> functions.</p>
+<div class="section level3">
+<h3 id="mandatory-information">Mandatory Information<a class="anchor" aria-label="anchor" href="#mandatory-information"></a>
+</h3>
+<p>The mandatory columns are: CAS, Value, groupCol, Chemical. Additional
+column can be included, but will be ignored by <code>toxEval</code>
+functions.</p>
 <ul>
-<li><p>CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry.</p></li>
-<li><p>Chemical: A character column defining the name of the chemicals. This is necessary for labels because the only information <code>toxEval</code> uses by default for chemical names are the names assigned by the ToxCast database for an associated CAS.</p></li>
-<li><p>endPoint: A character column naming the benchmark. This is analogous to the assay names in the ToxCast analysis.</p></li>
-<li><p>Value: The concentration (in identical units as what is reported in the “Data” sheet) of the benchmark.</p></li>
-<li><p>groupCol: A character column that groups endpoints. This is analogous to the Biological groupings from the ToxCast analysis.</p></li>
+<li><p>CAS: A character column defining the chemicals via their Chemical
+Abstracts Service (CAS) registry.</p></li>
+<li><p>Chemical: A character column defining the name of the chemicals.
+This is necessary for labels because the only information
+<code>toxEval</code> uses by default for chemical names are the names
+assigned by the ToxCast database for an associated CAS.</p></li>
+<li><p>endPoint: A character column naming the benchmark. This is
+analogous to the assay names in the ToxCast analysis.</p></li>
+<li><p>Value: The concentration (in identical units as what is reported
+in the “Data” sheet) of the benchmark.</p></li>
+<li><p>groupCol: A character column that groups endpoints. This is
+analogous to the Biological groupings from the ToxCast
+analysis.</p></li>
 </ul>
 </div>
 </div>
-<div id="explore-benchmarks" class="section level1">
-<h1 class="hasAnchor">
-<a href="#explore-benchmarks" class="anchor"></a>Explore Benchmarks</h1>
-<p>In this section, we will assume there is a toxEval input file named “OWC_custom_bench.xlsx”, as descibed in <a href="#dataRequirements">Preparing Benchmarks</a>. The next section <a href="#setupExample">Create Example File</a> will walk through creating the “OWC_custom_bench.xlsx” file on the example data provided within the <code>toxEval</code> package.</p>
-<div id="toxicity-quotient" class="section level2">
-<h2 class="hasAnchor">
-<a href="#toxicity-quotient" class="anchor"></a>Toxicity Quotient</h2>
-<p>This example uses water quality guidelines/benchmarks from EPA and other sources. The guidelines are classified into chronic and acute categories.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">tox_list_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="st">"OWC_custom_bench.xlsx"</span><span class="op">)</span></pre></div>
-<p>Using a “Benchmark” tab in the input file, you can skip the <code>ACC</code> and <code>filtered_ep</code> arguments:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">summary_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span><span class="op">(</span><span class="va">tox_list_bench</span><span class="op">)</span></pre></div>
-<p>For ToxCast EARs, it makes sense in the boxplot visualization to sum the EARs of all endpoints for a single chemical. This is due to the specific nature of the ToxCast endpoint suite of tests.</p>
-<p>Some benchmarks such as these water quality guidelines already take into account the overall effects, and you do not want to sum those values. There is an argument in the <code>plot_tox_boxplots</code> function that allows you to specify: <code>sum_logic</code> (where TRUE sums the EARs for each chemical, and FALSE does not).</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_chemical_boxplots.html">plot_tox_boxplots</a></span><span class="op">(</span><span class="va">summary_bench</span>, 
-                  category <span class="op">=</span> <span class="st">"Chemical"</span>, 
-                  sum_logic <span class="op">=</span> <span class="cn">FALSE</span>,
-                  x_label <span class="op">=</span> <span class="st">"Toxicity Quotient"</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="explore-benchmarks">Explore Benchmarks<a class="anchor" aria-label="anchor" href="#explore-benchmarks"></a>
+</h2>
+<p>In this section, we will assume there is a toxEval input file named
+“OWC_custom_bench.xlsx”, as descibed in <a href="#dataRequirements">Preparing Benchmarks</a>. The next section <a href="#setupExample">Create Example File</a> will walk through creating
+the “OWC_custom_bench.xlsx” file on the example data provided within the
+<code>toxEval</code> package.</p>
+<div class="section level3">
+<h3 id="toxicity-quotient">Toxicity Quotient<a class="anchor" aria-label="anchor" href="#toxicity-quotient"></a>
+</h3>
+<p>This example uses water quality guidelines/benchmarks from EPA and
+other sources. The guidelines are classified into chronic and acute
+categories.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tox_list_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="st">"OWC_custom_bench.xlsx"</span><span class="op">)</span></span></code></pre></div>
+<p>Using a “Benchmark” tab in the input file, you can skip the
+<code>ACC</code> and <code>filtered_ep</code> arguments:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summary_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span><span class="op">(</span><span class="va">tox_list_bench</span><span class="op">)</span></span></code></pre></div>
+<p>For ToxCast EARs, it makes sense in the boxplot visualization to sum
+the EARs of all endpoints for a single chemical. This is due to the
+specific nature of the ToxCast endpoint suite of tests.</p>
+<p>Some benchmarks such as these water quality guidelines already take
+into account the overall effects, and you do not want to sum those
+values. There is an argument in the <code>plot_tox_boxplots</code>
+function that allows you to specify: <code>sum_logic</code> (where TRUE
+sums the EARs for each chemical, and FALSE does not).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tox_boxplots.html">plot_tox_boxplots</a></span><span class="op">(</span><span class="va">summary_bench</span>, </span>
+<span>                  category <span class="op">=</span> <span class="st">"Chemical"</span>, </span>
+<span>                  sum_logic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                  x_label <span class="op">=</span> <span class="st">"Toxicity Quotient"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="benchmarks_files/figure-html/plotBenchChems-1.png" width="700"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span><span class="op">(</span><span class="va">summary_bench</span>,
-                chem_site <span class="op">=</span> <span class="va">tox_list_bench</span><span class="op">$</span><span class="va">chem_site</span>,
-                category <span class="op">=</span> <span class="st">"Chemical"</span>, 
-                sum_logic <span class="op">=</span> <span class="cn">FALSE</span>,
-                y_label <span class="op">=</span> <span class="st">"Toxicity Quotient"</span>,
-                include_legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tox_stacks.html">plot_tox_stacks</a></span><span class="op">(</span><span class="va">summary_bench</span>,</span>
+<span>                chem_site <span class="op">=</span> <span class="va">tox_list_bench</span><span class="op">$</span><span class="va">chem_site</span>,</span>
+<span>                category <span class="op">=</span> <span class="st">"Chemical"</span>, </span>
+<span>                sum_logic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                y_label <span class="op">=</span> <span class="st">"Toxicity Quotient"</span>,</span>
+<span>                include_legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="benchmarks_files/figure-html/plotBenchmarksStack-1.png" width="700"></p>
-<p>The <code>category</code> argument can be set to “Biological”, and which then shows the distributions of the acute and chronic groupings.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span><span class="op">(</span><span class="va">summary_bench</span>, 
-                   category <span class="op">=</span> <span class="st">"Biological"</span>,
-                   x_label <span class="op">=</span> <span class="st">"Toxicity Quotient"</span><span class="op">)</span></pre></div>
+<p>The <code>category</code> argument can be set to “Biological”, and
+which then shows the distributions of the acute and chronic
+groupings.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tox_endpoints.html">plot_tox_endpoints</a></span><span class="op">(</span><span class="va">summary_bench</span>, </span>
+<span>                   category <span class="op">=</span> <span class="st">"Biological"</span>,</span>
+<span>                   x_label <span class="op">=</span> <span class="st">"Toxicity Quotient"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="benchmarks_files/figure-html/otherPlot-1.png" width="700"></p>
 </div>
-<div id="compare-with-toxcast" class="section level2">
-<h2 class="hasAnchor">
-<a href="#compare-with-toxcast" class="anchor"></a>Compare with ToxCast</h2>
+<div class="section level3">
+<h3 id="compare-with-toxcast">Compare with ToxCast<a class="anchor" aria-label="anchor" href="#compare-with-toxcast"></a>
+</h3>
 <p>Let’s get the ToxCast example chemical summary as described in the <a href="basicWorkflow.html">Basic Workflow</a>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,
-                                      package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>,
-                          <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span> 
-<span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span>
-<span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ACC.html">get_ACC</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span><span class="op">$</span><span class="va">CAS</span><span class="op">)</span>
-<span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove_flags.html">remove_flags</a></span><span class="op">(</span>ACC <span class="op">=</span> <span class="va">ACC</span><span class="op">)</span>
-
-<span class="va">cleaned_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span><span class="op">(</span><span class="va">end_point_info</span><span class="op">)</span>
-<span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">cleaned_ep</span><span class="op">)</span>
-
-
-<span class="va">summary_tox</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span><span class="op">(</span><span class="va">tox_list</span>, 
-                                    <span class="va">ACC</span>, 
-                                    <span class="va">filtered_ep</span><span class="op">)</span></pre></div>
-<p>We can use the <code>side_by_side_data</code> function to create a single data frame that the <code>toxEval</code> plotting functions can use.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">gd_tox</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_chem_data.html">graph_chem_data</a></span><span class="op">(</span><span class="va">summary_tox</span><span class="op">)</span>
-<span class="va">gd_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_chem_data.html">graph_chem_data</a></span><span class="op">(</span><span class="va">summary_bench</span>, 
-                            sum_logic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="va">combo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_chem_data.html">side_by_side_data</a></span><span class="op">(</span><span class="va">gd_tox</span>, <span class="va">gd_bench</span>, 
-                           left_title <span class="op">=</span> <span class="st">"ToxCast"</span>, 
-                           right_title <span class="op">=</span> <span class="st">"WQ Benchmarks"</span><span class="op">)</span></pre></div>
-<p>The “combo” data frame has a new column “guide_side”, and is a factor containing the “left_title” and “right_title”. This will allow us to facet the output of the chemical boxplots. The ordering of the chemicals is primarily based on the “left” input (so in this case, the ToxCast EARs).</p>
-<p>The output of all the <code>toxEval</code> graphs are <code>ggplot2</code> objects. What this means is you can continue to customize the object using <code>ggplot2</code> functions. In this case, we can use <code>facet_grid</code> to separage the data by the column “guide_side”. The name of the facet column must be include without quotes, as shown here:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_chemical_boxplots.html">plot_chemical_boxplots</a></span><span class="op">(</span><span class="va">combo</span>, <span class="va">guide_side</span>,
-                       x_label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">guide_side</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span>
+<span>                                      package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>,</span>
+<span>                          <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span> </span>
+<span><span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span></span>
+<span><span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ACC.html">get_ACC</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span><span class="op">$</span><span class="va">CAS</span><span class="op">)</span></span>
+<span><span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove_flags.html">remove_flags</a></span><span class="op">(</span>ACC <span class="op">=</span> <span class="va">ACC</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cleaned_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span><span class="op">(</span><span class="va">end_point_info</span><span class="op">)</span></span>
+<span><span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">cleaned_ep</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">summary_tox</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_chemical_summary.html">get_chemical_summary</a></span><span class="op">(</span><span class="va">tox_list</span>, </span>
+<span>                                    <span class="va">ACC</span>, </span>
+<span>                                    <span class="va">filtered_ep</span><span class="op">)</span></span></code></pre></div>
+<p>We can use the <code>side_by_side_data</code> function to create a
+single data frame that the <code>toxEval</code> plotting functions can
+use.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gd_tox</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span><span class="op">(</span><span class="va">summary_tox</span><span class="op">)</span></span>
+<span><span class="va">gd_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span><span class="op">(</span><span class="va">summary_bench</span>, </span>
+<span>                            sum_logic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">combo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_data_prep.html">side_by_side_data</a></span><span class="op">(</span><span class="va">gd_tox</span>, <span class="va">gd_bench</span>, </span>
+<span>                           left_title <span class="op">=</span> <span class="st">"ToxCast"</span>, </span>
+<span>                           right_title <span class="op">=</span> <span class="st">"WQ Benchmarks"</span><span class="op">)</span></span></code></pre></div>
+<p>The “combo” data frame has a new column “guide_side”, and is a factor
+containing the “left_title” and “right_title”. This will allow us to
+facet the output of the chemical boxplots. The ordering of the chemicals
+is primarily based on the “left” input (so in this case, the ToxCast
+EARs).</p>
+<p>The output of all the <code>toxEval</code> graphs are
+<code>ggplot2</code> objects. What this means is you can continue to
+customize the object using <code>ggplot2</code> functions. In this case,
+we can use <code>facet_grid</code> to separage the data by the column
+“guide_side”. The name of the facet column must be include without
+quotes, as shown here:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span><span class="op">(</span><span class="va">combo</span>, <span class="va">guide_side</span>,</span>
+<span>                       x_label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">guide_side</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="benchmarks_files/figure-html/sideBySidePlot-1.png" width="700"></p>
 </div>
-<div id="compare-with-concentration" class="section level2">
-<h2 class="hasAnchor">
-<a href="#compare-with-concentration" class="anchor"></a>Compare with Concentration</h2>
-<p>We can create a summary data frame that has concentrations instead of EARs as well. We’ve included a function <code>get_concentration_summary</code> to make the chemical_summary data frame input directly from the tox_list.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">summary_conc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_concentration_summary.html">get_concentration_summary</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">)</span>
-<span class="va">gd_conc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_chem_data.html">graph_chem_data</a></span><span class="op">(</span><span class="va">summary_conc</span><span class="op">)</span>
-
-<span class="va">combo2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_chem_data.html">side_by_side_data</a></span><span class="op">(</span><span class="va">gd_conc</span>, <span class="va">gd_bench</span>, 
-                           left_title <span class="op">=</span> <span class="st">"Concentration"</span>, 
-                           right_title <span class="op">=</span> <span class="st">"WQ Benchmarks"</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/plot_chemical_boxplots.html">plot_chemical_boxplots</a></span><span class="op">(</span><span class="va">combo2</span>, <span class="va">guide_side</span>, 
-                       x_label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">guide_side</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="compare-with-concentration">Compare with Concentration<a class="anchor" aria-label="anchor" href="#compare-with-concentration"></a>
+</h3>
+<p>We can create a summary data frame that has concentrations instead of
+EARs as well. We’ve included a function
+<code>get_concentration_summary</code> to make the chemical_summary data
+frame input directly from the tox_list.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summary_conc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_concentration_summary.html">get_concentration_summary</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">)</span></span>
+<span><span class="va">gd_conc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_data_prep.html">graph_chem_data</a></span><span class="op">(</span><span class="va">summary_conc</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">combo2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_data_prep.html">side_by_side_data</a></span><span class="op">(</span><span class="va">gd_conc</span>, <span class="va">gd_bench</span>, </span>
+<span>                           left_title <span class="op">=</span> <span class="st">"Concentration"</span>, </span>
+<span>                           right_title <span class="op">=</span> <span class="st">"WQ Benchmarks"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span><span class="op">(</span><span class="va">combo2</span>, <span class="va">guide_side</span>, </span>
+<span>                       x_label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">guide_side</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="benchmarks_files/figure-html/concCompare-1.png" width="700"></p>
 </div>
-<div id="concentrations-benchmarks-and-toxcast" class="section level2">
-<h2 class="hasAnchor">
-<a href="#concentrations-benchmarks-and-toxcast" class="anchor"></a>Concentrations, benchmarks, and ToxCast</h2>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">combo_all_3</span> <span class="op">&lt;-</span> <span class="va">combo2</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">combo</span> <span class="op">%&gt;%</span> 
-              <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">guide_side</span> <span class="op">==</span> <span class="st">"ToxCast"</span><span class="op">)</span>
-            <span class="op">)</span>
-
-<span class="va">combo_all_3</span><span class="op">$</span><span class="va">Class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">Class</span>, 
-                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">combo2</span><span class="op">$</span><span class="va">Class</span><span class="op">)</span><span class="op">)</span>
-<span class="va">combo_all_3</span><span class="op">$</span><span class="va">chnm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">chnm</span>, 
-                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">combo2</span><span class="op">$</span><span class="va">chnm</span><span class="op">)</span><span class="op">)</span>
-<span class="va">combo_all_3</span><span class="op">$</span><span class="va">guide_side</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">guide_side</span>, 
-                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Concentration"</span>,
-                                  <span class="st">"WQ Benchmarks"</span>,
-                                  <span class="st">"ToxCast"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/plot_chemical_boxplots.html">plot_chemical_boxplots</a></span><span class="op">(</span><span class="va">combo_all_3</span>, <span class="va">guide_side</span>, 
-                       x_label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">guide_side</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="concentrations-benchmarks-and-toxcast">Concentrations, benchmarks, and ToxCast<a class="anchor" aria-label="anchor" href="#concentrations-benchmarks-and-toxcast"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">combo_all_3</span> <span class="op">&lt;-</span> <span class="va">combo2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">combo</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>              <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">guide_side</span> <span class="op">==</span> <span class="st">"ToxCast"</span><span class="op">)</span></span>
+<span>            <span class="op">)</span></span>
+<span></span>
+<span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">Class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">Class</span>, </span>
+<span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">combo2</span><span class="op">$</span><span class="va">Class</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">chnm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">chnm</span>, </span>
+<span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">combo2</span><span class="op">$</span><span class="va">chnm</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">guide_side</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">combo_all_3</span><span class="op">$</span><span class="va">guide_side</span>, </span>
+<span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Concentration"</span>,</span>
+<span>                                  <span class="st">"WQ Benchmarks"</span>,</span>
+<span>                                  <span class="st">"ToxCast"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tox_boxplots.html">plot_chemical_boxplots</a></span><span class="op">(</span><span class="va">combo_all_3</span>, <span class="va">guide_side</span>, </span>
+<span>                       x_label <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">guide_side</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="benchmarks_files/figure-html/allThree-1.png" width="700"></p>
 </div>
 </div>
-<div id="setupExample" class="section level1">
-<h1 class="hasAnchor">
-<a href="#setupExample" class="anchor"></a>Create Example File</h1>
-<p>This section describes how to use the “benchmarks” option to create a custom analysis.</p>
-<p>The example data provided in <code>toxEval</code> is taken from the supplemental information in Baldwin, et al <a href="https://doi.org/10.1016/j.scitotenv.2016.02.137">2016</a>. The third supplemental table provides water quality guideline benchmarks. We’ll provide that table here in a more user-friendly format, with associated CAS values.</p>
-<div id="create-custom-benchmark-file" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-custom-benchmark-file" class="anchor"></a>Create custom benchmark file</h2>
-<p>You can make your own benchmark Microsoft ™ Excel file for the example data provided in the package. The benchmark data come from tab 3 of the supplemental table file in Baldwin, et al <a href="https://doi.org/10.1016/j.scitotenv.2016.02.137">2016</a>. It has been cleaned up to simple text to be copy/pasted into a csv file (the information between the single quotes), or run as R code as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">raw_benchmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span>text<span class="op">=</span><span class="st">[2746 chars quoted with ''']</span>,
-stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
-<p>Looking at the “source” column, there are 4 distinct values: EPA_acute, EPA_chronic, other_acute, other_chronic. We have a few choices, we can keep each of those as an “endPoint”, or make the choices only acute/chronic, or even have the endPoints be EPA/other with acute/chronic groupings. In this example, we’ll show how to use this data to make a water quality benchmark analysis just based on the acute/chronic distinction. The “value” in the data above is already in <span class="math inline">\(\mu\)</span>g/L, which matches up with our data. If the units were not aligned, the workflow would need to include converting the benchmark units to match whatever the data is reported in.</p>
-<p>Essentially, the work that must be done is to rename some columns, and figure out how to classify the benchmarks. The following code uses the <code>dplyr</code> and <code>tidyr</code> packages for this:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-
-<span class="va">bench</span> <span class="op">&lt;-</span> <span class="va">raw_benchmarks</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">source</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"groupCol"</span>, <span class="st">"endPoint"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">tox_chemicals</span>, 
-                   CAS <span class="op">=</span> <span class="va">Substance_CASRN</span>,
-                   Chemical <span class="op">=</span> <span class="va">Substance_Name</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"CAS"</span><span class="op">)</span>
-
-<span class="va">bench</span><span class="op">$</span><span class="va">Chemical</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">Chemical</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">bench</span><span class="op">$</span><span class="va">chm_nm</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">Chemical</span><span class="op">)</span><span class="op">]</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span></pre></div>
-<pre><code>##        CAS         chm_nm groupCol endPoint  Value       Chemical
-## 1 120-12-7     Anthracene      EPA    acute  86.10     Anthracene
-## 2  50-32-8 Benzo(a)pyrene      EPA    acute   3.98 Benzo(a)pyrene
-## 3 206-44-0   Fluoranthene      EPA    acute  29.60   Fluoranthene
-## 4  91-20-3    Naphthalene      EPA    acute 803.00    Naphthalene
-## 5  85-01-8   Phenanthrene      EPA    acute  79.70   Phenanthrene
-## 6 129-00-0         Pyrene      EPA    acute  42.00         Pyrene</code></pre>
-<p>Now we need to get that information into a “tox_list”. Here is how to create the Microsoft ™ Excel file using the <code>openxlsx</code> package:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,
-                                      package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>,
-                          <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span> 
-<span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span>
-
-<span class="va">tox_list_wq_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Data <span class="op">=</span> <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_data</span>,
-                          Chemicals <span class="op">=</span> <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span>,
-                          Sites <span class="op">=</span> <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_site</span>,
-                          Benchmarks <span class="op">=</span> <span class="va">bench</span><span class="op">)</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ycphs.github.io/openxlsx/index.html">openxlsx</a></span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html">write.xlsx</a></span><span class="op">(</span><span class="va">tox_list_wq_bench</span>, 
-           file <span class="op">=</span> <span class="st">"OWC_custom_bench.xlsx"</span><span class="op">)</span></pre></div>
-<p>Now, we can use this new benchmark tox_list to generate our custom benchmark figures and tables.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">tox_list_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="st">"OWC_custom_bench.xlsx"</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="setupExample">Create Example File<a class="anchor" aria-label="anchor" href="#setupExample"></a>
+</h2>
+<p>This section describes how to use the “benchmarks” option to create a
+custom analysis.</p>
+<p>The example data provided in <code>toxEval</code> is taken from the
+supplemental information in Baldwin, et al <a href="https://doi.org/10.1016/j.scitotenv.2016.02.137" class="external-link">2016</a>. The
+third supplemental table provides water quality guideline benchmarks.
+We’ll provide that table here in a more user-friendly format, with
+associated CAS values.</p>
+<div class="section level3">
+<h3 id="create-custom-benchmark-file">Create custom benchmark file<a class="anchor" aria-label="anchor" href="#create-custom-benchmark-file"></a>
+</h3>
+<p>You can make your own benchmark Microsoft ™ Excel file for the
+example data provided in the package. The benchmark data come from tab 3
+of the supplemental table file in Baldwin, et al <a href="https://doi.org/10.1016/j.scitotenv.2016.02.137" class="external-link">2016</a>. It has
+been cleaned up to simple text to be copy/pasted into a csv file (the
+information between the single quotes), or run as R code as follows:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">raw_benchmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span>text<span class="op">=</span><span class="st">'CAS,chm_nm,source,value</span></span>
+<span><span class="st">120-12-7,Anthracene,EPA_acute,86.1</span></span>
+<span><span class="st">50-32-8,Benzo(a)pyrene,EPA_acute,3.98</span></span>
+<span><span class="st">206-44-0,Fluoranthene,EPA_acute,29.6</span></span>
+<span><span class="st">91-20-3,Naphthalene,EPA_acute,803</span></span>
+<span><span class="st">85-01-8,Phenanthrene,EPA_acute,79.7</span></span>
+<span><span class="st">129-00-0,Pyrene,EPA_acute,42</span></span>
+<span><span class="st">98-82-8,Cumene,EPA_acute,2140</span></span>
+<span><span class="st">1912-24-9,Atrazine,EPA_acute,360</span></span>
+<span><span class="st">57837-19-1,Metalaxyl,EPA_acute,14000</span></span>
+<span><span class="st">87-86-5,Pentachlorophenol,EPA_acute,19</span></span>
+<span><span class="st">1610-18-0,Prometon,EPA_acute,98</span></span>
+<span><span class="st">63-25-2,Carbaryl,EPA_acute,0.85</span></span>
+<span><span class="st">2921-88-2,Chlorpyrifos,EPA_acute,0.05</span></span>
+<span><span class="st">333-41-5,Diazinon,EPA_acute,0.17</span></span>
+<span><span class="st">62-73-7,Dichlorvos,EPA_acute,0.035</span></span>
+<span><span class="st">84852-15-3,"4-Nonylphenol, branched",EPA_acute,28</span></span>
+<span><span class="st">120-12-7,Anthracene,EPA_chronic,20.7</span></span>
+<span><span class="st">50-32-8,Benzo(a)pyrene,EPA_chronic,0.014</span></span>
+<span><span class="st">206-44-0,Fluoranthene,EPA_chronic,7.11</span></span>
+<span><span class="st">91-20-3,Naphthalene,EPA_chronic,24</span></span>
+<span><span class="st">85-01-8,Phenanthrene,EPA_chronic,6.3</span></span>
+<span><span class="st">129-00-0,Pyrene,EPA_chronic,10.1</span></span>
+<span><span class="st">84-66-2,Diethyl phthalate,EPA_chronic,220</span></span>
+<span><span class="st">90-12-0,1-Methylnaphthalene,EPA_chronic,2.1</span></span>
+<span><span class="st">91-57-6,2-Methylnaphthalene,EPA_chronic,4.7</span></span>
+<span><span class="st">98-82-8,Cumene,EPA_chronic,2.6</span></span>
+<span><span class="st">1912-24-9,Atrazine,EPA_chronic,60</span></span>
+<span><span class="st">57837-19-1,Metalaxyl,EPA_chronic,100</span></span>
+<span><span class="st">87-86-5,Pentachlorophenol,EPA_chronic,13</span></span>
+<span><span class="st">63-25-2,Carbaryl,EPA_chronic,0.5</span></span>
+<span><span class="st">2921-88-2,Chlorpyrifos,EPA_chronic,0.04</span></span>
+<span><span class="st">333-41-5,Diazinon,EPA_chronic,0.043</span></span>
+<span><span class="st">62-73-7,Dichlorvos,EPA_chronic,0.0058</span></span>
+<span><span class="st">84852-15-3,"4-Nonylphenol, branched",EPA_chronic,6.6</span></span>
+<span><span class="st">106-46-7,"1,4-Dichlorobenzene",EPA_chronic,15</span></span>
+<span><span class="st">75-25-2,Bromoform,EPA_chronic,320</span></span>
+<span><span class="st">80-05-7,Bisphenol A,other_acute,1518</span></span>
+<span><span class="st">120-12-7,Anthracene,other_acute,13</span></span>
+<span><span class="st">50-32-8,Benzo(a)pyrene,other_acute,0.24</span></span>
+<span><span class="st">206-44-0,Fluoranthene,other_acute,3980</span></span>
+<span><span class="st">91-20-3,Naphthalene,other_acute,190</span></span>
+<span><span class="st">85-01-8,Phenanthrene,other_acute,30</span></span>
+<span><span class="st">84-66-2,Diethyl phthalate,other_acute,1800</span></span>
+<span><span class="st">90-12-0,1-Methylnaphthalene,other_acute,37</span></span>
+<span><span class="st">78-59-1,Isophorone,other_acute,117000</span></span>
+<span><span class="st">127-18-4,Tetrachloroethene (PERC),other_acute,830</span></span>
+<span><span class="st">63-25-2,Carbaryl,other_acute,3.3</span></span>
+<span><span class="st">2921-88-2,Chlorpyrifos,other_acute,0.02</span></span>
+<span><span class="st">106-46-7,"1,4-Dichlorobenzene",other_acute,180</span></span>
+<span><span class="st">75-25-2,Bromoform,other_acute,2300</span></span>
+<span><span class="st">80-05-7,Bisphenol A,other_chronic,0.86</span></span>
+<span><span class="st">120-12-7,Anthracene,other_chronic,0.012</span></span>
+<span><span class="st">50-32-8,Benzo(a)pyrene,other_chronic,0.015</span></span>
+<span><span class="st">206-44-0,Fluoranthene,other_chronic,0.04</span></span>
+<span><span class="st">91-20-3,Naphthalene,other_chronic,1.1</span></span>
+<span><span class="st">85-01-8,Phenanthrene,other_chronic,0.4</span></span>
+<span><span class="st">129-00-0,Pyrene,other_chronic,0.025</span></span>
+<span><span class="st">84-66-2,Diethyl phthalate,other_chronic,110</span></span>
+<span><span class="st">90-12-0,1-Methylnaphthalene,other_chronic,2.1</span></span>
+<span><span class="st">91-57-6,2-Methylnaphthalene,other_chronic,330</span></span>
+<span><span class="st">78-59-1,Isophorone,other_chronic,920</span></span>
+<span><span class="st">127-18-4,Tetrachloroethene (PERC),other_chronic,45</span></span>
+<span><span class="st">1912-24-9,Atrazine,other_chronic,1.8</span></span>
+<span><span class="st">314-40-9,Bromacil,other_chronic,5</span></span>
+<span><span class="st">51218-45-2,Metolachlor,other_chronic,7.8</span></span>
+<span><span class="st">63-25-2,Carbaryl,other_chronic,0.2</span></span>
+<span><span class="st">2921-88-2,Chlorpyrifos,other_chronic,0.002</span></span>
+<span><span class="st">84852-15-3,"4-Nonylphenol, branched",other_chronic,1</span></span>
+<span><span class="st">106-46-7,"1,4-Dichlorobenzene",other_chronic,9.4</span></span>
+<span><span class="st">75-25-2,Bromoform,other_chronic,320'</span>,</span>
+<span>stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>Looking at the “source” column, there are 4 distinct values:
+EPA_acute, EPA_chronic, other_acute, other_chronic. We have a few
+choices, we can keep each of those as an “endPoint”, or make the choices
+only acute/chronic, or even have the endPoints be EPA/other with
+acute/chronic groupings. In this example, we’ll show how to use this
+data to make a water quality benchmark analysis just based on the
+acute/chronic distinction. The “value” in the data above is already in
+<span class="math inline">\(\mu\)</span>g/L, which matches up with our
+data. If the units were not aligned, the workflow would need to include
+converting the benchmark units to match whatever the data is reported
+in.</p>
+<p>Essentially, the work that must be done is to rename some columns,
+and figure out how to classify the benchmarks. The following code uses
+the <code>dplyr</code> and <code>tidyr</code> packages for this:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bench</span> <span class="op">&lt;-</span> <span class="va">raw_benchmarks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html" class="external-link">separate</a></span><span class="op">(</span><span class="va">source</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"groupCol"</span>, <span class="st">"endPoint"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tox_chemicals</span>, </span>
+<span>                   CAS <span class="op">=</span> <span class="va">Substance_CASRN</span>,</span>
+<span>                   Chemical <span class="op">=</span> <span class="va">Substance_Name</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"CAS"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bench</span><span class="op">$</span><span class="va">Chemical</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">Chemical</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">bench</span><span class="op">$</span><span class="va">chm_nm</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">bench</span><span class="op">$</span><span class="va">Chemical</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bench</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        CAS         chm_nm groupCol endPoint  Value       Chemical</span></span>
+<span><span class="co">## 1 120-12-7     Anthracene      EPA    acute  86.10     Anthracene</span></span>
+<span><span class="co">## 2  50-32-8 Benzo(a)pyrene      EPA    acute   3.98 Benzo[a]pyrene</span></span>
+<span><span class="co">## 3 206-44-0   Fluoranthene      EPA    acute  29.60   Fluoranthene</span></span>
+<span><span class="co">## 4  91-20-3    Naphthalene      EPA    acute 803.00    Naphthalene</span></span>
+<span><span class="co">## 5  85-01-8   Phenanthrene      EPA    acute  79.70   Phenanthrene</span></span>
+<span><span class="co">## 6 129-00-0         Pyrene      EPA    acute  42.00         Pyrene</span></span></code></pre>
+<p>Now we need to get that information into a “tox_list”. Here is how to
+create the Microsoft ™ Excel file using the <code>openxlsx</code>
+package:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span>
+<span>                                      package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>,</span>
+<span>                          <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span> </span>
+<span><span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tox_list_wq_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Data <span class="op">=</span> <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_data</span>,</span>
+<span>                          Chemicals <span class="op">=</span> <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span>,</span>
+<span>                          Sites <span class="op">=</span> <span class="va">tox_list</span><span class="op">$</span><span class="va">chem_site</span>,</span>
+<span>                          Benchmarks <span class="op">=</span> <span class="va">bench</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ycphs.github.io/openxlsx/index.html" class="external-link">openxlsx</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html" class="external-link">write.xlsx</a></span><span class="op">(</span><span class="va">tox_list_wq_bench</span>, </span>
+<span>           file <span class="op">=</span> <span class="st">"OWC_custom_bench.xlsx"</span><span class="op">)</span></span></code></pre></div>
+<p>Now, we can use this new benchmark tox_list to generate our custom
+benchmark figures and tables.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tox_list_bench</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="st">"OWC_custom_bench.xlsx"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="exporting-toxcast-benchmarks" class="section level1">
-<h1 class="hasAnchor">
-<a href="#exporting-toxcast-benchmarks" class="anchor"></a>Exporting ToxCast Benchmarks</h1>
-<p>It is also possible to export the equivalent “Benchmark” data from the ToxCast analysis. Within the Shiny app, there is a button labeled “Download Benchmarks”. If you are navigating the app and find a set of conditions that make sense for your analysis, it is probably a good idea to create a record of the ToxCast ACC values.</p>
-<p>Let’s use the data provided in the package to show an example of how to do this directly in R:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span>
-
-<span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>,
-                          <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span> 
-<span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span>
-<span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ACC.html">get_ACC</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span><span class="op">$</span><span class="va">CAS</span><span class="op">)</span>
-<span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove_flags.html">remove_flags</a></span><span class="op">(</span>ACC <span class="op">=</span> <span class="va">ACC</span><span class="op">)</span>
-
-<span class="va">cleaned_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span><span class="op">(</span><span class="va">end_point_info</span><span class="op">)</span>
-<span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">cleaned_ep</span><span class="op">)</span>
-
-<span class="va">benchmarks</span> <span class="op">&lt;-</span> <span class="va">ACC</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">endPoint</span> <span class="op">%in%</span> <span class="va">filtered_ep</span><span class="op">$</span><span class="va">endPoint</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">ACC_value</span>,
-         Chemical <span class="op">=</span> <span class="va">chnm</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">filtered_ep</span>, by <span class="op">=</span> <span class="st">"endPoint"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span><span class="op">(</span><span class="va">benchmarks</span><span class="op">)</span></pre></div>
-<pre><code>## [1] "CAS"        "flags"      "endPoint"   "ACC"        "MlWt"      
-## [6] "Value"      "Chemical"   "groupCol"   "assaysFull"</code></pre>
-<p>The “benchmarks” data frame includes all the information you would need to reproduce the <code>toxEval</code> analysis in the future. This can be important if the ToxCast database is updated, yet you want to reproduce your original results.</p>
+<div class="section level2">
+<h2 id="exporting-toxcast-benchmarks">Exporting ToxCast Benchmarks<a class="anchor" aria-label="anchor" href="#exporting-toxcast-benchmarks"></a>
+</h2>
+<p>It is also possible to export the equivalent “Benchmark” data from
+the ToxCast analysis. Within the Shiny app, there is a button labeled
+“Download Benchmarks”. If you are navigating the app and find a set of
+conditions that make sense for your analysis, it is probably a good idea
+to create a record of the ToxCast ACC values.</p>
+<p>Let’s use the data provided in the package to show an example of how
+to do this directly in R:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">path_to_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package<span class="op">=</span><span class="st">"toxEval"</span><span class="op">)</span>,</span>
+<span>                          <span class="st">"OWC_data_fromSup.xlsx"</span><span class="op">)</span> </span>
+<span><span class="va">tox_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_toxEval.html">create_toxEval</a></span><span class="op">(</span><span class="va">path_to_file</span><span class="op">)</span></span>
+<span><span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ACC.html">get_ACC</a></span><span class="op">(</span><span class="va">tox_list</span><span class="op">$</span><span class="va">chem_info</span><span class="op">$</span><span class="va">CAS</span><span class="op">)</span></span>
+<span><span class="va">ACC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove_flags.html">remove_flags</a></span><span class="op">(</span>ACC <span class="op">=</span> <span class="va">ACC</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cleaned_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_endPoint_info.html">clean_endPoint_info</a></span><span class="op">(</span><span class="va">end_point_info</span><span class="op">)</span></span>
+<span><span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">cleaned_ep</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">benchmarks</span> <span class="op">&lt;-</span> <span class="va">ACC</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">endPoint</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">filtered_ep</span><span class="op">$</span><span class="va">endPoint</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">ACC_value</span>,</span>
+<span>         Chemical <span class="op">=</span> <span class="va">chnm</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">filtered_ep</span>, by <span class="op">=</span> <span class="st">"endPoint"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">benchmarks</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "CAS"        "flags"      "endPoint"   "ACC"        "MlWt"      </span></span>
+<span><span class="co">## [6] "Value"      "Chemical"   "groupCol"   "assaysFull"</span></span></code></pre>
+<p>The “benchmarks” data frame includes all the information you would
+need to reproduce the <code>toxEval</code> analysis in the future. This
+can be important if the ToxCast database is updated, yet you want to
+reproduce your original results.</p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
-</div>
-
-
-
-      <footer><div class="copyright">
-  <p>Developed by Laura DeCicco, Steven Corsi, Daniel Villeneuve, Brett Blackwell, Gerald Ankley.</p>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
-</div>
 
-      </footer>
-</div>
 
+    <footer></footer>
+</div> <!-- / div for your main content-->
+
+<!-- BEGIN USGS Footer Template -->
+
+<footer class="footer"><div class="tmp-container">
+		<!-- .footer-wrap -->
+			<!-- .footer-doi -->
+			<div class="footer-doi">
+				<!-- footer nav links -->
+				<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/privacy" class="external-link">DOI Privacy Policy</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/policies-and-notices" class="external-link">Legal</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/accessibility-and-us-geological-survey" class="external-link">Accessibility</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/sitemap" class="external-link">Site Map</a></li>
+					<li class="last leaf menu-links menu-level-1"><a href="https://answers.usgs.gov/" class="external-link">Contact USGS</a></li>
+				</ul>
+<!--/ footer nav links -->
+</div>
+			<!-- /.footer-doi -->
+
+			<hr>
+<!-- .footer-utl-links --><div class="footer-doi">
+			<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/" class="external-link">U.S. Department of the Interior</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doioig.gov/" class="external-link">DOI Inspector General</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/" class="external-link">White House</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/omb/management/egov/" class="external-link">E-gov</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doi.gov/pmb/eeo/no-fear-act" class="external-link">No Fear Act</a></li>
+				<li class="last leaf menu-links menu-level-1"><a href="https://www.usgs.gov/about/organization/science-support/foia" class="external-link">FOIA</a></li>
+			</ul>
+</div>			
+		<!-- /.footer-utl-links -->
+		<!-- .footer-social-links -->
+		<div class="footer-social-links">
+			<ul class="social">
+<li class="follow">Follow</li>
+				<li class="twitter">
+					<a href="https://twitter.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-twitter-square"><span class="only">Twitter</span></i>
+					</a>
+				</li>
+				<li class="facebook">
+					<a href="https://facebook.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-facebook-square"><span class="only">Facebook</span></i>
+					</a>
+				</li>
+				<li class="github">
+					<a href="https://github.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-github"><span class="only">GitHub</span></i>
+					</a>
+				</li>
+				<li class="flickr">
+					<a href="https://flickr.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-flickr"><span class="only">Flickr</span></i>
+					</a>
+				</li>
+				<li class="youtube">
+					<a href="http://youtube.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-youtube-play"><span class="only">YouTube</span></i>
+					</a>
+				</li>
+				<li class="instagram">
+					<a href="https://instagram.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-instagram"><span class="only">Instagram</span></i>
+					</a>
+				</li>
+			</ul>
+</div>
+		<!-- /.footer-social-links -->
+	</div>
+		<!-- /.footer-wrap -->	
+</footer><!-- END USGS Footer Template- --><!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKQR8KP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   
-
-
   </body>
+<!-- closing div for body -->
 </html>

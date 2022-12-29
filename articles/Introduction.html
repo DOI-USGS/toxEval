@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="toxEval">
 <title>Introduction to toxEval • toxEval</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,12 +13,12 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to toxEval">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Introduction to toxEval">
 <meta property="og:description" content="toxEval">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -31,231 +32,411 @@
   gtag('config', 'UA-53797708-7');
 </script>
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/Introduction.html">Background</a>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <a href="https://www.usgs.gov/" class="external-link"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>
+    <a class="navbar-brand me-2" href="../index.html">toxEval</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="active nav-item">
+  <a class="nav-link" href="../articles/Introduction.html">Background</a>
 </li>
-<li>
-  <a href="../articles/basicWorkflow.html">Basic Workflow</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/basicWorkflow.html">Basic Workflow</a>
 </li>
-<li>
-  <a href="../reference/index.html">Function Help</a>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Function Help</a>
 </li>
-<li>
-  <a href="../articles/PrepareData.html">Data Preparation</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/PrepareData.html">Data Preparation</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/shinyApp.html">Shiny App</a>
-    </li>
-    <li>
-      <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
-    </li>
-    <li>
-      <a href="../articles/pivot.html">Prepare Data in R</a>
-    </li>
-    <li>
-      <a href="../articles/does_curves.html">Dose Response Curves</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/bibliography.html">Bibliograpy</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/USGS-R/toxEval">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/shinyApp.html">Shiny App</a>
+    <a class="dropdown-item" href="../articles/benchmarks.html">Exploring Benchmarks</a>
+    <a class="dropdown-item" href="../articles/pivot.html">Prepare Data in R</a>
+    <a class="dropdown-item" href="../articles/does_curves.html">Dose Response Curves</a>
+    <a class="dropdown-item" href="../articles/Contributing.html">How to Contribute</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/bibliography.html">Bibliograpy</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://code.usgs.gov/water/toxEval">
+    <span class="fa fa-gitlab fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-article">
 
-      </header><script src="Introduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Introduction to toxEval</h1>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Introduction to toxEval</h1>
             
-            <h4 class="date">08 October, 2020</h4>
+            <h4 data-toc-skip class="date">29 December, 2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/Introduction.Rmd"><code>vignettes/Introduction.Rmd</code></a></small>
-      <div class="hidden name"><code>Introduction.Rmd</code></div>
-
+      
+      <div class="d-none name"><code>Introduction.Rmd</code></div>
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>The <code>toxEval</code> R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to <a href="https://www.epa.gov/chemical-research/toxicity-forecasting">ToxCast data</a> (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays.</p>
-<p>The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the <code>Shiny</code> R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided in the <a href="shinyApp.html">ShinyApp vignette</a>.</p>
-<p>This vignette provides a general overview of the concepts within <code>toxEval</code>, definitions of common terminology used throughout the package, and links to information to help understand fundamentals of the ToxCast database used within <code>toxEval</code>. In addition, instructions are provided for installing and updating the package from the Geological Survey R Archive Network (GRAN).</p>
-<div id="what-is-toxcast" class="section level2">
-<h2 class="hasAnchor">
-<a href="#what-is-toxcast" class="anchor"></a>What is ToxCast?</h2>
-<p>The U.S. EPA’s Toxicity Forecaster <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">ToxCast</a> includes a database of chemical-biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The <code>toxEval</code> package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.</p>
-<p>When using the ToxCast endPoints for analysis, it is important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to any given study. There are many useful resources <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank">here</a>. There is also a tool called the <a href="https://comptox.epa.gov/dashboard/" target="_blank">Comptox Dashboard</a> that has a wealth of information on ToxCast data.</p>
-<p>So what are we doing with the user input data and ToxCast? First, we calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we can explore the EARs based on a wide variety of groupings to view the data in many dimensions.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The <code>toxEval</code> R-package includes a set of functions to
+analyze, visualize, and organize measured concentration data as it
+relates to <a href="https://www.epa.gov/chemical-research/toxicity-forecasting" class="external-link">ToxCast
+data</a> (default) or other user-selected chemical-biological
+interaction benchmark data such as water quality criteria. The intent of
+these analyses is to develop a better understanding of the potential
+biological relevance of environmental chemistry data. Results can be
+used to prioritize which chemicals at which sites may be of greatest
+concern. These methods are meant to be used as a screening technique to
+predict potential for biological influence from chemicals that
+ultimately need to be validated with direct biological assays.</p>
+<p>The functions within this package allow great flexibly for exploring
+the potential biological affects of measured chemicals. Also included in
+the package is a browser-based application made from the
+<code>Shiny</code> R-package (the app). The app is based on functions
+within the R-package and includes many convenient analyses and
+visualization options for users to choose. Use of the functions within
+the R-package allows for additional flexibility within the functions
+beyond what the app offers and provides options for the user to interact
+more directly with the data. The overview in this document focuses on
+the R-package. Documentation for the app is provided in the <a href="shinyApp.html">ShinyApp vignette</a>.</p>
+<p>This vignette provides a general overview of the concepts within
+<code>toxEval</code>, definitions of common terminology used throughout
+the package, and links to information to help understand fundamentals of
+the ToxCast database used within <code>toxEval</code>. In addition,
+instructions are provided for installing and updating the package from
+the Geological Survey R Archive Network (GRAN).</p>
+<div class="section level3">
+<h3 id="what-is-toxcast">What is ToxCast?<a class="anchor" aria-label="anchor" href="#what-is-toxcast"></a>
+</h3>
+<p>The U.S. EPA’s Toxicity Forecaster
+<a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank" class="external-link">ToxCast</a>
+includes a database of chemical-biological interactions that contains
+information from hundreds of assays on thousands of chemicals, providing
+a means to assess biological relevance to measured concentrations. The
+<code>toxEval</code> package attempts to simplify the workflow for
+exploring data as it relates to these assay endpoints (benchmark data).
+The workflow uses ToxCast as a default for evaluation of
+chemical:biological interactions, but the user may also define
+alternative benchmarks for a custom or more traditional approach to
+biological relevance evaluation. This is also a useful capability for
+efficient comparison of ToxCast evaluation results with those from other
+toxicity benchmark databases.</p>
+<p>When using the ToxCast endPoints for analysis, it is important to
+have at least a minimal understanding of what ToxCast data is, and which
+ToxCast data is relevant to any given study. There are many useful
+resources
+<a href="https://www.epa.gov/chemical-research/toxicity-forecasting" target="_blank" class="external-link">here</a>.
+There is also a tool called the
+<a href="https://comptox.epa.gov/dashboard/" target="_blank" class="external-link">Comptox
+Dashboard</a> that has a wealth of information on ToxCast data.</p>
+<p>So what are we doing with the user input data and ToxCast? First, we
+calculate an Exposure-Activity Ratio (EAR) for each measurement. Then we
+can explore the EARs based on a wide variety of groupings to view the
+data in many dimensions.</p>
 </div>
-<div id="exposure-activity-ratio" class="section level2">
-<h2 class="hasAnchor">
-<a href="#exposure-activity-ratio" class="anchor"></a>Exposure-Activity Ratio</h2>
-<p>An Exposure-Activity Ratio (EAR) is defined as the ratio of a measured concentration and a concentration that was determined to cause some activity in a specified ToxCast assay (“endPoint” concentration). An EAR &gt; 1.0 would indicate that the measured concentration is greater than the endpoint concentration. The ToxCast database (as provided in the current version of <code>toxEval</code>) provides as many as several hundred endPoints for more than 7000 chemicals. Each endPoint is a single test that was done to detect some form of biological activity.</p>
-<p>In order to get appropriate EAR results, it is important to use the correct units. The <code>toxEval</code> package assumes all measured concentrations are reported in micrograms per liter (<span class="math inline">\(\mu\)</span>g/L). ToxCast data is reported in log(<span class="math inline">\(\mu\)</span>M), so the <code>toxEval</code> package automatically performs the unit conversion.</p>
-<p>A secondary option within <code>toxEval</code> is for the user to provide a set of “benchmark concentrations” to define custom biological responses to meet specific study objectives (e.g. water quality criteria). In this case, EAR values are replaced with toxicity quotients. Similar to EAR values, toxicity quotients are defined as the ratio of a measured concentration to the benchmark concentration.</p>
-<p>EAR is basically synonymous with bioanalytical equivalent concentrations (BEQ). EAR is a ratio, and BEQ is a measure of concentration, but both convey the same information.</p>
+<div class="section level3">
+<h3 id="exposure-activity-ratio">Exposure-Activity Ratio<a class="anchor" aria-label="anchor" href="#exposure-activity-ratio"></a>
+</h3>
+<p>An Exposure-Activity Ratio (EAR) is defined as the ratio of a
+measured concentration and a concentration that was determined to cause
+some activity in a specified ToxCast assay (“endPoint” concentration).
+An EAR &gt; 1.0 would indicate that the measured concentration is
+greater than the endpoint concentration. The ToxCast database (as
+provided in the current version of <code>toxEval</code>) provides as
+many as several hundred endPoints for more than 7000 chemicals. Each
+endPoint is a single test that was done to detect some form of
+biological activity.</p>
+<p>In order to get appropriate EAR results, it is important to use the
+correct units. The <code>toxEval</code> package assumes all measured
+concentrations are reported in micrograms per liter (<span class="math inline">\(\mu\)</span>g/L). ToxCast data is reported in
+log(<span class="math inline">\(\mu\)</span>M), so the
+<code>toxEval</code> package automatically performs the unit
+conversion.</p>
+<p>A secondary option within <code>toxEval</code> is for the user to
+provide a set of “benchmark concentrations” to define custom biological
+responses to meet specific study objectives (e.g. water quality
+criteria). In this case, EAR values are replaced with toxicity
+quotients. Similar to EAR values, toxicity quotients are defined as the
+ratio of a measured concentration to the benchmark concentration.</p>
+<p>EAR is basically synonymous with bioanalytical equivalent
+concentrations (BEQ). EAR is a ratio, and BEQ is a measure of
+concentration, but both convey the same information.</p>
 </div>
-<div id="what-is-an-endpoint" class="section level2">
-<h2 class="hasAnchor">
-<a href="#what-is-an-endpoint" class="anchor"></a>What is an “endPoint”?</h2>
-<p>ToxCast uses high-throughput assays to create concentration-response curves for each of these chemical:endPoint combinations. An endPoint is “associated with the perturbation of specific biological processes identified for the confirmation or monitoring of predicted site-specific hazards” <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. That means a specific biological action was tested, and the concentration at which activity was observed was determined. Of several endpoint values provided within the ToxCast database, the activity concentration at cutoff (ACC) was chosen to compute EAR values within the <code>toxEval</code> package, consistent with the description in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell, 2017</a>. ACC values from the ToxCast database are provided within the <code>toxEval</code> package.</p>
+<div class="section level3">
+<h3 id="what-is-an-endpoint">What is an “endPoint”?<a class="anchor" aria-label="anchor" href="#what-is-an-endpoint"></a>
+</h3>
+<p>ToxCast uses high-throughput assays to create concentration-response
+curves for each of these chemical:endPoint combinations. An endPoint is
+“associated with the perturbation of specific biological processes
+identified for the confirmation or monitoring of predicted site-specific
+hazards”
+<a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank" class="external-link">Blackwell
+2017</a>. That means a specific biological action was tested, and the
+concentration at which activity was observed was determined. Of several
+endpoint values provided within the ToxCast database, the activity
+concentration at cutoff (ACC) was chosen to compute EAR values within
+the <code>toxEval</code> package, consistent with the description in
+<a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank" class="external-link">Blackwell,
+2017</a>. ACC values from the ToxCast database are provided within the
+<code>toxEval</code> package.</p>
 </div>
-<div id="what-is-a-group" class="section level2">
-<h2 class="hasAnchor">
-<a href="#what-is-a-group" class="anchor"></a>What is a “group”?</h2>
-<p>Often, it is valuable to consider aggregations of single endPoints in evaluation efforts. ToxCast has provided tables that group individual endPoints into generalized categories for functional use. The grouping summary table is included in <code>toxEval</code> and can be explored via the <code>end_point_info</code> data:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span>
-<span class="va">end_point_info</span> <span class="op">&lt;-</span> <span class="va">end_point_info</span></pre></div>
-<p>See the help file <code><a href="../reference/end_point_info.html">?end_point_info</a></code> for specifics on how the table was downloaded.</p>
-<p>Throughout the <code>toxEval</code> analysis, there are graphing and table functions that will summarize EARs based on either “Biological” groupings (as defined by a group of endPoints) or “Chemical Class” groupings (as defined by a group of chemicals).</p>
-<p>The default grouping of ToxCast endPoints is “intended_target_family”, but depending on the analysis, it may be more appropriate to use other grouping categories. To change the default, specify a grouping in the <code>groupCol</code> argument of the <code>filter_groups</code> function. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">end_point_info</span>,
-              groupCol <span class="op">=</span> <span class="st">"intended_target_family"</span>,
-              assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, 
-                         <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,
-                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span><span class="op">)</span>,
-              remove_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Background Measurement"</span>,
-                                <span class="st">"Undefined"</span><span class="op">)</span><span class="op">)</span></pre></div>
-<p>What is happening here is that the supplied data frame <code>end_point_info</code> is filtered to just the “intended_target_family” group. Additionally, the assay BioSeek is removed (it is the only one not included in the possible list of assays). Finally, of all the groups within intended_target_family, the end points designated “Undefined” and “Background Measurement” are removed.</p>
+<div class="section level3">
+<h3 id="what-is-a-group">What is a “group”?<a class="anchor" aria-label="anchor" href="#what-is-a-group"></a>
+</h3>
+<p>Often, it is valuable to consider aggregations of single endPoints in
+evaluation efforts. ToxCast has provided tables that group individual
+endPoints into generalized categories for functional use. The grouping
+summary table is included in <code>toxEval</code> and can be explored
+via the <code>end_point_info</code> data:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">toxEval</span><span class="op">)</span></span>
+<span><span class="va">end_point_info</span> <span class="op">&lt;-</span> <span class="va">end_point_info</span></span></code></pre></div>
+<p>See the help file <code><a href="../reference/end_point_info.html">?end_point_info</a></code> for specifics on how
+the table was downloaded.</p>
+<p>Throughout the <code>toxEval</code> analysis, there are graphing and
+table functions that will summarize EARs based on either “Biological”
+groupings (as defined by a group of endPoints) or “Chemical Class”
+groupings (as defined by a group of chemicals).</p>
+<p>The default grouping of ToxCast endPoints is
+“intended_target_family”, but depending on the analysis, it may be more
+appropriate to use other grouping categories. To change the default,
+specify a grouping in the <code>groupCol</code> argument of the
+<code>filter_groups</code> function. For example:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">filtered_ep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_groups.html">filter_groups</a></span><span class="op">(</span><span class="va">end_point_info</span>,</span>
+<span>              groupCol <span class="op">=</span> <span class="st">"intended_target_family"</span>,</span>
+<span>              assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATG"</span>,<span class="st">"NVS"</span>, <span class="st">"OT"</span>, <span class="st">"TOX21"</span>, </span>
+<span>                         <span class="st">"CEETOX"</span>, <span class="st">"APR"</span>, <span class="st">"CLD"</span>, <span class="st">"TANGUAY"</span>,</span>
+<span>                         <span class="st">"NHEERL_PADILLA"</span>,<span class="st">"NCCT_SIMMONS"</span>, <span class="st">"ACEA"</span><span class="op">)</span>,</span>
+<span>              remove_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Background Measurement"</span>,</span>
+<span>                                <span class="st">"Undefined"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>What is happening here is that the supplied data frame
+<code>end_point_info</code> is filtered to just the
+“intended_target_family” group. Additionally, the assay BioSeek is
+removed (it is the only one not included in the possible list of
+assays). Finally, of all the groups within intended_target_family, the
+end points designated “Undefined” and “Background Measurement” are
+removed.</p>
 </div>
-<div id="summarize_data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#summarize_data" class="anchor"></a>Summarizing the data</h2>
-<p>The functions in <code>toxEval</code> summarize the data as follows:</p>
-<p>First, individual EAR values are calculated for each chemical:endPoint combination. Then, the EAR values are summed together by samples (a sample is defined as a unique site/date) based on the grouping picked in the “category” argument. Categories include “Biological”, “Chemical Class”, or “Chemical”. “Biological” refers to the chosen ToxCast annotation as defined in the <code>groupCol</code> argument of the <code>filter_groups</code> function. “Chemical Class” refers to the groupings of chemicals as defined in the “Class” column of the “Chemicals” sheet of the input file. “Chemical” refers to the individual chemical as defined by a unique CAS value. Finally, the maximum or mean EAR is calculated per site (based on the <code>mean_logic</code> option). This ensures that each site is represented equally regardless of how many samples are available per site.</p>
-<p>Some functions will also include a calculation for a “hit”. A threshold is defined by the user, and if the mean or maximum EAR (calculated as described above) is greater than the threshold, that is considered a “hit”.</p>
+<div class="section level3">
+<h3 id="summarize_data">Summarizing the data<a class="anchor" aria-label="anchor" href="#summarize_data"></a>
+</h3>
+<p>The functions in <code>toxEval</code> summarize the data as
+follows:</p>
+<p>First, individual EAR values are calculated for each
+chemical:endPoint combination. Then, the EAR values are summed together
+by samples (a sample is defined as a unique site/date) based on the
+grouping picked in the “category” argument. Categories include
+“Biological”, “Chemical Class”, or “Chemical”. “Biological” refers to
+the chosen ToxCast annotation as defined in the <code>groupCol</code>
+argument of the <code>filter_groups</code> function. “Chemical Class”
+refers to the groupings of chemicals as defined in the “Class” column of
+the “Chemicals” sheet of the input file. “Chemical” refers to the
+individual chemical as defined by a unique CAS value. Finally, the
+maximum or mean EAR is calculated per site (based on the
+<code>mean_logic</code> option). This ensures that each site is
+represented equally regardless of how many samples are available per
+site.</p>
+<p>Some functions will also include a calculation for a “hit”. A
+threshold is defined by the user, and if the mean or maximum EAR
+(calculated as described above) is greater than the threshold, that is
+considered a “hit”.</p>
 </div>
 </div>
-<div id="package-logistics" class="section level1">
-<h1 class="hasAnchor">
-<a href="#package-logistics" class="anchor"></a>Package logistics</h1>
-<div id="installation-of-toxeval" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation-of-toxeval" class="anchor"></a>Installation of toxEval</h2>
+<div class="section level2">
+<h2 id="package-logistics">Package logistics<a class="anchor" aria-label="anchor" href="#package-logistics"></a>
+</h2>
+<div class="section level3">
+<h3 id="installation-of-toxeval">Installation of toxEval<a class="anchor" aria-label="anchor" href="#installation-of-toxeval"></a>
+</h3>
 <p><code>toxEval</code> is available on any CRAN mirror.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"toxEval"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"toxEval"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="update-toxeval" class="section level2">
-<h2 class="hasAnchor">
-<a href="#update-toxeval" class="anchor"></a>Update toxEval</h2>
-<p><code>toxEval</code> does require a fair number of additional packages to run properly. These dependencies offer many benefits, such as a smooth running intuitive Shiny app. The drawbacks however are that there becomes more risk that those dependencies could change their output/workflow over time. <code>toxEval</code> developers will try to stay on top of those changes, but it is a challenge. It is important to always update <em>all</em> of your packages therefore…..not just <code>toxEval</code>. <code>toxEval</code> may push out a new version to keep up with a critical change in a dependent package, and if you only update <code>toxEval</code>, the update could cause bugs (we will attempt to mandate the package version of each package, but it still is best to stay on top of new package versions).</p>
+<div class="section level3">
+<h3 id="update-toxeval">Update toxEval<a class="anchor" aria-label="anchor" href="#update-toxeval"></a>
+</h3>
+<p><code>toxEval</code> does require a fair number of additional
+packages to run properly. These dependencies offer many benefits, such
+as a smooth running intuitive Shiny app. The drawbacks however are that
+there becomes more risk that those dependencies could change their
+output/workflow over time. <code>toxEval</code> developers will try to
+stay on top of those changes, but it is a challenge. It is important to
+always update <em>all</em> of your packages therefore…..not just
+<code>toxEval</code>. <code>toxEval</code> may push out a new version to
+keep up with a critical change in a dependent package, and if you only
+update <code>toxEval</code>, the update could cause bugs (we will
+attempt to mandate the package version of each package, but it still is
+best to stay on top of new package versions).</p>
 <p><img src="update.png" width="144"></p>
-<p>Regularly, it is a good idea to update <em>ALL</em> of installed packages in R. If using RStudio, this is done by using the Update button in the “Packages” tab in RStudio. Selecting this option checks CRAN for updates. Within the R-console, packages can be updated with the command:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html">update.packages</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<p>Regularly, it is a good idea to update <em>ALL</em> of installed
+packages in R. If using RStudio, this is done by using the Update button
+in the “Packages” tab in RStudio. Selecting this option checks CRAN for
+updates. Within the R-console, packages can be updated with the
+command:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/update.packages.html" class="external-link">update.packages</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="reporting-bugs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#reporting-bugs" class="anchor"></a>Reporting bugs</h2>
-<p>If you discover an issue that you feel is a bug in the package or have a question on functionality, please consider reporting bugs and asking questions on the Issues page: <a href="https://github.com/USGS-R/toxEval/issues">https://github.com/USGS-R/toxEval/issues</a></p>
+<div class="section level3">
+<h3 id="reporting-bugs">Reporting bugs<a class="anchor" aria-label="anchor" href="#reporting-bugs"></a>
+</h3>
+<p>If you discover an issue that you feel is a bug in the package or
+have a question on functionality, please consider reporting bugs and
+asking questions on the Issues page: <a href="https://github.com/USGS-R/toxEval/issues" class="external-link">https://github.com/USGS-R/toxEval/issues</a></p>
 </div>
-<div id="citing-toxeval" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citing-toxeval" class="anchor"></a>Citing toxEval</h2>
-<p>This package has not been reviewed and approved as a USGS-product. The implication is that <code>toxEval</code> cannot be cited in a publication. Once the software has been reviewed and approved, basic citation information will be available using the function:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"toxEval"</span><span class="op">)</span></pre></div>
-<pre><code>## 
-## To cite toxEval in publications, please use:
-## 
-##   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
-##   Ankley, G.T., 2020, toxEval: Evaluation of measured concentration
-##   data using the ToxCast high-throughput screening database or a
-##   user-defined set of concentration benchmarks. R package version
-##   1.2.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
-## 
-## A BibTeX entry for LaTeX users is
-## 
-##   @Manual{,
-##     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
-##     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
-##     publisher = {U.S. Geological Survey},
-##     version = {1.2.0},
-##     address = {Reston, VA},
-##     institution = {U.S. Geological Survey},
-##     year = {2020},
-##     doi = {10.5066/P906UQ5I},
-##     url = {https://code.usgs.gov/water/toxEval},
-##   }</code></pre>
+<div class="section level3">
+<h3 id="citing-toxeval">Citing toxEval<a class="anchor" aria-label="anchor" href="#citing-toxeval"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"toxEval"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in citation(package = "toxEval"): no date field in DESCRIPTION file of</span></span>
+<span><span class="co">## package 'toxEval'</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## To cite package 'toxEval' in publications use:</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##   DeCicco L, Corsi S, Villeneuve D, Blackwell B, Ankley G (2022).</span></span>
+<span><span class="co">##   _toxEval: Exploring Biological Relevance of Environmental Chemistry</span></span>
+<span><span class="co">##   Observations_. R package version 1.3.0.</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## A BibTeX entry for LaTeX users is</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##   @Manual{,</span></span>
+<span><span class="co">##     title = {toxEval: Exploring Biological Relevance of Environmental Chemistry</span></span>
+<span><span class="co">## Observations},</span></span>
+<span><span class="co">##     author = {Laura DeCicco and Steven Corsi and Daniel Villeneuve and Brett Blackwell and Gerald Ankley},</span></span>
+<span><span class="co">##     year = {2022},</span></span>
+<span><span class="co">##     note = {R package version 1.3.0},</span></span>
+<span><span class="co">##   }</span></span></code></pre>
 </div>
 </div>
-<div id="disclaimer" class="section level1">
-<h1 class="hasAnchor">
-<a href="#disclaimer" class="anchor"></a>Disclaimer</h1>
-<p>This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.</p>
+<div class="section level2">
+<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+</h2>
+<p>This software has been approved for release by the U.S. Geological
+Survey (USGS). Although the software has been subjected to rigorous
+review, the USGS reserves the right to update the software as needed
+pursuant to further analysis and review. No warranty, expressed or
+implied, is made by the USGS or the U.S. Government as to the
+functionality of the software and related material nor shall the fact of
+release constitute any such warranty. Furthermore, the software is
+released on condition that neither the USGS nor the U.S. Government
+shall be held liable for any damages resulting from its authorized or
+unauthorized use.</p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
-</div>
-
-
-
-      <footer><div class="copyright">
-  <p>Developed by Laura DeCicco, Steven Corsi, Daniel Villeneuve, Brett Blackwell, Gerald Ankley.</p>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
-</div>
 
-      </footer>
-</div>
 
+    <footer></footer>
+</div> <!-- / div for your main content-->
+
+<!-- BEGIN USGS Footer Template -->
+
+<footer class="footer"><div class="tmp-container">
+		<!-- .footer-wrap -->
+			<!-- .footer-doi -->
+			<div class="footer-doi">
+				<!-- footer nav links -->
+				<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/privacy" class="external-link">DOI Privacy Policy</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/policies-and-notices" class="external-link">Legal</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/accessibility-and-us-geological-survey" class="external-link">Accessibility</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/sitemap" class="external-link">Site Map</a></li>
+					<li class="last leaf menu-links menu-level-1"><a href="https://answers.usgs.gov/" class="external-link">Contact USGS</a></li>
+				</ul>
+<!--/ footer nav links -->
+</div>
+			<!-- /.footer-doi -->
+
+			<hr>
+<!-- .footer-utl-links --><div class="footer-doi">
+			<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/" class="external-link">U.S. Department of the Interior</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doioig.gov/" class="external-link">DOI Inspector General</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/" class="external-link">White House</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/omb/management/egov/" class="external-link">E-gov</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doi.gov/pmb/eeo/no-fear-act" class="external-link">No Fear Act</a></li>
+				<li class="last leaf menu-links menu-level-1"><a href="https://www.usgs.gov/about/organization/science-support/foia" class="external-link">FOIA</a></li>
+			</ul>
+</div>			
+		<!-- /.footer-utl-links -->
+		<!-- .footer-social-links -->
+		<div class="footer-social-links">
+			<ul class="social">
+<li class="follow">Follow</li>
+				<li class="twitter">
+					<a href="https://twitter.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-twitter-square"><span class="only">Twitter</span></i>
+					</a>
+				</li>
+				<li class="facebook">
+					<a href="https://facebook.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-facebook-square"><span class="only">Facebook</span></i>
+					</a>
+				</li>
+				<li class="github">
+					<a href="https://github.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-github"><span class="only">GitHub</span></i>
+					</a>
+				</li>
+				<li class="flickr">
+					<a href="https://flickr.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-flickr"><span class="only">Flickr</span></i>
+					</a>
+				</li>
+				<li class="youtube">
+					<a href="http://youtube.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-youtube-play"><span class="only">YouTube</span></i>
+					</a>
+				</li>
+				<li class="instagram">
+					<a href="https://instagram.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-instagram"><span class="only">Instagram</span></i>
+					</a>
+				</li>
+			</ul>
+</div>
+		<!-- /.footer-social-links -->
+	</div>
+		<!-- /.footer-wrap -->	
+</footer><!-- END USGS Footer Template- --><!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKQR8KP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   
-
-
   </body>
+<!-- closing div for body -->
 </html>

@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="toxEval">
 <title>Concentration-Response Curves • toxEval</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,12 +13,12 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Concentration-Response Curves">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Concentration-Response Curves">
 <meta property="og:description" content="toxEval">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -31,174 +32,245 @@
   gtag('config', 'UA-53797708-7');
 </script>
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/Introduction.html">Background</a>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <a href="https://www.usgs.gov/" class="external-link"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>
+    <a class="navbar-brand me-2" href="../index.html">toxEval</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../articles/Introduction.html">Background</a>
 </li>
-<li>
-  <a href="../articles/basicWorkflow.html">Basic Workflow</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/basicWorkflow.html">Basic Workflow</a>
 </li>
-<li>
-  <a href="../reference/index.html">Function Help</a>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Function Help</a>
 </li>
-<li>
-  <a href="../articles/PrepareData.html">Data Preparation</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/PrepareData.html">Data Preparation</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/shinyApp.html">Shiny App</a>
-    </li>
-    <li>
-      <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
-    </li>
-    <li>
-      <a href="../articles/pivot.html">Prepare Data in R</a>
-    </li>
-    <li>
-      <a href="../articles/does_curves.html">Dose Response Curves</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/bibliography.html">Bibliograpy</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/USGS-R/toxEval">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/shinyApp.html">Shiny App</a>
+    <a class="dropdown-item" href="../articles/benchmarks.html">Exploring Benchmarks</a>
+    <a class="dropdown-item" href="../articles/pivot.html">Prepare Data in R</a>
+    <a class="dropdown-item" href="../articles/does_curves.html">Dose Response Curves</a>
+    <a class="dropdown-item" href="../articles/Contributing.html">How to Contribute</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/bibliography.html">Bibliograpy</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://code.usgs.gov/water/toxEval">
+    <span class="fa fa-gitlab fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-article">
 
-      </header><script src="does_curves_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Concentration-Response Curves</h1>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Concentration-Response Curves</h1>
             
-            <h4 class="date">08 October, 2020</h4>
+            <h4 data-toc-skip class="date">29 December, 2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/does_curves.Rmd"><code>vignettes/does_curves.Rmd</code></a></small>
-      <div class="hidden name"><code>does_curves.Rmd</code></div>
-
+      
+      <div class="d-none name"><code>does_curves.Rmd</code></div>
     </div>
 
     
     
-<p>The ToxCast database flags concentration-response curves that may be unreliable or inconsistent based on several criteria; however, it is still good practice for the toxEval user to examine the concentration-response curves pertinent their data to assure that results are understood and to gain confidence in the underlying data. At times, the user will find that concentration-response curves for particular chemical-endpoints or for an entire endpoint will need to be excluded from analysis. For chemicals with an extremely large EAR value, concentration-response curves should be examined. Two ways to obtain concentration-response curves are described below (the Comptox Dashboard and the tcpl pipeline).</p>
-<div id="comptox-dashboard" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comptox-dashboard" class="anchor"></a>Comptox Dashboard</h2>
-<p>There is a web-based tool, the <a href="https://comptox.epa.gov/dashboard">Comptox Dashboard</a> that allows you to search for a chemical by systematic name, synonym, CAS number, DTXSID, or InChIKey. Since we focus on CAS in the <code>toxEval</code> inputs, let’s explore Atrazine (CAS = 1912-24-9):</p>
+<p>The ToxCast database flags concentration-response curves that may be
+unreliable or inconsistent based on several criteria; however, it is
+still good practice for the toxEval user to examine the
+concentration-response curves pertinent their data to assure that
+results are understood and to gain confidence in the underlying data. At
+times, the user will find that concentration-response curves for
+particular chemical-endpoints or for an entire endpoint will need to be
+excluded from analysis. For chemicals with an extremely large EAR value,
+concentration-response curves should be examined. Two ways to obtain
+concentration-response curves are described below (the Comptox Dashboard
+and the tcpl pipeline).</p>
+<div class="section level2">
+<h2 id="comptox-dashboard">Comptox Dashboard<a class="anchor" aria-label="anchor" href="#comptox-dashboard"></a>
+</h2>
+<p>There is a web-based tool, the <a href="https://comptox.epa.gov/dashboard" class="external-link">Comptox Dashboard</a> that
+allows you to search for a chemical by systematic name, synonym, CAS
+number, DTXSID, or InChIKey. Since we focus on CAS in the
+<code>toxEval</code> inputs, let’s explore Atrazine (CAS =
+1912-24-9):</p>
 <p><img src="startSearch.png" width="429"></p>
-<p>Enering the CAS will take you to a page describing properties of the specific chemical. There is a TON of great information there.</p>
+<p>Enering the CAS will take you to a page describing properties of the
+specific chemical. There is a TON of great information there.</p>
 <p><img src="allActive.png" width="689"></p>
 <ol style="list-style-type: decimal">
-<li>Click the “Bioactivity” sidebar option, and then the ToxCast/ToxCast21 option.</li>
-<li>Click the “Active” check box to see all of the concentration-response curves that would be included in <code>toxEval</code>.</li>
+<li>Click the “Bioactivity” sidebar option, and then the
+ToxCast/ToxCast21 option.</li>
+<li>Click the “Active” check box to see all of the
+concentration-response curves that would be included in
+<code>toxEval</code>.</li>
 </ol>
 <p>To get to a specific concentration-response curve:</p>
 <p><img src="getCurve.png" width="656"></p>
 <ol style="list-style-type: decimal">
-<li>Click the “Bioactivity” sidebar option, and then the ToxCast/ToxCast21 option.</li>
+<li>Click the “Bioactivity” sidebar option, and then the
+ToxCast/ToxCast21 option.</li>
 <li>Enter the specific endpoint of interest in the search box</li>
 <li>Click the endpoint’s check box</li>
 </ol>
 </div>
-<div id="r-package-tcpl" class="section level2">
-<h2 class="hasAnchor">
-<a href="#r-package-tcpl" class="anchor"></a>R-package: tcpl</h2>
-<p>There is another way to locally produce the concentration-response curves using the <a href="https://cran.r-project.org/web/packages/tcpl/index.html"><code>tcpl</code> package</a>. The advantage to this approach is that you can customize the plots and order of plots. The drawback is that you need to download a very large MySQL database and have it running locally.</p>
-<p>If the database has been downloaded, and MySQL is up-and-running, the following code would produce a single concentration-response curve. Let’s look at Atrazine with the “NVS_ENZ_hPDE4A1” endpoint:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USEPA/CompTox-ToxCast-tcpl">tcpl</a></span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/config_funcs.html">tcplConf</a></span><span class="op">(</span>drvr <span class="op">=</span> <span class="st">"MySQL"</span>, 
-         user <span class="op">=</span> <span class="st">"my_awesome_username"</span>,
-         pass <span class="op">=</span> <span class="st">"my_awesome_password"</span>,
-         host <span class="op">=</span> <span class="st">"localhost"</span>, 
-         db <span class="op">=</span> <span class="st">"database_name"</span><span class="op">)</span>
-
-<span class="va">ep</span> <span class="op">&lt;-</span> <span class="st">"NVS_ENZ_hPDE4A1"</span>
-<span class="va">cas</span> <span class="op">&lt;-</span> <span class="st">"1912-24-9"</span>
-
-<span class="va">chem_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadChem.html">tcplLoadChem</a></span><span class="op">(</span>field <span class="op">=</span> <span class="st">'casn'</span>, val <span class="op">=</span> <span class="va">cas</span><span class="op">)</span>
-
-<span class="va">assay_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/assay_funcs.html">tcplLoadAcid</a></span><span class="op">(</span>fld <span class="op">=</span> <span class="st">"acnm"</span>, val <span class="op">=</span> <span class="va">ep</span><span class="op">)</span>
-
-<span class="va">mc3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span><span class="op">(</span>lvl <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">"mc"</span>, 
-             fld <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"acid"</span>,<span class="st">"spid"</span><span class="op">)</span>, 
-             val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">assay_info</span><span class="op">$</span><span class="va">acid</span>,
-                        <span class="va">chem_info</span><span class="op">$</span><span class="va">spid</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co">## Load mc tables from levels of interest</span>
-<span class="va">mc4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html">tcplLoadData</a></span><span class="op">(</span>lvl <span class="op">=</span> <span class="fl">4</span>, type <span class="op">=</span> <span class="st">"mc"</span>, 
-                    fld <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"spid"</span>, <span class="st">"aeid"</span><span class="op">)</span>, 
-                    val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">chem_info</span><span class="op">$</span><span class="va">spid</span>,
-                               <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">mc3</span><span class="op">$</span><span class="va">aeid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplPlotM4ID.html">tcplPlotM4ID</a></span><span class="op">(</span><span class="va">mc4</span>, lvl <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="r-package-tcpl">R-package: tcpl<a class="anchor" aria-label="anchor" href="#r-package-tcpl"></a>
+</h2>
+<p>There is another way to locally produce the concentration-response
+curves using the <a href="https://cran.r-project.org/web/packages/tcpl/index.html" class="external-link"><code>tcpl</code>
+package</a>. The advantage to this approach is that you can customize
+the plots and order of plots. The drawback is that you need to download
+a very large MySQL database and have it running locally.</p>
+<p>If the database has been downloaded, and MySQL is up-and-running, the
+following code would produce a single concentration-response curve.
+Let’s look at Atrazine with the “NVS_ENZ_hPDE4A1” endpoint:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USEPA/CompTox-ToxCast-tcpl" class="external-link">tcpl</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/config_funcs.html" class="external-link">tcplConf</a></span><span class="op">(</span>drvr <span class="op">=</span> <span class="st">"MySQL"</span>, </span>
+<span>         user <span class="op">=</span> <span class="st">"my_awesome_username"</span>,</span>
+<span>         pass <span class="op">=</span> <span class="st">"my_awesome_password"</span>,</span>
+<span>         host <span class="op">=</span> <span class="st">"localhost"</span>, </span>
+<span>         db <span class="op">=</span> <span class="st">"database_name"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ep</span> <span class="op">&lt;-</span> <span class="st">"NVS_ENZ_hPDE4A1"</span></span>
+<span><span class="va">cas</span> <span class="op">&lt;-</span> <span class="st">"1912-24-9"</span></span>
+<span></span>
+<span><span class="va">chem_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadChem.html" class="external-link">tcplLoadChem</a></span><span class="op">(</span>field <span class="op">=</span> <span class="st">'casn'</span>, val <span class="op">=</span> <span class="va">cas</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">assay_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/assay_funcs.html" class="external-link">tcplLoadAcid</a></span><span class="op">(</span>fld <span class="op">=</span> <span class="st">"acnm"</span>, val <span class="op">=</span> <span class="va">ep</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mc3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html" class="external-link">tcplLoadData</a></span><span class="op">(</span>lvl <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">"mc"</span>, </span>
+<span>             fld <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"acid"</span>,<span class="st">"spid"</span><span class="op">)</span>, </span>
+<span>             val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">assay_info</span><span class="op">$</span><span class="va">acid</span>,</span>
+<span>                        <span class="va">chem_info</span><span class="op">$</span><span class="va">spid</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Load mc tables from levels of interest</span></span>
+<span><span class="va">mc4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplLoadData.html" class="external-link">tcplLoadData</a></span><span class="op">(</span>lvl <span class="op">=</span> <span class="fl">4</span>, type <span class="op">=</span> <span class="st">"mc"</span>, </span>
+<span>                    fld <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spid"</span>, <span class="st">"aeid"</span><span class="op">)</span>, </span>
+<span>                    val <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chem_info</span><span class="op">$</span><span class="va">spid</span>,</span>
+<span>                               <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mc3</span><span class="op">$</span><span class="va">aeid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/tcpl/man/tcplPlotM4ID.html" class="external-link">tcplPlotM4ID</a></span><span class="op">(</span><span class="va">mc4</span>, lvl <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="atrazineDose.png" width="375"></p>
-<p>The values passed to the <code>tcplConf</code> function will depend on how you set up the MySQL database.</p>
+<p>The values passed to the <code>tcplConf</code> function will depend
+on how you set up the MySQL database.</p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
-  <p>Developed by Laura DeCicco, Steven Corsi, Daniel Villeneuve, Brett Blackwell, Gerald Ankley.</p>
-</div>
+    <footer></footer>
+</div> <!-- / div for your main content-->
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
-</div>
+<!-- BEGIN USGS Footer Template -->
 
-      </footer>
+<footer class="footer"><div class="tmp-container">
+		<!-- .footer-wrap -->
+			<!-- .footer-doi -->
+			<div class="footer-doi">
+				<!-- footer nav links -->
+				<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/privacy" class="external-link">DOI Privacy Policy</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/policies-and-notices" class="external-link">Legal</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/accessibility-and-us-geological-survey" class="external-link">Accessibility</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/sitemap" class="external-link">Site Map</a></li>
+					<li class="last leaf menu-links menu-level-1"><a href="https://answers.usgs.gov/" class="external-link">Contact USGS</a></li>
+				</ul>
+<!--/ footer nav links -->
 </div>
+			<!-- /.footer-doi -->
 
+			<hr>
+<!-- .footer-utl-links --><div class="footer-doi">
+			<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/" class="external-link">U.S. Department of the Interior</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doioig.gov/" class="external-link">DOI Inspector General</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/" class="external-link">White House</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/omb/management/egov/" class="external-link">E-gov</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doi.gov/pmb/eeo/no-fear-act" class="external-link">No Fear Act</a></li>
+				<li class="last leaf menu-links menu-level-1"><a href="https://www.usgs.gov/about/organization/science-support/foia" class="external-link">FOIA</a></li>
+			</ul>
+</div>			
+		<!-- /.footer-utl-links -->
+		<!-- .footer-social-links -->
+		<div class="footer-social-links">
+			<ul class="social">
+<li class="follow">Follow</li>
+				<li class="twitter">
+					<a href="https://twitter.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-twitter-square"><span class="only">Twitter</span></i>
+					</a>
+				</li>
+				<li class="facebook">
+					<a href="https://facebook.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-facebook-square"><span class="only">Facebook</span></i>
+					</a>
+				</li>
+				<li class="github">
+					<a href="https://github.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-github"><span class="only">GitHub</span></i>
+					</a>
+				</li>
+				<li class="flickr">
+					<a href="https://flickr.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-flickr"><span class="only">Flickr</span></i>
+					</a>
+				</li>
+				<li class="youtube">
+					<a href="http://youtube.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-youtube-play"><span class="only">YouTube</span></i>
+					</a>
+				</li>
+				<li class="instagram">
+					<a href="https://instagram.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-instagram"><span class="only">Instagram</span></i>
+					</a>
+				</li>
+			</ul>
+</div>
+		<!-- /.footer-social-links -->
+	</div>
+		<!-- /.footer-wrap -->	
+</footer><!-- END USGS Footer Template- --><!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKQR8KP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   
-
-
   </body>
+<!-- closing div for body -->
 </html>

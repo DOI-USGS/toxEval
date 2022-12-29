@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="toxEval">
 <title>Using R to prepare your Excel file • toxEval</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,12 +13,12 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using R to prepare your Excel file">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Using R to prepare your Excel file">
 <meta property="og:description" content="toxEval">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -31,219 +32,246 @@
   gtag('config', 'UA-53797708-7');
 </script>
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">toxEval</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/Introduction.html">Background</a>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <a href="https://www.usgs.gov/" class="external-link"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>
+    <a class="navbar-brand me-2" href="../index.html">toxEval</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../articles/Introduction.html">Background</a>
 </li>
-<li>
-  <a href="../articles/basicWorkflow.html">Basic Workflow</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/basicWorkflow.html">Basic Workflow</a>
 </li>
-<li>
-  <a href="../reference/index.html">Function Help</a>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Function Help</a>
 </li>
-<li>
-  <a href="../articles/PrepareData.html">Data Preparation</a>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/PrepareData.html">Data Preparation</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/shinyApp.html">Shiny App</a>
-    </li>
-    <li>
-      <a href="../articles/benchmarks.html">Exploring Benchmarks</a>
-    </li>
-    <li>
-      <a href="../articles/pivot.html">Prepare Data in R</a>
-    </li>
-    <li>
-      <a href="../articles/does_curves.html">Dose Response Curves</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/bibliography.html">Bibliograpy</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/USGS-R/toxEval">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/shinyApp.html">Shiny App</a>
+    <a class="dropdown-item" href="../articles/benchmarks.html">Exploring Benchmarks</a>
+    <a class="dropdown-item" href="../articles/pivot.html">Prepare Data in R</a>
+    <a class="dropdown-item" href="../articles/does_curves.html">Dose Response Curves</a>
+    <a class="dropdown-item" href="../articles/Contributing.html">How to Contribute</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/bibliography.html">Bibliograpy</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://code.usgs.gov/water/toxEval">
+    <span class="fa fa-gitlab fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-article">
 
-      </header><script src="pivot_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Using R to prepare your Excel file</h1>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Using R to prepare your Excel file</h1>
             
-            <h4 class="date">08 October, 2020</h4>
+            <h4 data-toc-skip class="date">29 December, 2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/USGS-R/toxEval/blob/master/vignettes/pivot.Rmd"><code>vignettes/pivot.Rmd</code></a></small>
-      <div class="hidden name"><code>pivot.Rmd</code></div>
-
+      
+      <div class="d-none name"><code>pivot.Rmd</code></div>
     </div>
 
     
     
-<p>This article will walk through prepping your data and exporting it to a Microsoft™ Excel file using R. This article will focus on using functions and techniques from the “tidyverse” collection of R packages (<code>dplyr</code> + <code>tidyr</code> + many others…).</p>
-<div id="pivot-from-wide-to-long" class="section level2">
-<h2 class="hasAnchor">
-<a href="#pivot-from-wide-to-long" class="anchor"></a>Pivot from wide to long</h2>
-<p>It is very common for environmental chemistry data to come back from the laboratory in a “wide” format. A wide format typically has a few “header” columns such as site and date with additional columns representing a sigle chemical per column and possibly a remark code for each chemical as a separate column. The remark column could indicate censored data (ie “below detection limit”) or some information about the sampling conditions. We can use the <code>tidyr</code> package to “pivot” this data to the required long format used in <code>toxEval</code>.</p>
-<p>Let’s start with the most simple case, a wide data frame with no remark codes. In this simple example, column “a” represents the measured value of “a” and column “b” represents the measured value of “b”:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>,
-  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, 
-                 origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span>,
-  a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,
-  b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-<span class="va">df_simple</span></pre></div>
-<pre><code>##   site       date a b
-## 1    A 2020-10-08 1 4
-## 2    A 2020-10-07 2 3
-## 3    B 2020-10-06 3 2
-## 4    B 2020-10-05 4 1</code></pre>
-<p>The “long” version of this data frame will still have the “site” and “date” columns, but instead of “a”, “b” (and potentially many many more…), it will now have “Chemical” and “Value”. To do this programatically, we can use the <code>pivot_longer</code> function in <code>tidyr</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-
-<span class="va">df_simple_long</span> <span class="op">&lt;-</span> <span class="va">df_simple</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">date</span><span class="op">)</span>,
-               names_to <span class="op">=</span> <span class="st">"Chemical"</span>,
-               values_to <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">df_simple_long</span><span class="op">)</span></pre></div>
-<pre><code>## # A tibble: 6 x 4
-##   site  date       Chemical Value
-##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt;
-## 1 A     2020-10-08 a            1
-## 2 A     2020-10-08 b            4
-## 3 A     2020-10-07 a            2
-## 4 A     2020-10-07 b            3
-## 5 B     2020-10-06 a            3
-## 6 B     2020-10-06 b            2</code></pre>
-<p>The “names_to” argument is the name given to the column that is populated from the wide column names (so, the chemical names). The “values_to” is the column name for the values populated from the chemical columns.</p>
-<p>Let’s make a more complicated wide data that now has the “a” and “b” measured values, but also has “a” and “b” remark codes:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">df_with_rmks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>,
-  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, 
-                 origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span>,
-  a_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,
-  a_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span><span class="op">)</span>,
-  b_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,
-  b_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span><span class="op">)</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-<span class="va">df_with_rmks</span></pre></div>
-<pre><code>##   site       date a_value a_rmk b_value b_rmk
-## 1    A 2020-10-08       1     &lt;       4      
-## 2    A 2020-10-07       2             3      
-## 3    B 2020-10-06       3             2      
-## 4    B 2020-10-05       4             1     &lt;</code></pre>
-<p>We can use the “pivot_longer” function again to make this into a long data frame with the columns: site, date, Chemical, value, remark:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-<span class="va">df_long_with_rmks</span> <span class="op">&lt;-</span> <span class="va">df_with_rmks</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">date</span><span class="op">)</span>, 
-               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Chemical"</span>, <span class="st">".value"</span><span class="op">)</span>,
-               names_pattern <span class="op">=</span> <span class="st">"(.+)_(.+)"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">df_long_with_rmks</span><span class="op">)</span></pre></div>
-<pre><code>## # A tibble: 6 x 5
-##   site  date       Chemical value rmk  
-##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
-## 1 A     2020-10-08 a            1 "&lt;"  
-## 2 A     2020-10-08 b            4 ""   
-## 3 A     2020-10-07 a            2 ""   
-## 4 A     2020-10-07 b            3 ""   
-## 5 B     2020-10-06 a            3 ""   
-## 6 B     2020-10-06 b            2 ""</code></pre>
-<p>This time, the “names_to” argument is a vector. Since it’s going to produce more than a simple name/value combination, we need to tell it how to make the name/value/remark combinations. We do that using the “names_pattern” argument. In this case, <code>tidyr</code> is going to look at the column names (excluding site and date…since we negate those in the “cols” argument), and try to split the names by the “_” separator. This is a very powerful tool…in this case we are saying anything in the first group (on the left of the “_”) is the “Chemical” and every matching group on the right of the “_” creates new value columns. So with the columns are: a_value, a_rmk, b_value, b_rmk - we get a column of chemicals (a &amp; b), a column of “rmk” values, and a column of “value” values.</p>
-<p>What if the column names didn’t have the "_value" prepended? This is more common in our raw data:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">data_example2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>,
-  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, 
-                 origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span>,
-  a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,
-  a_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span><span class="op">)</span>,
-  b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,
-  b_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span><span class="op">)</span>,
-  c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,
-  c_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">""</span>,<span class="fl">4</span><span class="op">)</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-<span class="va">data_example2</span></pre></div>
-<pre><code>##   site       date a a_rmk b b_rmk c c_rmk
-## 1    A 2020-10-08 1     &lt; 4       3      
-## 2    A 2020-10-07 2       3       4      
-## 3    B 2020-10-06 3       2       5      
-## 4    B 2020-10-05 4       1     &lt; 6</code></pre>
-<p>The easiest way to do that would be to add that "_value“. Keeping in the”tidyverse" (acknowledging there are other base-R ways that work well too for the column renames):</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-
-<span class="va">data_wide2</span> <span class="op">&lt;-</span> <span class="va">data_example2</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select_all.html">rename_if</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"_rmk"</span>, <span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span>
-              <span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">!=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"site"</span>,<span class="st">"date"</span><span class="op">)</span>, 
-            <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">'%s_value'</span>, <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">date</span><span class="op">)</span>, 
-               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Chemical"</span>, <span class="st">".value"</span><span class="op">)</span>,
-               names_pattern <span class="op">=</span> <span class="st">"(.+)_(.+)"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data_wide2</span><span class="op">)</span></pre></div>
-<pre><code>## # A tibble: 6 x 5
-##   site  date       Chemical value rmk  
-##   &lt;chr&gt; &lt;date&gt;     &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;
-## 1 A     2020-10-08 a            1 "&lt;"  
-## 2 A     2020-10-08 b            4 ""   
-## 3 A     2020-10-08 c            3 ""   
-## 4 A     2020-10-07 a            2 ""   
-## 5 A     2020-10-07 b            3 ""   
-## 6 A     2020-10-07 c            4 ""</code></pre>
+<p>This article will walk through prepping your data and exporting it to
+a Microsoft™ Excel file using R. This article will focus on using
+functions and techniques from the “tidyverse” collection of R packages
+(<code>dplyr</code> + <code>tidyr</code> + many others…).</p>
+<div class="section level3">
+<h3 id="pivot-from-wide-to-long">Pivot from wide to long<a class="anchor" aria-label="anchor" href="#pivot-from-wide-to-long"></a>
+</h3>
+<p>It is very common for environmental chemistry data to come back from
+the laboratory in a “wide” format. A wide format typically has a few
+“header” columns such as site and date with additional columns
+representing a sigle chemical per column and possibly a remark code for
+each chemical as a separate column. The remark column could indicate
+censored data (ie “below detection limit”) or some information about the
+sampling conditions. We can use the <code>tidyr</code> package to
+“pivot” this data to the required long format used in
+<code>toxEval</code>.</p>
+<p>Let’s start with the most simple case, a wide data frame with no
+remark codes. In this simple example, column “a” represents the measured
+value of “a” and column “b” represents the measured value of “b”:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>,</span>
+<span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, </span>
+<span>                 origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span>,</span>
+<span>  a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span>  b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">df_simple</span></span></code></pre></div>
+<pre><code><span><span class="co">##   site       date a b</span></span>
+<span><span class="co">## 1    A 2022-12-29 1 4</span></span>
+<span><span class="co">## 2    A 2022-12-28 2 3</span></span>
+<span><span class="co">## 3    B 2022-12-27 3 2</span></span>
+<span><span class="co">## 4    B 2022-12-26 4 1</span></span></code></pre>
+<p>The “long” version of this data frame will still have the “site” and
+“date” columns, but instead of “a”, “b” (and potentially many many
+more…), it will now have “Chemical” and “Value”. To do this
+programatically, we can use the <code>pivot_longer</code> function in
+<code>tidyr</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_simple_long</span> <span class="op">&lt;-</span> <span class="va">df_simple</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">date</span><span class="op">)</span>,</span>
+<span>               names_to <span class="op">=</span> <span class="st">"Chemical"</span>,</span>
+<span>               values_to <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_simple_long</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">##   site  date       Chemical Value</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2022-12-29 a            1</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2022-12-29 b            4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2022-12-28 a            2</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2022-12-28 b            3</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> B     2022-12-27 a            3</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> B     2022-12-27 b            2</span></span></code></pre>
+<p>The “names_to” argument is the name given to the column that is
+populated from the wide column names (so, the chemical names). The
+“values_to” is the column name for the values populated from the
+chemical columns.</p>
+<p>Let’s make a more complicated wide data that now has the “a” and “b”
+measured values, but also has “a” and “b” remark codes:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_with_rmks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>,</span>
+<span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, </span>
+<span>                 origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span>,</span>
+<span>  a_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span>  a_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span><span class="op">)</span>,</span>
+<span>  b_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>  b_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">df_with_rmks</span></span></code></pre></div>
+<pre><code><span><span class="co">##   site       date a_value a_rmk b_value b_rmk</span></span>
+<span><span class="co">## 1    A 2022-12-29       1     &lt;       4      </span></span>
+<span><span class="co">## 2    A 2022-12-28       2             3      </span></span>
+<span><span class="co">## 3    B 2022-12-27       3             2      </span></span>
+<span><span class="co">## 4    B 2022-12-26       4             1     &lt;</span></span></code></pre>
+<p>We can use the “pivot_longer” function again to make this into a long
+data frame with the columns: site, date, Chemical, value, remark:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="va">df_long_with_rmks</span> <span class="op">&lt;-</span> <span class="va">df_with_rmks</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">date</span><span class="op">)</span>, </span>
+<span>               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chemical"</span>, <span class="st">".value"</span><span class="op">)</span>,</span>
+<span>               names_pattern <span class="op">=</span> <span class="st">"(.+)_(.+)"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_long_with_rmks</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">##   site  date       Chemical value rmk  </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2022-12-29 a            1 <span style="color: #949494;">"</span>&lt;<span style="color: #949494;">"</span>  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2022-12-29 b            4 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2022-12-28 a            2 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2022-12-28 b            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> B     2022-12-27 a            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> B     2022-12-27 b            2 <span style="color: #949494;">""</span></span></span></code></pre>
+<p>This time, the “names_to” argument is a vector. Since it’s going to
+produce more than a simple name/value combination, we need to tell it
+how to make the name/value/remark combinations. We do that using the
+“names_pattern” argument. In this case, <code>tidyr</code> is going to
+look at the column names (excluding site and date…since we negate those
+in the “cols” argument), and try to split the names by the “_”
+separator. This is a very powerful tool…in this case we are saying
+anything in the first group (on the left of the “_”) is the “Chemical”
+and every matching group on the right of the “_” creates new value
+columns. So with the columns are: a_value, a_rmk, b_value, b_rmk - we
+get a column of chemicals (a &amp; b), a column of “rmk” values, and a
+column of “value” values.</p>
+<p>What if the column names didn’t have the “_value” prepended? This is
+more common in our raw data:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_example2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>,</span>
+<span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span>, </span>
+<span>                 origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span>,</span>
+<span>  a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span>  a_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"&lt;"</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span><span class="op">)</span>,</span>
+<span>  b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>  b_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>,<span class="st">""</span>,<span class="st">""</span>,<span class="st">"&lt;"</span><span class="op">)</span>,</span>
+<span>  c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  c_rmk <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">""</span>,<span class="fl">4</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">data_example2</span></span></code></pre></div>
+<pre><code><span><span class="co">##   site       date a a_rmk b b_rmk c c_rmk</span></span>
+<span><span class="co">## 1    A 2022-12-29 1     &lt; 4       3      </span></span>
+<span><span class="co">## 2    A 2022-12-28 2       3       4      </span></span>
+<span><span class="co">## 3    B 2022-12-27 3       2       5      </span></span>
+<span><span class="co">## 4    B 2022-12-26 4       1     &lt; 6</span></span></code></pre>
+<p>The easiest way to do that would be to add that “_value”. Keeping in
+the “tidyverse” (acknowledging there are other base-R ways that work
+well too for the column renames):</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data_wide2</span> <span class="op">&lt;-</span> <span class="va">data_example2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select_all.html" class="external-link">rename_if</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"_rmk"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span></span>
+<span>              <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">!=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>,<span class="st">"date"</span><span class="op">)</span>, </span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'%s_value'</span>, <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">site</span>, <span class="op">-</span><span class="va">date</span><span class="op">)</span>, </span>
+<span>               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chemical"</span>, <span class="st">".value"</span><span class="op">)</span>,</span>
+<span>               names_pattern <span class="op">=</span> <span class="st">"(.+)_(.+)"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_wide2</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">##   site  date       Chemical value rmk  </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2022-12-29 a            1 <span style="color: #949494;">"</span>&lt;<span style="color: #949494;">"</span>  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2022-12-29 b            4 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2022-12-29 c            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2022-12-28 a            2 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> A     2022-12-28 b            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> A     2022-12-28 c            4 <span style="color: #949494;">""</span></span></span></code></pre>
 </div>
-<div id="opening-the-file" class="section level2">
-<h2 class="hasAnchor">
-<a href="#opening-the-file" class="anchor"></a>Opening the file</h2>
-<p>To open an Excel file in R, use the <code>readxl</code> package. There are many different configurations of Excel files possible.</p>
-<p>As one example, let’s say the lab returned the data looking like this:</p>
+<div class="section level3">
+<h3 id="opening-the-file">Opening the file<a class="anchor" aria-label="anchor" href="#opening-the-file"></a>
+</h3>
+<p>To open an Excel file in R, use the <code>readxl</code> package.
+There are many different configurations of Excel files possible.</p>
+<p>As one example, let’s say the lab returned the data looking like
+this:</p>
 <p><img src="messyData.png" width="414"></p>
 <p>Let’s break down the issues:</p>
 <ul>
@@ -254,130 +282,209 @@
 <li>The data starts in row 5, in a “wide” format</li>
 <li>The date format is unusual</li>
 </ul>
-<p>In this example, we’ll work through these spacing and header issues to get us to a wide data frame that we can then pivot to a long data frame as described in the next section.</p>
+<p>In this example, we’ll work through these spacing and header issues
+to get us to a wide data frame that we can then pivot to a long data
+frame as described in the next section.</p>
 <p>First, let’s just get the data with no column names:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
-<span class="va">data_no_header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span><span class="op">(</span><span class="st">"vignettes/Wide data example.xlsx"</span><span class="op">)</span>,
-                            sheet <span class="op">=</span> <span class="st">"data_from_lab"</span>, 
-                            skip <span class="op">=</span> <span class="fl">4</span>, col_names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
-<p><code>data_no_header</code> is now a data frame with accurate types (except for dates…we’ll get that later!), but no column names. We know the first 2 columns are site and date, so we can name those easily:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span><span class="op">(</span><span class="va">data_no_header</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"SiteID"</span>, <span class="st">"Sample Date"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
+<span><span class="va">data_no_header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"vignettes/Wide data example.xlsx"</span><span class="op">)</span>,</span>
+<span>                            sheet <span class="op">=</span> <span class="st">"data_from_lab"</span>, </span>
+<span>                            skip <span class="op">=</span> <span class="fl">4</span>, col_names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><code>data_no_header</code> is now a data frame with accurate types
+(except for dates…we’ll get that later!), but no column names. We know
+the first 2 columns are site and date, so we can name those easily:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data_no_header</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SiteID"</span>, <span class="st">"Sample Date"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we need to get the CAS values for the column names:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">headers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/here/man/here.html">here</a></span><span class="op">(</span><span class="st">"vignettes/Wide data example.xlsx"</span><span class="op">)</span>,
-                     sheet <span class="op">=</span> <span class="st">"data_from_lab"</span>, 
-                     n_max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="co"># Get rid or first 2 columns:</span>
-<span class="va">headers</span> <span class="op">&lt;-</span> <span class="va">headers</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">:</span><span class="op">-</span><span class="fl">2</span><span class="op">]</span>
-<span class="co"># Let's look at the first 6 columns:</span>
-<span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></pre></div>
-<pre><code>## # A tibble: 1 x 6
-##   ...3  `1912-24-9` ...5  `148-79-8`    ...7  `611-59-6`          
-##   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;               
-## 1 Code  Atrazine    Code  Thiabendazole Code  1,7-Dimethylxanthine</code></pre>
-<p>It would be nice to use the first row as the column names in “data_no_header”, but then it would be very confusing what “Code” means (since it’s repeated). So, let’s remove the “Code”, and just repeat the chemical names:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="va">headers</span> <span class="op">&lt;-</span> <span class="va">headers</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"Code"</span><span class="op">)</span><span class="op">]</span>
-
-<span class="va">chem_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span>
-
-<span class="va">column_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">chem_names</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="va">column_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">column_names</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"_code"</span>,<span class="st">"_Value"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">column_names</span><span class="op">)</span></pre></div>
-<pre><code>## [1] "Atrazine_code"              "Atrazine_Value"            
-## [3] "Thiabendazole_code"         "Thiabendazole_Value"       
-## [5] "1,7-Dimethylxanthine_code"  "1,7-Dimethylxanthine_Value"</code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">headers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"vignettes/Wide data example.xlsx"</span><span class="op">)</span>,</span>
+<span>                     sheet <span class="op">=</span> <span class="st">"data_from_lab"</span>, </span>
+<span>                     n_max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co"># Get rid or first 2 columns:</span></span>
+<span><span class="va">headers</span> <span class="op">&lt;-</span> <span class="va">headers</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">:</span><span class="op">-</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="co"># Let's look at the first 6 columns:</span></span>
+<span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
+<span><span class="co">##   ...3  `1912-24-9` ...5  `148-79-8`    ...7  `611-59-6`          </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> Code  Atrazine    Code  Thiabendazole Code  1,7-Dimethylxanthine</span></span></code></pre>
+<p>It would be nice to use the first row as the column names in
+“data_no_header”, but then it would be very confusing what “Code” means
+(since it’s repeated). So, let’s remove the “Code”, and just repeat the
+chemical names:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">headers</span> <span class="op">&lt;-</span> <span class="va">headers</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"Code"</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">chem_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">column_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">chem_names</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">column_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">column_names</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_code"</span>,<span class="st">"_Value"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">column_names</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Atrazine_code"              "Atrazine_Value"            </span></span>
+<span><span class="co">## [3] "Thiabendazole_code"         "Thiabendazole_Value"       </span></span>
+<span><span class="co">## [5] "1,7-Dimethylxanthine_code"  "1,7-Dimethylxanthine_Value"</span></span></code></pre>
 <p>Now, we can assign the “column_names” to the “data_no_header”:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span><span class="op">(</span><span class="va">data_no_header</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">:</span><span class="op">-</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">column_names</span></pre></div>
-<p>Before we pivot this data to the required long format (as described above), let’s transform the “Sample Date” column to an R date time format:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="va">data_no_header</span><span class="op">$</span><span class="va">`Sample Date`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span><span class="op">(</span><span class="va">data_no_header</span><span class="op">$</span><span class="va">`Sample Date`</span>, 
-                                format <span class="op">=</span> <span class="st">"%Y%m%d%H%M"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data_no_header</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">:</span><span class="op">-</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">column_names</span></span></code></pre></div>
+<p>Before we pivot this data to the required long format (as described
+above), let’s transform the “Sample Date” column to an R date time
+format:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_no_header</span><span class="op">$</span><span class="va">`Sample Date`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="va">data_no_header</span><span class="op">$</span><span class="va">`Sample Date`</span>, </span>
+<span>                                format <span class="op">=</span> <span class="st">"%Y%m%d%H%M"</span><span class="op">)</span></span></code></pre></div>
 <p>Now let’s pivot this to the long format:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="va">cleaned_long</span> <span class="op">&lt;-</span> <span class="va">data_no_header</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">SiteID</span>, <span class="op">-</span><span class="va">`Sample Date`</span><span class="op">)</span>, 
-               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Chemical"</span>, <span class="st">".value"</span><span class="op">)</span>,
-               names_pattern <span class="op">=</span> <span class="st">"(.+)_(.+)"</span><span class="op">)</span> </pre></div>
-<p>But, since we’re doing a <code>toxEval</code> analysis, we need to get a “CAS” column. We can use the original “headers” data frame and do a <code>left_join</code> (from the “dplyr” package):</p>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="va">cas_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Chemical <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span>,
-                     CAS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/names.html">names</a></span><span class="op">(</span><span class="va">headers</span><span class="op">)</span>, 
-                     stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="va">cleaned_long</span> <span class="op">&lt;-</span> <span class="va">cleaned_long</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">cas_df</span>, by <span class="op">=</span> <span class="st">"Chemical"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cleaned_long</span><span class="op">)</span></pre></div>
-<pre><code>## # A tibble: 6 x 6
-##   SiteID   `Sample Date`       Chemical                 code    Value CAS      
-##   &lt;chr&gt;    &lt;dttm&gt;              &lt;chr&gt;                    &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    
-## 1 Upstream 2016-08-01 10:00:00 Atrazine                 &lt;NA&gt;  0.0183  1912-24-9
-## 2 Upstream 2016-08-01 10:00:00 Thiabendazole            &lt;     0.00410 148-79-8 
-## 3 Upstream 2016-08-01 10:00:00 1,7-Dimethylxanthine     &lt;     0.0877  611-59-6 
-## 4 Upstream 2016-08-01 10:00:00 10-Hydroxy-amitriptyline &lt;     0.0083  1159-82-6
-## 5 Upstream 2017-09-07 10:00:00 Atrazine                 &lt;NA&gt;  0.0666  1912-24-9
-## 6 Upstream 2017-09-07 10:00:00 Thiabendazole            &lt;     0.011   148-79-8</code></pre>
-<p>The “cleaned_long” data frame is ready to be used by <code>toxEval</code> in the “Data” tab. The “cas_df” is nearly ready for the “Chemical” tab. There is a mandatory “Class” column that needs to be added after exporting to Excel. Finally, we need to create the “Sites” tab.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="va">chemical_tab</span> <span class="op">&lt;-</span> <span class="va">cas_df</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Class <span class="op">=</span> <span class="st">"to_add"</span><span class="op">)</span>
-
-<span class="va">sites_tab</span> <span class="op">&lt;-</span> <span class="va">cleaned_long</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">SiteID</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`Short Name` <span class="op">=</span> <span class="st">"to_add"</span>,
-         dec_lat <span class="op">=</span> <span class="cn">NA</span>,
-         dec_lon <span class="op">=</span> <span class="cn">NA</span>,
-         site_grouping <span class="op">=</span> <span class="st">""</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cleaned_long</span> <span class="op">&lt;-</span> <span class="va">data_no_header</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="va">SiteID</span>, <span class="op">-</span><span class="va">`Sample Date`</span><span class="op">)</span>, </span>
+<span>               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chemical"</span>, <span class="st">".value"</span><span class="op">)</span>,</span>
+<span>               names_pattern <span class="op">=</span> <span class="st">"(.+)_(.+)"</span><span class="op">)</span> </span></code></pre></div>
+<p>But, since we’re doing a <code>toxEval</code> analysis, we need to
+get a “CAS” column. We can use the original “headers” data frame and do
+a <code>left_join</code> (from the “dplyr” package):</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cas_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Chemical <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">headers</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span>,</span>
+<span>                     CAS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">headers</span><span class="op">)</span>, </span>
+<span>                     stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cleaned_long</span> <span class="op">&lt;-</span> <span class="va">cleaned_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">cas_df</span>, by <span class="op">=</span> <span class="st">"Chemical"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cleaned_long</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
+<span><span class="co">##   SiteID   `Sample Date`       Chemical                 code   Value CAS      </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> Upstream 2016-08-01 <span style="color: #949494;">10:00:00</span> Atrazine                 <span style="color: #BB0000;">NA</span>    0.018<span style="text-decoration: underline;">3</span> 1912-24-9</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> Upstream 2016-08-01 <span style="color: #949494;">10:00:00</span> Thiabendazole            &lt;     0.004<span style="text-decoration: underline;">1</span> 148-79-8 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> Upstream 2016-08-01 <span style="color: #949494;">10:00:00</span> 1,7-Dimethylxanthine     &lt;     0.087<span style="text-decoration: underline;">7</span> 611-59-6 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> Upstream 2016-08-01 <span style="color: #949494;">10:00:00</span> 10-Hydroxy-amitriptyline &lt;     0.008<span style="text-decoration: underline;">3</span> 1159-82-6</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> Upstream 2017-09-07 <span style="color: #949494;">10:00:00</span> Atrazine                 <span style="color: #BB0000;">NA</span>    0.066<span style="text-decoration: underline;">6</span> 1912-24-9</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> Upstream 2017-09-07 <span style="color: #949494;">10:00:00</span> Thiabendazole            &lt;     0.011  148-79-8</span></span></code></pre>
+<p>The “cleaned_long” data frame is ready to be used by
+<code>toxEval</code> in the “Data” tab. The “cas_df” is nearly ready for
+the “Chemical” tab. There is a mandatory “Class” column that needs to be
+added after exporting to Excel. Finally, we need to create the “Sites”
+tab.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">chemical_tab</span> <span class="op">&lt;-</span> <span class="va">cas_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Class <span class="op">=</span> <span class="st">"to_add"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sites_tab</span> <span class="op">&lt;-</span> <span class="va">cleaned_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">SiteID</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>`Short Name` <span class="op">=</span> <span class="st">"to_add"</span>,</span>
+<span>         dec_lat <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>         dec_lon <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>         site_grouping <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="save-to-excel" class="section level2">
-<h2 class="hasAnchor">
-<a href="#save-to-excel" class="anchor"></a>Save to Excel</h2>
-<p>The package <code>openxlsx</code> can be used to export Excel files. Create a named list in R, and each of those parts of the list become a Worksheet in Excel:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit">
-<span class="va">to_Excel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Data <span class="op">=</span> <span class="va">cleaned_long</span>,
-                 Chemicals <span class="op">=</span> <span class="va">chemical_tab</span>,
-                 Sites <span class="op">=</span> <span class="va">sites_tab</span><span class="op">)</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ycphs.github.io/openxlsx/index.html">openxlsx</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html">write.xlsx</a></span><span class="op">(</span><span class="va">to_Excel</span>,
-           file <span class="op">=</span> <span class="st">"toxEval_Input.xlsx"</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="save-to-excel">Save to Excel<a class="anchor" aria-label="anchor" href="#save-to-excel"></a>
+</h3>
+<p>The package <code>openxlsx</code> can be used to export Excel files.
+Create a named list in R, and each of those parts of the list become a
+Worksheet in Excel:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">to_Excel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Data <span class="op">=</span> <span class="va">cleaned_long</span>,</span>
+<span>                 Chemicals <span class="op">=</span> <span class="va">chemical_tab</span>,</span>
+<span>                 Sites <span class="op">=</span> <span class="va">sites_tab</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ycphs.github.io/openxlsx/index.html" class="external-link">openxlsx</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/openxlsx/man/write.xlsx.html" class="external-link">write.xlsx</a></span><span class="op">(</span><span class="va">to_Excel</span>,</span>
+<span>           file <span class="op">=</span> <span class="st">"toxEval_Input.xlsx"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="disclaimer" class="section level1">
-<h1 class="hasAnchor">
-<a href="#disclaimer" class="anchor"></a>Disclaimer</h1>
-<p>This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information.</p>
-<p>Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.</p>
+<div class="section level2">
+<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+</h2>
+<p>This information is preliminary or provisional and is subject to
+revision. It is being provided to meet the need for timely best science.
+The information has not received final approval by the U.S. Geological
+Survey (USGS) and is provided on the condition that neither the USGS nor
+the U.S. Government shall be held liable for any damages resulting from
+the authorized or unauthorized use of the information.</p>
+<p>Any use of trade, firm, or product names is for descriptive purposes
+only and does not imply endorsement by the U.S. Government.</p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
-</div>
-
-
-
-      <footer><div class="copyright">
-  <p>Developed by Laura DeCicco, Steven Corsi, Daniel Villeneuve, Brett Blackwell, Gerald Ankley.</p>
-</div>
-
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
-      </footer>
-</div>
 
+
+    <footer></footer>
+</div> <!-- / div for your main content-->
+
+<!-- BEGIN USGS Footer Template -->
+
+<footer class="footer"><div class="tmp-container">
+		<!-- .footer-wrap -->
+			<!-- .footer-doi -->
+			<div class="footer-doi">
+				<!-- footer nav links -->
+				<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/privacy" class="external-link">DOI Privacy Policy</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/policies-and-notices" class="external-link">Legal</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/accessibility-and-us-geological-survey" class="external-link">Accessibility</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/sitemap" class="external-link">Site Map</a></li>
+					<li class="last leaf menu-links menu-level-1"><a href="https://answers.usgs.gov/" class="external-link">Contact USGS</a></li>
+				</ul>
+<!--/ footer nav links -->
+</div>
+			<!-- /.footer-doi -->
+
+			<hr>
+<!-- .footer-utl-links --><div class="footer-doi">
+			<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/" class="external-link">U.S. Department of the Interior</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doioig.gov/" class="external-link">DOI Inspector General</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/" class="external-link">White House</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/omb/management/egov/" class="external-link">E-gov</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doi.gov/pmb/eeo/no-fear-act" class="external-link">No Fear Act</a></li>
+				<li class="last leaf menu-links menu-level-1"><a href="https://www.usgs.gov/about/organization/science-support/foia" class="external-link">FOIA</a></li>
+			</ul>
+</div>			
+		<!-- /.footer-utl-links -->
+		<!-- .footer-social-links -->
+		<div class="footer-social-links">
+			<ul class="social">
+<li class="follow">Follow</li>
+				<li class="twitter">
+					<a href="https://twitter.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-twitter-square"><span class="only">Twitter</span></i>
+					</a>
+				</li>
+				<li class="facebook">
+					<a href="https://facebook.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-facebook-square"><span class="only">Facebook</span></i>
+					</a>
+				</li>
+				<li class="github">
+					<a href="https://github.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-github"><span class="only">GitHub</span></i>
+					</a>
+				</li>
+				<li class="flickr">
+					<a href="https://flickr.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-flickr"><span class="only">Flickr</span></i>
+					</a>
+				</li>
+				<li class="youtube">
+					<a href="http://youtube.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-youtube-play"><span class="only">YouTube</span></i>
+					</a>
+				</li>
+				<li class="instagram">
+					<a href="https://instagram.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-instagram"><span class="only">Instagram</span></i>
+					</a>
+				</li>
+			</ul>
+</div>
+		<!-- /.footer-social-links -->
+	</div>
+		<!-- /.footer-wrap -->	
+</footer><!-- END USGS Footer Template- --><!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKQR8KP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   
-
-
   </body>
+<!-- closing div for body -->
 </html>
