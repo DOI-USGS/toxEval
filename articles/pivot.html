@@ -100,7 +100,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Using R to prepare your Excel file</h1>
             
-            <h4 data-toc-skip class="date">29 December, 2022</h4>
+            <h4 data-toc-skip class="date">03 March, 2023</h4>
       
       
       <div class="d-none name"><code>pivot.Rmd</code></div>
@@ -138,10 +138,10 @@ value of “a” and column “b” represents the measured value of “b”:</p
 <span><span class="op">)</span></span>
 <span><span class="va">df_simple</span></span></code></pre></div>
 <pre><code><span><span class="co">##   site       date a b</span></span>
-<span><span class="co">## 1    A 2022-12-29 1 4</span></span>
-<span><span class="co">## 2    A 2022-12-28 2 3</span></span>
-<span><span class="co">## 3    B 2022-12-27 3 2</span></span>
-<span><span class="co">## 4    B 2022-12-26 4 1</span></span></code></pre>
+<span><span class="co">## 1    A 2023-03-03 1 4</span></span>
+<span><span class="co">## 2    A 2023-03-02 2 3</span></span>
+<span><span class="co">## 3    B 2023-03-01 3 2</span></span>
+<span><span class="co">## 4    B 2023-02-28 4 1</span></span></code></pre>
 <p>The “long” version of this data frame will still have the “site” and
 “date” columns, but instead of “a”, “b” (and potentially many many
 more…), it will now have “Chemical” and “Value”. To do this
@@ -159,12 +159,12 @@ programatically, we can use the <code>pivot_longer</code> function in
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
 <span><span class="co">##   site  date       Chemical Value</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2022-12-29 a            1</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2022-12-29 b            4</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2022-12-28 a            2</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2022-12-28 b            3</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> B     2022-12-27 a            3</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> B     2022-12-27 b            2</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2023-03-03 a            1</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2023-03-03 b            4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2023-03-02 a            2</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2023-03-02 b            3</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> B     2023-03-01 a            3</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> B     2023-03-01 b            2</span></span></code></pre>
 <p>The “names_to” argument is the name given to the column that is
 populated from the wide column names (so, the chemical names). The
 “values_to” is the column name for the values populated from the
@@ -184,10 +184,10 @@ measured values, but also has “a” and “b” remark codes:</p>
 <span><span class="op">)</span></span>
 <span><span class="va">df_with_rmks</span></span></code></pre></div>
 <pre><code><span><span class="co">##   site       date a_value a_rmk b_value b_rmk</span></span>
-<span><span class="co">## 1    A 2022-12-29       1     &lt;       4      </span></span>
-<span><span class="co">## 2    A 2022-12-28       2             3      </span></span>
-<span><span class="co">## 3    B 2022-12-27       3             2      </span></span>
-<span><span class="co">## 4    B 2022-12-26       4             1     &lt;</span></span></code></pre>
+<span><span class="co">## 1    A 2023-03-03       1     &lt;       4      </span></span>
+<span><span class="co">## 2    A 2023-03-02       2             3      </span></span>
+<span><span class="co">## 3    B 2023-03-01       3             2      </span></span>
+<span><span class="co">## 4    B 2023-02-28       4             1     &lt;</span></span></code></pre>
 <p>We can use the “pivot_longer” function again to make this into a long
 data frame with the columns: site, date, Chemical, value, remark:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -201,12 +201,12 @@ data frame with the columns: site, date, Chemical, value, remark:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
 <span><span class="co">##   site  date       Chemical value rmk  </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2022-12-29 a            1 <span style="color: #949494;">"</span>&lt;<span style="color: #949494;">"</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2022-12-29 b            4 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2022-12-28 a            2 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2022-12-28 b            3 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> B     2022-12-27 a            3 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> B     2022-12-27 b            2 <span style="color: #949494;">""</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2023-03-03 a            1 <span style="color: #949494;">"</span>&lt;<span style="color: #949494;">"</span>  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2023-03-03 b            4 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2023-03-02 a            2 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2023-03-02 b            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> B     2023-03-01 a            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> B     2023-03-01 b            2 <span style="color: #949494;">""</span></span></span></code></pre>
 <p>This time, the “names_to” argument is a vector. Since it’s going to
 produce more than a simple name/value combination, we need to tell it
 how to make the name/value/remark combinations. We do that using the
@@ -236,10 +236,10 @@ more common in our raw data:</p>
 <span><span class="op">)</span></span>
 <span><span class="va">data_example2</span></span></code></pre></div>
 <pre><code><span><span class="co">##   site       date a a_rmk b b_rmk c c_rmk</span></span>
-<span><span class="co">## 1    A 2022-12-29 1     &lt; 4       3      </span></span>
-<span><span class="co">## 2    A 2022-12-28 2       3       4      </span></span>
-<span><span class="co">## 3    B 2022-12-27 3       2       5      </span></span>
-<span><span class="co">## 4    B 2022-12-26 4       1     &lt; 6</span></span></code></pre>
+<span><span class="co">## 1    A 2023-03-03 1     &lt; 4       3      </span></span>
+<span><span class="co">## 2    A 2023-03-02 2       3       4      </span></span>
+<span><span class="co">## 3    B 2023-03-01 3       2       5      </span></span>
+<span><span class="co">## 4    B 2023-02-28 4       1     &lt; 6</span></span></code></pre>
 <p>The easiest way to do that would be to add that “_value”. Keeping in
 the “tidyverse” (acknowledging there are other base-R ways that work
 well too for the column renames):</p>
@@ -258,12 +258,12 @@ well too for the column renames):</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
 <span><span class="co">##   site  date       Chemical value rmk  </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2022-12-29 a            1 <span style="color: #949494;">"</span>&lt;<span style="color: #949494;">"</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2022-12-29 b            4 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2022-12-29 c            3 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2022-12-28 a            2 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> A     2022-12-28 b            3 <span style="color: #949494;">""</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> A     2022-12-28 c            4 <span style="color: #949494;">""</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> A     2023-03-03 a            1 <span style="color: #949494;">"</span>&lt;<span style="color: #949494;">"</span>  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> A     2023-03-03 b            4 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> A     2023-03-03 c            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> A     2023-03-02 a            2 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> A     2023-03-02 b            3 <span style="color: #949494;">""</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> A     2023-03-02 c            4 <span style="color: #949494;">""</span></span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="opening-the-file">Opening the file<a class="anchor" aria-label="anchor" href="#opening-the-file"></a>
