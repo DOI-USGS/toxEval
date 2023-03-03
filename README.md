@@ -174,15 +174,11 @@ This section should only need to be done once per computer.
 
 The following link walks you through an installation of R and RStudio:
 
-[Installation
-Instructions](https://owi.usgs.gov/R/training-curriculum/installr/)
-
 Useful links:
 
 -   [Download R Windows](https://cran.r-project.org/bin/windows/base/)
 -   [Download R Mac](https://cran.r-project.org/bin/macosx/)
--   [Download
-    RStudio](https://www.rstudio.com/products/rstudio/download/)
+-   [Download RStudio](https://posit.co/download/rstudio-desktop/)
 
 Regularly, it is a good idea to update *ALL* your packages in R. If
 using RStudio, this is quite easy, there’s an Update button in the
@@ -231,15 +227,14 @@ citation(package = "toxEval")
 #>   }
 ```
 
-## Disclaimer
+# Disclaimer
 
-This software has been approved for release by the U.S. Geological
-Survey (USGS). Although the software has been subjected to rigorous
-review, the USGS reserves the right to update the software as needed
-pursuant to further analysis and review. No warranty, expressed or
-implied, is made by the USGS or the U.S. Government as to the
-functionality of the software and related material nor shall the fact of
-release constitute any such warranty. Furthermore, the software is
-released on condition that neither the USGS nor the U.S. Government
-shall be held liable for any damages resulting from its authorized or
-unauthorized use.
+This software is preliminary or provisional and is subject to revision.
+It is being provided to meet the need for timely best science. The
+software has not received final approval by the U.S. Geological Survey
+(USGS). No warranty, expressed or implied, is made by the USGS or the
+U.S. Government as to the functionality of the software and related
+material nor shall the fact of release constitute any such warranty. The
+software is provided on the condition that neither the USGS nor the U.S.
+Government shall be held liable for any damages resulting from the
+authorized or unauthorized use of the software.

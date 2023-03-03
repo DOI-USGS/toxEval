@@ -11,3 +11,4 @@ sampleData.xlsx
 vignettes/*.R
 vignettes/*.html
 docs/*
+docs

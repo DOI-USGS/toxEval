@@ -83,3 +83,7 @@ deploy_simple.R
 renv/*
 renv.lock
 test-out.xml
+^_pkgdown\.yml$
+^pkgdown$
+.lintr
+
