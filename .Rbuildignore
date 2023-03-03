@@ -85,3 +85,5 @@ renv.lock
 test-out.xml
 ^_pkgdown\.yml$
 ^pkgdown$
+.lintr
+

@@ -51,15 +51,16 @@ NULL
 #' Downloaded on October 2022 from ToxCast. The data were
 #' combined from files in the "INVITRODB_V3_5_LEVEL5" folder.
 #' At the time of toxEval package release, this information was found:
-#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
+#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set.
 #' ACC values are the in the "ACC" column (winning model) and units are
 #' log micro-Molarity (log \eqn{\mu}M).
 #'
-#' @references Toxicology, EPA's National Center for Computational (2020): ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
-#'  https://doi.org/10.23645/epacomptox.6062503.v3
+#' @references Toxicology, EPA's National Center for Computational (2020):
+#' ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
+#'  \doi{10.23645/epacomptox.6062479.v3}.
 #'
-#' @source \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
+#' @source \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
 #'
 #' @aliases ToxCast_ACC
 #' @return data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
