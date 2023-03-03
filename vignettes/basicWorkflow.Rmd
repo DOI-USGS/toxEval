@@ -67,7 +67,7 @@ What's going on with this workflow?
 ## get_ACC
 
 The `get_ACC` function will retrieve the activity concentration at cutoff (`ACC`) values for the specified chemicals. The data was originally downloaded for `toxEval` on October 2015 from ToxCast. The data were combined from files in the "INVITRODB_V2_LEVEL5" directory. At the time of the toxEval package release, this information was found
-[here](https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
+[here](https://www.epa.gov/chemical-research/exploring-toxcast-data) in the "ToxCast & Tox21 Data Spreadsheet" data set. 
 The function `get_ACC` will convert the ACC values in the ToxCast database from units of log($\mu$M) to units of $\mu$g/L, and reformat the data to a format that can be used in `toxEval`.
 
 The decision to use ACC values compared to AC50 (concentration at half-maximal activity) was described in <a href="https://doi.org/10.1021/acs.est.7b01613" target="_blank">Blackwell 2017</a>. Briefly, "ACC is less prone to violating assumptions underlying relative potency estimation".
