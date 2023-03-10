@@ -1,4 +1,4 @@
-image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/rocker/shiny-verse:latest
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/rocker/tidyverse:latest
 
 stages:
   - getready
