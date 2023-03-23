@@ -130,7 +130,7 @@ sidebar <- dashboardSidebar(
             actionButton("changeHit", label="Change Hit Threshold")
    ),
    menuItem("Source code", icon = icon("fa-file-code-o"), 
-            href = "https://github.com/USGS-R/toxEval/tree/main/inst/shiny")
+            href = "https://code.usgs.gov/water/toxEval/tree/main/inst/shiny")
   )
 )
 
