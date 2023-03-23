@@ -5,7 +5,7 @@
 \alias{end_point_info}
 \title{Endpoint information from ToxCast}
 \source{
-\url{https://doi.org/10.23645/epacomptox.6062479.v3}
+\doi{10.23645/epacomptox.6062479.v3}
 }
 \value{
 data frame with 86 columns. The columns and definitions
@@ -17,7 +17,7 @@ Downloaded on October 2022 from ToxCast. The file name of the
 raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
 "INVITRODB_V3_5_SUMMARY" folder. At the time
 of the toxEval package release, these data were found at:
-\url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
+\url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
 in the section marked "Download Assay Information", in the
 ToxCast & Tox21 high-throughput assay information data set.
 }
