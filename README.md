@@ -132,23 +132,23 @@ data frame that is used in many of the plot and table functions.
 There are 4 vignettes to help introduce and navigate the `toxEval`
 package:
 
-| Name                                                                          | R command                                      | Description                                             |
+| Name                                                                                 | R command                                      | Description                                             |
 |------------|--------------|----------------------------------------------|
-| [Introduction](http://usgs-r.github.io/toxEval/articles/Introduction.html)    | `vignette("Introduction", package="toxEval")`  | Introduction to the toxEval                             |
-| [Basic Workflow](http://usgs-r.github.io/toxEval/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
-| [Prepare Data](http://usgs-r.github.io/toxEval/articles/PrepareData.html)     | `vignette("PrepareData", package="toxEval")`   | Guide to preparing your data for toxEval analysis       |
-| [Shiny App Guide](http://usgs-r.github.io/toxEval/articles/shinyApp.html)     | `vignette("shinyApp", package="toxEval")`      | Guide to the toxEval shiny application                  |
+| [Introduction](https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html)    | `vignette("Introduction", package="toxEval")`  | Introduction to the toxEval                             |
+| [Basic Workflow](https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
+| [Prepare Data](https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html)     | `vignette("PrepareData", package="toxEval")`   | Guide to preparing your data for toxEval analysis       |
+| [Shiny App Guide](https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html)     | `vignette("shinyApp", package="toxEval")`      | Guide to the toxEval shiny application                  |
 
 ### Reporting bugs
 
 Please consider reporting bugs and asking questions on the Issues page:
-<https://github.com/USGS-R/toxEval/issues>
+<https://github.com/DOI-USGS/toxEval/issues>
 
 ### Code of Conduct
 
 We want to encourage a warm, welcoming, and safe environment for
 contributing to this project. See the [code of
-conduct](https://github.com/USGS-R/toxEval/blob/main/CONDUCT.md) for
+conduct](https://github.com/DOI-USGS/toxEval/blob/main/CONDUCT.md) for
 more information.
 
 ### Package Support
@@ -156,16 +156,14 @@ more information.
 The Water and Environmental Health Mission Areas of the USGS, as well as
 the Great Lakes Restoration Initiative (GLRI) has supported the
 development of the `toxEval` R-package. Further maintenance is expected
-to be stable through September 2023. Resources are available primarily
+to be stable through September 2024. Resources are available primarily
 for maintenance and responding to user questions. Priorities on the
 development of new features are determined by the `toxEval` development
 team.
 
-[![USGS](http://usgs-r.github.io/images/usgs.png)](https://www.usgs.gov/)
-
 ### Sunset date
 
-Funding for `toxEval` is secured through summer 2023, after which bug
+Funding for `toxEval` is secured through summer 2024, after which bug
 fixes & new features will be minimal.
 
 ## Installation of R and RStudio
@@ -207,10 +205,10 @@ citation(package = "toxEval")
 #> To cite toxEval in publications, please use:
 #> 
 #>   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
-#>   Ankley, G.T., 2020, toxEval: Evaluation of measured concentration
+#>   Ankley, G.T., 2023, toxEval: Evaluation of measured concentration
 #>   data using the ToxCast high-throughput screening database or a
 #>   user-defined set of concentration benchmarks. R package version
-#>   1.2.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
+#>   1.3.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -218,10 +216,10 @@ citation(package = "toxEval")
 #>     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
 #>     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
 #>     publisher = {U.S. Geological Survey},
-#>     version = {1.2.0},
+#>     version = {1.3.0},
 #>     address = {Reston, VA},
 #>     institution = {U.S. Geological Survey},
-#>     year = {2020},
+#>     year = {2023},
 #>     doi = {10.5066/P906UQ5I},
 #>     url = {https://code.usgs.gov/water/toxEval},
 #>   }

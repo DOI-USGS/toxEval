@@ -9,7 +9,8 @@
 }
 \value{
 data frame with 86 columns. The columns and definitions
-are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
+are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source).
+A "Relevance Category" was included which gives some catetories to consider.
 }
 \description{
 Downloaded on October 2022 from ToxCast. The file name of the

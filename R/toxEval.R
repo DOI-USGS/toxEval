@@ -94,7 +94,8 @@ NULL
 #' @source \url{https://doi.org/10.23645/epacomptox.6062479.v3}
 #' @export end_point_info
 #' @return data frame with 86 columns. The columns and definitions
-#' are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
+#' are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source).
+#' A "Relevance Category" was included which gives some catetories to consider.
 #' @examples
 #' end_point_info <- end_point_info
 #' head(end_point_info[, 1:5])
