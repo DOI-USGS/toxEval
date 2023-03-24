@@ -56,7 +56,7 @@ Suggests:
     tcpl,
     openxlsx,
     covr
-BugReports: https://code.usgs.gov/water/toxEval/-/issues
+BugReports: https://github.com/DOI-USGS/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
