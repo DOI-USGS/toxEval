@@ -86,4 +86,5 @@ test-out.xml
 ^_pkgdown\.yml$
 ^pkgdown$
 .lintr
+inst/extdata/toxEval35_endpoint_summary_DLV.xlsx
 

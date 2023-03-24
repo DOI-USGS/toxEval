@@ -72,14 +72,13 @@ NULL
 #' head(ToxCast_ACC)
 NULL
 
-
 #' Endpoint information from ToxCast
 #'
 #' Downloaded on October 2022 from ToxCast. The file name of the
 #' raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
 #' "INVITRODB_V3_5_SUMMARY" folder. At the time
 #' of the toxEval package release, these data were found at:
-#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data}
+#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
 #' in the section marked "Download Assay Information", in the
 #' ToxCast & Tox21 high-throughput assay information data set.
 #'
@@ -91,10 +90,11 @@ NULL
 #' @references U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide.
 #' \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
 #'
-#' @source \url{https://doi.org/10.23645/epacomptox.6062479.v3}
+#' @source \doi{10.23645/epacomptox.6062479.v3}
 #' @export end_point_info
 #' @return data frame with 86 columns. The columns and definitions
-#' are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source)
+#' are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source).
+#' A "Relevance Category" was included which gives some catetories to consider.
 #' @examples
 #' end_point_info <- end_point_info
 #' head(end_point_info[, 1:5])
