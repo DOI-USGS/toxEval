@@ -63,6 +63,8 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #' plot_tox_boxplots(chemical_summary, "Biological")
+#' 
+#' \donttest{
 #' plot_tox_boxplots(chemical_summary, "Chemical Class")
 #' plot_tox_boxplots(chemical_summary, "Chemical")
 #'
@@ -84,7 +86,7 @@
 #'   palette = cbValues,
 #'   title = "Maximum EAR per site, grouped by biological activity groupings"
 #' )
-#' \donttest{
+#' 
 #' plot_tox_boxplots(chemical_summary,
 #'   category = "Chemical", x_label = "EAR"
 #' )
