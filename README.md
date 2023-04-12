@@ -166,25 +166,6 @@ team.
 Funding for `toxEval` is secured through summer 2024, after which bug
 fixes & new features will be minimal.
 
-## Installation of R and RStudio
-
-This section should only need to be done once per computer.
-
-The following link walks you through an installation of R and RStudio:
-
-Useful links:
-
--   [Download R Windows](https://cran.r-project.org/bin/windows/base/)
--   [Download R Mac](https://cran.r-project.org/bin/macosx/)
--   [Download RStudio](https://posit.co/download/rstudio-desktop/)
-
-Regularly, it is a good idea to update *ALL* your packages in R. If
-using RStudio, this is quite easy, there’s an Update button in the
-“Packages” tab. This checks CRAN and GRAN for updates. It is a good idea
-to click this update regularly.
-
-![update](vignettes/update.png)
-
 ## Run toxEval
 
 To run the toxEval app:
