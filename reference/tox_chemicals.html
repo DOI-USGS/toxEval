@@ -70,7 +70,7 @@ added based on the information from the "INVITRODB_V3_5_LEVEL5" data.'><meta pro
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>ToxCast Chemical Information</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/DOI-USGS/toxEval/blob/HEAD/R/toxEval.R" class="external-link"><code>R/toxEval.R</code></a></small>
       <div class="d-none name"><code>tox_chemicals.Rd</code></div>
     </div>
 
@@ -94,17 +94,16 @@ added based on the information from the "INVITRODB_V3_5_LEVEL5" data.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tox_chemicals</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   DSSTox_…¹ Subst…² Struc…³ DTXCID Subst…⁴ INCHI…⁵ SMILES Total…⁶ Active min_c…⁷</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> DTXSID20… Methan…    32.0 DTXCI… 67-56-1 OKKJLV… CO         235      4  0.016<span style="text-decoration: underline;">0</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> DTXSID70… Aceton…    41.1 DTXCI… 75-05-8 WEVYAH… CC#N       235      0  0.028<span style="text-decoration: underline;">7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> DTXSID20… Sodium…    42.0 DTXCI… 7681-4… PUZPDO… <span style="color: #BB0000;">NA</span>          83      2  0.042<span style="text-decoration: underline;">0</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> DTXSID90… Cyanam…    42.0 DTXCI… 420-04… XZMCDF… NC#N       949     14  0.021<span style="text-decoration: underline;">0</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> DTXSID50… Acetal…    44.1 DTXCI… 75-07-0 IKHGUX… CC=O       400    145  0.035<span style="text-decoration: underline;">2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> DTXSID80… Formam…    45.0 DTXCI… 75-12-7 ZHNUHD… NC=O       852     16  0.031<span style="text-decoration: underline;">5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: max_concentration &lt;dbl&gt;, and abbreviated variable</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   names ¹​DSSTox_Substance_Id, ²​Substance_Name, ³​Structure_MolWt,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁴​Substance_CASRN, ⁵​INCHIKEY, ⁶​Total_tested, ⁷​min_concentration</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   DSSTox_Substance_Id Substance_Name  Structure_MolWt DTXCID     Substance_CASRN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> DTXSID2021731       Methanol                   32.0 DTXCID801… 67-56-1        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> DTXSID7020009       Acetonitrile               41.1 DTXCID909  75-05-8        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> DTXSID2020630       Sodium fluoride            42.0 DTXCID206… 7681-49-4      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> DTXSID9034490       Cyanamide                  42.0 DTXCID701… 420-04-2       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> DTXSID5039224       Acetaldehyde               44.1 DTXCID202  75-07-0        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> DTXSID8025337       Formamide                  45.0 DTXCID805… 75-12-7        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: INCHIKEY &lt;chr&gt;, SMILES &lt;chr&gt;, Total_tested &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Active &lt;int&gt;, min_concentration &lt;dbl&gt;, max_concentration &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

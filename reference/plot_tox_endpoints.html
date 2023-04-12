@@ -84,7 +84,7 @@ vignette("Introduction", package = "toxEval").'><meta property="og:image" conten
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>EndPoint boxplots</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/DOI-USGS/toxEval/blob/HEAD/R/plot_tox_endpoints.R" class="external-link"><code>R/plot_tox_endpoints.R</code></a></small>
       <div class="d-none name"><code>plot_tox_endpoints.Rd</code></div>
     </div>
 
@@ -202,17 +202,20 @@ for more information.</p>
 <span class="r-in"><span>  top_num <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_endpoints-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_endpoints</span><span class="op">(</span><span class="va">chemical_summary</span>,</span></span>
 <span class="r-in"><span>  filterBy <span class="op">=</span> <span class="st">"Cell Cycle"</span>,</span></span>
 <span class="r-in"><span>  top_num <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>  x_label <span class="op">=</span> <span class="st">"EAR"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_endpoints-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_endpoints</span><span class="op">(</span><span class="va">chemical_summary</span>,</span></span>
 <span class="r-in"><span>  category <span class="op">=</span> <span class="st">"Chemical Class"</span>, filterBy <span class="op">=</span> <span class="st">"PAHs"</span>,</span></span>
 <span class="r-in"><span>  top_num <span class="op">=</span> <span class="fl">10</span>, hit_threshold <span class="op">=</span> <span class="fl">0.001</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_endpoints-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_endpoints</span><span class="op">(</span><span class="va">chemical_summary</span>, category <span class="op">=</span> <span class="st">"Chemical"</span>, filterBy <span class="op">=</span> <span class="st">"Atrazine"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_endpoints-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">plot_tox_endpoints</span><span class="op">(</span><span class="va">chemical_summary</span>, category <span class="op">=</span> <span class="st">"Chemical"</span>, top_num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
@@ -220,6 +223,7 @@ for more information.</p>
 <span class="r-in"><span><span class="va">single_site</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">chemical_summary</span>, <span class="va">site</span> <span class="op">==</span> <span class="st">"USGS-04024000"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_endpoints</span><span class="op">(</span><span class="va">single_site</span>, category <span class="op">=</span> <span class="st">"Chemical"</span>, top_num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_endpoints-6.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

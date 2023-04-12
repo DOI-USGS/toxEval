@@ -82,7 +82,7 @@ for each group in the selected ToxCast annotation.'><meta property="og:image" co
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Grouped Boxplots</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/DOI-USGS/toxEval/blob/HEAD/R/plot_chemical_boxplots.R" class="external-link"><code>R/plot_chemical_boxplots.R</code></a>, <a href="https://github.com/DOI-USGS/toxEval/blob/HEAD/R/plot_group_boxplots.R" class="external-link"><code>R/plot_group_boxplots.R</code></a></small>
       <div class="d-none name"><code>plot_tox_boxplots.Rd</code></div>
     </div>
 
@@ -219,6 +219,8 @@ for more information.</p>
 <span class="r-in"><span><span class="va">chemical_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_chemical_summary.html">get_chemical_summary</a></span><span class="op">(</span><span class="va">tox_list</span>, <span class="va">ACC</span>, <span class="va">filtered_ep</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_boxplots</span><span class="op">(</span><span class="va">chemical_summary</span>, <span class="st">"Biological"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_boxplots-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_boxplots</span><span class="op">(</span><span class="va">chemical_summary</span>, <span class="st">"Chemical Class"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_boxplots-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">plot_tox_boxplots</span><span class="op">(</span><span class="va">chemical_summary</span>, <span class="st">"Chemical"</span><span class="op">)</span></span></span>
@@ -243,7 +245,7 @@ for more information.</p>
 <span class="r-in"><span>  title <span class="op">=</span> <span class="st">"Maximum EAR per site, grouped by biological activity groupings"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_tox_boxplots-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot_tox_boxplots</span><span class="op">(</span><span class="va">chemical_summary</span>,</span></span>
 <span class="r-in"><span>  category <span class="op">=</span> <span class="st">"Chemical"</span>, x_label <span class="op">=</span> <span class="st">"EAR"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
