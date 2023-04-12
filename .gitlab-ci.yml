@@ -36,7 +36,7 @@ getready:
     - mkdir -p $APT_CACHE
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
     - Rscript -e "install.packages(c('devtools', 'connectapi'))"
-    - Rscript -e "devtools::install_deps()"
+    - Rscript -e "install.packages(c('dplyr', 'tidyr')"
   cache:
     paths:
      - $R_LIBS_USER
