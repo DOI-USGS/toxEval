@@ -12,7 +12,7 @@ jobs:
   test-coverage:
     runs-on: macOS-latest
     steps:
-      - uses: uses: actions/checkout@c0a81a463886bb75afe234e07a9fd5bb79219196
+      - uses: actions/checkout@c0a81a463886bb75afe234e07a9fd5bb79219196
 
       - uses: r-lib/actions/setup-r@52330cc136b963487918a8867f948ddf954e9e63
 
