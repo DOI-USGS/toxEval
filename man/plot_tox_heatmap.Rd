@@ -110,15 +110,23 @@ sitesOrdered <- c(
 tox_list$chem_site$`Short Name` <- factor(tox_list$chem_site$`Short Name`,
   levels = sitesOrdered
 )
-plot_tox_heatmap(chemical_summary, tox_list$chem_site, category = "Chemical Class")
-plot_tox_heatmap(chemical_summary, tox_list$chem_site,
-  category = "Chemical", legend_lab = "EAR"
+
+plot_tox_heatmap(chemical_summary, 
+                 tox_list$chem_site,
+                 category = "Chemical Class")
+\donttest{              
+plot_tox_heatmap(chemical_summary,
+                 tox_list$chem_site,
+                 category = "Chemical",
+                 legend_lab = "EAR"
 )
 
 single_site <- dplyr::filter(chemical_summary, site == "USGS-04024000")
+
 plot_tox_heatmap(
   chemical_summary = single_site,
-  chem_site = dplyr::filter(tox_list$chem_site, SiteID == "USGS-04024000"),
+  chem_site = dplyr::filter(tox_list$chem_site, 
+                            SiteID == "USGS-04024000"),
   category = "Chemical Class"
 )
 plot_tox_heatmap(
@@ -126,4 +134,5 @@ plot_tox_heatmap(
   chem_site = dplyr::filter(tox_list$chem_site, SiteID == "USGS-04024000"),
   category = "Chemical"
 )
+}
 }

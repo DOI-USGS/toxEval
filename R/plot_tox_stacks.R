@@ -57,6 +57,8 @@
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Biological")
+#' 
+#' \donttest{
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical Class")
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", include_legend = FALSE)
 #' plot_tox_stacks(chemical_summary, tox_list$chem_site, "Chemical", top_num = 5, y_label = "EAR")
@@ -67,6 +69,7 @@
 #'   chem_site = tox_list$chem_site,
 #'   category = "Chemical", top_num = 5, y_label = "EAR"
 #' )
+#' }
 plot_tox_stacks <- function(chemical_summary,
                             chem_site,
                             category = "Biological",
