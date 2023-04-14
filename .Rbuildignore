@@ -86,5 +86,15 @@ test-out.xml
 ^pkgdown$
 .lintr
 inst/extdata/toxEval35_endpoint_summary_DLV.xlsx
+inst/shiny/www/footer.html
+vignettes/basicWorkflow.Rmd
+vignettes/shinyApp.Rmd
+vignettes/sidebar.png
+vignettes/annotations.png
+vignettes/assays.png
+vignettes/flags.png
+vignettes/group.png
+vignettes/sites.png
+vignettes/thres.png
 
 

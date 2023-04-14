@@ -67,6 +67,8 @@ the \dots arguments allow for customized faceting. To include this in
 the original toxEval function, backward compatibility would be broken.
 }
 \examples{
+
+\donttest{
 path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
 
@@ -90,4 +92,5 @@ plot_tox_endpoints2(cs_double, guide_side,
   top_num = 10
 ) +
   ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
+}
 }
