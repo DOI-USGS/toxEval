@@ -10,8 +10,7 @@ explore_endpoints(browse = TRUE)
 \item{browse}{Logical. Use browser for running Shiny app.}
 }
 \description{
-Open an interactive app in a browser. See the "Shiny App" vignette:
-\href{../doc/shinyApp.html}{\code{vignette("shinyApp", package = "toxEval")}} for more details. Using this
+Open an interactive app in a browser. Using this
 function is a quick and convenient way
 to explore data. For more customization, the R-code to
 produce each graph and table is displayed in the app. That is
