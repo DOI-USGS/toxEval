@@ -35,6 +35,8 @@
 #' @importFrom stats median
 #' @import dplyr
 #' @examples
+#' 
+#' \donttest{
 #' path_to_tox <- system.file("extdata", package = "toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
 #'
@@ -58,6 +60,7 @@
 #'   top_num = 10
 #' ) +
 #'   ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
+#' }
 plot_tox_endpoints2 <- function(cs, ...,
                                 category = "Chemical",
                                 filterBy = "All",
