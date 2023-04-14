@@ -28,6 +28,7 @@ vignettes/benchmarks.Rmd
 vignettes/OWC_custom_bench.xlsx
 vignettes/bench_tab.png
 vignettes/dose_curves.Rmd
+vignettes/*.html
 pkgdown/favicon/*
 ^doc$
 ^Meta$
