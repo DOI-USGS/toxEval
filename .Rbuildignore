@@ -1,7 +1,5 @@
 ^renv$
 ^renv\.lock$
-.travis.yml
-appveyor.yml
 toxEval.Rproj
 .Rhistory
 .git
@@ -15,8 +13,6 @@ README_files
 ^\.Rproj\.gitignore
 ^\.Rproj\.RData
 ^\.Rproj\.Rhistory
-^\.Rproj\.travis.yml
-^\.Rproj\appveyor.yml
 CONDUCT.md
 DISCLAIMER.md
 ^docs$
@@ -31,7 +27,7 @@ vignettes/References.Rmd
 vignettes/benchmarks.Rmd
 vignettes/OWC_custom_bench.xlsx
 vignettes/bench_tab.png
-vignettes/does_curves.Rmd
+vignettes/dose_curves.Rmd
 pkgdown/favicon/*
 ^doc$
 ^Meta$
@@ -79,6 +75,9 @@ vignettes/git_login.png
 vignettes/login.png
 vignettes/git_repository.png
 vignettes/https_clone.png
+vignettes/pat.png
+vignettes/save_pat.png
+vignettes/update.png
 deploy_simple.R
 renv/*
 renv.lock
@@ -87,4 +86,5 @@ test-out.xml
 ^pkgdown$
 .lintr
 inst/extdata/toxEval35_endpoint_summary_DLV.xlsx
+
 
