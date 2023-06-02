@@ -2,7 +2,7 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
     paste(strwrap(paste("For more information:
-https://rconnect.usgs.gov/toxEval_docs/
+https://doi-usgs.github.io/toxEval/
 ToxCast database: version", dbVersion()), width = 40),
       collapse = "\n"
     )

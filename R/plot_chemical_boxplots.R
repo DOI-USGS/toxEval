@@ -1,5 +1,11 @@
 
 #' @export
+#' @param site_counts This describes how to calculate the left-side counts.
+#' Default is "count" which is number of sites with detections. "frequency" 
+#' would calculate a percentage of detections. This assumes all 
+#' non-detects have been included as 0 for a value. "none" is the
+#' final option which can be to remove those labels. Custom labels
+#' could then be constructed after this function is run. 
 #' @param ... Additional group_by arguments. This can be handy for creating facet graphs.
 #' @rdname plot_tox_boxplots
 plot_chemical_boxplots <- function(chemical_summary, ...,
@@ -11,11 +17,13 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
                                    title = NA,
                                    x_label = NA,
                                    palette = NA,
-                                   hit_threshold = NA) {
+                                   hit_threshold = NA,
+                                   site_counts = "count") {
   site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
   chnm <- Class <- meanEAR <- x <- y <- max_med <- endPoint <- ".dplyr"
   ymin <- ymax <- logEAR <- hits <- hit_label <- ".dplyr"
-
+  Chemical <- percentDet <- lab <- ".dplyr"
+  
   cbValues <- c(
     "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33", "#A65628",
     "#DCDA4B", "#999999", "#00FFFF", "#CEA226", "#CC79A7", "#4E26CE",
@@ -27,6 +35,8 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     stop("No rows in the chemical_summary data frame")
   }
 
+  match.arg(site_counts, choices = c("count", "frequency", "none"))
+  
   if (!plot_ND) {
     if ("meanEAR" %in% names(chemical_summary)) {
       chemical_summary <- chemical_summary[chemical_summary$meanEAR > 0, ]
@@ -38,7 +48,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
   if (length(unique(chemical_summary$Class)) > length(cbValues)) {
     n <- length(unique(chemical_summary$Class))
 
-    if (n > 20 & n < 30) {
+    if (n > 20 && n < 30) {
       cbValues <- c(
         RColorBrewer::brewer.pal(n = 12, name = "Set3"),
         RColorBrewer::brewer.pal(n = 8, name = "Set2"),
@@ -118,13 +128,24 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
       group_by(chnm, Class, ymin, ymax, ...) %>%
       summarize(
         nonZero = as.character(length(unique(endPoint[!is.na(EAR)]))),
+        percentDet = format(sum(!is.na(EAR))/(sum(!is.na(EAR)) + sum(is.na(EAR))), digits = 4),
         hits = as.character(sum(EAR[!is.na(EAR)] > hit_threshold))
       ) %>%
       ungroup()
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
-
-    label <- "# Endpoints"
+    
+    if(site_counts == "count"){
+      label <- "# Endpoints" 
+      countNonZero$lab <- countNonZero$nonZero
+    } else if(site_counts == "frequency") {
+      label <- "% Detection"
+      countNonZero$lab <- countNonZero$percentDet
+    } else {
+      label <- ""
+      countNonZero$lab <- ""
+    }
+    
 
     pretty_logs_new <- prettyLogs(chemical_summary$EAR[!is.na(chemical_summary$EAR)])
 
@@ -169,13 +190,24 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
       group_by(chnm, Class, ymin, ymax, ...) %>%
       summarize(
         nonZero = as.character(sum(!is.na(meanEAR))),
+        percentDet = format(sum(!is.na(meanEAR))/(sum(!is.na(meanEAR)) + sum(is.na(meanEAR))), digits = 4),
         hits = as.character(sum(meanEAR[!is.na(meanEAR)] > hit_threshold))
       ) %>%
       ungroup()
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
-
-    label <- "# Sites"
+    
+    if(site_counts == "count"){
+      label <- "# Sites" 
+      countNonZero$lab <- countNonZero$nonZero
+    } else if(site_counts == "frequency") {
+      label <- "% Detection"
+      countNonZero$lab <- countNonZero$percentDet
+    } else {
+      label <- ""
+      countNonZero$lab <- ""
+    }
+    
 
     toxPlot_All <- ggplot(data = graph_data)
 
@@ -253,7 +285,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     coord_flip(clip = "off")
 
   labels_df <- countNonZero %>%
-    select(-chnm, -Class, -nonZero, -hits) %>%
+    select(-chnm, -Class, -nonZero, -hits, -percentDet, -lab) %>%
     distinct() %>%
     mutate(
       x = Inf,
@@ -261,18 +293,22 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
       hit_label = "# Hits"
     )
 
-  toxPlot_All_withLabels <- toxPlot_All +
-    geom_text(
-      data = countNonZero, aes(x = chnm, label = nonZero, y = ymin),
-      size = ifelse(is.na(font_size), 2, 0.30 * font_size),
-      position = position_nudge(y = -0.05)
-    ) +
-    geom_text(
-      data = labels_df,
-      aes(x = x, y = ymin, label = label),
-      position = position_nudge(y = -0.05),
-      size = ifelse(is.na(font_size), 3, 0.30 * font_size)
-    )
+  if(site_counts != ""){
+    toxPlot_All_withLabels <- toxPlot_All +
+      geom_text(
+        data = countNonZero, 
+        aes(x = chnm, label = lab, y = ymin),
+        size = ifelse(is.na(font_size), 2, 0.30 * font_size),
+        position = position_nudge(y = -0.05)
+      ) +
+      geom_text(
+        data = labels_df,
+        aes(x = x, y = ymin, label = label),
+        position = position_nudge(y = -0.05),
+        size = ifelse(is.na(font_size), 3, 0.30 * font_size)
+      )
+  }
+
 
   if (!is.na(hit_threshold)) {
     toxPlot_All_withLabels <- toxPlot_All_withLabels +

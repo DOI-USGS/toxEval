@@ -56,7 +56,8 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
   # Getting rid of NSE warnings:
   chnm <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
   EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
-
+  Chemical <- ".dplyr"
+  
   if (is.null(chem_data)) {
     chem_data <- tox_list[["chem_data"]]
   } else {
