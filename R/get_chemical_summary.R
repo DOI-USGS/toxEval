@@ -83,30 +83,29 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
   if (is.null(ACC)) {
     ACC <- tox_list[["benchmarks"]]
+    ACC <- dplyr::select(ACC, CAS, endPoint, ACC_value, groupCol)
   } else {
-    ACC <- dplyr::select(ACC, CAS, chnm, endPoint, ACC_value)
+    ACC <- dplyr::select(ACC, CAS, endPoint, ACC_value)
   }
-
+  
+  
+  
   if (is.character(chem_data$Value)) {
     chem_data$Value <- as.numeric(chem_data$Value)
   }
 
   chemical_summary <- full_join(ACC,
-    dplyr::select(
-      chem_data,
-      CAS, SiteID, Value, `Sample Date`
-    ),
-    by = "CAS"
-  ) %>%
-    filter(
+    dplyr::select(chem_data,
+                   CAS, SiteID, Value, `Sample Date`),
+            by = "CAS") %>%
+    dplyr::filter(
       !is.na(ACC_value),
-      !is.na(Value)
-    ) %>%
-    mutate(EAR = Value / ACC_value) %>%
-    rename(
-      site = SiteID,
-      date = `Sample Date`
-    )
+      !is.na(Value)) %>%
+    dplyr::mutate(EAR = Value / ACC_value) %>%
+    dplyr::rename(site = SiteID,
+                  date = `Sample Date`) %>%
+    dplyr::left_join(dplyr::select(chem_info, CAS, chnm = Chemical),
+                     by = "CAS")
 
   if (all(filtered_ep != "All")) {
     chemical_summary <- chemical_summary %>%

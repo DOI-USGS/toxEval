@@ -149,7 +149,7 @@ get_concentration_summary <- function(tox_list,
                                       chem_data = NULL,
                                       chem_site = NULL,
                                       chem_info = NULL,
-                                      tox_names = TRUE) {
+                                      tox_names = FALSE) {
   # Getting rid of NSE warnings:
   chnm <- endPoint <- ACC_value <- Substance_Name <- Value <- `Sample Date` <- SiteID <- ".dplyr"
   EAR <- `Short Name` <- Substance_CASRN <- CAS <- Chemical <- Class <- site <- casrn <- groupCol <- ".dplyr"
@@ -189,42 +189,11 @@ get_concentration_summary <- function(tox_list,
       endPoint = "Concentration"
     ) %>%
     left_join(select(chem_site,
-      site = SiteID,
-      shortName = `Short Name`
-    ),
-    by = "site"
-    ) %>%
-    left_join(select(chem_info, CAS, Class), by = "CAS")
-
-  if (tox_names) {
-    tox_names_key <- tox_chemicals %>%
-      select(CAS = Substance_CASRN, chnm = Substance_Name) %>%
-      filter(CAS %in% chem_info$CAS)
-
-    chemical_summary <- chemical_summary %>%
-      left_join(tox_names_key, by = "CAS")
-
-    if (any(is.na(chemical_summary$chnm))) {
-      if ("Chemical" %in% names(chem_info)) {
-        chemical_summary <- chemical_summary %>%
-          left_join(select(chem_info, CAS, Chemical), by = "CAS")
-      } else {
-        chemical_summary$Chemical <- as.character(as.numeric(factor(chemical_summary$CAS)))
-      }
-
-      chemical_summary$chnm[is.na(chemical_summary$chnm)] <- chemical_summary$Chemical[is.na(chemical_summary$chnm)]
-
-      chemical_summary <- select(chemical_summary, -Chemical)
-    }
-  } else {
-    if ("Chemical" %in% names(chem_info)) {
-      chemical_summary <- chemical_summary %>%
-        left_join(select(chem_info, CAS, chnm = Chemical), by = "CAS")
-    } else {
-      message("Add a Chemical column to the Chemicals tab to get custom chemical names")
-      chemical_summary$chnm <- as.character(as.numeric(factor(chemical_summary$CAS)))
-    }
-  }
+                     site = SiteID,
+                     shortName = `Short Name`),
+      by = "site") %>%
+    left_join(select(chem_info, CAS, Class, chnm = Chemical),
+              by = "CAS")
 
   graphData <- graph_chem_data(chemical_summary)
 

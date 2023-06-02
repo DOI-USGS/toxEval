@@ -82,10 +82,10 @@ create_toxEval <- function(excel_file_path, ...) {
     names(chem_info) <- names(chem_info) %>%
       allowed_names(c("casrn", "casn", "CASRN", "CASN"), "CAS")
 
-    if ("CAS" %in% names(chem_info)) {
+    if (all(c("CAS", "Chemical") %in% names(chem_info))){
       chem_info$CAS <- as.character(chem_info$CAS)
     } else {
-      message("Chemical tab missing CAS column")
+      message("Chemical tab missing CAS or Chemical column")
     }
   }
 

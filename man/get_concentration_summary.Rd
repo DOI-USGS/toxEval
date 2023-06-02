@@ -9,7 +9,7 @@ get_concentration_summary(
   chem_data = NULL,
   chem_site = NULL,
   chem_info = NULL,
-  tox_names = TRUE
+  tox_names = FALSE
 )
 }
 \arguments{
