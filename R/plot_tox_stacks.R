@@ -87,9 +87,6 @@ plot_tox_stacks <- function(chemical_summary,
     stop("No rows in the chemical_summary data frame")
   }
 
-  site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- maxEAR <- ".dplyr"
-  SiteID <- site_grouping <- n <- index <- `Short Name` <- count <- x <- y <- label <- ".dplyr"
-
   if (!("site_grouping" %in% names(chem_site))) {
     chem_site$site_grouping <- ""
   }
@@ -120,12 +117,13 @@ plot_tox_stacks <- function(chemical_summary,
   graphData$meanEAR[is.na(graphData$meanEAR)] <- 0
 
   counts <- chemical_summary %>%
-    select(site, date) %>%
-    distinct() %>%
-    group_by(site) %>%
-    summarize(count = n()) %>%
-    left_join(select(chem_site, site = SiteID, `Short Name`, site_grouping), by = "site") %>%
-    select(-site)
+    dplyr::select(site, date) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(site) %>%
+    dplyr::summarize(count = dplyr::n()) %>%
+    dplyr::left_join(dplyr::select(chem_site,
+                                   site = SiteID, `Short Name`, site_grouping), by = "site") %>%
+    dplyr::select(-site)
 
   siteToFind <- unique(chemical_summary$shortName)
 
@@ -147,7 +145,7 @@ plot_tox_stacks <- function(chemical_summary,
     }
 
     graphData <- graphData %>%
-      left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
+      dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
         by = c("site" = "SiteID")
       )
 
@@ -173,17 +171,17 @@ plot_tox_stacks <- function(chemical_summary,
       orig_cat <- levels(graphData$category)
 
       top_data <- graphData %>%
-        group_by(category) %>%
-        summarize(maxEAR = max(meanEAR, na.rm = TRUE)) %>%
-        arrange(desc(maxEAR)) %>%
-        top_n(maxEAR, n = top_num) %>%
-        mutate(category = as.character(category)) %>%
-        pull(category)
+        dplyr::group_by(category) %>%
+        dplyr::summarize(maxEAR = max(meanEAR, na.rm = TRUE)) %>%
+        dplyr::arrange(dplyr::desc(maxEAR)) %>%
+        dplyr::top_n(maxEAR, n = top_num) %>%
+        dplyr::mutate(category = as.character(category)) %>%
+        dplyr::pull(category)
 
       other_text <- paste0("Others (", length(orig_cat) - top_num, ")")
 
       graphData <- graphData %>%
-        mutate(
+        dplyr::mutate(
           category = as.character(category),
           category = ifelse(category %in% top_data,
             category, other_text
@@ -233,15 +231,15 @@ plot_tox_stacks <- function(chemical_summary,
     }
 
     graphData <- chemical_summary %>%
-      select(-site)
+      dplyr::select(-site)
 
     placement <- -0.05 * diff(range(graphData$EAR))
 
-    dates <- arrange(distinct(select(graphData, date)))
+    dates <- dplyr::arrange(dplyr::distinct(dplyr::select(graphData, date)))
     dates$index <- 1:(nrow(dates))
 
     graphData <- graphData %>%
-      left_join(dates, by = "date")
+      dplyr::left_join(dates, by = "date")
 
     if (category == "Biological") {
       graphData$category <- graphData$Bio_category
@@ -255,17 +253,17 @@ plot_tox_stacks <- function(chemical_summary,
       orig_cat <- levels(graphData$category)
 
       top_data <- graphData %>%
-        group_by(category) %>%
-        summarize(maxEAR = max(EAR, na.rm = TRUE)) %>%
-        arrange(desc(maxEAR)) %>%
-        top_n(maxEAR, n = top_num) %>%
-        mutate(category = as.character(category)) %>%
-        pull(category)
+        dplyr::group_by(category) %>%
+        dplyr::summarize(maxEAR = max(EAR, na.rm = TRUE)) %>%
+        dplyr::arrange(dplyr::desc(maxEAR)) %>%
+        dplyr::top_n(maxEAR, n = top_num) %>%
+        dplyr::mutate(category = as.character(category)) %>%
+        dplyr::pull(category)
 
       other_text <- paste0("Others (", length(orig_cat) - top_num, ")")
 
       graphData <- graphData %>%
-        mutate(
+        dplyr::mutate(
           category = as.character(category),
           category = ifelse(category %in% top_data,
             category, other_text

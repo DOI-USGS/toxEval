@@ -7,9 +7,9 @@ version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.or
 
 The `toxEval` R-package includes a set of functions to analyze,
 visualize, and organize measured concentration data as it relates to
-<https://www.epa.gov/chemical-research/toxicity-forecasting> or other
-user-selected chemical-biological interaction benchmark data such as
-water quality criteria. The intent of these analyses is to develop a
+<https://www.epa.gov/comptox-tools/toxicity-forecasting-toxcast> or
+other user-selected chemical-biological interaction benchmark data such
+as water quality criteria. The intent of these analyses is to develop a
 better understanding of the potential biological relevance of
 environmental chemistry data. Results can be used to prioritize which
 chemicals at which sites may be of greatest concern. These methods are
@@ -79,7 +79,7 @@ data provided in the package):
 ``` r
 library(toxEval)
 #> For more information:
-#> https://rconnect.usgs.gov/toxEval_docs/
+#> https://doi-usgs.github.io/toxEval/
 #> ToxCast database: version 3.5
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
@@ -181,7 +181,6 @@ explore_endpoints()
 
 ``` r
 citation(package = "toxEval")
-#> 
 #> To cite toxEval in publications, please use:
 #> 
 #>   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,

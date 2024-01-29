@@ -2,6 +2,7 @@
 % Please edit documentation in R/toxEval.R
 \docType{package}
 \name{toxEval-package}
+\alias{toxEval}
 \alias{toxEval-package}
 \title{Analyze ToxCast data in relation to measured concentrations.}
 \description{
@@ -29,7 +30,14 @@ https://www.usgs.gov/visual-id/credit_usgs.html#copyright\cr
 LazyLoad: \tab yes\cr
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/DOI-USGS/toxEval/issues}
+}
+
+}
 \author{
 Laura De Cicco \email{ldecicco@usgs.gov}. Steven Corsi
 }
-\keyword{ToxCast}
+\keyword{internal}

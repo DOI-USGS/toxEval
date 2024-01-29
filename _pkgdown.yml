@@ -36,6 +36,8 @@ navbar:
         href: articles/pivot.html
       - text: Dose Response Curves
         href: articles/dose_curves.html
+      - text: Chemical Names
+        href: articles/Chemical_names.html
       - text: How to Contribute
         href: articles/Contributing.html
   - text: Bibliograpy

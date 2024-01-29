@@ -1,5 +1,11 @@
 
 #' @export
+#' @param site_counts This describes how to calculate the left-side counts.
+#' Default is "count" which is number of sites with detections. "frequency" 
+#' would calculate a percentage of detections. This assumes all 
+#' non-detects have been included as 0 for a value. "none" is the
+#' final option which can be to remove those labels. Custom labels
+#' could then be constructed after this function is run. 
 #' @param ... Additional group_by arguments. This can be handy for creating facet graphs.
 #' @rdname plot_tox_boxplots
 plot_chemical_boxplots <- function(chemical_summary, ...,
@@ -11,11 +17,9 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
                                    title = NA,
                                    x_label = NA,
                                    palette = NA,
-                                   hit_threshold = NA) {
-  site <- EAR <- sumEAR <- meanEAR <- groupCol <- nonZero <- ".dplyr"
-  chnm <- Class <- meanEAR <- x <- y <- max_med <- endPoint <- ".dplyr"
-  ymin <- ymax <- logEAR <- hits <- hit_label <- ".dplyr"
-
+                                   hit_threshold = NA,
+                                   site_counts = "count") {
+  
   cbValues <- c(
     "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33", "#A65628",
     "#DCDA4B", "#999999", "#00FFFF", "#CEA226", "#CC79A7", "#4E26CE",
@@ -27,6 +31,8 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     stop("No rows in the chemical_summary data frame")
   }
 
+  match.arg(site_counts, choices = c("count", "frequency", "none"))
+  
   if (!plot_ND) {
     if ("meanEAR" %in% names(chemical_summary)) {
       chemical_summary <- chemical_summary[chemical_summary$meanEAR > 0, ]
@@ -38,7 +44,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
   if (length(unique(chemical_summary$Class)) > length(cbValues)) {
     n <- length(unique(chemical_summary$Class))
 
-    if (n > 20 & n < 30) {
+    if (n > 20 && n < 30) {
       cbValues <- c(
         RColorBrewer::brewer.pal(n = 12, name = "Set3"),
         RColorBrewer::brewer.pal(n = 8, name = "Set2"),
@@ -67,7 +73,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     if ("meanEAR" %in% names(chemical_summary)) {
       message("meanEAR values should not be used in a single site boxplot")
       chemical_summary <- chemical_summary %>%
-        rename(EAR = meanEAR)
+        dplyr::rename(EAR = meanEAR)
 
       if (!("date" %in% names(chemical_summary))) {
         chemical_summary$date <- 1
@@ -76,55 +82,66 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
 
     # Single site order:
     orderColsBy <- chemical_summary %>%
-      mutate(logEAR = log(EAR)) %>%
-      group_by(chnm, Class, ...) %>%
-      summarise(median = median(logEAR[!is.na(logEAR)], na.rm = TRUE)) %>%
-      arrange(median) %>%
-      ungroup()
+      dplyr::mutate(logEAR = log(EAR)) %>%
+      dplyr::group_by(chnm, Class, ...) %>%
+      dplyr::summarise(median = median(logEAR[!is.na(logEAR)], na.rm = TRUE)) %>%
+      dplyr::arrange(median) %>%
+      dplyr::ungroup()
 
     class_order <- orderColsBy %>%
-      group_by(Class, ...) %>%
-      summarise(max_med = max(median, na.rm = TRUE)) %>%
-      ungroup() %>%
-      arrange(max_med) %>%
-      mutate(Class = as.character(Class)) %>%
-      select(Class) %>%
-      distinct() %>%
-      pull(Class)
+      dplyr::group_by(Class, ...) %>%
+      dplyr::summarise(max_med = max(median, na.rm = TRUE)) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(max_med) %>%
+      dplyr::mutate(Class = as.character(Class)) %>%
+      dplyr::select(Class) %>%
+      dplyr::distinct() %>%
+      dplyr::pull(Class)
 
     orderedLevels <- chemical_summary %>%
-      mutate(logEAR = log(EAR)) %>%
-      group_by(chnm, Class, ...) %>%
-      summarise(median = median(logEAR[!is.na(logEAR)])) %>%
-      ungroup() %>%
-      mutate(
+      dplyr::mutate(logEAR = log(EAR)) %>%
+      dplyr::group_by(chnm, Class, ...) %>%
+      dplyr::summarise(median = median(logEAR[!is.na(logEAR)])) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(
         Class = factor(Class, levels = rev(class_order)),
         chnm = as.character(chnm)
       ) %>%
-      arrange(Class, desc(median)) %>%
-      select(chnm) %>%
-      distinct() %>%
-      pull(chnm)
+      dplyr::arrange(Class, dplyr::desc(median)) %>%
+      dplyr::select(chnm) %>%
+      dplyr::distinct() %>%
+      dplyr::pull(chnm)
 
     chemical_summary$Class <- factor(as.character(chemical_summary$Class), levels = rev(class_order))
     chemical_summary$chnm <- factor(as.character(chemical_summary$chnm), levels = rev(orderedLevels))
 
     countNonZero <- chemical_summary %>%
-      group_by(...) %>%
-      mutate(
+      dplyr::group_by(...) %>%
+      dplyr::mutate(
         ymin = min(EAR[!is.na(EAR)], na.rm = TRUE),
         ymax = max(EAR[!is.na(EAR)], na.rm = TRUE)
       ) %>%
-      group_by(chnm, Class, ymin, ymax, ...) %>%
-      summarize(
+      dplyr::group_by(chnm, Class, ymin, ymax, ...) %>%
+      dplyr::summarize(
         nonZero = as.character(length(unique(endPoint[!is.na(EAR)]))),
+        percentDet = format(sum(!is.na(EAR))/(sum(!is.na(EAR)) + sum(is.na(EAR))), digits = 4),
         hits = as.character(sum(EAR[!is.na(EAR)] > hit_threshold))
       ) %>%
-      ungroup()
+      dplyr::ungroup()
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
-
-    label <- "# Endpoints"
+    
+    if(site_counts == "count"){
+      label <- "# Endpoints" 
+      countNonZero$lab <- countNonZero$nonZero
+    } else if(site_counts == "frequency") {
+      label <- "% Detection"
+      countNonZero$lab <- countNonZero$percentDet
+    } else {
+      label <- ""
+      countNonZero$lab <- ""
+    }
+    
 
     pretty_logs_new <- prettyLogs(chemical_summary$EAR[!is.na(chemical_summary$EAR)])
 
@@ -161,21 +178,32 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     pretty_logs_new <- prettyLogs(graph_data$meanEAR[!is.na(graph_data$meanEAR)])
 
     countNonZero <- graph_data %>%
-      group_by(...) %>%
-      mutate(
+      dplyr::group_by(...) %>%
+      dplyr::mutate(
         ymin = min(meanEAR[!is.na(meanEAR)], na.rm = TRUE),
         ymax = max(meanEAR[!is.na(meanEAR)], na.rm = TRUE)
       ) %>%
-      group_by(chnm, Class, ymin, ymax, ...) %>%
-      summarize(
+      dplyr::group_by(chnm, Class, ymin, ymax, ...) %>%
+      dplyr::summarize(
         nonZero = as.character(sum(!is.na(meanEAR))),
+        percentDet = format(sum(!is.na(meanEAR))/(sum(!is.na(meanEAR)) + sum(is.na(meanEAR))), digits = 4),
         hits = as.character(sum(meanEAR[!is.na(meanEAR)] > hit_threshold))
       ) %>%
-      ungroup()
+      dplyr::ungroup()
 
     countNonZero$hits[countNonZero$hits == "0"] <- ""
-
-    label <- "# Sites"
+    
+    if(site_counts == "count"){
+      label <- "# Sites" 
+      countNonZero$lab <- countNonZero$nonZero
+    } else if(site_counts == "frequency") {
+      label <- "% Detection"
+      countNonZero$lab <- countNonZero$percentDet
+    } else {
+      label <- ""
+      countNonZero$lab <- ""
+    }
+    
 
     toxPlot_All <- ggplot(data = graph_data)
 
@@ -253,26 +281,30 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     coord_flip(clip = "off")
 
   labels_df <- countNonZero %>%
-    select(-chnm, -Class, -nonZero, -hits) %>%
-    distinct() %>%
-    mutate(
+    dplyr::select(-chnm, -Class, -nonZero, -hits, -percentDet, -lab) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(
       x = Inf,
       label = label,
       hit_label = "# Hits"
     )
 
-  toxPlot_All_withLabels <- toxPlot_All +
-    geom_text(
-      data = countNonZero, aes(x = chnm, label = nonZero, y = ymin),
-      size = ifelse(is.na(font_size), 2, 0.30 * font_size),
-      position = position_nudge(y = -0.05)
-    ) +
-    geom_text(
-      data = labels_df,
-      aes(x = x, y = ymin, label = label),
-      position = position_nudge(y = -0.05),
-      size = ifelse(is.na(font_size), 3, 0.30 * font_size)
-    )
+  if(site_counts != ""){
+    toxPlot_All_withLabels <- toxPlot_All +
+      geom_text(
+        data = countNonZero, 
+        aes(x = chnm, label = lab, y = ymin),
+        size = ifelse(is.na(font_size), 2, 0.30 * font_size),
+        position = position_nudge(y = -0.05)
+      ) +
+      geom_text(
+        data = labels_df,
+        aes(x = x, y = ymin, label = label),
+        position = position_nudge(y = -0.05),
+        size = ifelse(is.na(font_size), 3, 0.30 * font_size)
+      )
+  }
+
 
   if (!is.na(hit_threshold)) {
     toxPlot_All_withLabels <- toxPlot_All_withLabels +
@@ -325,26 +357,25 @@ graph_chem_data <- function(chemical_summary, ...,
                             manual_remove = NULL,
                             mean_logic = FALSE,
                             sum_logic = TRUE) {
-  site <- chnm <- Class <- EAR <- sumEAR <- meanEAR <- ".dplyr"
 
   if (!sum_logic) {
     graphData <- chemical_summary %>%
-      group_by(site, chnm, Class, ...) %>%
-      summarise(meanEAR = ifelse(mean_logic, mean(EAR, na.rm = TRUE), max(EAR, na.rm = TRUE))) %>%
-      ungroup()
+      dplyr::group_by(site, chnm, Class, ...) %>%
+      dplyr::summarise(meanEAR = ifelse(mean_logic, mean(EAR, na.rm = TRUE), max(EAR, na.rm = TRUE))) %>%
+      dplyr::ungroup()
   } else {
     graphData <- chemical_summary %>%
-      group_by(site, date, chnm, ...) %>%
-      summarise(sumEAR = sum(EAR, na.rm = TRUE)) %>%
-      ungroup() %>%
-      group_by(site, chnm, ...) %>%
-      summarise(meanEAR = ifelse(mean_logic, mean(sumEAR, na.rm = TRUE), max(sumEAR, na.rm = TRUE))) %>%
-      ungroup() %>%
-      left_join(distinct(select(chemical_summary, chnm, Class)), by = "chnm")
+      dplyr::group_by(site, date, chnm, ...) %>%
+      dplyr::summarise(sumEAR = sum(EAR, na.rm = TRUE)) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(site, chnm, ...) %>%
+      dplyr::summarise(meanEAR = ifelse(mean_logic, mean(sumEAR, na.rm = TRUE), max(sumEAR, na.rm = TRUE))) %>%
+      dplyr::ungroup() %>%
+      dplyr::left_join(dplyr::distinct(dplyr::select(chemical_summary, chnm, Class)), by = "chnm")
   }
 
   if (!is.null(manual_remove)) {
-    graphData <- filter(graphData, !(chnm %in% manual_remove))
+    graphData <- dplyr::filter(graphData, !(chnm %in% manual_remove))
   }
 
   return(graphData)

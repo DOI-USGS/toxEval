@@ -124,10 +124,7 @@ plot_tox_heatmap <- function(chemical_summary,
   if (nrow(chemical_summary) == 0) {
     stop("No rows in the chemical_summary data frame")
   }
-
-  SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
-  site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
-
+  
   if (!("site_grouping" %in% names(chem_site))) {
     chem_site$site_grouping <- "Sites"
   }
@@ -155,7 +152,7 @@ plot_tox_heatmap <- function(chemical_summary,
     )
 
     graphData <- graphData %>%
-      left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
+      dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
         by = c("site" = "SiteID")
       )
 
@@ -279,8 +276,7 @@ plot_heat_chemicals <- function(chemical_summary,
                                 sum_logic,
                                 breaks,
                                 legend_lab) {
-  SiteID <- site_grouping <- `Short Name` <- chnm <- maxEAR <- ".dplyr"
-  site <- EAR <- sumEAR <- meanEAR <- ".dplyr"
+
 
   graphData <- graph_chem_data(chemical_summary,
     mean_logic = mean_logic,
@@ -306,7 +302,7 @@ plot_heat_chemicals <- function(chemical_summary,
   }
 
   graphData <- graphData %>%
-    left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
+    dplyr::left_join(chem_site[, c("SiteID", "site_grouping", "Short Name")],
       by = c("site" = "SiteID")
     )
 
@@ -385,31 +381,29 @@ plot_heat_chemicals <- function(chemical_summary,
 
 # There's probably a faster way to do this:
 get_complete_set <- function(chemical_summary, graphData, chem_site) {
-  `Short Name` <- site_grouping <- Class <- chnm <- ".dplyr"
 
-  complete_data <- select(chem_site, `Short Name`, site_grouping)
+  complete_data <- dplyr::select(chem_site, `Short Name`, site_grouping)
   complete_data_filled <- data.frame()
 
   for (chms in levels(chemical_summary$chnm)) {
     complete_data$chnm <- chms
-    complete_data_filled <- bind_rows(complete_data_filled, complete_data)
+    complete_data_filled <- dplyr::bind_rows(complete_data_filled, complete_data)
   }
   complete_data_filled$chnm <- factor(complete_data_filled$chnm, levels = levels(graphData$chnm))
-  complete_data_filled <- left_join(complete_data_filled, distinct(select(chemical_summary, chnm, Class)), by = "chnm")
+  complete_data_filled <- dplyr::left_join(complete_data_filled, dplyr::distinct(dplyr::select(chemical_summary, chnm, Class)), by = "chnm")
   return(complete_data_filled)
 }
 
 # There's probably a faster way to do this:
 get_complete_set_category <- function(chemical_summary, graphData, chem_site, category) {
-  `Short Name` <- site_grouping <- Class <- chnm <- ".dplyr"
 
-  complete_data <- select(chem_site, `Short Name`, site_grouping)
+  complete_data <- dplyr::select(chem_site, `Short Name`, site_grouping)
   complete_data_filled <- data.frame()
   categories <- levels(graphData$category)
 
   for (cats in categories) {
     complete_data$category <- cats
-    complete_data_filled <- bind_rows(complete_data_filled, complete_data)
+    complete_data_filled <- dplyr::bind_rows(complete_data_filled, complete_data)
   }
   complete_data_filled$category <- factor(complete_data_filled$category, levels = levels(graphData$category))
 

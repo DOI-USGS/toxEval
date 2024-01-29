@@ -2,7 +2,7 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
     paste(strwrap(paste("For more information:
-https://rconnect.usgs.gov/toxEval_docs/
+https://doi-usgs.github.io/toxEval/
 ToxCast database: version", dbVersion()), width = 40),
       collapse = "\n"
     )
@@ -39,12 +39,11 @@ dbVersion <- function() {
 #' LazyLoad: \tab yes\cr
 #' }
 #'
-#'
 #' @name toxEval-package
 #' @docType package
 #' @author Laura De Cicco \email{ldecicco@@usgs.gov}. Steven Corsi
-#' @keywords ToxCast
-NULL
+#' @keywords internal 
+"_PACKAGE"
 
 #' ACC values included with toxEval.
 #'
@@ -60,7 +59,7 @@ NULL
 #' ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
 #'  \doi{10.23645/epacomptox.6062479.v3}.
 #'
-#' @source \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
+#' @source \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #'
 #' @aliases ToxCast_ACC
 #' @return data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
@@ -78,7 +77,7 @@ NULL
 #' raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
 #' "INVITRODB_V3_5_SUMMARY" folder. At the time
 #' of the toxEval package release, these data were found at:
-#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
+#' \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #' in the section marked "Download Assay Information", in the
 #' ToxCast & Tox21 high-throughput assay information data set.
 #'
@@ -104,7 +103,7 @@ NULL
 #Due to size constraints for CRAN, some columns needed to be removed:
 # 
 # end_point_info <- end_point_info |>
-#   select(-reagent_reagent_name_value_type,
+#   dplyr::select(-reagent_reagent_name_value_type,
 #          -reagent_reagent_name_value,
 #          -citations_citation)
 
@@ -141,3 +140,20 @@ NULL
 #' @examples
 #' head(tox_chemicals)
 NULL
+
+
+
+utils::globalVariables(c("CAS", "endPoint", "chnm", "flags", "site",
+                         "Bio_category", "Class", "EAR",
+                         "sumEAR", "value", "calc", "choice_calc", "nHits",
+                         "Structure_MolWt", "casrn", "Substance_Name",
+                         "MlWt", "ACC_value", "Substance_CASRN",
+                         "Value", "Sample Date", "SiteID", "Short Name",
+                         "groupCol", "Chemical", "logEAR", "meanEAR",
+                         "median", "max_med", "choice_calc", "nHits",
+                         "nSites", "Samples with hits", "nSamples", "hits",
+                         "dec_lat", "dec_lon", "nSites", "name",
+                         "nonZero", "maxEAR", "count", "site_grouping",
+                         "index", "n", "x", "y", "max_med", "ymin", "label",
+                         "ymax", "hit_label", "percentDet", "lab"))
+

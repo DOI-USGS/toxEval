@@ -17,7 +17,8 @@ plot_chemical_boxplots(
   title = NA,
   x_label = NA,
   palette = NA,
-  hit_threshold = NA
+  hit_threshold = NA,
+  site_counts = "count"
 )
 
 plot_tox_boxplots(
@@ -61,6 +62,13 @@ opposed to ToxCast benchmarks.}
 to specify specific colors for specific categories.}
 
 \item{hit_threshold}{Numeric threshold defining a "hit".}
+
+\item{site_counts}{This describes how to calculate the left-side counts.
+Default is "count" which is number of sites with detections. "frequency" 
+would calculate a percentage of detections. This assumes all 
+non-detects have been included as 0 for a value. "none" is the
+final option which can be to remove those labels. Custom labels
+could then be constructed after this function is run.}
 
 \item{category}{Character. Either "Biological", "Chemical Class", or "Chemical".}
 }

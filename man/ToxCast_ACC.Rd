@@ -5,7 +5,7 @@
 \alias{ToxCast_ACC}
 \title{ACC values included with toxEval.}
 \source{
-\url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
+\url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 }
 \value{
 data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).

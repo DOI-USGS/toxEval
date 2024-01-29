@@ -82,10 +82,10 @@ create_toxEval <- function(excel_file_path, ...) {
     names(chem_info) <- names(chem_info) %>%
       allowed_names(c("casrn", "casn", "CASRN", "CASN"), "CAS")
 
-    if ("CAS" %in% names(chem_info)) {
+    if (all(c("CAS", "Chemical") %in% names(chem_info))){
       chem_info$CAS <- as.character(chem_info$CAS)
     } else {
-      message("Chemical tab missing CAS column")
+      message("Chemical tab missing CAS or Chemical column")
     }
   }
 
@@ -230,11 +230,11 @@ rm_em_dash <- function(df) {
 #' tox_list <- create_toxEval(excel_file_path)
 #' summary(tox_list)
 summary.toxEval <- function(object, ...) {
-  CAS <- endPoint <- chnm <- flags <- ".dplyr"
+
 
   if (is.null(object[["benchmarks"]])) {
     ACC <- ToxCast_ACC %>%
-      filter(CAS %in% unique(object$chem_info$CAS))
+      dplyr::filter(CAS %in% unique(object$chem_info$CAS))
     bench_word <- "ToxCast"
   } else {
     ACC <- object[["benchmarks"]]
@@ -242,9 +242,9 @@ summary.toxEval <- function(object, ...) {
   }
 
   CAS_w_data <- ACC %>%
-    select(CAS) %>%
-    distinct() %>%
-    pull(CAS)
+    dplyr::select(CAS) %>%
+    dplyr::distinct() %>%
+    dplyr::pull(CAS)
 
   message(length(CAS_w_data), " chemicals have ", bench_word, " information")
   message("Chemicals returned from this function do NOT have ", bench_word, " information:")
