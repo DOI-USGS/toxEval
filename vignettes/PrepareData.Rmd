@@ -57,7 +57,7 @@ The "Chemicals" sheet is used to define the unique chemicals included in the "Da
 
 * Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping. In the example data set provided with the package, the chemicals were organized in classes such as "Fuels", "Herbicides", "Insecticides", etc. The choice of classes is up to the researcher. Chemical class analysis can be ignored, and in that case, it is just important to put a single repeating entry in the "Class" column. 
 
-* Chemical (optional): A character column defining the name of the chemical. The chemical names can be automatically assigned from the supplied data frame "tox_chemicals". However, there may be chemicals that are in your data but not on that list. If you will be plotting those chemicals using either concentrations or custom benchmarks, you will need to supply a name for plotting and tables.
+* Chemical: A character column defining the name of the chemical. These are the chemical names used for most figures and plots. 
 
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
