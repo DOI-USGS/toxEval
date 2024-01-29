@@ -53,11 +53,6 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
                                  chem_data = NULL, chem_site = NULL,
                                  chem_info = NULL, exclusion = NULL) {
 
-  # Getting rid of NSE warnings:
-  chnm <- endPoint <- ACC_value <- Value <- `Sample Date` <- SiteID <- ".dplyr"
-  EAR <- `Short Name` <- CAS <- Class <- site <- casrn <- groupCol <- ".dplyr"
-  Chemical <- ".dplyr"
-  
   if (is.null(chem_data)) {
     chem_data <- tox_list[["chem_data"]]
   } else {
@@ -95,7 +90,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     chem_data$Value <- as.numeric(chem_data$Value)
   }
 
-  chemical_summary <- full_join(ACC,
+  chemical_summary <- dplyr::full_join(ACC,
     dplyr::select(chem_data,
                    CAS, SiteID, Value, `Sample Date`),
             by = "CAS") %>%
@@ -110,20 +105,20 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
   if (all(filtered_ep != "All")) {
     chemical_summary <- chemical_summary %>%
-      select(CAS, chnm, endPoint, site, date, EAR) %>%
-      filter(endPoint %in% filtered_ep$endPoint) %>%
-      left_join(select(filtered_ep, endPoint, groupCol), by = "endPoint")
+      dplyr::select(CAS, chnm, endPoint, site, date, EAR) %>%
+      dplyr::filter(endPoint %in% filtered_ep$endPoint) %>%
+      dplyr::left_join(select(filtered_ep, endPoint, groupCol), by = "endPoint")
   } else {
     chemical_summary <- chemical_summary %>%
-      select(CAS, chnm, endPoint, site, date, EAR, groupCol)
+      dplyr::select(CAS, chnm, endPoint, site, date, EAR, groupCol)
   }
 
   chemical_summary <- chemical_summary %>%
-    left_join(distinct(select(chem_site, site = SiteID, `Short Name`)),
+    dplyr::left_join(distinct(select(chem_site, site = SiteID, `Short Name`)),
       by = "site"
     ) %>%
-    left_join(select(chem_info, CAS, Class), by = "CAS") %>%
-    rename(
+    dplyr::left_join(select(chem_info, CAS, Class), by = "CAS") %>%
+    dplyr::rename(
       Bio_category = groupCol,
       shortName = `Short Name`
     )
@@ -151,56 +146,53 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
 
 
 orderClass <- function(graphData) {
-  chnm <- Class <- logEAR <- meanEAR <- median <- max_med <- ".dplyr"
 
   graphData$meanEAR[graphData$meanEAR == 0] <- NA
 
   orderClass_df <- graphData %>%
-    mutate(logEAR = log(meanEAR)) %>%
-    group_by(chnm, Class) %>%
-    summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
-    group_by(Class) %>%
-    summarise(max_med = max(median, na.rm = TRUE)) %>%
-    arrange(desc(max_med))
+    dplyr::mutate(logEAR = log(meanEAR)) %>%
+    dplyr::group_by(chnm, Class) %>%
+    dplyr::summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    dplyr::group_by(Class) %>%
+    dplyr::summarise(max_med = max(median, na.rm = TRUE)) %>%
+    dplyr::arrange(dplyr::desc(max_med))
 
   return(orderClass_df)
 }
 
 
 orderChem <- function(graphData, orderClass_df) {
-  chnm <- Class <- logEAR <- meanEAR <- median <- ".dplyr"
-
+  
   graphData$meanEAR[graphData$meanEAR == 0] <- NA
 
   orderChem_df <- graphData %>%
-    mutate(logEAR = log(meanEAR)) %>%
-    group_by(chnm, Class) %>%
-    summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
-    ungroup() %>%
-    mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
+    dplyr::mutate(logEAR = log(meanEAR)) %>%
+    dplyr::group_by(chnm, Class) %>%
+    dplyr::summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
 
   orderChem_df$median[is.na(orderChem_df$median)] <- min(orderChem_df$median, na.rm = TRUE) - 1
 
-  orderChem_df <- arrange(orderChem_df, Class, median)
+  orderChem_df <- dplyr::arrange(orderChem_df, Class, median)
 
   return(orderChem_df)
 }
 
 
 orderEP <- function(graphData) {
-  endPoint <- logEAR <- meanEAR <- median <- ".dplyr"
-
+  
   graphData$meanEAR[graphData$meanEAR == 0] <- NA
 
   orderEP_df <- graphData %>%
-    mutate(logEAR = log(meanEAR)) %>%
-    group_by(endPoint) %>%
-    summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
-    ungroup()
+    dplyr::mutate(logEAR = log(meanEAR)) %>%
+    dplyr::group_by(endPoint) %>%
+    dplyr::summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    dplyr::ungroup()
 
   orderEP_df$median[is.na(orderEP_df$median)] <- min(orderEP_df$median, na.rm = TRUE) - 1
 
-  orderEP_df <- arrange(orderEP_df, median)
+  orderEP_df <- dplyr::arrange(orderEP_df, median)
 
   return(orderEP_df)
 }
@@ -265,10 +257,8 @@ remove_flags <- function(ACC, flagsShort = c(
     several.ok = TRUE
   )
 
-  flags <- ".dplyr"
-
-  flag_hits <- select(ACC, flags) %>%
-    mutate(
+  flag_hits <- dplyr::select(ACC, flags) %>%
+    dplyr::mutate(
       Borderline = grepl("Borderline active", flags),
       Noisy = grepl("Noisy data", flags),
       OneAbove = grepl("Only one conc above baseline", flags),
@@ -280,7 +270,7 @@ remove_flags <- function(ACC, flagsShort = c(
       ACCLessThan = grepl("AC50 less than lowest concentration tested", flags),
       GNLSmodel = grepl("Cell viability assay fit with gnls winning model", flags)
     ) %>%
-    select(-flags)
+    dplyr::select(-flags)
 
   ACC <- ACC[rowSums(flag_hits[flagsShort]) == 0, ]
 
@@ -301,7 +291,6 @@ remove_flags <- function(ACC, flagsShort = c(
 
 
 exclude_points <- function(chemical_summary, exclusion) {
-  CAS <- endPoint <- casrn <- ".dplyr"
 
   exclusion$CAS[exclusion$CAS == ""] <- NA
   exclusion$endPoint[exclusion$endPoint == ""] <- NA
@@ -310,16 +299,16 @@ exclude_points <- function(chemical_summary, exclusion) {
   exclude_ep <- exclusion$endPoint[is.na(exclusion$CAS)]
 
   exclude_combo <- exclusion %>%
-    filter(!is.na(CAS)) %>%
-    filter(!is.na(endPoint))
+    dplyr::filter(!is.na(CAS)) %>%
+    dplyr::filter(!is.na(endPoint))
 
   chem_filtered <- chemical_summary %>%
-    filter(!(CAS %in% exclude_chem)) %>%
-    filter(!(endPoint %in% exclude_ep))
+    dplyr::filter(!(CAS %in% exclude_chem)) %>%
+    dplyr::filter(!(endPoint %in% exclude_ep))
 
   if (nrow(exclude_combo) > 0) {
     chem_filtered <- chem_filtered %>%
-      anti_join(exclude_combo, by = c("CAS", "endPoint"))
+      dplyr::anti_join(exclude_combo, by = c("CAS", "endPoint"))
   }
 
   return(chem_filtered)

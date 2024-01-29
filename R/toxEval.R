@@ -140,3 +140,20 @@ NULL
 #' @examples
 #' head(tox_chemicals)
 NULL
+
+
+
+utils::globalVariables(c("CAS", "endPoint", "chnm", "flags", "site",
+                         "Bio_category", "Class", "EAR",
+                         "sumEAR", "value", "calc", "choice_calc", "nHits",
+                         "Structure_MolWt", "casrn", "Substance_Name",
+                         "MlWt", "ACC_value", "Substance_CASRN",
+                         "Value", "Sample Date", "SiteID", "Short Name",
+                         "groupCol", "Chemical", "logEAR", "meanEAR",
+                         "median", "max_med", "choice_calc", "nHits",
+                         "nSites", "Samples with hits", "nSamples", "hits",
+                         "dec_lat", "dec_lon", "nSites", "name",
+                         "nonZero", "maxEAR", "count", "site_grouping",
+                         "index", "n", "x", "y", "max_med", "ymin", "label",
+                         "ymax", "hit_label", "percentDet", "lab"))
+

@@ -54,46 +54,45 @@ side_by_side_data <- function(gd_left,
                               gd_right,
                               left_title = "Left",
                               right_title = "Right") {
-  Class <- EAR <- chnm <- hit_label <- hits <- meanEAR <- ymax <- ymin <- ".dplyr"
 
   gd_left$guide_side <- left_title
   gd_right$guide_side <- right_title
 
   gd_left_no_factor <- gd_left %>%
-    mutate(
+    dplyr::mutate(
       chnm = as.character(chnm),
       Class = as.character(Class)
     )
 
   gd_right_no_factor <- gd_right %>%
-    mutate(
+    dplyr::mutate(
       chnm = as.character(chnm),
       Class = as.character(Class)
     )
 
   chem_data_no_factors <- gd_left_no_factor %>%
-    bind_rows(gd_right_no_factor %>%
-      filter(!(chnm %in% unique(gd_left_no_factor$chnm))))
+    dplyr::bind_rows(gd_right_no_factor %>%
+                       dplyr::filter(!(chnm %in% unique(gd_left_no_factor$chnm))))
 
   graph_data <- "meanEAR" %in% names(chem_data_no_factors)
 
   if (!(graph_data)) {
     chem_data_no_factors <- chem_data_no_factors %>%
-      rename(meanEAR = EAR)
+      dplyr::rename(meanEAR = EAR)
   }
 
   orderChem_1_2 <- chem_data_no_factors %>%
-    group_by(chnm, Class) %>%
-    summarise(median = quantile(meanEAR[meanEAR != 0], 0.5)) %>%
-    ungroup()
+    dplyr::group_by(chnm, Class) %>%
+    dplyr::summarise(median = quantile(meanEAR[meanEAR != 0], 0.5)) %>%
+    dplyr::ungroup()
 
   class_order <- orderClass(chem_data_no_factors)
 
   orderChem_1_2 <- orderChem_1_2 %>%
-    mutate(Class = factor(Class, levels = class_order$Class)) %>%
-    arrange(desc(Class), desc(!is.na(median)), median)
+    dplyr::mutate(Class = factor(Class, levels = class_order$Class)) %>%
+    dplyr::arrange(dplyr::desc(Class), dplyr::desc(!is.na(median)), median)
 
-  gd_1_2 <- bind_rows(
+  gd_1_2 <- dplyr::bind_rows(
     gd_left_no_factor,
     gd_right_no_factor
   )
@@ -150,9 +149,6 @@ get_concentration_summary <- function(tox_list,
                                       chem_site = NULL,
                                       chem_info = NULL,
                                       tox_names = FALSE) {
-  # Getting rid of NSE warnings:
-  chnm <- endPoint <- ACC_value <- Substance_Name <- Value <- `Sample Date` <- SiteID <- ".dplyr"
-  EAR <- `Short Name` <- Substance_CASRN <- CAS <- Chemical <- Class <- site <- casrn <- groupCol <- ".dplyr"
 
   if (is.null(chem_data)) {
     chem_data <- tox_list[["chem_data"]]
@@ -177,22 +173,22 @@ get_concentration_summary <- function(tox_list,
   }
 
   chemical_summary <- chem_data %>%
-    select(CAS, SiteID, Value, `Sample Date`) %>%
-    filter(!is.na(Value)) %>%
-    rename(
+    dplyr::select(CAS, SiteID, Value, `Sample Date`) %>%
+    dplyr::filter(!is.na(Value)) %>%
+    dplyr::rename(
       EAR = Value,
       site = SiteID,
       date = `Sample Date`
     ) %>%
-    mutate(
+    dplyr::mutate(
       Bio_category = "Concentration",
       endPoint = "Concentration"
     ) %>%
-    left_join(select(chem_site,
+    dplyr::left_join(dplyr::select(chem_site,
                      site = SiteID,
                      shortName = `Short Name`),
       by = "site") %>%
-    left_join(select(chem_info, CAS, Class, chnm = Chemical),
+    dplyr::left_join(dplyr::select(chem_info, CAS, Class, chnm = Chemical),
               by = "CAS")
 
   graphData <- graph_chem_data(chemical_summary)

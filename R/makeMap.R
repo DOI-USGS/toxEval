@@ -46,7 +46,6 @@ make_tox_map <- function(chemical_summary,
                          category = "Biological",
                          mean_logic = FALSE,
                          sum_logic = TRUE) {
-  SiteID <- ".dplyr"
 
   maxEARWords <- ifelse(mean_logic, "meanEAR", "maxEAR")
 
@@ -63,7 +62,7 @@ make_tox_map <- function(chemical_summary,
 
   if (length(siteToFind) == 1) {
     mapData <- filter(chem_site, SiteID == siteToFind) %>%
-      mutate(
+      dplyr::mutate(
         nSamples = median(mapData$count),
         meanMax = median(mapData$meanMax),
         sizes = median(mapData$sizes)
@@ -132,8 +131,6 @@ map_tox_data <- function(chemical_summary,
                          sum_logic = TRUE) {
   match.arg(category, c("Biological", "Chemical Class", "Chemical"))
 
-  site <- meanEAR <- nSamples <- `Short Name` <- dec_lat <- dec_lon <- n <- ".dplyr"
-
   siteToFind <- unique(chemical_summary$shortName)
 
   if (category == "Biological") {
@@ -154,11 +151,11 @@ map_tox_data <- function(chemical_summary,
   ]
 
   nSamples <- chemical_summary %>%
-    select(site, date) %>%
-    distinct() %>%
-    group_by(site) %>%
-    summarize(count = n()) %>%
-    ungroup()
+    dplyr::select(site, date) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(site) %>%
+    dplyr::summarize(count = dplyr::n()) %>%
+    dplyr::ungroup()
 
   meanStuff <- tox_boxplot_data(
     chemical_summary = chemical_summary,
@@ -166,11 +163,11 @@ map_tox_data <- function(chemical_summary,
     mean_logic = mean_logic,
     sum_logic = sum_logic
   ) %>%
-    group_by(site) %>%
-    summarize(meanMax = max(meanEAR)) %>%
-    left_join(nSamples, by = "site")
+    dplyr::group_by(site) %>%
+    dplyr::summarize(meanMax = max(meanEAR)) %>%
+    dplyr::left_join(nSamples, by = "site")
 
-  mapData <- left_join(mapData, meanStuff, by = c("SiteID" = "site"))
+  mapData <- dplyr::left_join(mapData, meanStuff, by = c("SiteID" = "site"))
 
   col_types <- c("darkblue", "dodgerblue", "green4", "gold1", "orange", "brown", "red")
 

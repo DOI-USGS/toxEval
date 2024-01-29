@@ -96,8 +96,7 @@ hits_by_groupings <- function(chemical_summary,
                               mean_logic = FALSE,
                               sum_logic = TRUE,
                               hit_threshold = 0.1) {
-  Bio_category <- Class <- EAR <- sumEAR <- value <- calc <- chnm <- choice_calc <- n <- nHits <- site <- ".dplyr"
-  meanEAR <- nSites <- ".dplyr"
+
   match.arg(category, c("Biological", "Chemical Class", "Chemical"))
 
   if (category == "Biological") {
@@ -111,34 +110,34 @@ hits_by_groupings <- function(chemical_summary,
   if (length(unique(chemical_summary$site)) > 1) {
     if (!sum_logic) {
       tableData <- chemical_summary %>%
-        group_by(site, Bio_category, category) %>%
-        summarize(meanEAR = ifelse(mean_logic, mean(EAR), max(EAR))) %>%
-        group_by(Bio_category, category) %>%
-        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        dplyr::group_by(site, Bio_category, category) %>%
+        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(EAR), max(EAR))) %>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarize(nSites = sum(meanEAR > hit_threshold)) %>%
         data.frame()
     } else {
       tableData <- chemical_summary %>%
-        group_by(site, Bio_category, category, date) %>%
-        summarize(sumEAR = sum(EAR)) %>%
-        group_by(site, Bio_category, category) %>%
-        summarize(meanEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
-        group_by(Bio_category, category) %>%
-        summarize(nSites = sum(meanEAR > hit_threshold)) %>%
+        dplyr::group_by(site, Bio_category, category, date) %>%
+        dplyr::summarize(sumEAR = sum(EAR)) %>%
+        dplyr::group_by(site, Bio_category, category) %>%
+        dplyr::summarize(meanEAR = ifelse(mean_logic, mean(sumEAR), max(sumEAR))) %>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarize(nSites = sum(meanEAR > hit_threshold)) %>%
         data.frame()
     }
   } else {
     if (!sum_logic) {
       tableData <- chemical_summary %>%
-        group_by(Bio_category, category) %>%
-        summarise(nSites = sum(EAR > hit_threshold)) %>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarise(nSites = sum(EAR > hit_threshold)) %>%
         data.frame()
     } else {
       tableData <- chemical_summary %>%
-        group_by(Bio_category, category, date) %>%
-        summarise(sumEAR = sum(EAR)) %>%
+        dplyr::group_by(Bio_category, category, date) %>%
+        dplyr::summarise(sumEAR = sum(EAR)) %>%
         data.frame() %>%
-        group_by(Bio_category, category) %>%
-        summarise(nSites = sum(sumEAR > hit_threshold)) %>%
+        dplyr::group_by(Bio_category, category) %>%
+        dplyr::summarise(nSites = sum(sumEAR > hit_threshold)) %>%
         data.frame()
     }
   }
@@ -161,7 +160,7 @@ hits_by_groupings <- function(chemical_summary,
     tableData <- tableData[!is.na(groups), -1, drop = FALSE]
     rownames(tableData) <- groups[!is.na(groups)]
   } else {
-    tableData <- select(tableData, Bio_category, nSites)
+    tableData <- dplyr::select(tableData, Bio_category, nSites)
     rownames(tableData) <- tableData$Bio_category
     tableData <- tableData[, -1, drop = FALSE]
   }
