@@ -8,8 +8,6 @@ createLink(cas)
 }
 \arguments{
 \item{cas}{character}
-
-\item{hits}{character}
 }
 \description{
 Create links

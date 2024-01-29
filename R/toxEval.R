@@ -39,12 +39,11 @@ dbVersion <- function() {
 #' LazyLoad: \tab yes\cr
 #' }
 #'
-#'
 #' @name toxEval-package
 #' @docType package
 #' @author Laura De Cicco \email{ldecicco@@usgs.gov}. Steven Corsi
-#' @keywords ToxCast
-NULL
+#' @keywords internal 
+"_PACKAGE"
 
 #' ACC values included with toxEval.
 #'

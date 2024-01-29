@@ -224,7 +224,6 @@ endpoint_hits <- function(chemical_summary,
 #'
 #' Create links
 #' @param cas character
-#' @param hits character
 #' @export
 #' @keywords internal
 createLink <- function(cas) {
