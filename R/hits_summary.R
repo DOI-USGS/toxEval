@@ -111,7 +111,7 @@ hits_summary <- function(chemical_summary,
     chemical_summary <- dplyr::mutate(chemical_summary, category = Bio_category)
   }
 
-  chemical_summary <- select(chemical_summary, -Class, -Bio_category, -chnm)
+  chemical_summary <- dplyr::select(chemical_summary, -Class, -Bio_category, -chnm)
 
   if (length(siteToFind) == 1) {
     chemical_summary$site <- chemical_summary$category

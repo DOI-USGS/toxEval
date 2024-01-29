@@ -403,7 +403,7 @@ get_complete_set_category <- function(chemical_summary, graphData, chem_site, ca
 
   for (cats in categories) {
     complete_data$category <- cats
-    complete_data_filled <- bind_rows(complete_data_filled, complete_data)
+    complete_data_filled <- dplyr::bind_rows(complete_data_filled, complete_data)
   }
   complete_data_filled$category <- factor(complete_data_filled$category, levels = levels(graphData$category))
 

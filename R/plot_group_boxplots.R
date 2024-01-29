@@ -164,7 +164,7 @@ plot_tox_boxplots <- function(chemical_summary,
       label <- "# Chemicals"
 
       if (!is.null(manual_remove)) {
-        chemical_summary <- filter(chemical_summary, !(category %in% manual_remove))
+        chemical_summary <- dplyr::filter(chemical_summary, !(category %in% manual_remove))
       }
 
       orderColsBy <- chemical_summary %>%
@@ -397,7 +397,7 @@ tox_boxplot_data <- function(chemical_summary,
   }
 
   if (!is.null(manual_remove)) {
-    tox_boxplot_data <- filter(tox_boxplot_data, !(category %in% manual_remove))
+    tox_boxplot_data <- dplyr::filter(tox_boxplot_data, !(category %in% manual_remove))
   }
 
   orderColsBy <- tox_boxplot_data %>%

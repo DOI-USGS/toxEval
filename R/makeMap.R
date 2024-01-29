@@ -61,7 +61,7 @@ make_tox_map <- function(chemical_summary,
   siteToFind <- unique(chemical_summary$site)
 
   if (length(siteToFind) == 1) {
-    mapData <- filter(chem_site, SiteID == siteToFind) %>%
+    mapData <- dplyr::filter(chem_site, SiteID == siteToFind) %>%
       dplyr::mutate(
         nSamples = median(mapData$count),
         meanMax = median(mapData$meanMax),
