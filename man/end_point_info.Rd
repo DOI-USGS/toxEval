@@ -28,6 +28,5 @@ head(end_point_info[, 1:5])
 }
 \references{
 U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide.
-\url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
 }
 \keyword{datasets}

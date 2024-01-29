@@ -50,7 +50,7 @@ dbVersion <- function() {
 #' Downloaded on October 2022 from ToxCast. The data were
 #' combined from files in the "INVITRODB_V3_5_LEVEL5" folder.
 #' At the time of toxEval package release, this information was found:
-#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
+#' \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #' in the "ToxCast & Tox21 Data Spreadsheet" data set.
 #' ACC values are the in the "ACC" column (winning model) and units are
 #' log micro-Molarity (log \eqn{\mu}M).
@@ -87,7 +87,6 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @references U.S. EPA. 2014. ToxCast Assay Annotation Data User Guide.
-#' \url{https://www.epa.gov/chemical-research/toxcast-assay-annotation-data-user-guide}.
 #'
 #' @source \doi{10.23645/epacomptox.6062479.v3}
 #' @export end_point_info
