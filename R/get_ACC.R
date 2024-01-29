@@ -10,7 +10,6 @@
 #' to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.
 #'
 #' @param CAS Vector of CAS.
-#' @import dplyr
 #'
 #' @return data frame with columns CAS, chnm, flags, endPoint, ACC, MlWt, and ACC_value
 #' @export
@@ -36,12 +35,12 @@ get_ACC <- function(CAS) {
     by = c("CAS" = "casrn")
   )
 
-  ACC <- mutate(ACC,
+  ACC <- dplyr::mutate(ACC,
     ACC_value = 10^ACC,
     ACC_value = ACC_value * MlWt
   )
-  ACC <- filter(ACC, !is.na(ACC_value))
-  ACC <- left_join(ACC, select(tox_chemicals,
+  ACC <- dplyr::filter(ACC, !is.na(ACC_value))
+  ACC <- dplyr::left_join(ACC, select(tox_chemicals,
     CAS = Substance_CASRN,
     chnm = Substance_Name
   ), by = "CAS")

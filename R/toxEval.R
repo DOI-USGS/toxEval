@@ -59,7 +59,7 @@ dbVersion <- function() {
 #' ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
 #'  \doi{10.23645/epacomptox.6062479.v3}.
 #'
-#' @source \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
+#' @source \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #'
 #' @aliases ToxCast_ACC
 #' @return data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
@@ -77,7 +77,7 @@ NULL
 #' raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
 #' "INVITRODB_V3_5_SUMMARY" folder. At the time
 #' of the toxEval package release, these data were found at:
-#' \url{https://www.epa.gov/chemical-research/exploring-toxcast-data}
+#' \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #' in the section marked "Download Assay Information", in the
 #' ToxCast & Tox21 high-throughput assay information data set.
 #'
