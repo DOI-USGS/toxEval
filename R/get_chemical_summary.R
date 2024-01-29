@@ -107,17 +107,17 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     chemical_summary <- chemical_summary %>%
       dplyr::select(CAS, chnm, endPoint, site, date, EAR) %>%
       dplyr::filter(endPoint %in% filtered_ep$endPoint) %>%
-      dplyr::left_join(select(filtered_ep, endPoint, groupCol), by = "endPoint")
+      dplyr::left_join(dplyr::select(filtered_ep, endPoint, groupCol), by = "endPoint")
   } else {
     chemical_summary <- chemical_summary %>%
       dplyr::select(CAS, chnm, endPoint, site, date, EAR, groupCol)
   }
 
   chemical_summary <- chemical_summary %>%
-    dplyr::left_join(distinct(select(chem_site, site = SiteID, `Short Name`)),
+    dplyr::left_join(dplyr::distinct(dplyr::select(chem_site, site = SiteID, `Short Name`)),
       by = "site"
     ) %>%
-    dplyr::left_join(select(chem_info, CAS, Class), by = "CAS") %>%
+    dplyr::left_join(dplyr::select(chem_info, CAS, Class), by = "CAS") %>%
     dplyr::rename(
       Bio_category = groupCol,
       shortName = `Short Name`

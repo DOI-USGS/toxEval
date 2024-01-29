@@ -382,7 +382,7 @@ plot_heat_chemicals <- function(chemical_summary,
 # There's probably a faster way to do this:
 get_complete_set <- function(chemical_summary, graphData, chem_site) {
 
-  complete_data <- select(chem_site, `Short Name`, site_grouping)
+  complete_data <- dplyr::select(chem_site, `Short Name`, site_grouping)
   complete_data_filled <- data.frame()
 
   for (chms in levels(chemical_summary$chnm)) {
@@ -390,14 +390,14 @@ get_complete_set <- function(chemical_summary, graphData, chem_site) {
     complete_data_filled <- dplyr::bind_rows(complete_data_filled, complete_data)
   }
   complete_data_filled$chnm <- factor(complete_data_filled$chnm, levels = levels(graphData$chnm))
-  complete_data_filled <- dplyr::left_join(complete_data_filled, distinct(select(chemical_summary, chnm, Class)), by = "chnm")
+  complete_data_filled <- dplyr::left_join(complete_data_filled, dplyr::distinct(dplyr::select(chemical_summary, chnm, Class)), by = "chnm")
   return(complete_data_filled)
 }
 
 # There's probably a faster way to do this:
 get_complete_set_category <- function(chemical_summary, graphData, chem_site, category) {
 
-  complete_data <- select(chem_site, `Short Name`, site_grouping)
+  complete_data <- dplyr::select(chem_site, `Short Name`, site_grouping)
   complete_data_filled <- data.frame()
   categories <- levels(graphData$category)
 

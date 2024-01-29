@@ -103,7 +103,7 @@ NULL
 #Due to size constraints for CRAN, some columns needed to be removed:
 # 
 # end_point_info <- end_point_info |>
-#   select(-reagent_reagent_name_value_type,
+#   dplyr::select(-reagent_reagent_name_value_type,
 #          -reagent_reagent_name_value,
 #          -citations_citation)
 

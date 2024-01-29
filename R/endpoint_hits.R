@@ -57,7 +57,6 @@ endpoint_hits_DT <- function(chemical_summary,
                              sum_logic = TRUE,
                              hit_threshold = 0.1,
                              include_links = TRUE) {
-  chnm <- CAS <- ".dplyr"
 
   fullData <- endpoint_hits(
     chemical_summary = chemical_summary,
@@ -70,8 +69,8 @@ endpoint_hits_DT <- function(chemical_summary,
   if (category == "Chemical") {
     orig_names <- names(fullData)
 
-    casKey <- select(chemical_summary, chnm, CAS) %>%
-      distinct()
+    casKey <- dplyr::select(chemical_summary, chnm, CAS) %>%
+      dplyr::distinct()
 
     numeric_hits <- fullData
     hits <- sapply(fullData, function(x) as.character(x))

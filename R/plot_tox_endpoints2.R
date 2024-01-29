@@ -33,7 +33,6 @@
 #' @export
 #' @import ggplot2
 #' @importFrom stats median
-#' @import dplyr
 #' @examples
 #' 
 #' \donttest{

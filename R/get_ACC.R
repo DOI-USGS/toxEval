@@ -36,7 +36,7 @@ get_ACC <- function(CAS) {
     ACC_value = ACC_value * MlWt
   )
   ACC <- dplyr::filter(ACC, !is.na(ACC_value))
-  ACC <- dplyr::left_join(ACC, select(tox_chemicals,
+  ACC <- dplyr::left_join(ACC, dplyr::select(tox_chemicals,
     CAS = Substance_CASRN,
     chnm = Substance_Name
   ), by = "CAS")
