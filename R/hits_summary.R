@@ -29,7 +29,6 @@
 #' @rdname hits_summary_DT
 #' @return data frame with with one row per unique site/category combination. The columns
 #' are site, category, Samples with Hits, and Number of Samples.
-#' @importFrom stats median
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")

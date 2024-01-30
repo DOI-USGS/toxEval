@@ -84,7 +84,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     orderColsBy <- chemical_summary %>%
       dplyr::mutate(logEAR = log(EAR)) %>%
       dplyr::group_by(chnm, Class, ...) %>%
-      dplyr::summarise(median = median(logEAR[!is.na(logEAR)], na.rm = TRUE)) %>%
+      dplyr::summarise(median = stats::median(logEAR[!is.na(logEAR)], na.rm = TRUE)) %>%
       dplyr::arrange(median) %>%
       dplyr::ungroup()
 
@@ -101,7 +101,7 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     orderedLevels <- chemical_summary %>%
       dplyr::mutate(logEAR = log(EAR)) %>%
       dplyr::group_by(chnm, Class, ...) %>%
-      dplyr::summarise(median = median(logEAR[!is.na(logEAR)])) %>%
+      dplyr::summarise(median = stats::median(logEAR[!is.na(logEAR)])) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(
         Class = factor(Class, levels = rev(class_order)),

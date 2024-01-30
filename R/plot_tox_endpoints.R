@@ -35,7 +35,6 @@
 #' endpoints will be included.
 #' @export
 #' @import ggplot2
-#' @importFrom stats median
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")

@@ -83,7 +83,7 @@ side_by_side_data <- function(gd_left,
 
   orderChem_1_2 <- chem_data_no_factors %>%
     dplyr::group_by(chnm, Class) %>%
-    dplyr::summarise(median = quantile(meanEAR[meanEAR != 0], 0.5)) %>%
+    dplyr::summarise(median = stats::quantile(meanEAR[meanEAR != 0], 0.5)) %>%
     dplyr::ungroup()
 
   class_order <- orderClass(chem_data_no_factors)

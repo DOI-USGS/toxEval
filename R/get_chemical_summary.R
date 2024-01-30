@@ -152,7 +152,7 @@ orderClass <- function(graphData) {
   orderClass_df <- graphData %>%
     dplyr::mutate(logEAR = log(meanEAR)) %>%
     dplyr::group_by(chnm, Class) %>%
-    dplyr::summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    dplyr::summarise(median = stats::quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
     dplyr::group_by(Class) %>%
     dplyr::summarise(max_med = max(median, na.rm = TRUE)) %>%
     dplyr::arrange(dplyr::desc(max_med))
@@ -168,7 +168,7 @@ orderChem <- function(graphData, orderClass_df) {
   orderChem_df <- graphData %>%
     dplyr::mutate(logEAR = log(meanEAR)) %>%
     dplyr::group_by(chnm, Class) %>%
-    dplyr::summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    dplyr::summarise(median = stats::quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(Class = factor(Class, levels = rev(as.character(orderClass_df$Class))))
 
@@ -187,7 +187,7 @@ orderEP <- function(graphData) {
   orderEP_df <- graphData %>%
     dplyr::mutate(logEAR = log(meanEAR)) %>%
     dplyr::group_by(endPoint) %>%
-    dplyr::summarise(median = quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
+    dplyr::summarise(median = stats::quantile(logEAR[logEAR != 0], 0.5, na.rm = TRUE)) %>%
     dplyr::ungroup()
 
   orderEP_df$median[is.na(orderEP_df$median)] <- min(orderEP_df$median, na.rm = TRUE) - 1

@@ -38,7 +38,6 @@
 #' data will be included.
 #' @export
 #' @import ggplot2
-#' @importFrom stats median
 #' @importFrom grDevices colorRampPalette
 #' @examples
 #' # This is the example workflow:

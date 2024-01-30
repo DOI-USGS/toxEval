@@ -29,7 +29,6 @@
 #' @return data frame with one row per endpoint that had a hit (based on the
 #' hit_threshold). The columns are based on the category.
 #' @rdname endpoint_hits_DT
-#' @importFrom stats median
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")

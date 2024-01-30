@@ -1,5 +1,7 @@
 CRAN submissions:
   1. Turn off DT tables in basicWorkflow
   2. Turn dontrun to donttest in explore_endpoints
+    (nevermind...removed the example altogether)
   3. Remove badge links from readme
+    (badges made it in last update, so maybe they are OK)
   4. Remove most extraneous links from readme (especially installation)

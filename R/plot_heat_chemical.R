@@ -37,7 +37,6 @@
 #' @export
 #' @rdname plot_tox_heatmap
 #' @import ggplot2
-#' @importFrom stats median
 #' @examples
 #' path_to_tox <- system.file("extdata", package = "toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"

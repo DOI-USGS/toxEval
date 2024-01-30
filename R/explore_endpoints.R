@@ -8,6 +8,12 @@
 #'
 #' @param browse Logical. Use browser for running Shiny app.
 #' @export
+#' @importFrom tools file_ext
+#' @importFrom shinyAce updateAceEditor
+#' @importFrom shinyAce aceEditor
+#' @importFrom shinycssloaders withSpinner
+#' @import shinydashboard
+#' @import ggplot2
 explore_endpoints <- function(browse = TRUE) {
   shiny::runApp(system.file("shiny", package = "toxEval"), launch.browser = browse)
 }

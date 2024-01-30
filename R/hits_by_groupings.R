@@ -23,7 +23,6 @@
 #' @export
 #' @return data frame with one row per category, and one column per Biological grouping.
 #' @rdname hits_by_groupings_DT
-#' @importFrom stats median
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")

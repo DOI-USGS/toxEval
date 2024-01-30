@@ -23,7 +23,6 @@
 #' hits based on the category.
 #'
 #' @rdname rank_sites_DT
-#' @importFrom stats median
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")

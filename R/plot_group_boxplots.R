@@ -47,7 +47,6 @@
 #' @export
 #' @rdname plot_tox_boxplots
 #' @import ggplot2
-#' @importFrom stats median
 #' @examples
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")
@@ -170,7 +169,7 @@ plot_tox_boxplots <- function(chemical_summary,
       orderColsBy <- chemical_summary %>%
         dplyr::mutate(logEAR = log(EAR)) %>%
         dplyr::group_by(category) %>%
-        dplyr::summarise(median = median(logEAR[logEAR != 0], na.rm = TRUE)) %>%
+        dplyr::summarise(median = stats::median(logEAR[logEAR != 0], na.rm = TRUE)) %>%
         dplyr::ungroup() %>%
         dplyr::arrange(median)
 
@@ -402,7 +401,7 @@ tox_boxplot_data <- function(chemical_summary,
 
   orderColsBy <- tox_boxplot_data %>%
     dplyr::group_by(category) %>%
-    dplyr::summarise(median = median(meanEAR[meanEAR != 0], na.rm = TRUE)) %>%
+    dplyr::summarise(median = stats::median(meanEAR[meanEAR != 0], na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(median)
 

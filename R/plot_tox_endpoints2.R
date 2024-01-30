@@ -32,7 +32,6 @@
 #' @param ... Additional group_by arguments. This can be handy for creating facet graphs.
 #' @export
 #' @import ggplot2
-#' @importFrom stats median
 #' @examples
 #' 
 #' \donttest{
