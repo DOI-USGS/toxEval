@@ -8,7 +8,7 @@
 \doi{10.23645/epacomptox.6062479.v3}
 }
 \value{
-data frame with 86 columns. The columns and definitions
+data frame with 72 columns. The columns and definitions
 are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source).
 The column "Relevance Category" was included for consideration of 
 grouping/filtering endpoints based on user goals.

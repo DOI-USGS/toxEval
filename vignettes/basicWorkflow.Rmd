@@ -29,7 +29,7 @@ library(dplyr)
 options(continue=" ")
 options(width=60)
 #Set this to TRUE when creating pkgdown site:
-runTables <- TRUE
+runTables <- FALSE
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE)

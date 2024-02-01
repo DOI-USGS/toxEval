@@ -10,7 +10,7 @@ ToxCast database: version", dbVersion()), width = 40),
 }
 
 dbVersion <- function() {
-  "3.5"
+  "4.0"
 }
 
 #' Analyze ToxCast data in relation to measured concentrations.
@@ -90,7 +90,7 @@ NULL
 #'
 #' @source \doi{10.23645/epacomptox.6062479.v3}
 #' @export end_point_info
-#' @return data frame with 86 columns. The columns and definitions
+#' @return data frame with 72 columns. The columns and definitions
 #' are discussed in the "ToxCast Assay Annotation Version 1.0 Data User Guide (PDF)" (see source).
 #' The column "Relevance Category" was included for consideration of 
 #' grouping/filtering endpoints based on user goals.
@@ -104,7 +104,12 @@ NULL
 # end_point_info <- end_point_info |>
 #   dplyr::select(-reagent_reagent_name_value_type,
 #          -reagent_reagent_name_value,
-#          -citations_citation)
+#          -citations_citation,
+#          -citations_title,
+#          -citations_author,
+#          -assay_source_desc,
+#          -assay_component_endpoint_desc)
+# save(end_point_info, tox_chemicals, ToxCast_ACC, file = "sysdata.rda", compress = "xz")
 
 #' ToxCast Chemical Information
 #'
