@@ -36,10 +36,9 @@ getready:
     - mkdir -p $R_LIBS_USER
     - mkdir -p $APT_CACHE
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
-    - Rscript -e "install.packages(c( 'connectapi'))"
-    - Rscript -e "devtools::install_deps(dependencies = TRUE, quiet = TRUE)"
+    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install_deps(dependencies = TRUE, quiet = TRUE))"
     - Rscript -e "remotes::update_packages()"
-    - Rscript -e "devtools::install(build_vignettes = FALSE, args = '--no-manual', upgrade = 'always')"
+    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install(build_vignettes = FALSE, args = '--no-manual', upgrade = 'always', force = TRUE))"
   cache:
     paths:
      - $R_LIBS_USER
@@ -89,6 +88,9 @@ covertests:
 
 pages:
   stage: end
+  dependencies:
+    - getready
+    - buildcheck
   only: 
     - main
   script:
