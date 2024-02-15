@@ -1,4 +1,4 @@
-image: code.usgs.gov:5001/water/wsc/umid/docker_images:latest
+image: code.usgs.gov:5001/water/dockerr:latest
 
 stages:
   - getready
@@ -12,6 +12,7 @@ variables:
   _R_CHECK_SUGGESTS_ONLY: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
   _R_CHECK_DONTTEST_EXAMPLES_: "false"
+  R_REMOTES_UPGRADE: "always"
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
   APT_CACHE: "$CI_PROJECT_DIR/ci/lib/apt-cache"
   CRAN: "https://rpkg.chs.usgs.gov/prod-cran/latest"
@@ -36,7 +37,9 @@ getready:
     - mkdir -p $APT_CACHE
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
     - Rscript -e "install.packages(c( 'connectapi'))"
-    - Rscript -e "devtools::install_deps()"
+    - Rscript -e "devtools::install_deps(dependencies = TRUE, quiet = TRUE)"
+    - Rscript -e "remotes::update_packages()"
+    - Rscript -e "devtools::install(build_vignettes = FALSE, args = '--no-manual', upgrade = 'always')"
   cache:
     paths:
      - $R_LIBS_USER
