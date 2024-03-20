@@ -37,8 +37,8 @@ getready:
     - mkdir -p $APT_CACHE
     - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
     - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install_deps(dependencies = TRUE, quiet = TRUE))"
-    - Rscript -e "remotes::update_packages()"
-    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install(build_vignettes = FALSE, args = '--no-manual', upgrade = 'always', force = TRUE))"
+    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), remotes::update_packages())"
+    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install(build_vignettes = FALSE, upgrade = 'always', force = TRUE))"
   cache:
     paths:
      - $R_LIBS_USER
