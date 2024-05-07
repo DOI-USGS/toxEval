@@ -1,7 +1,10 @@
-image: code.usgs.gov:5001/water/dockerr:latest
-
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+    
 stages:
-  - getready
+  - build
   - check
   - test
   - end
@@ -12,7 +15,6 @@ variables:
   _R_CHECK_SUGGESTS_ONLY: "false"
   _R_CHECK_FORCE_SUGGESTS_: "true"
   _R_CHECK_DONTTEST_EXAMPLES_: "false"
-  R_REMOTES_UPGRADE: "always"
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
   APT_CACHE: "$CI_PROJECT_DIR/ci/lib/apt-cache"
   CRAN: "https://rpkg.chs.usgs.gov/prod-cran/latest"
@@ -25,48 +27,54 @@ variables:
   CONNECT_SERVER: $CONNECT_SERVER
   PAGES_OUTDIR: "$CI_PROJECT_DIR/public"
 
-cache:
-  key: ${CI_JOB_NAME}
-  paths:
-    - $R_LIBS_USER
-    
-getready:
-  stage: getready
+build-image:
+  stage: build
+  image: ${DEVOPS_REGISTRY}usgs/docker:20
+  services:
+  - name: ${DEVOPS_REGISTRY}usgs/docker:20-dind
+    alias: docker
+  rules:
+    - changes:
+      - docker/Dockerfile
+      - .gitlab-ci.yml
   script:
-    - mkdir -p $R_LIBS_USER
-    - mkdir -p $APT_CACHE
-    - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
-    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install_deps(dependencies = TRUE, quiet = TRUE))"
-    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), remotes::update_packages())"
-    - Rscript -e "withr::with_libpaths(new = Sys.getenv('R_LIBS_USER'), devtools::install(build_vignettes = FALSE, upgrade = 'always', force = TRUE))"
-  cache:
-    paths:
-     - $R_LIBS_USER
-  artifacts:
-    paths:
-     - $R_LIBS_USER
+    - echo ${CI_REGISTRY_PASSWORD} | docker login -u ${CI_REGISTRY_USER} --password-stdin $CI_REGISTRY
+    - docker pull ${CI_REGISTRY_IMAGE}:latest || true
+    - cd docker
+    - docker build
+        --cache-from ${CI_REGISTRY_IMAGE}:latest
+        -t ${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA}
+        -t ${CI_REGISTRY_IMAGE}:latest
+        .
+    # If this is building a git tag, create the corresponding docker tag
+    - if [ -n "${CI_COMMIT_TAG}" ]; then docker tag ${CI_REGISTRY_IMAGE}:BUILD_${CI_COMMIT_SHORT_SHA} ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}; fi
+    - docker push --all-tags ${CI_REGISTRY_IMAGE}
+
 
 buildcheck:
   stage: check
+  image: ${CI_REGISTRY_IMAGE}:latest
+  dependencies:
+    - build-image
   script:
-    - mkdir -p $BUILD_LOGS_DIR
-    - apt-get update
-    - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends qpdf pandoc pandoc-citeproc
     - R CMD build . --no-build-vignettes --no-manual
     - R -e 'devtools::check(document = FALSE, args = "--no-tests", error_on = "error", check_dir = Sys.getenv("BUILD_LOGS_DIR"))'
   artifacts:
+    expire_in: 1 week
     paths:
       - $BUILD_LOGS_DIR
 
 unittests:
   stage: test
+  image: ${CI_REGISTRY_IMAGE}:latest
   dependencies:
-    - getready
+    - build-image
     - buildcheck
   script:
     - R -e 'library(testthat); options(testthat.output_file = file.path(Sys.getenv("CI_PROJECT_DIR"), "test-out.xml")); devtools::test(reporter = "junit")'
   artifacts:
     when: always
+    expire_in: 1 week
     paths: 
       - test-out.xml
     reports:
@@ -74,8 +82,9 @@ unittests:
         
 covertests:
   stage: test
+  image: ${CI_REGISTRY_IMAGE}:latest
   dependencies:
-    - getready
+    - build-image
     - buildcheck
   script:
     - R -e 'x <- covr::package_coverage(); covr::to_cobertura(x); x; '
@@ -84,13 +93,12 @@ covertests:
       coverage_report:
         coverage_format: cobertura
         path: cobertura.xml
+    expire_in: 1 week
   coverage: '/Coverage: \d+.\d+\%/'
 
 pages:
   stage: end
-  dependencies:
-    - getready
-    - buildcheck
+  image: ${CI_REGISTRY_IMAGE}:latest
   only: 
     - main
   script:
