@@ -21,6 +21,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
   r-cran-rmarkdown \
   r-cran-shinycssloaders \
   r-cran-covr \
+  r-cran-tcpl \
   && rm -rf /var/lib/apt/lists/*
 
 
