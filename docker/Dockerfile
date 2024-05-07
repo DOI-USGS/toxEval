@@ -22,6 +22,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
   r-cran-shinycssloaders \
   r-cran-covr \
   r-cran-tcpl \
+  r-cran-rsconnect \
   && rm -rf /var/lib/apt/lists/*
 
 
