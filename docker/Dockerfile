@@ -7,7 +7,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
   r-cran-checkmate \
   r-cran-openxlsx \
   r-cran-here \
-  r-cran-shinydashboard
+  r-cran-shinydashboard \
   r-cran-shiny \
   r-cran-readxl \
   r-cran-rcolorbrewer \
@@ -17,7 +17,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
   r-cran-connectapi \
   r-cran-dt \
   r-cran-leaflet \
-  r-cran-
+  r-cran-rmarkdown \
   && rm -rf /var/lib/apt/lists/*
 
 
