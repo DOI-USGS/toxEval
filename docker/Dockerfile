@@ -19,6 +19,7 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
   r-cran-leaflet \
   r-cran-rmarkdown \
   r-cran-shinycssloaders \
+  r-cran-covr \
   && rm -rf /var/lib/apt/lists/*
 
 
