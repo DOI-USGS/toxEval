@@ -1,6 +1,5 @@
 ---
 title: "Concentration-Response Curves"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -71,21 +70,24 @@ ep <- "NVS_ENZ_hPDE4A1"
 cas <- "1912-24-9"
 
 chem_info <- tcplLoadChem(field = 'casn', val = cas)
+assay_info <- tcplLoadAeid(fld = "acnm", val = ep)
 
-assay_info <- tcplLoadAcid(fld = "acnm", val = ep)
+mc5 <- tcplLoadData(lvl = 5, type = "mc",
+                    fld = c("aeid","spid"),
+                    val = list(assay_info$aeid,
+                               chem_info$spid))
 
-mc3 <- tcplLoadData(lvl = 3, type = "mc", 
-             fld = c("acid","spid"), 
-             val = list(assay_info$acid,
-                        chem_info$spid))
+plot_out <- tcplPlot(lvl = 5,
+         fld = c("spid","aeid"), # fields to query on
+         val = list(mc5$spid, # sample id's
+                    mc5$aeid # assay endpoint id's
+                    ),
+         by = "aeid", # parameter to divide files
+         multi = FALSE, # multiple plots per page - output 6 per page if TRUE
+        verbose = TRUE, # output all details if TRUE
+        output = "console") # prefix of the filename
 
-## Load mc tables from levels of interest
-mc4 <- tcplLoadData(lvl = 4, type = "mc", 
-                    fld = c("spid", "aeid"), 
-                    val = list(chem_info$spid,
-                               unique(mc3$aeid)))
-
-tcplPlotM4ID(mc4, lvl = 5)
+plot_out
 
 ```
 
