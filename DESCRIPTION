@@ -1,7 +1,7 @@
 Package: toxEval
 Type: Package
 Title: Exploring Biological Relevance of Environmental Chemistry Observations
-Version: 1.3.2
+Version: 1.4.0
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
                      email = "ldecicco@usgs.gov",
@@ -33,7 +33,7 @@ Copyright: This software is in the public domain because it contains materials
     official USGS copyright policy at
     https://www.usgs.gov/visual-id/credit_usgs.html#copyright
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     dplyr,
     tidyr,

@@ -3,7 +3,8 @@
 \docType{data}
 \name{ToxCast_ACC}
 \alias{ToxCast_ACC}
-\title{ACC values included with toxEval.}
+\title{ACC values included with toxEval. See \code{vignette("Setting up toxEval package data", package = "toxEval")}
+for more information on how the data was aggregated.}
 \source{
 \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 }
@@ -11,20 +12,15 @@
 data frame with columns CAS, chnm (chemical name), flags, endPoint, and ACC (value).
 }
 \description{
-Downloaded on October 2022 from ToxCast. The data were
-combined from files in the "INVITRODB_V3_5_LEVEL5" folder.
-At the time of toxEval package release, this information was found:
-\url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
-in the "ToxCast & Tox21 Data Spreadsheet" data set.
-ACC values are the in the "ACC" column (winning model) and units are
-log micro-Molarity (log \eqn{\mu}M).
+Downloaded on September 2023 from ToxCast. See also
+\url{https://www.frontiersin.org/articles/10.3389/ftox.2023.1275980/full}.
 }
 \examples{
 head(ToxCast_ACC)
 }
 \references{
-Toxicology, EPA's National Center for Computational (2020):
-ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
- \doi{10.23645/epacomptox.6062479.v3}.
+U.S. EPA. 2023. ToxCast & Tox21 Summary Files. 
+Retrieved from \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+on September 2023.
 }
 \keyword{datasets}

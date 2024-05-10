@@ -1,13 +1,7 @@
 #' clean_endPoint_info
 #'
-#' Define a subset of the ToxCast database for relevance to toxEval analyses.
-#' Subsetting is done based upon methods defined by Blackwell et al., 2017 (
-#' \doi{10.1021/acs.est.7b01613}).
-#' Specifically, this function removes endPoints that are ATG sources with
-#' signal loss, and NVS with signal gain (basically: some assay/signal combinations
-#' are removed because they target non-specific endpoints). Also, this function adds additional
-#' categories to intended_target_family and intended_target_family_sub as
-#' described in the paper linked above.
+#' As of ToxCast 4.1, this function only helps clean up abbrieviations 
+#' found in the end_point_info data frame.
 #'
 #' @param end_point_info Data frame Endpoint information from ToxCast.
 #' @export
@@ -21,9 +15,7 @@
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' nrow(cleaned_ep)
 clean_endPoint_info <- function(end_point_info) {
-  end_point_info <- end_point_info[!(end_point_info$assay_source_name == "ATG" & end_point_info$signal_direction == "loss"), ]
-  end_point_info <- end_point_info[!(end_point_info$assay_source_name == "NVS" & end_point_info$signal_direction == "gain"), ]
-
+  
   end_point_info$intended_target_family[end_point_info$assay_component_endpoint_name %in%
     c(
       "CLD_CYP1A1_24hr", "CLD_CYP1A1_48hr", "CLD_CYP1A1_6hr",
