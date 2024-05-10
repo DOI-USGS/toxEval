@@ -97,5 +97,7 @@ vignettes/group.png
 vignettes/sites.png
 vignettes/thres.png
 ^docker$
+vignettes/update_data.Rmd
+
 
 
