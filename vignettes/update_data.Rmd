@@ -1,0 +1,146 @@
+---
+title: "Setting up toxEval package data"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+vignette: >
+  %\VignetteIndexEntry{Setting up toxEval package data}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+library(tcpl)
+```
+
+`toxEval` includes ToxCast data to help simplify EAR calculations. Here are the instructions for getting the necessary columns from the ToxCast database using the `tcpl` package. This is NOT necessary for all `toxEval` users. However, if you are interested in extending the data or exploring additional fields, this might be useful. It is also a way to remember how to update the `toxEval` package when there are new ToxCast database updates.
+
+First you would need to download the database and set up a MySQL server/database. This is beyond the scope of this vigentte right now. 
+
+Next, you need to connect to that local database:
+
+```{r eval=FALSE}
+library(tcpl)
+library(toxEval)
+library(tidyverse)
+
+
+tcplConf(drvr = "MySQL", 
+         user = "root",
+         pass = "my_super_secret_password",
+         host = "localhost", 
+         db = "prod_internal_invitrodb_v4_1")
+
+
+```
+
+## ToxCast_ACC
+
+First, we'll need to load several tables to get our necessary columns:
+
+```{r eval=FALSE}
+mc5_raw <- tcplQuery("SELECT   * FROM mc5")
+mc4_raw <- tcplQuery("SELECT   * FROM mc4")
+mc5_chid <- tcplQuery("SELECT   * FROM mc5_chid")
+mc6_raw <- tcplQuery("SELECT   * FROM mc6")
+sample_raw <- tcplQuery("SELECT   * FROM sample")
+chemical_raw <- tcplQuery("SELECT   * FROM chemical")
+mc5_param <- tcplQuery("SELECT   * FROM mc5_param")
+```
+
+Next, we'll use `dplyr` to join:
+
+```{r eval=FALSE}
+ToxCast_ACC <- mc5_raw |> 
+  filter(hitc >= 0.9) |> 
+  select(-created_date, -modified_date, -modified_by) |> 
+  left_join(mc4_raw |> 
+              select(-created_date, -modified_date, -modified_by),
+            by = join_by(m4id, aeid)) |> 
+  left_join(mc5_chid, by = join_by(m5id)) |> 
+  filter(chid_rep == 1) |> 
+  left_join(mc6_raw |> 
+              select(-created_date, -modified_date, -modified_by),
+            by = join_by(m5id, m4id, aeid)) |> 
+  left_join(sample_raw,
+            by = join_by(spid)) |> 
+  left_join(chemical_raw,
+            by = join_by(chid)) |> 
+  left_join(mc5_param |> 
+              filter(hit_param == "acc"),
+            by = join_by(m5id, aeid)) |> 
+  select(casn, hit_val, aeid, mc6_mthd_id) |> 
+  group_by(casn, hit_val, aeid) |> 
+  summarise(flags = paste(mc6_mthd_id, collapse = ", ")) |> 
+  ungroup()
+
+names(ToxCast_ACC)
+
+```
+
+```
+[1] "casn"    "hit_val" "aeid"    "flags" 
+```
+
+## end_point_info
+
+Next, we'll populate the `end_point_info` file:
+
+```{r eval=FALSE}
+
+assay_component_endpoint <- tcplQuery("SELECT * FROM assay_component_endpoint;")
+assay <- tcplQuery("SELECT * FROM assay;")
+assay_component <- tcplQuery("SELECT * FROM assay_component;")
+assay_source <- tcplQuery("SELECT * FROM assay_source;")
+gene <- tcplQuery("SELECT * FROM gene;")
+intended_target <- tcplQuery("SELECT * FROM intended_target;")
+
+end_point_info_41 <- assay_component_endpoint |> 
+  left_join(assay_component, by = join_by(acid)) |> 
+  left_join(assay, by = join_by(aid)) |> 
+  left_join(assay_source, by = join_by(asid)) |> 
+  left_join(intended_target, by = join_by(aeid)) |> 
+  left_join(gene, by = c("target_id" = "gene_id")) |> 
+  select(aeid, acid, assay_component_endpoint_name, 
+         assay_component_endpoint_desc, intended_target_type, 
+         intended_target_family_sub, intended_target_family,
+         biological_process_target, tissue, 
+         gene_symbol, target_id, assay_source_name)
+
+```
+
+## tox_chemicals
+
+```{r eval=FALSE}
+tox_chemicals41 <- mc5_raw |> 
+  select(-created_date, -modified_date, -modified_by) |> 
+  left_join(mc4_raw |> 
+              select(-created_date, -modified_date, -modified_by),
+            by = join_by(m4id, aeid)) |> 
+  left_join(mc5_chid, by = join_by(m5id)) |> 
+  filter(chid_rep == 1) |> 
+  left_join(mc6_raw |> 
+              select(-created_date, -modified_date, -modified_by),
+            by = join_by(m5id, m4id, aeid)) |> 
+  left_join(sample_raw,
+            by = join_by(spid)) |> 
+  left_join(chemical_raw,
+            by = join_by(chid)) |> 
+  left_join(mc5_param |> 
+              filter(hit_param == "acc"),
+            by = join_by(m5id, aeid)) |> 
+  group_by(casn, chnm, dsstox_substance_id) |> 
+  summarise(Total_tested = length(unique(aeid)),
+            Active = length(unique(aeid[hitc >= 0.9]))) |> 
+  ungroup() |> 
+  left_join(tox_chemicals_35 |> 
+              select(casn = Substance_CASRN,
+                     Structure_MolWt),
+            by = "casn")
+```
