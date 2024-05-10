@@ -13,7 +13,8 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE,
                       warning = FALSE,
                       message = FALSE)
 library(tcpl)
@@ -25,7 +26,7 @@ First you would need to download the database and set up a MySQL server/database
 
 Next, you need to connect to that local database:
 
-```{r eval=FALSE}
+```{r}
 library(tcpl)
 library(toxEval)
 library(tidyverse)
@@ -44,7 +45,7 @@ tcplConf(drvr = "MySQL",
 
 First, we'll need to load several tables to get our necessary columns:
 
-```{r eval=FALSE}
+```{r}
 mc5_raw <- tcplQuery("SELECT   * FROM mc5")
 mc4_raw <- tcplQuery("SELECT   * FROM mc4")
 mc5_chid <- tcplQuery("SELECT   * FROM mc5_chid")
@@ -76,7 +77,7 @@ ToxCast_ACC <- mc5_raw |>
               filter(hit_param == "acc"),
             by = join_by(m5id, aeid)) |> 
   select(casn, hit_val, aeid, mc6_mthd_id) |> 
-  group_by(casn, hit_val, aeid) |> 
+  group_by(casn, hit_val, aeid) |> # 1-to-many flags
   summarise(flags = paste(mc6_mthd_id, collapse = ", ")) |> 
   ungroup()
 
@@ -92,7 +93,7 @@ names(ToxCast_ACC)
 
 Next, we'll populate the `end_point_info` file:
 
-```{r eval=FALSE}
+```{r}
 
 assay_component_endpoint <- tcplQuery("SELECT * FROM assay_component_endpoint;")
 assay <- tcplQuery("SELECT * FROM assay;")
@@ -107,17 +108,21 @@ end_point_info_41 <- assay_component_endpoint |>
   left_join(assay_source, by = join_by(asid)) |> 
   left_join(intended_target, by = join_by(aeid)) |> 
   left_join(gene, by = c("target_id" = "gene_id")) |> 
+  filter(!is.na(aeid)) |> 
   select(aeid, acid, assay_component_endpoint_name, 
          assay_component_endpoint_desc, intended_target_type, 
          intended_target_family_sub, intended_target_family,
          biological_process_target, tissue, 
-         gene_symbol, target_id, assay_source_name)
+         gene_symbol, assay_source_name) |> 
+  group_by(across(c(-gene_symbol))) |> # 1-to-many genes
+  summarise(gene_symbol = paste(gene_symbol, collapse = ", ")) |> 
+  ungroup()
 
 ```
 
 ## tox_chemicals
 
-```{r eval=FALSE}
+```{r}
 tox_chemicals41 <- mc5_raw |> 
   select(-created_date, -modified_date, -modified_by) |> 
   left_join(mc4_raw |> 
@@ -143,4 +148,50 @@ tox_chemicals41 <- mc5_raw |>
               select(casn = Substance_CASRN,
                      Structure_MolWt),
             by = "casn")
+```
+
+We need molecular weights to convert the ACC values to concentrations. We can either join previous versions of the toxEval package, and/or get new values from the CompTox Dashboard via the batch search:
+
+<https://comptox.epa.gov/dashboard/batch-search\>
+
+To create a list of chemicals to input to the dashboard:
+
+```{r}
+need_mlwt <- tox_chemicals41$dsstox_substance_id[is.na(tox_chemicals41$Structure_MolWt)]
+#Bring this to Comptox:
+data.table::fwrite(data.frame(need_mlwt), "need_mlwt.csv")  
+```
+
+
+```{r}
+# Import the file from Comptox:
+more_mlwts <- data.table::fread("CCD-Batch-Search.csv",
+                                data.table = FALSE) |> 
+  mutate(new_Structure_MolWt = as.numeric(AVERAGE_MASS)) |> 
+  select(casn = CASRN,
+         dsstox_substance_id = DTXSID,
+         new_Structure_MolWt)
+
+tox_chemicals41 <- tox_chemicals41 |> 
+  left_join(more_mlwts, 
+              by = c("casn", "dsstox_substance_id")) |> 
+  mutate(Structure_MolWt = if_else(is.na(Structure_MolWt),
+                                        new_Structure_MolWt,
+                                        Structure_MolWt)) |> 
+  select(-new_Structure_MolWt)
+```
+
+
+## sysdata.rda
+
+Finally we can save that data in the package:
+
+```{r}
+ToxCast_ACC <- ToxCast_ACC_41
+tox_chemicals <- tox_chemicals41
+end_point_info <- end_point_info_41_rel
+
+save(ToxCast_ACC, tox_chemicals, end_point_info,
+     file = "sysdata.rda", compress = "xz")
+
 ```
