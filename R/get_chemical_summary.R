@@ -224,9 +224,7 @@ orderEP <- function(graphData) {
 #'
 #'
 #' @param ACC data frame with columns: casn, chnm, endPoint, and ACC_value
-#' @param flagsShort vector of flags to to trigger REMOVAL of chemical:endPoint
-#' combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-#' "Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".
+#' @param flag_id vector of flags to to trigger REMOVAL 
 #' @export
 #' @examples
 #' CAS <- c("121-00-6", "136-85-6", "80-05-7", "84-65-1", "5436-43-1", "126-73-8")

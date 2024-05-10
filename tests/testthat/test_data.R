@@ -4,33 +4,19 @@ context("Data")
 test_that("Check included data", {
   
   ToxCast_ACC <- ToxCast_ACC
-  expect_true(all(names(ToxCast_ACC) %in% c("CAS",
+  expect_true(all(names(ToxCast_ACC) %in% c("casn",
                                             "flags",
-                                            "endPoint",
-                                            "ACC")))
+                                            "aeid",
+                                            "hit_val")))
   
-  expect_true(is.numeric(ToxCast_ACC$ACC))
-  expect_true(is.character(ToxCast_ACC$CAS))
-  expect_true(is.character(ToxCast_ACC$flags))
-  expect_true(is.character(ToxCast_ACC$endPoint))
+  expect_true(is.numeric(ToxCast_ACC$hit_val))
+  expect_true(is.character(ToxCast_ACC$casn))
+  expect_true(is.character(ToxCast_ACC$aeid))
   
-  CAS <- unique(ToxCast_ACC$CAS)
+  CAS <- unique(ToxCast_ACC$casn)
   ACC <- get_ACC(CAS)
   
-  all_flags <- c(
-    "Borderline",
-    "OnlyHighest",
-    "OneAbove",
-    "Noisy",
-    "HitCall",
-    "GainAC50",
-    "Biochemical",
-    "LessThan50",
-    "ACCLessThan",
-    "GNLSmodel"
-  )
-  
-  all_gone <- remove_flags(ACC, all_flags)
+  all_gone <- remove_flags(ACC, unique(flags$flag_id))
   expect_true(all(is.na(all_gone$flags)))
   
   end_point_info <- end_point_info
@@ -44,11 +30,11 @@ test_that("Check included data", {
                "assay_name",
                "assay_component_name",
                "assay_component_endpoint_name",
-               "intended_target_gene_id",
-               "intended_target_gene_name",
-               "intended_target_gene_symbol",
-               "signal_direction",
-               "analysis_direction",
+               # "intended_target_gene_id",
+               # "intended_target_gene_name",
+               # "intended_target_gene_symbol",
+               # "signal_direction",
+               # "analysis_direction",
                "biological_process_target")
   
   expect_true(all(tm_cols %in% names(end_point_info)))
@@ -64,12 +50,11 @@ test_that("Check included data", {
                     c(default_eps, "BSK"))) 
   
   tox_chemicals <- tox_chemicals
-  expect_true(all(c("Substance_CASRN",
+  expect_true(all(c("casn",
+                    "dsstox_substance_id",
                     "Structure_MolWt",
-                    "Substance_Name",
+                    "chnm",
                     "Total_tested",
-                    "Active",
-                    "min_concentration",
-                    "max_concentration") %in% names(tox_chemicals)))
+                    "Active") %in% names(tox_chemicals)))
   
 })

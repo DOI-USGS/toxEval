@@ -9,9 +9,7 @@ remove_flags(ACC, flag_id = c(6, 11, 15, 18))
 \arguments{
 \item{ACC}{data frame with columns: casn, chnm, endPoint, and ACC_value}
 
-\item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint
-combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".}
+\item{flag_id}{vector of flags to to trigger REMOVAL}
 }
 \description{
 Through the ToxCast program quality assurance procedures, information
