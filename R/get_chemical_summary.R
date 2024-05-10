@@ -234,59 +234,20 @@ orderEP <- function(graphData) {
 #' nrow(ACC)
 #' ACC <- remove_flags(ACC)
 #' nrow(ACC)
-remove_flags <- function(ACC, flagsShort = c(
-                           "Borderline",
-                           "OnlyHighest",
-                           "GainAC50",
-                           "Biochemical",
-                           "ACCLessThan"
-                         )) {
-  match.arg(flagsShort,
-    c(
-      "Borderline",
-      "OnlyHighest",
-      "OneAbove",
-      "Noisy",
-      "HitCall",
-      "GainAC50",
-      "Biochemical",
-      "LessThan50",
-      "ACCLessThan",
-      "GNLSmodel"
-    ),
+remove_flags <- function(ACC, 
+                         flag_id = c(6, 11, 15, 18)) {
+  match.arg(as.character(flag_id),
+            as.character(unique(flags$flag_id)),
     several.ok = TRUE
   )
 
-  flag_hits <- dplyr::select(ACC, flags) %>%
-    dplyr::mutate(
-      Borderline = grepl("Borderline active", flags),
-      Noisy = grepl("Noisy data", flags),
-      OneAbove = grepl("Only one conc above baseline", flags),
-      OnlyHighest = grepl("Only highest conc above baseline", flags),
-      Biochemical = grepl("Biochemical assay with", flags),
-      GainAC50 = grepl("Gain AC50", flags),
-      HitCall = grepl("potentially confounded by overfitting", flags),
-      LessThan50 = grepl("Less than 50% efficacy", flags),
-      ACCLessThan = grepl("AC50 less than lowest concentration tested", flags),
-      GNLSmodel = grepl("Cell viability assay fit with gnls winning model", flags)
-    ) %>%
-    dplyr::select(-flags)
+  remove_rows <- which(colSums(sapply(ACC$flags, "%in%", x = flag_id)) > 0)
+  
+  ACC_filter <- ACC[-remove_rows, ]
 
-  ACC <- ACC[rowSums(flag_hits[flagsShort]) == 0, ]
+  return(ACC_filter)
 
-  return(ACC)
 
-  # So, with the defaults, we are taking out:
-  # c("Borderline active",
-  #   "Only highest conc above baseline, active",
-  #   "Gain AC50 < lowest conc & loss AC50 < mean conc",
-  #   "Biochemical assay with < 50% efficacy")
-  # We are leaving in with the defaults:
-  # c("Hit-call potentially confounded by overfitting",
-  #   "Only one conc above baseline, active",
-  #   "AC50 less than lowest concentration tested",
-  #   "Less than 50% efficacy",
-  #   "Noisy data","Cell viability assay fit with gnls winning model")
 }
 
 

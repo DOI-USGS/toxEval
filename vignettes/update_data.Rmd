@@ -78,7 +78,7 @@ ToxCast_ACC <- mc5_raw |>
             by = join_by(m5id, aeid)) |> 
   select(casn, hit_val, aeid, mc6_mthd_id) |> 
   group_by(casn, hit_val, aeid) |> # 1-to-many flags
-  summarise(flags = paste(mc6_mthd_id, collapse = ", ")) |> 
+  summarise(flags = list(mc6_mthd_id)) |> 
   ungroup()
 
 names(ToxCast_ACC)
@@ -181,6 +181,18 @@ tox_chemicals41 <- tox_chemicals41 |>
   select(-new_Structure_MolWt)
 ```
 
+## Flags
+
+A small table to describe ToxCast flags is also included:
+
+```{r}
+flags <- mc6_raw |> 
+  select(flag_id = mc6_mthd_id,
+         flag_full = flag) |> 
+  distinct()
+
+```
+
 
 ## sysdata.rda
 
@@ -191,7 +203,7 @@ ToxCast_ACC <- ToxCast_ACC_41
 tox_chemicals <- tox_chemicals41
 end_point_info <- end_point_info_41_rel
 
-save(ToxCast_ACC, tox_chemicals, end_point_info,
+save(ToxCast_ACC, tox_chemicals, end_point_info, flags,
      file = "sysdata.rda", compress = "xz")
 
 ```
