@@ -10,7 +10,7 @@ ToxCast database: version", dbVersion()), width = 40),
 }
 
 dbVersion <- function() {
-  "3.5"
+  "4.1"
 }
 
 #' Analyze ToxCast data in relation to measured concentrations.
@@ -45,19 +45,15 @@ dbVersion <- function() {
 #' @keywords internal 
 "_PACKAGE"
 
-#' ACC values included with toxEval.
+#' ACC values included with toxEval. See \code{vignette("Setting up toxEval package data", package = "toxEval")}
+#' for more information on how the data was aggregated.
 #'
-#' Downloaded on October 2022 from ToxCast. The data were
-#' combined from files in the "INVITRODB_V3_5_LEVEL5" folder.
-#' At the time of toxEval package release, this information was found:
-#' \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
-#' in the "ToxCast & Tox21 Data Spreadsheet" data set.
-#' ACC values are the in the "ACC" column (winning model) and units are
-#' log micro-Molarity (log \eqn{\mu}M).
+#' Downloaded on September 2023 from ToxCast. See also
+#' \url{https://www.frontiersin.org/articles/10.3389/ftox.2023.1275980/full}.
 #'
-#' @references Toxicology, EPA's National Center for Computational (2020):
-#' ToxCast and Tox21 Data Spreadsheet. figshare. Dataset.
-#'  \doi{10.23645/epacomptox.6062479.v3}.
+#' @references U.S. EPA. 2023. ToxCast & Tox21 Summary Files. 
+#' Retrieved from \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' on September 2023. 
 #'
 #' @source \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #'
@@ -73,13 +69,8 @@ NULL
 
 #' Endpoint information from ToxCast
 #'
-#' Downloaded on October 2022 from ToxCast. The file name of the
-#' raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
-#' "INVITRODB_V3_5_SUMMARY" folder. At the time
-#' of the toxEval package release, these data were found at:
-#' \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
-#' in the section marked "Download Assay Information", in the
-#' ToxCast & Tox21 high-throughput assay information data set.
+#' See \code{vignette("Setting up toxEval package data", package = "toxEval")}
+#' for more information on how the data was aggregated.
 #'
 #'
 #' @name end_point_info
@@ -99,45 +90,15 @@ NULL
 #' head(end_point_info[, 1:5])
 NULL
 
-#Due to size constraints for CRAN, some columns needed to be removed:
-# 
-# end_point_info <- end_point_info |>
-#   dplyr::select(-reagent_reagent_name_value_type,
-#          -reagent_reagent_name_value,
-#          -citations_citation,
-#          -citations_title,
-#          -citations_author,
-#          -assay_source_desc,
-#          -assay_component_endpoint_desc)
-# save(end_point_info, tox_chemicals, ToxCast_ACC, file = "sysdata.rda", compress = "xz")
 
 #' ToxCast Chemical Information
 #'
-#' Downloaded from the CompTox database on October 2022.
-#' \url{https://comptox.epa.gov/dashboard/}. Additional columns were
-#' added based on the information from the "INVITRODB_V3_5_LEVEL5" data.
+#' See \code{vignette("Setting up toxEval package data", package = "toxEval")}
+#' for more information on how the data was aggregated.
 #' 
-#' @return data frame with the following columns:
-#' \tabular{ll}{
-#' Column \tab Description \cr
-#' DSSTox_Substance_Id \tab DSSTox_Substance_Id\cr
-#' Substance_Name \tab Commen chemical name \cr
-#' Structure_MolWt \tab Molecular weight \cr
-#' DTXCID \tab DTXCID\cr
-#' Substance_CASRN \tab CASRN \cr
-#' INCHIKEY \tab INCHIKEY\cr
-#' SMILES \tab SMILES\cr
-#' Total_tested \tab Total number of ToxCast assays tested\cr
-#' Active \tab Number of ToxCast assays flagged as active \cr
-#' min_concentration \tab Minimum concentration tested in ToxCast (ug/L) \cr
-#' max_concentration \tab Maximum concentration tested in ToxCast (ug/L) \cr
-#' }
-#'
 #' @aliases tox_chemicals
 #' @name tox_chemicals
-#' @return data frame with columns:
-#' "Substance_Name","Substance_CASRN",
-#' "Structure_MolWt"
+#' @return data frame 
 #' @docType data
 #' @keywords datasets
 #' @export tox_chemicals
@@ -145,7 +106,20 @@ NULL
 #' head(tox_chemicals)
 NULL
 
-
+#' ToxCast Chemical Information
+#'
+#' See \code{vignette("Setting up toxEval package data", package = "toxEval")}
+#' for more information on how the data was aggregated.
+#' 
+#' @aliases flags
+#' @name flags
+#' @return data frame 
+#' @docType data
+#' @keywords datasets
+#' @export flags
+#' @examples
+#' head(flags)
+NULL
 
 utils::globalVariables(c("CAS", "endPoint", "chnm", "flags", "site",
                          "Bio_category", "Class", "EAR",
@@ -159,5 +133,6 @@ utils::globalVariables(c("CAS", "endPoint", "chnm", "flags", "site",
                          "dec_lat", "dec_lon", "nSites", "name",
                          "nonZero", "maxEAR", "count", "site_grouping",
                          "index", "n", "x", "y", "max_med", "ymin", "label",
-                         "ymax", "hit_label", "percentDet", "lab"))
+                         "ymax", "hit_label", "percentDet", "lab",
+                         "aeid", "assay_component_endpoint_name", "casn", "hit_val"))
 

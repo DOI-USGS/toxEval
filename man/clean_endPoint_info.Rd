@@ -16,14 +16,8 @@ intended_target_family_sub. The names in intended_target_family
 are revised to look more appealing in graphs and tables.
 }
 \description{
-Define a subset of the ToxCast database for relevance to toxEval analyses.
-Subsetting is done based upon methods defined by Blackwell et al., 2017 (
-\doi{10.1021/acs.est.7b01613}).
-Specifically, this function removes endPoints that are ATG sources with
-signal loss, and NVS with signal gain (basically: some assay/signal combinations
-are removed because they target non-specific endpoints). Also, this function adds additional
-categories to intended_target_family and intended_target_family_sub as
-described in the paper linked above.
+As of ToxCast 4.1, this function only helps clean up abbrieviations 
+found in the end_point_info data frame.
 }
 \examples{
 end_point_info <- end_point_info
