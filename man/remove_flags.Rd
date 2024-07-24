@@ -22,16 +22,16 @@ to them can be removed based on their designated flag with the
 flagsShort value (used in the remove_flags function) are as follows:
 \tabular{ll}{
 \strong{flag_id} \tab \strong{Full Name}\cr
-5 \tab Model directionality questionable \cr
-6 \tab Only highest conc above baseline, active \cr
+5* \tab Model directionality questionable \cr
+6* \tab Only highest conc above baseline, active \cr
 7 \tab Only one conc above baseline, active \cr
 8 \tab Multiple points above baseline, inactive \cr
 9 \tab Bmd > ac50, indication of high baseline variability \cr
 10 \tab Noisy data \cr
-11 \tab Borderline \cr
-15 \tab Gain AC50 < lowest conc & loss AC50 < mean conc \cr
-17 \tab Less than 50% efficacy \cr
-18 \tab AC50 less than lowest concentration tested \cr
+11* \tab Borderline \cr
+15* \tab Gain AC50 < lowest conc & loss AC50 < mean conc \cr
+17 \tab Less than 50\% efficacy \cr
+18* \tab AC50 less than lowest concentration tested \cr
 13 \tab Average number of replicates per conc is less than 2 \cr
 14 \tab Number of concentrations tested is less than 4 \cr
 19 \tab Cell viability assay fit with gnls winning model \cr

@@ -133,5 +133,6 @@ utils::globalVariables(c("CAS", "endPoint", "chnm", "flags", "site",
                          "dec_lat", "dec_lon", "nSites", "name",
                          "nonZero", "maxEAR", "count", "site_grouping",
                          "index", "n", "x", "y", "max_med", "ymin", "label",
-                         "ymax", "hit_label", "percentDet", "lab"))
+                         "ymax", "hit_label", "percentDet", "lab",
+                         "aeid", "assay_component_endpoint_name", "casn", "hit_val"))
 
