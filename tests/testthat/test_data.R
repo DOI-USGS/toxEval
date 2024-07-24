@@ -11,7 +11,7 @@ test_that("Check included data", {
   
   expect_true(is.numeric(ToxCast_ACC$hit_val))
   expect_true(is.character(ToxCast_ACC$casn))
-  expect_true(is.character(ToxCast_ACC$aeid))
+  expect_true(is.numeric(ToxCast_ACC$aeid))
   
   CAS <- unique(ToxCast_ACC$casn)
   ACC <- get_ACC(CAS)
@@ -50,6 +50,7 @@ test_that("Check included data", {
                     c(default_eps, "BSK"))) 
   
   tox_chemicals <- tox_chemicals
+  
   expect_true(all(c("casn",
                     "dsstox_substance_id",
                     "Structure_MolWt",

@@ -93,7 +93,8 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
   chemical_summary <- dplyr::full_join(ACC,
     dplyr::select(chem_data,
                    CAS, SiteID, Value, `Sample Date`),
-            by = "CAS") %>%
+            by = "CAS", 
+            relationship = "many-to-many") %>%
     dplyr::filter(
       !is.na(ACC_value),
       !is.na(Value)) %>%

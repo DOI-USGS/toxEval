@@ -39,9 +39,3 @@ test_that("Labels", {
 })
 
 
-test_that("Complete", {
-  testthat::skip_on_cran()
-})
-
-# get_complete_set_category
-# get_complete_set
