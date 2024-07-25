@@ -112,8 +112,7 @@ Validate Inventory:
     stage: end
     image: ${INTERNAL_REGISTRY}software/software-management:latest
     rules:
-      - if:
-        - '$CI_COMMIT_REF_NAME == "main"'
+      - if:  $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     script:
       - software-management review
         --project "${CI_PROJECT_PATH}"
