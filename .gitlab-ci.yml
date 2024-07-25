@@ -111,6 +111,9 @@ pages:
 Validate Inventory:
     stage: end
     image: ${INTERNAL_REGISTRY}software/software-management:latest
+    rules:
+      - if:
+        - '$CI_COMMIT_REF_NAME == "main"'
     script:
       - software-management review
         --project "${CI_PROJECT_PATH}"
