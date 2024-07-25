@@ -4,17 +4,12 @@
 \alias{remove_flags}
 \title{Remove endpoints with specific data quality flags from data}
 \usage{
-remove_flags(
-  ACC,
-  flagsShort = c("Borderline", "OnlyHighest", "GainAC50", "Biochemical", "ACCLessThan")
-)
+remove_flags(ACC, flag_id = c(5, 6, 11, 15, 18))
 }
 \arguments{
 \item{ACC}{data frame with columns: casn, chnm, endPoint, and ACC_value}
 
-\item{flagsShort}{vector of flags to to trigger REMOVAL of chemical:endPoint
-combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-"Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".}
+\item{flag_id}{vector of flags to to trigger REMOVAL}
 }
 \description{
 Through the ToxCast program quality assurance procedures, information
@@ -26,17 +21,20 @@ to them can be removed based on their designated flag with the
 \code{remove_flags} function. The flags included in ToxCast, and the associated
 flagsShort value (used in the remove_flags function) are as follows:
 \tabular{ll}{
-\strong{Flag} \tab \strong{flagsShort}\cr
-Borderline active* \tab Borderline* \cr
-Only highest conc above baseline, active* \tab OnlyHighest* \cr
-Only one conc above baseline, active \tab OneAbove \cr
-Noisy data \tab Noisy \cr
-Hit-call potentially confounded by overfitting \tab HitCall \cr
-Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50* \cr
-Biochemical assay with < 50\% efficacy* \tab Biochemical* \cr
-Less than 50\% efficacy \tab LessThan50 \cr
-AC50 less than lowest concentration tested* \tab ACCLessThan* \cr
-GNLSmodel \tab GNLSmodel \cr
+\strong{flag_id} \tab \strong{Full Name}\cr
+5* \tab Model directionality questionable \cr
+6* \tab Only highest conc above baseline, active \cr
+7 \tab Only one conc above baseline, active \cr
+8 \tab Multiple points above baseline, inactive \cr
+9 \tab Bmd > ac50, indication of high baseline variability \cr
+10 \tab Noisy data \cr
+11* \tab Borderline \cr
+15* \tab Gain AC50 < lowest conc & loss AC50 < mean conc \cr
+17 \tab Less than 50\% efficacy \cr
+18* \tab AC50 less than lowest concentration tested \cr
+13 \tab Average number of replicates per conc is less than 2 \cr
+14 \tab Number of concentrations tested is less than 4 \cr
+19 \tab Cell viability assay fit with gnls winning model \cr
 }
 Asterisks indicate flags removed in the function as default.
 }
@@ -44,6 +42,11 @@ Asterisks indicate flags removed in the function as default.
 CAS <- c("121-00-6", "136-85-6", "80-05-7", "84-65-1", "5436-43-1", "126-73-8")
 ACC <- get_ACC(CAS)
 nrow(ACC)
+
+# See available flags and associated ids:
+
+flags
+
 ACC <- remove_flags(ACC)
 nrow(ACC)
 }

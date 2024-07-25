@@ -31,27 +31,9 @@ dropDownHeader <- c(paste0(df$orderNames," (",df$nEndPoints,")"))
 
 selChoices <- df$orderNames
 
-flagsALL <- c("Borderline active",
-              "Only highest conc above baseline, active" ,      
-              "Only one conc above baseline, active",
-              "Noisy data",                                 
-              "Hit-call potentially confounded by overfitting",
-              "Gain AC50 < lowest conc & loss AC50 < mean conc",
-              "Biochemical assay with < 50% efficacy",
-              "Less than 50% efficacy",
-              "AC50 less than lowest concentration tested",
-              "Cell viability assay fit with gnls winning model")
+flagsALL <- flags$flag_full
 
-shortFlags <- c("Borderline",
-                "OnlyHighest",
-                "OneAbove",
-                "Noisy",
-                "HitCall",
-                "GainAC50",
-                "Biochemical",
-                "LessThan50",
-                "ACCLessThan",
-                "GNLSmodel")
+shortFlags <- flags$flag_id
 
 assay_names <- c("Apredica" = "APR",
                  "Attagene" = "ATG",
@@ -94,12 +76,9 @@ sidebar <- dashboardSidebar(
    ),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
-        checkboxGroupInput("assay", "Assays:",
+        checkboxGroupInput("assay", "Remove Assays:",
                            assay_names,
-          selected= c("ACEA", "APR", "ATG", 
-                      "NVS", "OT",            
-                      "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
-                      "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT")),
+          selected= c("BSK")),
           actionButton("pickAssay", label="Switch Assays")),
    menuItem("Annotation", icon = icon("th"), tabName = "annotation",
             selectInput("groupCol", label = "Annotation (# Groups)", 
@@ -119,11 +98,8 @@ sidebar <- dashboardSidebar(
                         selected = "All", multiple = FALSE)
    ),
    menuItem("Flags", icon = icon("th"), tabName = "flagMenu",
-            checkboxGroupInput("flags", "Include Flags",choices = shortFlags, selected = c("Borderline",
-                                                                                           "OnlyHighest",
-                                                                                           "GainAC50",
-                                                                                           "Biochemical", 
-                                                                                           "ACCLessThan")),
+            checkboxGroupInput("flags", "Remove Flags",choices = shortFlags, 
+                               selected = c(5, 6, 11, 15, 18)),
             actionButton("pickFlags", label="Switch flags")),
    menuItem("Hit Threshold",icon = icon("th"), tabName = "hitThresTab",
             numericInput("hitThres",label = "Hit Threshold",value = 0.1,min = 0.0000001),

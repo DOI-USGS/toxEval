@@ -12,37 +12,15 @@ choicesPerGroup <- choicesPerGroup[which(as.numeric(choicesPerGroup) > 6)]
 choicesPerGroup <- apply(cleaned_ep[,-1], 2, function(x) length(unique(x)))
 groupChoices <- paste0(names(choicesPerGroup)," (",choicesPerGroup,")")
 
-initAssay <- c("ACEA", "APR", "ATG", 
-               "NVS", "OT",            
-               "TOX21", "CEETOX", "CLD", "TANGUAY", "NHEERL_PADILLA", "NCCT",          
-               "NHEERL_HUNTER", "NHEERL_NIS", "NHEERL_MED", "UPITT")
+initAssay <- c("BSK")
 
 init_Groups <- unique(cleaned_ep$intended_target_family)
 init_Groups <- init_Groups[!is.na(init_Groups)]
 init_Groups <- init_Groups[!(init_Groups %in% c("Background Measurement","Undefined"))]
 
-all_flags <- c("Borderline",
-               "OnlyHighest",
-               "OneAbove",
-               "Noisy",
-               "HitCall",
-               "GainAC50",
-               "Biochemical",
-               "LessThan50",
-               "ACCLessThan",
-               "GNLSmodel")
+all_flags <- flags$flag_id
 
-initFlags <- c("Borderline",
-              "OnlyHighest",
-              #"OneAbove",
-              #"Noisy",
-              #"HitCall",
-              "GainAC50",
-              "Biochemical",
-              #"LessThan50",
-              "ACCLessThan"
-              #"GNLSmodel"
-              )
+initFlags <-  c(5, 6, 11, 15, 18)
 
 sitesOrdered <- c("StLouis","Pigeon","Nemadji","WhiteWI","Bad","Montreal","PresqueIsle",
                   "Ontonagon","Sturgeon","Tahquamenon",
@@ -102,12 +80,12 @@ tox_list <- create_toxEval(path_to_file)")
         setupCode <- paste0(setupCode,"
 ACC <- get_ACC(tox_list$chem_info$CAS)
 ACC <- remove_flags(ACC = ACC,
-                    flagsShort = ",removeFlags,")
+                    flag_id = ",removeFlags,")
 
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep, 
                   groupCol = '",groupCol,"',
-                  assays = ",assays,",
+                  remove_assays = ",assays,",
                   remove_groups = ",remove_groups,")
 
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)")
@@ -155,13 +133,14 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
       if(all(is.null(rawData$benchmarks)) || nrow(rawData$benchmarks) == 0){
 
         ACC <- get_ACC(rawData$chem_info$CAS)
-        ACC <- remove_flags(ACC, flagsShort = removeFlags)
+        ACC <- remove_flags(ACC, flag_id = removeFlags)
         
         remove_groups <- unique(cleaned_ep[[groupCol]])[which(!unique(cleaned_ep[[groupCol]]) %in% groups)]
         remove_groups <- remove_groups[!is.na(remove_groups)]
         
         filtered_ep <- filter_groups(cleaned_ep, 
-                                     groupCol = groupCol, assays = assays,
+                                     groupCol = groupCol, 
+                                     remove_assays = assays,
                                      remove_groups = remove_groups)
         chemical_summary <- get_chemical_summary(rawData,
                                                 ACC,

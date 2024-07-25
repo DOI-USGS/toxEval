@@ -103,7 +103,6 @@ pages:
     - main
   script:
     - Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
-    - Rscript -e 'source("deploy_simple.R")'
   artifacts:
     paths:
       - $PAGES_OUTDIR
@@ -112,6 +111,8 @@ pages:
 Validate Inventory:
     stage: end
     image: ${INTERNAL_REGISTRY}software/software-management:latest
+    rules:
+      - if:  $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     script:
       - software-management review
         --project "${CI_PROJECT_PATH}"

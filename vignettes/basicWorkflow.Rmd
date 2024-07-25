@@ -74,22 +74,14 @@ The decision to use ACC values compared to AC50 (concentration at half-maximal a
 
 ## remove_flags
 
-Through the ToxCast program quality assurance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flagsShort` value (used in the `remove_flags` function) are as follows:
+Through the ToxCast program quality assurance procedures, information is examined and at times, it is necessary to assign a data quality flag to a specific chemical:assay result. A `toxEval` user may want to include or exclude assay results with certain flags depending on the objectives of a given study. Assay results with specific data quality flags assigned to them can be removed based on their designated flag with the `remove_flags` function. The flags included in ToxCast, and the associated `flag_id` value (used in the `remove_flags` function) are as follows:
 
-| Flags   |  flagsShort |
-|----------|------:|
-| Borderline active |  Borderline |
-| Only highest conc above baseline, active |   OnlyHighest |
-| Only one conc above baseline, active | OneAbove |
-| Noisy data | Noisy |
-| Hit-call potentially confounded by overfitting | HitCall |
-| Gain AC50 < lowest conc & loss AC50 < mean conc  | GainAC50 |
-| Biochemical assay with < 50% efficacy | Biochemical |
-| Less than 50% efficacy | LessThan50 |
-| AC50 less than lowest concentration tested | ACCLessThan |
-| Cell viability assay fit with gnls winning model | GNLSmodel |
+```{r echo=FALSE}
+df <- flags
 
-The function is written to exclude results with the flags "Borderline", "OnlyHighest", "GainAC50", "Biochemical" as a default. If the user prefers a different list, the full list must be specified (default values will be ignored).
+knitr::kable(df)
+
+```
 
 This function is specific to the provided data from the ToxCast database (and therefore not customizable to other toxicity data sets). The flags listed above are the only options within that set of data. Some endpoint/chemical combinations have multiple flags listed.
 
@@ -122,8 +114,7 @@ By default, the BioSeek set of assays are removed. The list of assays and their 
 end_point_info <- end_point_info
 
 df <- end_point_info %>% 
-  select(`Assay Name` = assay_source_long_name,
-         `Short Name` = assay_source_name) %>%
+  select(`Assay Name` = assay_source_name) %>%
   distinct()
 
 knitr::kable(df)
@@ -144,9 +135,7 @@ cleaned_ep <- clean_endPoint_info(end_point_info)
 
 filtered_ep <- filter_groups(cleaned_ep,
               groupCol = "intended_target_family",
-              assays = c("ATG","NVS", "OT", "TOX21", 
-                         "CEETOX", "APR", "CLD", "TANGUAY",
-                         "NHEERL_PADILLA","NCCT_SIMMONS", "ACEA"),
+              remove_assays =  c("BSK"),
               remove_groups = c("Background Measurement",
                                 "Undefined"))
 ```

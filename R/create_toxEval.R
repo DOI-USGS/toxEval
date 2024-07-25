@@ -234,7 +234,7 @@ summary.toxEval <- function(object, ...) {
 
   if (is.null(object[["benchmarks"]])) {
     ACC <- ToxCast_ACC %>%
-      dplyr::filter(CAS %in% unique(object$chem_info$CAS))
+      dplyr::filter(casn %in% unique(object$chem_info$CAS))
     bench_word <- "ToxCast"
   } else {
     ACC <- object[["benchmarks"]]
@@ -242,9 +242,9 @@ summary.toxEval <- function(object, ...) {
   }
 
   CAS_w_data <- ACC %>%
-    dplyr::select(CAS) %>%
+    dplyr::select(casn) %>%
     dplyr::distinct() %>%
-    dplyr::pull(CAS)
+    dplyr::pull(casn)
 
   message(length(CAS_w_data), " chemicals have ", bench_word, " information")
   message("Chemicals returned from this function do NOT have ", bench_word, " information:")

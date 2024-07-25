@@ -14,13 +14,8 @@ The column "Relevance Category" was included for consideration of
 grouping/filtering endpoints based on user goals.
 }
 \description{
-Downloaded on October 2022 from ToxCast. The file name of the
-raw data was "assay_annotation_information_invitrodb_v3_5.xlsx" from the zip file
-"INVITRODB_V3_5_SUMMARY" folder. At the time
-of the toxEval package release, these data were found at:
-\url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
-in the section marked "Download Assay Information", in the
-ToxCast & Tox21 high-throughput assay information data set.
+See \code{vignette("Setting up toxEval package data", package = "toxEval")}
+for more information on how the data was aggregated.
 }
 \examples{
 end_point_info <- end_point_info
