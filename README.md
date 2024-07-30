@@ -45,7 +45,8 @@ install_gitlab("water/toxEval",
                host = "code.usgs.gov",
                build_vignettes = TRUE, 
                build_opts = c("--no-resave-data",
-                              "--no-manual"))
+                              "--no-manual"),
+               dependencies = TRUE)
 ```
 
 ## Quickstart
@@ -181,26 +182,22 @@ explore_endpoints()
 
 ``` r
 citation(package = "toxEval")
-#> To cite toxEval in publications, please use:
+#> To cite package 'toxEval' in publications use:
 #> 
-#>   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
-#>   Ankley, G.T., 2023, toxEval: Evaluation of measured concentration
-#>   data using the ToxCast high-throughput screening database or a
-#>   user-defined set of concentration benchmarks. R package version
-#>   1.3.0., https://code.usgs.gov/water/toxEval, doi:10.5066/P906UQ5I
+#>   DeCicco L, Corsi S, Villeneuve D, Blackwell B, Ankley G (2024).
+#>   _toxEval: Exploring Biological Relevance of Environmental Chemistry
+#>   Observations_. R package version 1.3.2,
+#>   <https://CRAN.R-project.org/package=toxEval>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
-#>     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
-#>     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
-#>     publisher = {U.S. Geological Survey},
-#>     version = {1.3.0},
-#>     address = {Reston, VA},
-#>     institution = {U.S. Geological Survey},
-#>     year = {2023},
-#>     doi = {10.5066/P906UQ5I},
-#>     url = {https://code.usgs.gov/water/toxEval},
+#>     title = {toxEval: Exploring Biological Relevance of Environmental Chemistry
+#> Observations},
+#>     author = {Laura DeCicco and Steven Corsi and Daniel Villeneuve and Brett Blackwell and Gerald Ankley},
+#>     year = {2024},
+#>     note = {R package version 1.3.2},
+#>     url = {https://CRAN.R-project.org/package=toxEval},
 #>   }
 ```
 

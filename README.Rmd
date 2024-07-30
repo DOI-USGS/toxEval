@@ -40,7 +40,8 @@ install_gitlab("water/toxEval",
                host = "code.usgs.gov",
                build_vignettes = TRUE, 
                build_opts = c("--no-resave-data",
-                              "--no-manual"))
+                              "--no-manual"),
+               dependencies = TRUE)
 ```
 
 ## Quickstart
