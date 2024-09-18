@@ -81,7 +81,7 @@ data provided in the package):
 library(toxEval)
 #> For more information:
 #> https://doi-usgs.github.io/toxEval/
-#> ToxCast database: version 3.5
+#> ToxCast database: version 4.1
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -186,8 +186,9 @@ citation(package = "toxEval")
 #> 
 #>   DeCicco L, Corsi S, Villeneuve D, Blackwell B, Ankley G (2024).
 #>   _toxEval: Exploring Biological Relevance of Environmental Chemistry
-#>   Observations_. R package version 1.3.2,
-#>   <https://CRAN.R-project.org/package=toxEval>.
+#>   Observations_. R package version 1.4.0, commit
+#>   a37e823cef5c31903dad50537e1a517953ef505a,
+#>   <https://code.usgs.gov/water/toxEval>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -196,8 +197,8 @@ citation(package = "toxEval")
 #> Observations},
 #>     author = {Laura DeCicco and Steven Corsi and Daniel Villeneuve and Brett Blackwell and Gerald Ankley},
 #>     year = {2024},
-#>     note = {R package version 1.3.2},
-#>     url = {https://CRAN.R-project.org/package=toxEval},
+#>     note = {R package version 1.4.0, commit a37e823cef5c31903dad50537e1a517953ef505a},
+#>     url = {https://code.usgs.gov/water/toxEval},
 #>   }
 ```
 
