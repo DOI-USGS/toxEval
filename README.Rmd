@@ -126,7 +126,7 @@ The Water and Environmental Health  Mission Areas of the USGS, as well as the Gr
 
 ### Sunset date 
 
-Funding for `toxEval` is secured through summer 2024, after which bug fixes & new features will be minimal.
+Funding for `toxEval` is secured through summer 2025, after which bug fixes & new features will be minimal.
 
 
 ## Run toxEval

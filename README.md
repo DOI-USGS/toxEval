@@ -132,12 +132,12 @@ data frame that is used in many of the plot and table functions.
 There are 4 vignettes to help introduce and navigate the `toxEval`
 package:
 
-| Name                                                                                 | R command                                      | Description                                             |
+| Name | R command | Description |
 |------------|--------------|----------------------------------------------|
-| [Introduction](https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html)    | `vignette("Introduction", package="toxEval")`  | Introduction to the toxEval                             |
+| [Introduction](https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html) | `vignette("Introduction", package="toxEval")` | Introduction to the toxEval |
 | [Basic Workflow](https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
-| [Prepare Data](https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html)     | `vignette("PrepareData", package="toxEval")`   | Guide to preparing your data for toxEval analysis       |
-| [Shiny App Guide](https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html)     | `vignette("shinyApp", package="toxEval")`      | Guide to the toxEval shiny application                  |
+| [Prepare Data](https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html) | `vignette("PrepareData", package="toxEval")` | Guide to preparing your data for toxEval analysis |
+| [Shiny App Guide](https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html) | `vignette("shinyApp", package="toxEval")` | Guide to the toxEval shiny application |
 
 ### Reporting bugs
 
@@ -163,7 +163,7 @@ team.
 
 ### Sunset date
 
-Funding for `toxEval` is secured through summer 2024, after which bug
+Funding for `toxEval` is secured through summer 2025, after which bug
 fixes & new features will be minimal.
 
 ## Run toxEval

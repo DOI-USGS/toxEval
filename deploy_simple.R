@@ -2,12 +2,11 @@ library(connectapi)
 client <- connect(server = Sys.getenv("CONNECT_SERVER"),
                   api_key = Sys.getenv("CONNECT_API_KEY"))
 
-file.copy(from = "./public/articles/logo.png", 
-          to = "./public/reference/logo.png")
+install.packages("toxEval", repos = "https://rpkg.chs.usgs.gov/prod-cran/latest")
 
-rsconnect::writeManifest(appDir = "./public")
-bundle <- bundle_dir("./public")
+rsconnect::writeManifest(appDir = "./inst/shiny")
+bundle <- bundle_dir("./inst/shiny")
 
 content <- client %>% 
-  deploy(bundle, name = "toxEval_docs") %>% 
+  deploy(bundle, name = "toxEval") %>% 
   poll_task()
