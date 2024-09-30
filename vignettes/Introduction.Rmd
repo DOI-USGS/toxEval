@@ -11,15 +11,16 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-# Introduction
+The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to [ToxCast data](https://www.epa.gov/comptox-tools/toxicity-forecasting-toxcast) (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. Full documentation of this R package including a tutorial with examples is available here:
+<https://doi-usgs.github.io/toxEval/index.html>
 
-The `toxEval` R-package includes a set of functions to analyze, visualize, and organize measured concentration data as it relates to [ToxCast data](https://www.epa.gov/comptox-tools/toxicity-forecasting-toxcast) (default) or other user-selected chemical-biological interaction benchmark data such as water quality criteria. The intent of these analyses is to develop a better understanding of the potential biological relevance of environmental chemistry data. Results can be used to prioritize which chemicals at which sites may be of greatest concern. These methods are meant to be used as a screening technique to predict potential for biological influence from chemicals that ultimately need to be validated with direct biological assays. 
 
 The functions within this package allow great flexibly for exploring the potential biological affects of measured chemicals. Also included in the package is a browser-based application made from the `Shiny` R-package (the app). The app is based on functions within the R-package and includes many convenient analyses and visualization options for users to choose. Use of the functions within the R-package allows for additional flexibility within the functions beyond what the app offers and provides options for the user to interact more directly with the data. The overview in this document focuses on the R-package. Documentation for the app is provided [here](https://doi-usgs.github.io/toxEval/articles/shinyApp.html).
 
 This vignette provides a general overview of the concepts within `toxEval`, definitions of common terminology used throughout the package, and links to information to help understand fundamentals of the ToxCast database used within `toxEval`. 
 
 ## What is ToxCast?
+
 The U.S. EPA's Toxicity Forecaster <a href="https://www.epa.gov/comptox-tools/toxicity-forecasting-toxcast" target="_blank">ToxCast</a> includes a database of chemical-biological interactions that contains information from hundreds of assays on thousands of chemicals, providing a means to assess biological relevance to measured concentrations. The `toxEval` package attempts to simplify the workflow for exploring data as it relates to these assay endpoints (benchmark data). The workflow uses ToxCast as a default for evaluation of chemical:biological interactions, but the user may also define alternative benchmarks for a custom or more traditional approach to biological relevance evaluation. This is also a useful capability for efficient comparison of ToxCast evaluation results with those from other toxicity benchmark databases.
 
 When using the ToxCast endPoints for analysis, it is important to have at least a minimal understanding of what ToxCast data is, and which ToxCast data is relevant to any given study. There are many useful resources <a href="https://www.epa.gov/comptox-tools/toxicity-forecasting-toxcast" target="_blank">here</a>. There is also a tool called the <a href="https://comptox.epa.gov/dashboard/" target="_blank">Comptox Dashboard</a> that has a wealth of information on ToxCast data.
@@ -79,7 +80,7 @@ Some functions will also include a calculation for a "hit". A threshold is defin
 ## Reporting bugs
 
 If you discover an issue that you feel is a bug in the package or have a question on functionality, please consider reporting bugs and asking questions on the Issues page:
-[https://github.com/DOI-USGS/toxEval/issues](https://github.com/DOI-USGS/toxEval/issues)
+<https://github.com/DOI-USGS/toxEval/issues>
 
 ## Citing toxEval
 
