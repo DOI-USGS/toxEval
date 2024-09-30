@@ -63,6 +63,7 @@ output$downloadHeatPlot <- downloadHandler(
   content = function(file) {
     ggplot2::ggsave(file, plot = heatMap_create(), 
                     device = "png", width = 11,
+                    bg = "white",
                     height = PlotHeight()/200)
   }
 )
