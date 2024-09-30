@@ -52,8 +52,11 @@ install_gitlab("water/toxEval",
 
 Installation instructions are below. To quickly get going in `toxEval`, run:
 
-```{r eval=FALSE} 
+```{r} 
 library(toxEval)
+```
+
+```{r eval=FALSE}
 explore_endpoints()
 ```
 Then click on the "Load Example Data" in the upper right corner. This loads the example data that is found here:
