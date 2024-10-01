@@ -111,7 +111,7 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Summary
 
-To summarize, you'll need
+To summarize, there are 3 mandatory sheets (Data, Chemicals, Sites) and 2 option sheets (Exclude, Benchmarks). SiteID and CAS columns MUST match between each sheet.
 
 
 
