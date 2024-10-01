@@ -74,6 +74,11 @@ sidebar <- dashboardSidebar(
      radioButtons("sumEAR", choices = list("Sum"=TRUE, "No Sum" = FALSE),
                   inline = TRUE, label = NULL, selected = TRUE)
    ),
+   conditionalPanel(
+     condition = "output.hasBenchmarks == true",
+     radioButtons("useToxCast", choices = list("ToxCast"=TRUE, "Benchmarks" = FALSE),
+                  inline = TRUE, label = NULL, selected = FALSE)
+   ),
    downloadButton('downloadBenchmarks', 'Download Benchmarks', style='margin-left:13px; color: #444'),
    menuItem("Assay", icon = icon("th"), tabName = "assay",
         checkboxGroupInput("assay", "Remove Assays:",

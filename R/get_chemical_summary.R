@@ -90,9 +90,10 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     chem_data$Value <- as.numeric(chem_data$Value)
   }
 
-  chemical_summary <- dplyr::full_join(ACC,
+  chemical_summary <- dplyr::full_join(dplyr::distinct(ACC),
     dplyr::select(chem_data,
-                   CAS, SiteID, Value, `Sample Date`),
+                   CAS, SiteID, Value, `Sample Date`) %>% 
+      dplyr::filter(!is.na(CAS)),
             by = "CAS", 
             relationship = "many-to-many") %>%
     dplyr::filter(
@@ -118,7 +119,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     dplyr::left_join(dplyr::distinct(dplyr::select(chem_site, site = SiteID, `Short Name`)),
       by = "site"
     ) %>%
-    dplyr::left_join(dplyr::select(chem_info, CAS, Class), by = "CAS") %>%
+    dplyr::left_join(dplyr::distinct(dplyr::select(chem_info, CAS, Class)), by = "CAS") %>%
     dplyr::rename(
       Bio_category = groupCol,
       shortName = `Short Name`

@@ -130,7 +130,9 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
         
       }
 
-      if(all(is.null(rawData$benchmarks)) || nrow(rawData$benchmarks) == 0){
+      if(all(is.null(rawData$benchmarks)) || 
+         nrow(rawData$benchmarks) == 0 ||
+         as.logical(input$useToxCast)){
 
         ACC <- get_ACC(rawData$chem_info$CAS)
         ACC <- remove_flags(ACC, flag_id = removeFlags)
@@ -175,14 +177,26 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   
   toxCast <- reactive({
     rawData <- rawData()
-
-    toxCast_val <- all(is.null(rawData$benchmarks))
+    
+    if(all(is.null(rawData$benchmarks))){
+      toxCast_val <- TRUE
+    } else {
+      toxCast_val <- as.logical(input$useToxCast)
+    }
+    
     
     return(toxCast_val)
   })
   
+  hasBenchmarks <- reactive({
+    rawData <- rawData()
+    return(!all(is.null(rawData$benchmarks)))
+  })
+  
   output$isTox <- reactive(toxCast())
+  output$hasBenchmarks <- reactive(hasBenchmarks())
   outputOptions(output, "isTox", suspendWhenHidden = FALSE)
+  outputOptions(output, "hasBenchmarks", suspendWhenHidden = FALSE)
 
   output$title_text <- renderText({
     
