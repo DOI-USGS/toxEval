@@ -5,17 +5,21 @@ output:
   rmarkdown::html_vignette:
     toc: true
     number_sections: false
+    fig_width: 5
+    fig_height: 6
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Preparing toxEval Data}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 # Introduction
 
 What kind of data could be used in a `toxEval` analysis? It was designed with concentration measurements from water samples as the primary use case. There may be other concentration measurements that could be used as well, but it is up to the researcher to determine if special considerations must be taken in those circumstances. For instance, there was a `toxEval` analysis done on the concentration of chemicals measured in eagle plasma.  
 
-For all cases within `toxEval`, a "sample" is considered a unique site/date. There are times when this might not be especially relavent to the data collection (passive samplers, groundwater samples at separate depths, etc.). The user will need to come up with strategies to deal with the limiting workflow. For example, single sites at different depths could add site suffixes (site_a_3m, site_a_6m, etc.). Passive samplers could use the start or end time as the sampling times.
+For all cases within `toxEval`, a "sample" is considered a unique site/date. There are times when this might not be especially relevant to the data collection (passive samplers, groundwater samples at separate depths, etc.). The user will need to come up with strategies to deal with the limiting workflow. For example, single sites at different depths could add site suffixes (site_a_3m, site_a_6m, etc.). Passive samplers could use the start or end time as the sampling times. If a suffix is added in one tab of the data, it must be added to all tabs of the data. So, SiteID must match in the Data and Sites tabs.
 
 # Preparing the data
 
@@ -51,13 +55,13 @@ knitr::include_graphics("data.png")
 
 ## Chemicals
 
-The "Chemicals" sheet is used to define the unique chemicals included in the "Data" sheet (so, 1 row per unique chemical). Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names). If you need chemical names that do not match up wiht the "tox_chemical" list provided in the package, you will want to include a 3rd column "Chemical" which is the chemical name to use for plots and tables. 
+The "Chemicals" sheet is used to define the unique chemicals included in the "Data" sheet (so, 1 row per unique chemical). Two columns are required in this sheet: "CAS" and "Class". The columns can be in any order, but the first row of the sheet must be the header (column names). If you need chemical names that do not match up with the "tox_chemical" list provided in the package, you will want to include a 3rd column "Chemical" which is the chemical name to use for plots and tables. 
 
 * CAS: A character column defining the chemicals via their Chemical Abstracts Service (CAS) registry. In the Excel file, pay special attention that no CAS are converted to a Date format. Highlight the column, right-click on the mouse, choose "Format Cells", and choose "Text" as the category to assure they retain their format. The unique CAS values in this column *must* match with the CAS values in the "Data" sheet.
 
 * Class: A character column defining the class of chemicals. Most `toxEval` functions will allow groupings by either chemical, class (as defined here), or biological grouping. In the example data set provided with the package, the chemicals were organized in classes such as "Fuels", "Herbicides", "Insecticides", etc. The choice of classes is up to the researcher. Chemical class analysis can be ignored, and in that case, it is just important to put a single repeating entry in the "Class" column. 
 
-* Chemical: A character column defining the name of the chemical. These are the chemical names used for most figures and plots. 
+* Chemical: A character column defining the name of the chemical. These are the chemical names used for most figures and plots. **This is a new requirement as of toxEval version 1.3.1.**
 
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
@@ -83,7 +87,46 @@ At times, it may be appropriate to exclude endpoints, chemicals, or specific end
 
 The "Exclude" sheet is optional, but if used, two columns are required: "CAS" and "endPoint". They can be in any order, but the first row of the sheet should be the header (column names).
 
-Why would you choose to exclude a chemical/endpoint value? There are times that the dose-response curves from ToxCast may not trigger any automated flags, but upon inspection, the curves seem suspect. The easiest way to view the dose response curves is from the [Comptox](https://comptox.epa.gov/dashboard) dashboard. The function `endpoint_hits_DT` includes an option to get a direct link to find the dose-response curves if the category is "Chemical". This is handy to do quick checks on the endpoint/chemical combinations that produce the highest EARs. If the highest EAR values have dose-response curves that seem suspect, consider adding those to the "Exclude" tab, or at least trying to get more information on that endpoint/assay.
+Why would you choose to exclude a chemical/endpoint value? There are times that the dose-response curves from ToxCast may not trigger any automated flags, but upon inspection, the curves seem suspect (NOTE: as of ToxCast database 4.1, there are more flags available and excluding based on flag does appear to capture most cases that should be excluded).
+
+The easiest way to view the dose response curves is from the [Comptox](https://comptox.epa.gov/dashboard) dashboard. The function `endpoint_hits_DT` includes an option to get a direct link to find the dose-response curves if the category is "Chemical". This is handy to do quick checks on the endpoint/chemical combinations that produce the highest EARs. If the highest EAR values have dose-response curves that seem suspect, consider adding those to the "Exclude" tab, or at least trying to get more information on that endpoint/assay.
+
+Another way to quickly check which endpoints to check on Comtox is to plot the endpoints for a single chemical using the ACC values provided in `toxEval`. The LOWER the endpoint's ACC value, the higher the EAR will be, and therefore those are the endpoints you might want to check carefully:
+
+```{r}
+library(toxEval)
+library(ggplot2)
+
+CAS <- c("1912-24-9")
+default_id = c(5, 6, 11, 15, 18)
+
+ACC_atrazine <- get_ACC(CAS) |> 
+  dplyr::arrange(ACC_value) |> 
+  dplyr::mutate(index = dplyr::row_number(),
+                percent = 100*index/dplyr::n(),
+                has_default_flag = colSums(sapply(flags, "%in%", x = default_id)) > 0)
+
+ggplot() +
+  geom_point(data = ACC_atrazine,
+             aes(x = ACC_value, y = percent,
+                 color = has_default_flag)) +
+  xlab("ACC ug/L") +
+  ylab("Percentile") +
+  ggtitle("Individual ACC values for Atrazine") +
+  geom_text(data = head(ACC_atrazine |> 
+                          dplyr::filter(!has_default_flag),
+                        n = 5),
+            aes(y = percent, x = ACC_value,
+                label = endPoint,
+                color = has_default_flag), 
+             size = 2, hjust = -0.2, show.legend = FALSE) +
+  theme_bw() +
+  scale_color_manual("Includes default\nflags for removal", 
+                     values = c("blue", "grey80"))
+
+```
+
+Figure 1: All ACC values in ug/L of atrazine from ToxCast. The values that would be flagged by default are in grey, the values that would remain are in blue. If there were any outliers that do not have default flags and have very low ACC values, those dose-response curves should be verified.
 
 * endPoint: A character column to define a specific endpoint to ignore in the analysis. If the "CAS" in the corresponding row is empty, the endPoint will be completely excluded from the `toxEval` analysis. For example, if it was decided that TOX21_p53_BLA_p3_ratio was not an appropriate endPoint to consider for a given analysis, it can be excluded by adding it to the Exclude sheet in the endPoint column. If the "CAS" in the corresponding row is NOT empty, only the specific chemical/endPoint combination will be excluded from the analysis. 
 
@@ -109,9 +152,10 @@ The "Benchmarks" sheet is optional, but if used, five columns are required: "CAS
 
 Note: Additional columns may be useful to organize the data. These additional columns will be ignored by `toxEval` and will not influence a `toxEval` analysis.
 
+## Summary
 
-## Disclaimer
+To summarize, there are 3 mandatory sheets (Data, Chemicals, Sites) and 2 option sheets (Exclude, Benchmarks). SiteID and CAS columns MUST match between each sheet.
 
-This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.
+
 
 Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.

@@ -51,17 +51,23 @@ install_gitlab("water/toxEval",
 
 ## Quickstart
 
-<p align="center">
-<img src="https://code.usgs.gov/water/toxEval/raw/main/man/figures/app.gif" alt="app_demo">
-</p>
-
 Installation instructions are below. To quickly get going in `toxEval`,
 run:
 
 ``` r
 library(toxEval)
+#> For more information:
+#> https://doi-usgs.github.io/toxEval/
+#> ToxCast database: version 4.1
+```
+
+``` r
 explore_endpoints()
 ```
+
+<p align="center">
+<img src="https://code.usgs.gov/water/toxEval/raw/main/man/figures/app.gif" alt="app_demo">
+</p>
 
 Then click on the “Load Example Data” in the upper right corner. This
 loads the example data that is found here:
@@ -79,9 +85,6 @@ data provided in the package):
 
 ``` r
 library(toxEval)
-#> For more information:
-#> https://doi-usgs.github.io/toxEval/
-#> ToxCast database: version 4.1
 path_to_file <- file.path(system.file("extdata", package="toxEval"), "OWC_data_fromSup.xlsx")
 tox_list <- create_toxEval(path_to_file)
 ACClong <- get_ACC(tox_list$chem_info$CAS)
@@ -101,7 +104,7 @@ chem_class_plot <- plot_tox_boxplots(chemicalSummary,
 chem_class_plot
 ```
 
-![](man/figures/README-unnamed-chunk-6-1.png)
+![](man/figures/README-unnamed-chunk-7-1.png)
 
 ``` r
 
@@ -112,7 +115,7 @@ plot_stacks <- plot_tox_stacks(chemicalSummary,
 plot_stacks
 ```
 
-![](man/figures/README-unnamed-chunk-6-2.png)
+![](man/figures/README-unnamed-chunk-7-2.png)
 
 ``` r
 ######################################
@@ -123,7 +126,7 @@ plot_heat <- plot_tox_heatmap(chemicalSummary,
 plot_heat
 ```
 
-![](man/figures/README-unnamed-chunk-6-3.png)
+![](man/figures/README-unnamed-chunk-7-3.png)
 
 This code opens up the example file, loads it into a `toxEval` object,
 grabs the pertinent ToxCast information, and creates a “chemicalSummary”

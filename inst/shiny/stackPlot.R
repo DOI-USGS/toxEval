@@ -61,6 +61,7 @@ output$downloadStackPlot <- downloadHandler(
   content = function(file) {
     ggplot2::ggsave(file, plot = stackBarGroup_create(),  
                     device = "png", width = 11,
+                    bg = "white",
                     height = 9)
   }
 )

@@ -130,7 +130,9 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
         
       }
 
-      if(all(is.null(rawData$benchmarks)) || nrow(rawData$benchmarks) == 0){
+      if(all(is.null(rawData$benchmarks)) || 
+         nrow(rawData$benchmarks) == 0 ||
+         as.logical(input$useToxCast)){
 
         ACC <- get_ACC(rawData$chem_info$CAS)
         ACC <- remove_flags(ACC, flag_id = removeFlags)
@@ -175,14 +177,26 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
   
   toxCast <- reactive({
     rawData <- rawData()
-
-    toxCast_val <- all(is.null(rawData$benchmarks))
+    
+    if(all(is.null(rawData$benchmarks))){
+      toxCast_val <- TRUE
+    } else {
+      toxCast_val <- as.logical(input$useToxCast)
+    }
+    
     
     return(toxCast_val)
   })
   
+  hasBenchmarks <- reactive({
+    rawData <- rawData()
+    return(!all(is.null(rawData$benchmarks)))
+  })
+  
   output$isTox <- reactive(toxCast())
+  output$hasBenchmarks <- reactive(hasBenchmarks())
   outputOptions(output, "isTox", suspendWhenHidden = FALSE)
+  outputOptions(output, "hasBenchmarks", suspendWhenHidden = FALSE)
 
   output$title_text <- renderText({
     
@@ -290,23 +304,23 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
     } else {
       pretty_cat <- switch(category, 
                            "Chemical" = "",
-                           "Biological" = "for chemicals within a grouping ",
-                           "Chemical Class" = "for chemicals within a class "
+                           "Biological" = "for chemicals within a grouping",
+                           "Chemical Class" = "for chemicals within a class"
       )      
     }
     
     if(site == "All"){
       
       if(sum_logic){
-        title <- paste0("Summing EARs ",pretty_cat, "of a sample,")
+        title <- paste("Summing EARs",pretty_cat, "of a sample,")
       } else {
         title <- paste("Max EARs",pretty_cat, "of a sample,")
       }
       
       if(mean_logic){
-        title <- paste(title,"taking the mean of each site")
+        title <- paste(title,"\ntaking the mean of each site")
       } else {
-        title <- paste(title,"taking the max of each site")
+        title <- paste(title,"\ntaking the max of each site")
       }
     } else {
       
@@ -331,8 +345,7 @@ chemical_summary <- chemical_summary[chemical_summary$shortName == site,]")
         title <- paste(title, "for individual samples")
       }
       
-      title <- paste(title,"
-                     ", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
+      title <- paste(title,"\n", siteTable[["Fullname"]][which(siteTable$`Short Name` == site)])
     }
     return(title)
     
