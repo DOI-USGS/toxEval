@@ -111,7 +111,7 @@ ggplot() +
              aes(x = ACC_value, y = percent,
                  color = has_default_flag)) +
   xlab("ACC ug/L") +
-  ylab("") +
+  ylab("Percentile") +
   ggtitle("Individual ACC values for Atrazine") +
   geom_text(data = head(ACC_atrazine |> 
                           dplyr::filter(!has_default_flag),
