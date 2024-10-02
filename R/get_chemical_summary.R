@@ -90,10 +90,12 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     chem_data$Value <- as.numeric(chem_data$Value)
   }
 
-  chemical_summary <- dplyr::full_join(ACC,
+  chemical_summary <- dplyr::full_join(dplyr::distinct(ACC),
     dplyr::select(chem_data,
-                   CAS, SiteID, Value, `Sample Date`),
-            by = "CAS") %>%
+                   CAS, SiteID, Value, `Sample Date`) %>% 
+      dplyr::filter(!is.na(CAS)),
+            by = "CAS", 
+            relationship = "many-to-many") %>%
     dplyr::filter(
       !is.na(ACC_value),
       !is.na(Value)) %>%
@@ -117,7 +119,7 @@ get_chemical_summary <- function(tox_list, ACC = NULL, filtered_ep = "All",
     dplyr::left_join(dplyr::distinct(dplyr::select(chem_site, site = SiteID, `Short Name`)),
       by = "site"
     ) %>%
-    dplyr::left_join(dplyr::select(chem_info, CAS, Class), by = "CAS") %>%
+    dplyr::left_join(dplyr::distinct(dplyr::select(chem_info, CAS, Class)), by = "CAS") %>%
     dplyr::rename(
       Bio_category = groupCol,
       shortName = `Short Name`
@@ -208,85 +210,52 @@ orderEP <- function(graphData) {
 #' \code{remove_flags} function. The flags included in ToxCast, and the associated
 #' flagsShort value (used in the remove_flags function) are as follows:
 #' \tabular{ll}{
-#' \strong{Flag} \tab \strong{flagsShort}\cr
-#' Borderline active* \tab Borderline* \cr
-#' Only highest conc above baseline, active* \tab OnlyHighest* \cr
-#' Only one conc above baseline, active \tab OneAbove \cr
-#' Noisy data \tab Noisy \cr
-#' Hit-call potentially confounded by overfitting \tab HitCall \cr
-#' Gain AC50 < lowest conc & loss AC50 < mean conc* \tab GainAC50* \cr
-#' Biochemical assay with < 50\% efficacy* \tab Biochemical* \cr
-#' Less than 50\% efficacy \tab LessThan50 \cr
-#' AC50 less than lowest concentration tested* \tab ACCLessThan* \cr
-#' GNLSmodel \tab GNLSmodel \cr
+#' \strong{flag_id} \tab \strong{Full Name}\cr
+#'5* \tab Model directionality questionable \cr
+#'6* \tab Only highest conc above baseline, active \cr
+#'7 \tab Only one conc above baseline, active \cr
+#'8 \tab Multiple points above baseline, inactive \cr
+#'9 \tab Bmd > ac50, indication of high baseline variability \cr
+#'10 \tab Noisy data \cr
+#'11* \tab Borderline \cr
+#'15* \tab Gain AC50 < lowest conc & loss AC50 < mean conc \cr
+#'17 \tab Less than 50\% efficacy \cr
+#'18* \tab AC50 less than lowest concentration tested \cr
+#'13 \tab Average number of replicates per conc is less than 2 \cr
+#'14 \tab Number of concentrations tested is less than 4 \cr
+#'19 \tab Cell viability assay fit with gnls winning model \cr
 #' }
 #' Asterisks indicate flags removed in the function as default.
 #'
 #'
 #' @param ACC data frame with columns: casn, chnm, endPoint, and ACC_value
-#' @param flagsShort vector of flags to to trigger REMOVAL of chemical:endPoint
-#' combination. Possible values are "Borderline", "OnlyHighest", "OneAbove",
-#' "Noisy", "HitCall", "GainAC50", "Biochemical","LessThan50","ACCLessThan","GNLSmodel".
+#' @param flag_id vector of flags to to trigger REMOVAL 
 #' @export
 #' @examples
 #' CAS <- c("121-00-6", "136-85-6", "80-05-7", "84-65-1", "5436-43-1", "126-73-8")
 #' ACC <- get_ACC(CAS)
 #' nrow(ACC)
+#' 
+#' # See available flags and associated ids:
+#' 
+#' flags
+#' 
 #' ACC <- remove_flags(ACC)
 #' nrow(ACC)
-remove_flags <- function(ACC, flagsShort = c(
-                           "Borderline",
-                           "OnlyHighest",
-                           "GainAC50",
-                           "Biochemical",
-                           "ACCLessThan"
-                         )) {
-  match.arg(flagsShort,
-    c(
-      "Borderline",
-      "OnlyHighest",
-      "OneAbove",
-      "Noisy",
-      "HitCall",
-      "GainAC50",
-      "Biochemical",
-      "LessThan50",
-      "ACCLessThan",
-      "GNLSmodel"
-    ),
+remove_flags <- function(ACC, 
+                         flag_id = c(5, 6, 11, 15, 18)) {
+  match.arg(as.character(flag_id),
+            as.character(unique(flags$flag_id)),
     several.ok = TRUE
   )
 
-  flag_hits <- dplyr::select(ACC, flags) %>%
-    dplyr::mutate(
-      Borderline = grepl("Borderline active", flags),
-      Noisy = grepl("Noisy data", flags),
-      OneAbove = grepl("Only one conc above baseline", flags),
-      OnlyHighest = grepl("Only highest conc above baseline", flags),
-      Biochemical = grepl("Biochemical assay with", flags),
-      GainAC50 = grepl("Gain AC50", flags),
-      HitCall = grepl("potentially confounded by overfitting", flags),
-      LessThan50 = grepl("Less than 50% efficacy", flags),
-      ACCLessThan = grepl("AC50 less than lowest concentration tested", flags),
-      GNLSmodel = grepl("Cell viability assay fit with gnls winning model", flags)
-    ) %>%
-    dplyr::select(-flags)
+  remove_rows <- which(colSums(sapply(ACC$flags, "%in%", x = flag_id)) > 0)
+  
+  ACC_filter <- ACC[-remove_rows, ]
 
-  ACC <- ACC[rowSums(flag_hits[flagsShort]) == 0, ]
+  return(ACC_filter)
 
-  return(ACC)
 
-  # So, with the defaults, we are taking out:
-  # c("Borderline active",
-  #   "Only highest conc above baseline, active",
-  #   "Gain AC50 < lowest conc & loss AC50 < mean conc",
-  #   "Biochemical assay with < 50% efficacy")
-  # We are leaving in with the defaults:
-  # c("Hit-call potentially confounded by overfitting",
-  #   "Only one conc above baseline, active",
-  #   "AC50 less than lowest concentration tested",
-  #   "Less than 50% efficacy",
-  #   "Noisy data","Cell viability assay fit with gnls winning model")
 }
 
 

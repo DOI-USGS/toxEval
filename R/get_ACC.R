@@ -3,10 +3,8 @@
 #' The \code{get_ACC} function retrieves the activity concentration at cutoff
 #' (ACC) values for specified chemicals.
 #'
-#' The data used in toxEval were combined from files in the
-#' "INVITRODB_V3_LEVEL5" directory that were included in the October 2018
-#' release of the ToxCast database. The function \code{get_ACC} will
-#' convert the ACC values in the ToxCast database from units of (log \eqn{\mu}M)
+#' The function \code{get_ACC} will
+#' convert the ACC values in the ToxCast database from units of (\eqn{\mu}M)
 #' to units of \eqn{\mu}g/L, and reformat the data as input to toxEval.
 #'
 #' @param CAS Vector of CAS.
@@ -19,27 +17,25 @@
 #' head(ACC)
 get_ACC <- function(CAS) {
 
-  chem_list <- dplyr::select(tox_chemicals,
-    casrn = Substance_CASRN,
-    MlWt = Structure_MolWt
-  )
-  chem_list <- dplyr::filter(chem_list, casrn %in% CAS)
+  chem_list <- tox_chemicals |> 
+    dplyr::select(casrn = casn,
+                  MlWt = Structure_MolWt) |> 
+    dplyr::filter(casrn %in% CAS)
 
-  ACC <- ToxCast_ACC
-  ACC <- dplyr::filter(ACC, CAS %in% CAS)
-  ACC <- dplyr::right_join(ACC, chem_list,
-    by = c("CAS" = "casrn")
-  )
-
-  ACC <- dplyr::mutate(ACC,
-    ACC_value = 10^ACC,
-    ACC_value = ACC_value * MlWt
-  )
-  ACC <- dplyr::filter(ACC, !is.na(ACC_value))
-  ACC <- dplyr::left_join(ACC, dplyr::select(tox_chemicals,
-    CAS = Substance_CASRN,
-    chnm = Substance_Name
-  ), by = "CAS")
+  ACC <- ToxCast_ACC |> 
+    dplyr::filter(casn %in% CAS) |> 
+    dplyr::right_join(chem_list, by = c("casn" = "casrn")) |> 
+    dplyr::rename(CAS = casn) |> 
+    dplyr::mutate(ACC_value = hit_val * MlWt) |> 
+    dplyr::filter(!is.na(ACC_value)) |> 
+    dplyr::left_join(dplyr::select(tox_chemicals,
+                                  CAS = casn,
+                                  chnm = chnm),
+                     by = "CAS") |> 
+    dplyr::left_join(end_point_info |> 
+                       dplyr::select(aeid,
+                                     endPoint = assay_component_endpoint_name),
+                     by = "aeid")
 
   if (any(is.na(ACC$MlWt))) {
     warning("Some chemicals are missing molecular weights")

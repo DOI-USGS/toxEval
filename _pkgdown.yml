@@ -55,6 +55,7 @@ reference:
       - end_point_info
       - ToxCast_ACC
       - tox_chemicals
+      - flags
   - title: Clean Data
     desc:  Functions to prepare data for analysis
     contents:

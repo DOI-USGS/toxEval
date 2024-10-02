@@ -118,8 +118,8 @@ bench <- raw_benchmarks %>%
   rename(Value = value) %>%
   separate(source, c("groupCol", "endPoint"), sep = "_") %>% 
   left_join(select(tox_chemicals, 
-                   CAS = Substance_CASRN,
-                   Chemical = Substance_Name), by = "CAS")
+                   CAS = casn,
+                   Chemical = chnm), by = "CAS")
 
 bench$Chemical[is.na(bench$Chemical)] <- bench$chm_nm[is.na(bench$Chemical)]
 
@@ -389,8 +389,8 @@ bench <- raw_benchmarks %>%
   rename(Value = value) %>%
   separate(source, c("groupCol", "endPoint"), sep = "_") %>% 
   left_join(select(tox_chemicals, 
-                   CAS = Substance_CASRN,
-                   Chemical = Substance_Name), by = "CAS")
+                   CAS = casn,
+                   Chemical = chnm), by = "CAS")
 
 bench$Chemical[is.na(bench$Chemical)] <- bench$chm_nm[is.na(bench$Chemical)]
 

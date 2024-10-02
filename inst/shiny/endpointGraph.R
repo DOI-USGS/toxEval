@@ -14,6 +14,13 @@ endpointGraph_create <- reactive({
     need(top_num <= 50 , "Shiny app cannot display more than 50 endpoints")
   )
   
+  height <- PlotHeight_ep()
+  if(height > 750) {
+    text_size <- 10
+  } else {
+    text_size <- NA
+  }
+  
   endpointGraph <- plot_tox_endpoints(chemical_summary, 
                                       category = category,
                                       mean_logic = mean_logic,
@@ -21,7 +28,7 @@ endpointGraph_create <- reactive({
                                       hit_threshold = hitThres,
                                       filterBy = filterBy,
                                       title = genericTitle(),
-                                      font_size = 18,
+                                      font_size = text_size,
                                       top_num = top_num) 
   
   shinyAce::updateAceEditor(session, editorId = "epGraph_out", value = epGraphCode() )
@@ -60,15 +67,15 @@ PlotHeight_ep = reactive({
   }
   
   if(is.na(top_num)){
-    n <- 35*length(unique(chemical_summary$endPoint))
+    n_eps <- 35*length(unique(chemical_summary$endPoint))
   } else {
-    n <- 35*top_num
+    n_eps <- 35*top_num
   }
   
-  if(n < 500){
-    return(500)
+  if(n_eps < 750){
+    return(750)
   } else {
-    return(n)
+    return(n_eps)
   }
   
 })
@@ -80,7 +87,8 @@ output$downloadEndpoint <- downloadHandler(
   content = function(file) {
     ggplot2::ggsave(file, plot = endpointGraph_create(), 
                     device = "png", width = 11,
-                    height = PlotHeight_ep()/300)
+                    bg = "white",
+                    height = PlotHeight_ep()/ 200)
   }
 )
 

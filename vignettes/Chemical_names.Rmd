@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = FALSE)
 ```
 
-Up until version 1.3.1, `toxEval` only required "CAS" and "Class" in the Chemicals tab of the data (see \code{vignette("PrepareData", package = "toxEval")}). In those previous versions of `toxEval`, the chemical names were taken from the `Substance_Name` in the included data frame \code{tox_chemicals}. The information in that table (including substance name) come from the ToxCast database.
+Up until version 1.3.1, `toxEval` only required "CAS" and "Class" in the Chemicals tab of the data (see `vignette("PrepareData", package = "toxEval")`. In those previous versions of `toxEval`, the chemical names were taken from the `Substance_Name` in the included data frame \code{tox_chemicals}. The information in that table (including substance name) come from the ToxCast database.
 
 Many users are using `toxEval` for user-curated benchmarks workflows, and the auto-generated chemical names became difficult to work with. So going forward from version 1.3.1, the chemical names seen in tables and figures come from the "Chemical" tab.
 
@@ -42,8 +42,8 @@ tox_chemicals <- tox_chemicals
 
 chem_info_with_names <- chem_info %>%
   left_join(select(tox_chemicals,
-                   CAS = Substance_CASRN,
-                   Chemical = Substance_Name),
+                   CAS = casn,
+                   Chemical = chnm),
             by = "CAS")
 
 head(chem_info_with_names)

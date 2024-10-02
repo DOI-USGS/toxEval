@@ -21,7 +21,9 @@ test_that("Getting ACC values", {
   testthat::skip_on_cran()
 
   ACC <- get_ACC(CAS)
-  expect_true(all(names(ACC) %in% c("CAS", "chnm", "flags", "endPoint", "ACC", "ACC_value", "MlWt")))
+  expect_true(all(names(ACC) %in% 
+                    c("CAS", "chnm", "flags", "hit_val", "aeid", 
+                      "endPoint", "ACC", "ACC_value", "MlWt")))
 
   expect_type(ACC$ACC_value, "double")
   expect_type(ACC$endPoint, "character")
@@ -35,19 +37,8 @@ test_that("Removing flags", {
   testthat::skip_on_cran()
 
   ACC <- get_ACC(CAS)
-  ACC_noFlags <- remove_flags(ACC,
-    flagsShort = c(
-      "Borderline",
-      "OnlyHighest",
-      "OneAbove",
-      "Noisy",
-      "HitCall",
-      "GainAC50",
-      "Biochemical",
-      "ACCLessThan",
-      "LessThan50",
-      "GNLSmodel"
-    )
+  ACC_noFlags <- remove_flags(ACC, 
+                              flag_id = flags$flag_id
   )
   expect_lt(nrow(ACC_noFlags), nrow(ACC))
   expect_true(all(is.na(ACC_noFlags$flags)))
@@ -59,7 +50,6 @@ test_that("Cleaning up endpoints", {
   # based on first paper:
   cleaned_ep <- clean_endPoint_info(end_point_info)
   expect_equal(names(cleaned_ep), names(end_point_info))
-  expect_lt(nrow(cleaned_ep), nrow(end_point_info))
 
   cleanedNames <- c(
     "Nuclear Receptor", "Cell Cycle", "Cell Morphology",
@@ -90,15 +80,15 @@ test_that("Filtering endpoints", {
 
   cleaned_ep <- clean_endPoint_info(end_point_info)
 
-  assays <- c("ATG", "NVS", "OT")
+  assays <- c("ATG", "NVS", "OT", "BSK")
   groups <- c("Background Measurement", "Undefined", "Cell Cycle")
 
   filtered_ep <- filter_groups(cleaned_ep,
     groupCol = "intended_target_family",
-    assays = assays,
+    remove_assays = assays,
     remove_groups = groups
   )
 
-  expect_true(all(unique(filtered_ep$assaysFull) %in% assays))
+  expect_true(all(!assays %in% unique(filtered_ep$assaysFull)))
   expect_true(!(any(unique(filtered_ep$groupCol) %in% groups)))
 })

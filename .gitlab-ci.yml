@@ -1,3 +1,5 @@
+image: ${CI_REGISTRY_IMAGE}:latest
+
 workflow:
   rules:
     - if: $CI_COMMIT_TAG
@@ -29,6 +31,7 @@ variables:
 
 build-image:
   stage: build
+  cache: []
   image: ${DEVOPS_REGISTRY}usgs/docker:20
   services:
   - name: ${DEVOPS_REGISTRY}usgs/docker:20-dind
@@ -53,7 +56,7 @@ build-image:
 
 buildcheck:
   stage: check
-  image: ${CI_REGISTRY_IMAGE}:latest
+  cache: []
   dependencies:
     - build-image
   script:
@@ -66,7 +69,7 @@ buildcheck:
 
 unittests:
   stage: test
-  image: ${CI_REGISTRY_IMAGE}:latest
+  cache: []
   dependencies:
     - build-image
     - buildcheck
@@ -82,7 +85,6 @@ unittests:
         
 covertests:
   stage: test
-  image: ${CI_REGISTRY_IMAGE}:latest
   dependencies:
     - build-image
     - buildcheck
@@ -98,7 +100,6 @@ covertests:
 
 pages:
   stage: end
-  image: ${CI_REGISTRY_IMAGE}:latest
   only: 
     - main
   script:
@@ -112,6 +113,8 @@ pages:
 Validate Inventory:
     stage: end
     image: ${INTERNAL_REGISTRY}software/software-management:latest
+    rules:
+      - if:  $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     script:
       - software-management review
         --project "${CI_PROJECT_PATH}"
