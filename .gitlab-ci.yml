@@ -20,6 +20,7 @@ variables:
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
   APT_CACHE: "$CI_PROJECT_DIR/ci/lib/apt-cache"
   CRAN: "https://rpkg.chs.usgs.gov/prod-cran/latest"
+  DEV: "https://rpkg.chs.usgs.gov/dev-gspm/latest"
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
@@ -104,7 +105,7 @@ pages:
     - main
   script:
     - Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
-    - Rscript -e 'source("deploy_simple.R")'
+    - Rscript -e 'install.packages("toxEval", repos = c(CRAN = "${CRAN}", DEV = "${DEV}")); source("deploy_simple.R")'
   artifacts:
     paths:
       - $PAGES_OUTDIR
