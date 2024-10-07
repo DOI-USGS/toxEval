@@ -106,7 +106,7 @@ pages:
   script:
     - echo -e "options(repos=c(DEV = '${DEV}', CRAN = '${CRAN}'));" >> $R_PROFILE
     - Rscript -e 'install.packages("toxEval", repos = "${DEV}"); packageVersion("toxEval"); source("deploy_simple.R")'
-- Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
+    - Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
   artifacts:
     paths:
       - $PAGES_OUTDIR
