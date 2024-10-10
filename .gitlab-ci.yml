@@ -19,8 +19,6 @@ variables:
   _R_CHECK_DONTTEST_EXAMPLES_: "false"
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
   APT_CACHE: "$CI_PROJECT_DIR/ci/lib/apt-cache"
-  CRAN: "https://rpkg.chs.usgs.gov/prod-cran/latest"
-  DEV: "https://rpkg.chs.usgs.gov/dev-gspm/latest"
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
   R_LIBS: "$CI_PROJECT_DIR/ci/lib"
   BUILD_LOGS_DIR: "$CI_PROJECT_DIR/ci/logs"
