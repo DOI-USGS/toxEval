@@ -52,7 +52,7 @@ dbVersion <- function() {
 #' \url{https://www.frontiersin.org/articles/10.3389/ftox.2023.1275980/full}.
 #'
 #' @references U.S. EPA. 2023. ToxCast & Tox21 Summary Files. 
-#' Retrieved from \url{https://www.epa.gov/chemical-research/toxicity-forecaster-toxcasttm-data}
+#' Retrieved from \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
 #' on September 2023. 
 #'
 #' @source \url{https://www.epa.gov/comptox-tools/exploring-toxcast-data}
