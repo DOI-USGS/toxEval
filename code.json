@@ -2,33 +2,31 @@
   {
     "name": "toxEval",
     "organization": "U.S. Geological Survey",
-    "description": "Data analysis package for estimating potential biological effects from concentrations determined from environmental samples.",
-    "version": "main",
-    "status": "Development",
+    "description": "Description of package.",
+    "version": "1.4.0",
+    "status": "Production",
 
     "permissions": {
       "usageType": "openSource",
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/water/toxEval/-/raw/main/LICENSE.md"
+          "URL": "https://code.usgs.gov/water/toxEval/-/raw/1.4.0/LICENSE.md"
         }
       ]
     },
 
-    "homepageURL": "https://code.usgs.gov/water/toxEval",
-    "downloadURL": "https://code.usgs.gov/water/toxEval/-/archive/main/toxEval-main.zip",
-    "disclaimerURL": "https://code.usgs.gov/water/toxEval/-/raw/main/DISCLAIMER.md",
+    "homepageURL": "https://code.usgs.gov/water/toxEval/-/tags/1.4.0",
+    "downloadURL": "https://code.usgs.gov/water/toxEval/-/archive/1.4.0/toxEval-1.4.0.zip",
+    "disclaimerURL": "https://code.usgs.gov/water/toxEval/-/raw/1.4.0/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/water/toxEval.git",
     "vcs": "git",
 
-    "laborHours": 500,
+    "laborHours": 100,
 
     "tags": [
       "R",
-      "rstats",
-	  "USGS",
-	  "water"
+      "rstats"
     ],
 
     "languages": [
@@ -36,12 +34,12 @@
     ],
 
     "contact": {
-      "name": "Laura De Cicco",
+      "name": "Laura DeCicco",
       "email": "ldecicco@usgs.gov"
     },
 
     "date": {
-      "metadataLastUpdated": "2022-12-29"
+      "metadataLastUpdated": "2024-11-22"
     }
   }
 ]
