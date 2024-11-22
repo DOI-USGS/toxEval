@@ -1,4 +1,49 @@
 [
+    {
+    "name": "toxEval",
+    "organization": "U.S. Geological Survey",
+    "description": "Data analysis package for estimating potential biological effects from concentrations determined from environmental samples.",
+    "version": "main",
+    "status": "Development",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/water/toxEval/-/raw/main/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://code.usgs.gov/water/toxEval",
+    "downloadURL": "https://code.usgs.gov/water/toxEval/-/archive/main/toxEval-main.zip",
+    "disclaimerURL": "https://code.usgs.gov/water/toxEval/-/raw/main/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/water/toxEval.git",
+    "vcs": "git",
+
+    "laborHours": 500,
+
+    "tags": [
+      "R",
+      "rstats",
+	  "USGS",
+	  "water"
+    ],
+
+    "languages": [
+      "R"
+    ],
+
+    "contact": {
+      "name": "Laura De Cicco",
+      "email": "ldecicco@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2024-11-22"
+    }
+  },
   {
     "name": "toxEval",
     "organization": "U.S. Geological Survey",
