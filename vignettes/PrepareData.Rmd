@@ -136,7 +136,7 @@ Note: Additional columns may be useful to organize the data. These additional co
 
 ## Benchmarks
 
-The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose. For more information, see [here](https://rconnect.usgs.gov/toxEval_docs/articles/benchmarks.html).
+The user may provide a set of concentration benchmarks to be used in place of the ToxCast database. For example, there may be a need to perform similar `toxEval` analysis using EPA aquatic life benchmarks to compare measured concentrations against established toxicity thresholds. The "Benchmarks" sheet is used for this purpose. For more information, see [here](https://doi-usgs.github.io/toxEval/articles/benchmarks.html).
 
 The "Benchmarks" sheet is optional, but if used, five columns are required: "CAS", "Chemical", "endPoint", "Value", and "groupCol". They can be in any order, but the first row of the sheet should be the header (column names).
 
