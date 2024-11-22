@@ -137,10 +137,10 @@ package:
 
 | Name | R command | Description |
 |------------|--------------|----------------------------------------------|
-| [Introduction](https://rconnect.usgs.gov/toxEval_docs/articles/Introduction.html) | `vignette("Introduction", package="toxEval")` | Introduction to the toxEval |
-| [Basic Workflow](https://rconnect.usgs.gov/toxEval_docs/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
-| [Prepare Data](https://rconnect.usgs.gov/toxEval_docs/articles/PrepareData.html) | `vignette("PrepareData", package="toxEval")` | Guide to preparing your data for toxEval analysis |
-| [Shiny App Guide](https://rconnect.usgs.gov/toxEval_docs/articles/shinyApp.html) | `vignette("shinyApp", package="toxEval")` | Guide to the toxEval shiny application |
+| [Introduction](https://doi-usgs.github.io/toxEval/articles/Introduction.html) | `vignette("Introduction", package="toxEval")` | Introduction to the toxEval |
+| [Basic Workflow](https://doi-usgs.github.io/toxEval/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
+| [Prepare Data](https://doi-usgs.github.io/toxEval/articles/PrepareData.html) | `vignette("PrepareData", package="toxEval")` | Guide to preparing your data for toxEval analysis |
+| [Shiny App Guide](https://doi-usgs.github.io/toxEval/articles/shinyApp.html) | `vignette("shinyApp", package="toxEval")` | Guide to the toxEval shiny application |
 
 ### Reporting bugs
 
@@ -159,7 +159,7 @@ more information.
 The Water and Environmental Health Mission Areas of the USGS, as well as
 the Great Lakes Restoration Initiative (GLRI) has supported the
 development of the `toxEval` R-package. Further maintenance is expected
-to be stable through September 2024. Resources are available primarily
+to be stable through September 2025. Resources are available primarily
 for maintenance and responding to user questions. Priorities on the
 development of new features are determined by the `toxEval` development
 team.
@@ -201,15 +201,3 @@ citation(package = "toxEval")
 #>     note = {R package version 1.4.0},
 #>   }
 ```
-
-# Disclaimer
-
-This software is preliminary or provisional and is subject to revision.
-It is being provided to meet the need for timely best science. The
-software has not received final approval by the U.S. Geological Survey
-(USGS). No warranty, expressed or implied, is made by the USGS or the
-U.S. Government as to the functionality of the software and related
-material nor shall the fact of release constitute any such warranty. The
-software is provided on the condition that neither the USGS nor the U.S.
-Government shall be held liable for any damages resulting from the
-authorized or unauthorized use of the software.
