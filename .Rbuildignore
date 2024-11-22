@@ -99,4 +99,6 @@ vignettes/thres.png
 ^docker$
 ^review$
 vignettes/update_data.Rmd
+vignettes/update_data.html
+vignettes/update_data.R
 
