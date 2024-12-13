@@ -152,7 +152,7 @@ tox_chemicals41 <- mc5_raw |>
 
 We need molecular weights to convert the ACC values to concentrations. We can either join previous versions of the toxEval package, and/or get new values from the CompTox Dashboard via the batch search:
 
-<https://comptox.epa.gov/dashboard/batch-search\>
+<https://comptox.epa.gov/dashboard/batch-search/>
 
 To create a list of chemicals to input to the dashboard:
 
