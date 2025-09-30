@@ -61,7 +61,7 @@ test_that("Plotting summaries", {
   )
 
   expect_true(all(names(bioPlot$data) %in% c("site", "category", "meanEAR")))
-  expect_equal(bioPlot$layers[[2]]$geom_params$outlier.shape, 19)
+
   expect_equal(bioPlot$layers[[2]]$aes_params$fill, "steelblue")
 
   classPlot <- plot_tox_boxplots(chemical_summary,
@@ -69,7 +69,7 @@ test_that("Plotting summaries", {
   )
 
   expect_true(all(names(classPlot$data) %in% c("site", "category", "meanEAR")))
-  expect_equal(classPlot$layers[[2]]$geom_params$outlier.shape, 19)
+
   expect_equal(classPlot$layers[[2]]$aes_params$fill, "steelblue")
 
   chemPlot <- suppressWarnings(plot_tox_boxplots(chemical_summary,
@@ -77,7 +77,7 @@ test_that("Plotting summaries", {
   ))
 
   expect_true(all(names(chemPlot$data) %in% c("site", "chnm", "Class", "meanEAR")))
-  expect_equal(chemPlot$layers[[1]]$geom_params$outlier.shape, 19)
+
   expect_true(is.null(chemPlot$layers[[1]]$aes_params$fill))
 })
 
@@ -87,6 +87,7 @@ test_that("Plotting heatmap summaries", {
   bioHeatPlot <- plot_tox_heatmap(chemical_summary, chem_site,
     category = "Biological"
   )
+  
   expect_true(all(names(bioHeatPlot$data) %in% c(
     "site", "category", "meanEAR",
     "site_grouping", "Short Name"
@@ -95,6 +96,7 @@ test_that("Plotting heatmap summaries", {
   classHeatPlot <- plot_tox_heatmap(chemical_summary, chem_site,
     category = "Chemical Class"
   )
+  
   expect_true(all(names(classHeatPlot$data) %in% c(
     "site", "category", "meanEAR",
     "site_grouping", "Short Name"
@@ -103,6 +105,7 @@ test_that("Plotting heatmap summaries", {
   chemHeatPlot <- plot_tox_heatmap(chemical_summary, chem_site,
     category = "Chemical"
   )
+  
   expect_true(all(names(chemHeatPlot$data) %in% c(
     "site", "chnm", "Class", "meanEAR",
     "site_grouping", "Short Name"

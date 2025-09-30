@@ -1,7 +1,7 @@
 Package: toxEval
 Type: Package
 Title: Exploring Biological Relevance of Environmental Chemistry Observations
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
                      email = "ldecicco@usgs.gov",
@@ -47,7 +47,8 @@ Imports:
     readxl,
     tools,
     shinyAce,
-    shinycssloaders
+    shinycssloaders,
+    utils
 Suggests:
     rmarkdown,
     testthat,

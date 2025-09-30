@@ -35,7 +35,7 @@
 #' endpoints will be included.
 #' @export
 #' @import ggplot2
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
@@ -50,11 +50,13 @@
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
 #'
+#' \donttest{
+#'
 #' plot_tox_endpoints(chemical_summary,
 #'   filterBy = "Cell Cycle",
 #'   top_num = 10
 #' )
-#' \donttest{
+#' 
 #' plot_tox_endpoints(chemical_summary,
 #'   filterBy = "Cell Cycle",
 #'   top_num = 10,
@@ -261,18 +263,30 @@ plot_tox_endpoints <- function(chemical_summary,
     }
   }
   if (isTRUE(y_label == "")) {
-    stackedPlot <- stackedPlot +
-      scale_y_log10(
-        labels = fancyNumbers,
-        breaks = pretty_logs_new
-      ) +
-      theme(axis.title.x = element_blank())
+    if(utils::packageVersion("ggplot2") == "4.0.0"){
+      stackedPlot <- stackedPlot +
+        scale_y_log10() +
+        theme(axis.title.x = element_blank())       
+    } else {
+      stackedPlot <- stackedPlot +
+        scale_y_log10(
+          labels = fancyNumbers,
+          breaks = pretty_logs_new
+        ) +
+        theme(axis.title.x = element_blank())
+    }
+
   } else {
-    stackedPlot <- stackedPlot +
-      scale_y_log10(y_label,
-        labels = fancyNumbers,
-        breaks = pretty_logs_new
-      )
+    if(utils::packageVersion("ggplot2") == "4.0.0"){
+      stackedPlot <- stackedPlot +
+        scale_y_log10(y_label)     
+    } else {
+      stackedPlot <- stackedPlot +
+        scale_y_log10(y_label,
+                      labels = fancyNumbers,
+                      breaks = pretty_logs_new
+        )
+    }
   }
 
   plot_layout <- ggplot_build(stackedPlot)$layout

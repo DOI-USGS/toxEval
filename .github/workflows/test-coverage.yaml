@@ -11,6 +11,7 @@ name: test-coverage
 jobs:
   test-coverage:
     runs-on: macOS-latest
+    env: NOT_CRAN: "true"
     steps:
       - uses: actions/checkout@c0a81a463886bb75afe234e07a9fd5bb79219196
 

@@ -9,11 +9,11 @@ bibentry(bibtype = "Manual",
               as.person("Gerald T. Ankley")),
   title = "toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.",
   publisher = "U.S. Geological Survey",
-  version = "1.4.0",
+  version = "1.4.1",
   address="Reston, VA",
   institution = "U.S. Geological Survey",
-  year = 2024,
+  year = 2025,
   doi = "10.5066/P1CQJHJV",
   url = "https://code.usgs.gov/water/toxEval",
-  textVersion = "De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R, Ankley, G.T., 2024, toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks. R package version 1.4.0., U.S. Geological Survey software release. Reston, VA., doi:10.5066/P1CQJHJV"
+  textVersion = "De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R, Ankley, G.T., 2025, toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks. R package version 1.4.1., U.S. Geological Survey software release. Reston, VA., doi:10.5066/P1CQJHJV"
 )
