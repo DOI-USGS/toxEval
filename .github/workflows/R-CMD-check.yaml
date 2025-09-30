@@ -26,23 +26,24 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      NOT_CRAN: "true"
 
     steps:
       - uses: actions/checkout@c0a81a463886bb75afe234e07a9fd5bb79219196
 
-      - uses: r-lib/actions/setup-pandoc@52330cc136b963487918a8867f948ddf954e9e63
+      - uses: r-lib/actions/setup-pandoc@e0a5ffdf0b121aa1c2112f65e54b642a81dc29d9
 
-      - uses: r-lib/actions/setup-r@756399d909bf9c180bbdafe8025f794f51f2da02
+      - uses: r-lib/actions/setup-r@12d8dd416fec5aaa60f2f54609b713b2ec031a94
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@52330cc136b963487918a8867f948ddf954e9e63
+      - uses: r-lib/actions/setup-r-dependencies@813ef1cb62cf0b4b51a044419024c37807fa8095
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@52330cc136b963487918a8867f948ddf954e9e63
+      - uses: r-lib/actions/check-r-package@15dc53465b2f37cf7fc85ed97ae3e28f8e210955
         with:
           upload-snapshots: true

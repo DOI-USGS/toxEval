@@ -32,7 +32,7 @@
 #' @param ... Additional group_by arguments. This can be handy for creating facet graphs.
 #' @export
 #' @import ggplot2
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
 #' 
 #' \donttest{
 #' path_to_tox <- system.file("extdata", package = "toxEval")
@@ -185,18 +185,29 @@ plot_tox_endpoints2 <- function(cs, ...,
   }
 
   if (isTRUE(y_label == "")) {
-    stackedPlot <- stackedPlot +
-      scale_y_log10(
-        labels = fancyNumbers,
-        breaks = pretty_logs_new
-      ) +
-      theme(axis.title.x = element_blank())
+    if(utils::packageVersion("ggplot2") == "4.0.0"){
+      stackedPlot <- stackedPlot +
+        scale_y_log10() +
+        theme(axis.title.x = element_blank())    
+    } else {
+      stackedPlot <- stackedPlot +
+        scale_y_log10(
+          labels = fancyNumbers,
+          breaks = pretty_logs_new
+        ) +
+        theme(axis.title.x = element_blank())
+    }
   } else {
-    stackedPlot <- stackedPlot +
-      scale_y_log10(y_label,
-        labels = fancyNumbers,
-        breaks = pretty_logs_new
-      )
+    if(utils::packageVersion("ggplot2") == "4.0.0"){
+      stackedPlot <- stackedPlot +
+        scale_y_log10(y_label)
+    } else {
+      stackedPlot <- stackedPlot +
+        scale_y_log10(y_label,
+                      labels = fancyNumbers,
+                      breaks = pretty_logs_new
+        )
+    }
   }
 
   plot_layout <- ggplot_build(stackedPlot)$layout

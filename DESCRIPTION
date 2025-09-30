@@ -1,7 +1,7 @@
 Package: toxEval
 Type: Package
 Title: Exploring Biological Relevance of Environmental Chemistry Observations
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: c(person("Laura", "DeCicco", 
                      role = c("aut","cre"),
                      email = "ldecicco@usgs.gov",
@@ -47,7 +47,8 @@ Imports:
     readxl,
     tools,
     shinyAce,
-    shinycssloaders
+    shinycssloaders,
+    utils
 Suggests:
     rmarkdown,
     testthat,
@@ -60,4 +61,4 @@ BugReports: https://github.com/DOI-USGS/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

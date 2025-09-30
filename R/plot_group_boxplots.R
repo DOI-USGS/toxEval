@@ -47,7 +47,7 @@
 #' @export
 #' @rdname plot_tox_boxplots
 #' @import ggplot2
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
 #' # This is the example workflow:
 #' path_to_tox <- system.file("extdata", package = "toxEval")
 #' file_name <- "OWC_data_fromSup.xlsx"
@@ -61,9 +61,10 @@
 #' cleaned_ep <- clean_endPoint_info(end_point_info)
 #' filtered_ep <- filter_groups(cleaned_ep)
 #' chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+#' \donttest{
 #' plot_tox_boxplots(chemical_summary, "Biological")
 #' 
-#' \donttest{
+#' 
 #' plot_tox_boxplots(chemical_summary, "Chemical Class")
 #' plot_tox_boxplots(chemical_summary, "Chemical")
 #'
@@ -283,18 +284,33 @@ plot_tox_boxplots <- function(chemical_summary,
     }
 
     if (isTRUE(y_label == "")) {
-      bioPlot <- bioPlot +
-        scale_y_log10(
-          labels = fancyNumbers,
-          breaks = pretty_logs_new
-        ) +
-        theme(axis.title.x = element_blank())
+      if(utils::packageVersion("ggplot2") == "4.0.0"){
+        bioPlot <- bioPlot +
+          scale_y_log10() +
+          theme(axis.title.x = element_blank())        
+      } else {
+        
+        bioPlot <- bioPlot +
+          scale_y_log10(
+            labels = fancyNumbers,
+            breaks = pretty_logs_new
+          ) +
+          theme(axis.title.x = element_blank())        
+      }
+
     } else {
-      bioPlot <- bioPlot +
-        scale_y_log10(y_label,
-          labels = fancyNumbers,
-          breaks = pretty_logs_new
-        )
+      if(utils::packageVersion("ggplot2") == "4.0.0"){
+        bioPlot <- bioPlot +
+          scale_y_log10(y_label)        
+      } else {
+        bioPlot <- bioPlot +
+          scale_y_log10(
+            y_label,
+            labels = fancyNumbers,
+            breaks = pretty_logs_new
+          ) 
+      }
+      
     }
 
     bioPlot <- bioPlot +
@@ -346,7 +362,7 @@ plot_tox_boxplots <- function(chemical_summary,
           theme(plot.title = element_text(size = font_size, margin = margin(b = 5)))
       } else {
         bioPlot_w_labels <- bioPlot_w_labels +
-          theme(plot.title = element_text(size = font_size, margin = margin(b = 5)))
+          theme(plot.title = element_text(margin = margin(b = 5)))
       }
     }
 

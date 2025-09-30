@@ -242,18 +242,31 @@ plot_chemical_boxplots <- function(chemical_summary, ...,
     )
 
   if (isTRUE(y_label == "")) {
-    toxPlot_All <- toxPlot_All +
-      scale_y_log10(
-        labels = fancyNumbers,
-        breaks = pretty_logs_new
-      ) +
-      theme(axis.title.x = element_blank())
+    if(utils::packageVersion("ggplot2") == "4.0.0"){
+      toxPlot_All <- toxPlot_All +
+        scale_y_log10() +
+        theme(axis.title.x = element_blank())       
+    } else {
+      toxPlot_All <- toxPlot_All +
+        scale_y_log10(
+          labels = fancyNumbers,
+          breaks = pretty_logs_new
+        ) +
+        theme(axis.title.x = element_blank())   
+    }
+
   } else {
-    toxPlot_All <- toxPlot_All +
-      scale_y_log10(y_label,
-        labels = fancyNumbers,
-        breaks = pretty_logs_new
-      )
+    if(utils::packageVersion("ggplot2") == "4.0.0"){
+      toxPlot_All <- toxPlot_All +
+        scale_y_log10(y_label)        
+    } else {
+      toxPlot_All <- toxPlot_All +
+        scale_y_log10(
+          y_label,
+          labels = fancyNumbers,
+          breaks = pretty_logs_new
+        )  
+    }
   }
 
   if (all(is.na(palette))) {

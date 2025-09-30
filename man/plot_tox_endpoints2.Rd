@@ -67,6 +67,7 @@ the \dots arguments allow for customized faceting. To include this in
 the original toxEval function, backward compatibility would be broken.
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true")) withAutoprint(\{ # examplesIf}
 
 \donttest{
 path_to_tox <- system.file("extdata", package = "toxEval")
@@ -93,4 +94,5 @@ plot_tox_endpoints2(cs_double, guide_side,
 ) +
   ggplot2::facet_grid(. ~ guide_side, scales = "free_x")
 }
+\dontshow{\}) # examplesIf}
 }
