@@ -103,6 +103,7 @@ Box plots are standard Tukey representations. See "Box plot details" in the Basi
 for more information.
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true")) withAutoprint(\{ # examplesIf}
 # This is the example workflow:
 path_to_tox <- system.file("extdata", package = "toxEval")
 file_name <- "OWC_data_fromSup.xlsx"
@@ -116,9 +117,10 @@ ACC <- remove_flags(ACC)
 cleaned_ep <- clean_endPoint_info(end_point_info)
 filtered_ep <- filter_groups(cleaned_ep)
 chemical_summary <- get_chemical_summary(tox_list, ACC, filtered_ep)
+\donttest{
 plot_tox_boxplots(chemical_summary, "Biological")
 
-\donttest{
+
 plot_tox_boxplots(chemical_summary, "Chemical Class")
 plot_tox_boxplots(chemical_summary, "Chemical")
 
@@ -152,4 +154,5 @@ plot_tox_boxplots(single_site,
   category = "Chemical", hit_threshold = 0.001
 )
 }
+\dontshow{\}) # examplesIf}
 }

@@ -61,4 +61,4 @@ BugReports: https://github.com/DOI-USGS/toxEval/issues
 VignetteBuilder: knitr
 BuildVignettes: true
 LazyLoad: yes
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
