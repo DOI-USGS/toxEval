@@ -1,3 +1,7 @@
+toxEval 1.4.2
+===========
+* Minor documentation updates
+
 toxEval 1.4.1
 ===========
 * Fixed a test breaking due to ggplot2 update.

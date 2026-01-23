@@ -2,7 +2,9 @@
 title: "README"
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -13,7 +15,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-"
 )
 ```
-# toxEval <img src="man/figures/toxEval.png" alt="toxEval" class="logo" style="width:90px;height:auto;" align="right" />
+# toxEval  <img src="man/figures/hex_logo.png" class="logo"  alt="toxEval" style="width:90px;height:auto;" align="right" />
 
 
 [![CRAN version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)

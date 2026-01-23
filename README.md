@@ -1,4 +1,4 @@
-# toxEval <img src="man/figures/toxEval.png" alt="toxEval" class="logo" style="width:90px;height:auto;" align="right" />
+# toxEval <img src="man/figures/hex_logo.png" class="logo"  alt="toxEval" style="width:90px;height:auto;" align="right" />
 
 [![CRAN
 version](http://www.r-pkg.org/badges/version/toxEval)](https://cran.r-project.org/package=toxEval)
@@ -66,6 +66,7 @@ explore_endpoints()
 ```
 
 <p align="center">
+
 <img src="https://code.usgs.gov/water/toxEval/raw/main/man/figures/app.gif" alt="app_demo">
 </p>
 
@@ -104,7 +105,7 @@ chem_class_plot <- plot_tox_boxplots(chemicalSummary,
 chem_class_plot
 ```
 
-![](man/figures/README-unnamed-chunk-7-1.png)
+![](man/figures/README-unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 
@@ -115,7 +116,7 @@ plot_stacks <- plot_tox_stacks(chemicalSummary,
 plot_stacks
 ```
 
-![](man/figures/README-unnamed-chunk-7-2.png)
+![](man/figures/README-unnamed-chunk-7-2.png)<!-- -->
 
 ``` r
 ######################################
@@ -126,7 +127,7 @@ plot_heat <- plot_tox_heatmap(chemicalSummary,
 plot_heat
 ```
 
-![](man/figures/README-unnamed-chunk-7-3.png)
+![](man/figures/README-unnamed-chunk-7-3.png)<!-- -->
 
 This code opens up the example file, loads it into a `toxEval` object,
 grabs the pertinent ToxCast information, and creates a “chemicalSummary”
@@ -136,7 +137,7 @@ There are 4 vignettes to help introduce and navigate the `toxEval`
 package:
 
 | Name | R command | Description |
-|------------|--------------|----------------------------------------------|
+|----|----|----|
 | [Introduction](https://doi-usgs.github.io/toxEval/articles/Introduction.html) | `vignette("Introduction", package="toxEval")` | Introduction to the toxEval |
 | [Basic Workflow](https://doi-usgs.github.io/toxEval/articles/basicWorkflow.html) | `vignette("basicWorkflow", package="toxEval")` | Quickstart guide to get overview of available functions |
 | [Prepare Data](https://doi-usgs.github.io/toxEval/articles/PrepareData.html) | `vignette("PrepareData", package="toxEval")` | Guide to preparing your data for toxEval analysis |
@@ -185,19 +186,26 @@ explore_endpoints()
 
 ``` r
 citation(package = "toxEval")
-#> To cite package 'toxEval' in publications use:
+#> To cite toxEval in publications, please use:
 #> 
-#>   DeCicco L, Corsi S, Villeneuve D, Blackwell B, Ankley G (2024).
-#>   _toxEval: Exploring Biological Relevance of Environmental Chemistry
-#>   Observations_. R package version 1.4.0.
+#>   De Cicco, L.A., Corsi, S.R., Villeneuve D.L, Blackwell, and B.R,
+#>   Ankley, G.T., 2025, toxEval: Evaluation of measured concentration
+#>   data using the ToxCast high-throughput screening database or a
+#>   user-defined set of concentration benchmarks. R package version
+#>   1.4.2., U.S. Geological Survey software release. Reston, VA.,
+#>   doi:10.5066/P1CQJHJV
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
-#>     title = {toxEval: Exploring Biological Relevance of Environmental Chemistry
-#> Observations},
-#>     author = {Laura DeCicco and Steven Corsi and Daniel Villeneuve and Brett Blackwell and Gerald Ankley},
-#>     year = {2024},
-#>     note = {R package version 1.4.0},
+#>     author = {Laura A. {De Cicco} and Steven R. Corsi and Daniel L. Villeneuve and Brett R. Blackwell and Gerald T. Ankley},
+#>     title = {toxEval: Evaluation of measured concentration data using the ToxCast high-throughput screening database or a user-defined set of concentration benchmarks.},
+#>     publisher = {U.S. Geological Survey},
+#>     version = {1.4.2},
+#>     address = {Reston, VA},
+#>     institution = {U.S. Geological Survey},
+#>     year = {2026},
+#>     doi = {10.5066/P1CQJHJV},
+#>     url = {https://code.usgs.gov/water/toxEval},
 #>   }
 ```
