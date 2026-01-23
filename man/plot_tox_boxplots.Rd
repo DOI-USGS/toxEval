@@ -76,7 +76,7 @@ could then be constructed after this function is run.}
 The \code{plot_tox_boxplots} function creates a set of boxplots representing EAR
 values computed with the \code{\link{get_chemical_summary}} function, and
 dependent on the choice of several input options. See "Summarizing the data"
-in the Introduction vignette: \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
+in the Introduction vignette.
 for a description of how the EAR values are computed, aggregated,
 and summarized. Choosing "Chemical Class" in the category argument
 will generate separate boxplots for each unique class. "Chemical" will generate
@@ -98,8 +98,7 @@ the statistical calculations to create the plot. \code{graph_chem_data} is speci
 to the "Chemical" plot, and \code{plot_tox_boxplots} is for "Biological" and
 "Chemical Class".
 
-Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette:
-\href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
+Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette.
 for more information.
 }
 \examples{

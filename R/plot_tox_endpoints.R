@@ -9,11 +9,9 @@
 
 #' A boxplot is generated for each endPoint. The EAR values that are used to
 #' create the boxplots are the mean or maximum (as defined by mean_logic) for each
-#' site as described in "Summarizing the data"in the Introduction vignette:
-#' \href{../doc/Introduction.html#summarize_data}{\code{vignette("Introduction", package = "toxEval")}}.
+#' site as described in "Summarizing the data"in the Introduction vignette.
 #'
-#' Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette:
-#' \href{../doc/basicWorkflow.html#box_plot_details}{\code{vignette("basicWorkflow", package = "toxEval")}}
+#' Box plots are standard Tukey representations. See "Box plot details" in the Basic Workflow vignette.
 #' for more information.
 #'
 #' @param chemical_summary Data frame from \code{\link{get_chemical_summary}}.
