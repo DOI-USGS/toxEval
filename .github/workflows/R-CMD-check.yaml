@@ -2,48 +2,51 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
-name: R-CMD-checka
+name: R-CMD-check
+
+permissions: read-all
 
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
+    environment: CI_config
     strategy:
       fail-fast: false
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      API_USGS_PAT: ${{ secrets.API_USGS_PAT }}
       R_KEEP_PKG_SOURCE: yes
-      NOT_CRAN: "true"
+      CUSTOM_DR_UA: 'GitHub_CI'
+      _R_CHECK_DONTTEST_EXAMPLES_: false
 
     steps:
-      - uses: actions/checkout@c0a81a463886bb75afe234e07a9fd5bb79219196
+      - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
-      - uses: r-lib/actions/setup-pandoc@e0a5ffdf0b121aa1c2112f65e54b642a81dc29d9
+      - uses: r-lib/actions/setup-pandoc@6012817847b5f064d0882d67a7b5e2ca6639afb2
 
-      - uses: r-lib/actions/setup-r@12d8dd416fec5aaa60f2f54609b713b2ec031a94
+      - uses: r-lib/actions/setup-r@473c68190595b311a74f208fba61a8d8c0d4c247
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@813ef1cb62cf0b4b51a044419024c37807fa8095
+      - uses: r-lib/actions/setup-r-dependencies@6f6e5bc62fba3a704f74e7ad7ef7676c5c6a2590
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@15dc53465b2f37cf7fc85ed97ae3e28f8e210955
+      - uses: r-lib/actions/check-r-package@3e56ca41aa267855f36891af7a495d24bfaa8373
         with:
           upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf", "--as-cran")'
