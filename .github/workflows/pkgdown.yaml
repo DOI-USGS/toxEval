@@ -26,10 +26,6 @@ jobs:
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      API_USGS_PAT: ${{ secrets.API_USGS_PAT }}
-      CUSTOM_DR_UA: 'GitHub_CI'
     steps:
       - uses: actions/checkout@581d62f320f2a4043a1ea6ac77290c60d27485cc
 
@@ -44,18 +40,13 @@ jobs:
           extra-packages: |
             any::pkgdown
             any::rcmdcheck
-            any::DT
             any::data.table
-            any::dplyr
-            any::tidyr
-            any::ggplot2
-            any::zoo
-            any::sf
             any::patchwork
             any::maps
-            any::leaflet
             any::readxl
             any::gridExtra
+            any::here
+            any::tcpl
             local::.
           needs: website
       - name: Create public directory
@@ -66,10 +57,6 @@ jobs:
           pkgdown::build_site(override = list(destination = "public")) |
           file.copy(from = "./public/articles/logo.png",to = "./public/reference/logo.png")
         shell: Rscript {0}
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-      - name: Render Quarto Project
-        uses: quarto-dev/quarto-actions/render@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
